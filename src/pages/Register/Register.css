@@ -1,0 +1,32 @@
+.register-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  background: #002f3d;
+}
+
+.register-main {
+  flex: 1;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  min-height: 560px;
+
+  padding: 60px 20px;
+
+  background-color: #003846;
+
+  background-image:
+    linear-gradient(
+      rgba(0, 48, 61, 0.78),
+      rgba(0, 48, 61, 0.78)
+    ),
+    url("/background.png");
+
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
