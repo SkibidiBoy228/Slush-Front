@@ -56,12 +56,12 @@ function RegisterForm() {
     try {
       setLoading(true);
 
-      const response = await register({
-        username: login.trim(),
-        email: email.trim(),
-        password,
-        repeatPassword,
-      });
+    const response = await register({
+      username: login.trim(),
+      email: email.trim(),
+      password,
+      confirmPassword: repeatPassword,
+    });
 
       setSuccess(
         response.message ||

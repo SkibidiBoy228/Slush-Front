@@ -2,7 +2,7 @@ export interface RegisterRequest {
   username: string;
   email: string;
   password: string;
-  repeatPassword: string;
+  confirmPassword: string;
 }
 
 export interface RegisterResponse {
