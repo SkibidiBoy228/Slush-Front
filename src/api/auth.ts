@@ -69,3 +69,21 @@ export async function resetPassword(
   );
 }
 
+export interface VerifyEmailRequest{
+    email: string;
+    code: string;
+}
+
+export interface VerifyEmailResponse{
+  message: string;
+}
+
+export async function verifyEmail(
+  data: VerifyEmailRequest) : Promise<VerifyEmailResponse> {
+    return apiRequest<VerifyEmailResponse>(
+      "/api/Auth/verify-email", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }
+    );
+}

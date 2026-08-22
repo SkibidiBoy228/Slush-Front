@@ -56,23 +56,16 @@ function RegisterForm() {
     try {
       setLoading(true);
 
-    const response = await register({
+    await register({
       username: login.trim(),
       email: email.trim(),
       password,
       confirmPassword: repeatPassword,
     });
 
-      setSuccess(
-        response.message ||
-          "Реєстрація успішна. Перевірте свою електронну пошту."
-      );
-
-      setLogin("");
-      setEmail("");
-      setPassword("");
-      setRepeatPassword("");
-      setAgree(false);
+    window.location.href = `/verify-email?email=${encodeURIComponent(
+      email.trim()
+    )}`;
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
