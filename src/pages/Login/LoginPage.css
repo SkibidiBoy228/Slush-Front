@@ -1,0 +1,39 @@
+.login-page {
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  background: #002f3d;
+}
+
+.login-main {
+  flex: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 50px 20px;
+
+  box-sizing: border-box;
+
+  background-color: #003846;
+
+  background-image:
+    linear-gradient(
+      rgba(0, 48, 61, 0.78),
+      rgba(0, 48, 61, 0.78)
+    ),
+    url("/background.png");
+
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+@media (max-width: 600px) {
+  .login-main {
+    padding: 40px 16px;
+  }
+}
