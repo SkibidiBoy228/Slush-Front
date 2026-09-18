@@ -1,5 +1,4 @@
 import Register from "./pages/Register/Register";
-
 import LoginPage from "./pages/Login/LoginPage";
 import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword/ResetPassword";
@@ -11,6 +10,10 @@ function App() {
 
   if (path === "/login") {
     return <LoginPage />;
+  }
+
+  if (path === "/register") {
+    return <Register />;
   }
 
   if (path === "/forgot-password") {
