@@ -1,5 +1,5 @@
 import type { GameDetails } from "../types/game";
-import type { CatalogGame, CatalogResponse } from "../types/catalog";
+import type { CatalogResponse } from "../types/catalog";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
