@@ -1,0 +1,552 @@
+.game-gallery {
+  width: 100%;
+}
+
+.game-main-image-wrapper {
+  width: 100%;
+  height: 390px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #073b47;
+}
+
+.game-main-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.gallery-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.gallery-thumbnails {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+  flex: 1;
+}
+
+.gallery-thumbnail {
+  height: 76px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #073b47;
+  cursor: pointer;
+}
+
+.gallery-thumbnail.active {
+  border-color: #1de0c4;
+}
+
+.gallery-thumbnail img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.gallery-arrow {
+  width: 32px;
+  height: 76px;
+  border: none;
+  border-radius: 6px;
+  background: #073b47;
+  color: #fff;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.gallery-arrow:hover {
+  color: #1de0c4;
+}
+
+.gallery-progress {
+  width: 100%;
+  height: 3px;
+  margin-top: 12px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: #174b56;
+}
+
+.gallery-progress span {
+  display: block;
+  height: 100%;
+  background: #1de0c4;
+  transition: width 0.2s ease;
+}
+
+/* Sidebar */
+
+.game-sidebar {
+  min-width: 0;
+  padding: 18px;
+  border-radius: 10px;
+  background: #073b47;
+}
+
+.game-rating {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.game-rating strong {
+  color: #fff;
+  font-size: 25px;
+}
+
+.rating-stars,
+.review-stars {
+  display: flex;
+  gap: 2px;
+}
+
+.rating-stars span,
+.review-stars span {
+  color: #3c5d64;
+  font-size: 18px;
+}
+
+.rating-stars span.filled,
+.review-stars span.filled {
+  color: #ff5c9a;
+}
+
+.sidebar-cover {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: block;
+  border-radius: 7px;
+  object-fit: cover;
+}
+
+.sidebar-price {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 18px 0;
+}
+
+.sidebar-price strong {
+  color: #fff;
+  font-size: 23px;
+}
+
+.sidebar-price del {
+  color: #77959c;
+  font-size: 12px;
+}
+
+.sidebar-discount {
+  padding: 5px 7px;
+  border-radius: 4px;
+  background: #ff5c9a;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.buy-button,
+.cart-button {
+  height: 43px;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.buy-button {
+  width: 100%;
+  border: none;
+  background: #1de0c4;
+  color: #00323d;
+  font-weight: 700;
+}
+
+.buy-button:hover {
+  background: #40f0d5;
+}
+
+.sidebar-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 9px;
+}
+
+.sidebar-actions .cart-button {
+  flex: 1;
+  border: 1px solid #1de0c4;
+  background: transparent;
+  color: #1de0c4;
+}
+
+.wishlist-button {
+  width: 43px;
+  border: 1px solid #416b74;
+  border-radius: 6px;
+  background: transparent;
+  color: #ff5c9a;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.game-secondary-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 18px 0;
+}
+
+.game-secondary-actions button {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #94b2b8;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.game-secondary-actions button:hover {
+  color: #1de0c4;
+}
+
+.game-metadata {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 16px;
+  border-top: 1px solid #1d515c;
+}
+
+.game-metadata div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.game-metadata span {
+  color: #7e9da4;
+  font-size: 11px;
+}
+
+.game-metadata strong {
+  color: #d4e5e8;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.friends-block {
+  margin-top: 25px;
+  padding-top: 18px;
+  border-top: 1px solid #1d515c;
+}
+
+.friends-block h3 {
+  margin: 0 0 14px;
+  color: #fff;
+  font-size: 15px;
+}
+
+.friend-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.friend-avatar,
+.review-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #0d7085;
+  color: #fff;
+  font-weight: 600;
+}
+
+.friend-avatar {
+  width: 34px;
+  height: 34px;
+  font-size: 13px;
+}
+
+.friend-row div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.friend-row strong {
+  color: #fff;
+  font-size: 12px;
+}
+
+.friend-row span,
+.empty-sidebar-text {
+  color: #85a5ac;
+  font-size: 11px;
+}
+
+.empty-sidebar-text {
+  line-height: 1.5;
+}
+
+/* Reviews */
+
+.game-reviews-section,
+.game-extra-section {
+  margin-top: 42px;
+}
+
+.section-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 18px;
+}
+
+.section-title-row h2 {
+  margin: 0;
+  color: #fff;
+  font-size: 23px;
+}
+
+.outline-button {
+  padding: 10px 14px;
+  border: 1px solid #1de0c4;
+  border-radius: 6px;
+  background: transparent;
+  color: #1de0c4;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.reviews-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 16px;
+  color: #8baab0;
+  font-size: 12px;
+}
+
+.review-sort {
+  border: none;
+  background: transparent;
+  color: #8baab0;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.review-card {
+  min-width: 0;
+  padding: 17px;
+  border-radius: 9px;
+  background: #073b47;
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.review-avatar {
+  width: 34px;
+  height: 34px;
+  font-size: 13px;
+}
+
+.review-author {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.review-author strong {
+  color: #fff;
+  font-size: 13px;
+}
+
+.review-stars span {
+  font-size: 12px;
+}
+
+.review-more {
+  margin-left: auto;
+  border: none;
+  background: transparent;
+  color: #7899a0;
+  cursor: pointer;
+}
+
+.review-text {
+  min-height: 70px;
+  margin: 17px 0;
+  color: #b4cdd2;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.review-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #6f9199;
+  font-size: 10px;
+}
+
+.review-reactions {
+  display: flex;
+  gap: 10px;
+}
+
+.review-reactions button {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #91b0b7;
+  cursor: pointer;
+}
+
+.empty-reviews {
+  padding: 30px;
+  border-radius: 8px;
+  background: #073b47;
+  color: #91b0b7;
+  text-align: center;
+}
+
+.show-more-button {
+  display: block;
+  margin: 20px auto 0;
+  border: none;
+  background: transparent;
+  color: #1de0c4;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* Bundles and DLC */
+
+.bundles-list,
+.dlc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bundle-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px;
+  border-radius: 8px;
+  background: #073b47;
+}
+
+.bundle-card h3 {
+  margin: 0 0 8px;
+  color: #fff;
+  font-size: 15px;
+}
+
+.bundle-card p {
+  max-width: 650px;
+  margin: 0;
+  color: #91b0b7;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.bundle-card .cart-button {
+  padding: 0 18px;
+  border: 1px solid #1de0c4;
+  background: transparent;
+  color: #1de0c4;
+}
+
+.more-link {
+  border: none;
+  background: transparent;
+  color: #1de0c4;
+  cursor: pointer;
+}
+
+.dlc-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-radius: 8px;
+  background: #073b47;
+}
+
+.dlc-row div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.dlc-row strong {
+  color: #fff;
+  font-size: 13px;
+}
+
+.dlc-row span {
+  color: #87a7ae;
+  font-size: 11px;
+}
+
+.dlc-price {
+  color: #fff !important;
+  font-size: 13px !important;
+}
+
+@media (max-width: 700px) {
+  .game-main-image-wrapper {
+    height: 280px;
+  }
+
+  .gallery-thumbnails {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .gallery-thumbnail:nth-child(n + 4) {
+    display: none;
+  }
+
+  .reviews-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .reviews-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .bundle-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

@@ -1,7 +1,7 @@
 import "./GameCard.css";
 
 export interface Game {
-  id: number;
+  id: string;
   title: string;
   image: string;
   price: string;

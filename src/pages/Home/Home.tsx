@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import GameSection from "../../components/GameSection/GameSection";
@@ -6,183 +8,98 @@ import GameCard, {
   type Game,
 } from "../../components/GameCard/GameCard";
 
+import { getGames } from "../../api/games";
+import type { CatalogGame } from "../../types/catalog";
+
 import "./Home.css";
 
-const specialOffers: Game[] = [
-  {
-    id: 1,
-    title: "Cyberpunk 2077",
-    price: "1 099₴",
-    image:
-      "https://cdn.cloudflare.steamstatic.com/steam/apps/1091500/header.jpg",
-  },
-  {
-    id: 2,
-    title: "Відьмак 3: Дикий гін",
-    price: "729₴",
-    image:
-      "https://cdn.cloudflare.steamstatic.com/steam/apps/292030/header.jpg",
-  },
-  {
-    id: 3,
-    title: "Manor Lords",
-    price: "449₴",
-    oldPrice: "599₴",
-    discount: "-25%",
-    image:
-      "https://cdn.cloudflare.steamstatic.com/steam/apps/1363080/header.jpg",
-  },
-];
+function formatPrice(price: number): string {
+  if (price <= 0) {
+    return "Безкоштовно";
+  }
 
-const recommendedGames: Game[] = [
-  {
-    id: 4,
-    title: "Bellwright",
-    price: "600₴",
-    image:
-      "https://cdn.cloudflare.steamstatic.com/steam/apps/1812450/header.jpg",
-  },
-  {
-    id: 5,
-    title: "Stardew Valley",
-    price: "229₴",
-    image:
-      "https://cdn.cloudflare.steamstatic.com/steam/apps/413150/header.jpg",
-  },
-  {
-    id: 6,
-    title: "Ghost of Tsushima",
-    price: "1699₴",
-    image:
-      "https://cdn.cloudflare.steamstatic.com/steam/apps/2215430/header.jpg",
-  },
-  {
-    id: 7,
-    title: "Avatar: Frontiers of Pandora",
-    price: "911₴",
-    oldPrice: "1519₴",
-    discount: "-40%",
-    image:
-      "https://cdn.cloudflare.steamstatic.com/steam/apps/2840770/header.jpg",
-  },
-];
+  return `${price.toLocaleString("uk-UA")}₴`;
+}
 
-const budgetGames: Game[] = [
-  {
-    id: 8,
-    title: "FAR: Lone Sails",
-    price: "34₴",
-    oldPrice: "229₴",
-    discount: "-85%",
-    image:
-      "https://cdn.cloudflare.steamstatic.com/steam/apps/609320/header.jpg",
-  },
-  {
-    id: 9,
-    title: "Placid Plastic Duck Simulator",
-    price: "60₴",
-    image:
-      "https://cdn.cloudflare.steamstatic.com/steam/apps/1999360/header.jpg",
-  },
-  {
-    id: 10,
-    title: "The Escape: Together",
-    price: "74₴",
-    image:
-      "https://cdn.cloudflare.steamstatic.com/steam/apps/2161920/header.jpg",
-  },
-  {
-    id: 11,
-    title: "Juro Janosik",
-    price: "74₴",
-    oldPrice: "245₴",
-    discount: "-69%",
-    image:
-      "https://cdn.cloudflare.steamstatic.com/steam/apps/978630/header.jpg",
-  },
-];
-
-const popularGames: Game[] = [
-  {
-    id: 12,
-    title: "Baldur's Gate 3",
-    price: "899₴",
-    image:
-      "https://cdn.cloudflare.steamstatic.com/steam/apps/1086940/header.jpg",
-  },
-  {
-    id: 13,
-    title: "Kingdom Come: Deliverance",
-    price: "159₴",
-    oldPrice: "799₴",
-    discount: "-80%",
-    image:
-      "https://cdn.cloudflare.steamstatic.com/steam/apps/379430/header.jpg",
-  },
-  {
-    id: 14,
-    title: "Project Zomboid",
-    price: "415₴",
-    image:
-      "https://cdn.cloudflare.steamstatic.com/steam/apps/108600/header.jpg",
-  },
-];
-
-const newReleases: Game[] = [
-  {
-    id: 15,
-    title: "Destiny 2: The Final Shape",
-    price: "1 249₴",
-    image:
-      "https://cdn.cloudflare.steamstatic.com/steam/apps/1085660/header.jpg",
-  },
-  {
-    id: 16,
-    title: "Sun Haven",
-    price: "230₴",
-    oldPrice: "329₴",
-    discount: "-30%",
-    image:
-      "https://cdn.cloudflare.steamstatic.com/steam/apps/1432860/header.jpg",
-  },
-  {
-    id: 17,
-    title: "Subnautica",
-    price: "1 348₴",
-    oldPrice: "898₴",
-    discount: "-10%",
-    image:
-      "https://cdn.cloudflare.steamstatic.com/steam/apps/264710/header.jpg",
-  },
-];
-
-const freeGames: Game[] = [
-  {
-    id: 18,
-    title: "Soul Dossier",
-    price: "Безкоштовно",
-    image:
-      "https://cdn.cloudflare.steamstatic.com/steam/apps/2827230/header.jpg",
-  },
-  {
-    id: 19,
-    title: "Counter-Strike 2",
-    price: "Безкоштовно",
-    oldPrice: "365₴",
-    discount: "-100%",
-    image:
-      "https://cdn.cloudflare.steamstatic.com/steam/apps/730/header.jpg",
-  },
-  {
-    id: 20,
-    title: "RAID: Shadow Legends",
-    price: "Безкоштовно",
-    image:
-      "https://cdn.cloudflare.steamstatic.com/steam/apps/2333480/header.jpg",
-  },
-];
+function convertGame(game: CatalogGame): Game {
+  return {
+    id: game.id,
+    title: game.title,
+    image: game.thumbnail,
+    price: formatPrice(game.price),
+    oldPrice:
+      game.oldPrice > game.price && game.price > 0
+        ? formatPrice(game.oldPrice)
+        : undefined,
+    discount:
+      game.discountPercent > 0
+        ? `-${game.discountPercent}%`
+        : undefined,
+  };
+}
 
 function Home() {
+  const [games, setGames] = useState<Game[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    async function loadGames() {
+      try {
+        setLoading(true);
+        setError("");
+
+        const response = await getGames({
+          page: 1,
+          pageSize: 50,
+        });
+
+        const convertedGames = response.items.map(convertGame);
+
+        setGames(convertedGames);
+      } catch (err) {
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Не вдалося завантажити ігри"
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadGames();
+  }, []);
+
+  /*
+   * Поки API повертає один загальний каталог,
+   * распределяем игры по секциям на основе данных API.
+   */
+
+  const specialOffers = games
+    .filter((game) => game.discount)
+    .slice(0, 3);
+
+  const recommendedGames = games.slice(0, 4);
+
+  const budgetGames = games
+    .filter((game) => {
+      const price = Number(
+        game.price.replace(/[^\d.,]/g, "").replace(",", ".")
+      );
+
+      return game.price === "Безкоштовно" || price <= 100;
+    })
+    .slice(0, 4);
+
+  const popularGames = games.slice(0, 3);
+
+  const newReleases = games.slice(3, 6);
+
+  const freeGames = games
+    .filter((game) => game.price === "Безкоштовно")
+    .slice(0, 3);
+
   return (
     <div className="home-page">
       <Header />
@@ -191,94 +108,110 @@ function Home() {
         <HeroSlider />
 
         <div className="content-container">
-          <GameSection
-            title="Особливі пропозиції"
-            games={specialOffers}
-            variant="wide"
-          />
-
-          <GameSection
-            title="Рекомендовані вам"
-            games={recommendedGames}
-            variant="vertical"
-          />
-
-          <GameSection
-            title="До 100₴"
-            games={budgetGames}
-            variant="vertical"
-          />
-
-          <section className="three-columns">
-            <div className="game-column">
-              <div className="column-heading">
-                <h2>Хіти продажу</h2>
-
-                <button
-                  className="column-arrow"
-                  aria-label="Наступні"
-                >
-                  ›
-                </button>
-              </div>
-
-              <div className="column-games">
-                {popularGames.map((game) => (
-                  <GameCard
-                    key={game.id}
-                    game={game}
-                    variant="small"
-                  />
-                ))}
-              </div>
+          {loading && (
+            <div className="catalog-message">
+              Завантаження ігор...
             </div>
+          )}
 
-            <div className="game-column">
-              <div className="column-heading">
-                <h2>Нові релізи</h2>
-
-                <button
-                  className="column-arrow"
-                  aria-label="Наступні"
-                >
-                  ›
-                </button>
-              </div>
-
-              <div className="column-games">
-                {newReleases.map((game) => (
-                  <GameCard
-                    key={game.id}
-                    game={game}
-                    variant="small"
-                  />
-                ))}
-              </div>
+          {error && (
+            <div className="catalog-message">
+              {error}
             </div>
+          )}
 
-            <div className="game-column">
-              <div className="column-heading">
-                <h2>Безкоштовні</h2>
+          {!loading && !error && (
+            <>
+              <GameSection
+                title="Особливі пропозиції"
+                games={specialOffers}
+                variant="wide"
+              />
 
-                <button
-                  className="column-arrow"
-                  aria-label="Наступні"
-                >
-                  ›
-                </button>
-              </div>
+              <GameSection
+                title="Рекомендовані вам"
+                games={recommendedGames}
+                variant="vertical"
+              />
 
-              <div className="column-games">
-                {freeGames.map((game) => (
-                  <GameCard
-                    key={game.id}
-                    game={game}
-                    variant="small"
-                  />
-                ))}
-              </div>
-            </div>
-          </section>
+              <GameSection
+                title="До 100₴"
+                games={budgetGames}
+                variant="vertical"
+              />
+
+              <section className="three-columns">
+                <div className="game-column">
+                  <div className="column-heading">
+                    <h2>Хіти продажу</h2>
+
+                    <button
+                      className="column-arrow"
+                      aria-label="Наступні"
+                    >
+                      ›
+                    </button>
+                  </div>
+
+                  <div className="column-games">
+                    {popularGames.map((game) => (
+                      <GameCard
+                        key={game.id}
+                        game={game}
+                        variant="small"
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div className="game-column">
+                  <div className="column-heading">
+                    <h2>Нові релізи</h2>
+
+                    <button
+                      className="column-arrow"
+                      aria-label="Наступні"
+                    >
+                      ›
+                    </button>
+                  </div>
+
+                  <div className="column-games">
+                    {newReleases.map((game) => (
+                      <GameCard
+                        key={game.id}
+                        game={game}
+                        variant="small"
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div className="game-column">
+                  <div className="column-heading">
+                    <h2>Безкоштовні</h2>
+
+                    <button
+                      className="column-arrow"
+                      aria-label="Наступні"
+                    >
+                      ›
+                    </button>
+                  </div>
+
+                  <div className="column-games">
+                    {freeGames.map((game) => (
+                      <GameCard
+                        key={game.id}
+                        game={game}
+                        variant="small"
+                      />
+                    ))}
+                  </div>
+                </div>
+              </section>
+            </>
+          )}
         </div>
       </main>
 
