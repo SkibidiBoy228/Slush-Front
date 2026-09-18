@@ -1,9 +1,17 @@
+import { useEffect, useState } from "react";
+
 import "./Header.css";
 
 const Header = () => {
-  const isAuthorized =
-    Boolean(localStorage.getItem("accessToken")) ||
-    Boolean(sessionStorage.getItem("accessToken"));
+  const [isAuthorized, setIsAuthorized] = useState(false);
+
+  useEffect(() => {
+    const accessToken =
+      localStorage.getItem("accessToken") ||
+      sessionStorage.getItem("accessToken");
+
+    setIsAuthorized(Boolean(accessToken));
+  }, []);
 
   return (
     <header className="header">
@@ -13,7 +21,7 @@ const Header = () => {
         </a>
 
         <nav className="navigation">
-          <a href="/shop">Крамниця</a>
+          <a href="/mainPage">Крамниця</a>
           <a href="/library">Бібліотека</a>
           <a href="/chat">Чат</a>
         </nav>
@@ -41,6 +49,14 @@ const Header = () => {
               title="Настройки"
             >
               ⚙
+            </button>
+
+            <button
+              className="header-avatar"
+              aria-label="Профиль"
+              title="Профиль"
+            >
+              👤
             </button>
           </div>
         )}
