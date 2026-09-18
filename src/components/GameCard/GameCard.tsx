@@ -18,8 +18,22 @@ function GameCard({
   game,
   variant = "wide",
 }: GameCardProps) {
+  function openGame() {
+    window.location.href = `/game/${game.id}`;
+  }
+
   return (
-    <article className={`game-card game-card-${variant}`}>
+    <article
+      className={`game-card game-card-${variant}`}
+      onClick={openGame}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          openGame();
+        }
+      }}
+    >
       <div className="game-image-wrapper">
         <img
           className="game-image"

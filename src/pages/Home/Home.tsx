@@ -13,12 +13,18 @@ import type { CatalogGame } from "../../types/catalog";
 
 import "./Home.css";
 
+const USD_TO_UAH = 42;
+
 function formatPrice(price: number): string {
   if (price <= 0) {
     return "Безкоштовно";
   }
 
-  return `${price.toLocaleString("uk-UA")}₴`;
+  const uahPrice = price * USD_TO_UAH;
+
+  return `${uahPrice.toLocaleString("uk-UA", {
+    maximumFractionDigits: 0,
+  })}₴`;
 }
 
 function convertGame(game: CatalogGame): Game {
@@ -26,11 +32,14 @@ function convertGame(game: CatalogGame): Game {
     id: game.id,
     title: game.title,
     image: game.thumbnail,
+
     price: formatPrice(game.price),
+
     oldPrice:
       game.oldPrice > game.price && game.price > 0
         ? formatPrice(game.oldPrice)
         : undefined,
+
     discount:
       game.discountPercent > 0
         ? `-${game.discountPercent}%`
@@ -39,7 +48,9 @@ function convertGame(game: CatalogGame): Game {
 }
 
 function Home() {
+  const [catalogGames, setCatalogGames] = useState<CatalogGame[]>([]);
   const [games, setGames] = useState<Game[]>([]);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -54,9 +65,8 @@ function Home() {
           pageSize: 50,
         });
 
-        const convertedGames = response.items.map(convertGame);
-
-        setGames(convertedGames);
+        setCatalogGames(response.items);
+        setGames(response.items.map(convertGame));
       } catch (err) {
         setError(
           err instanceof Error
@@ -72,8 +82,8 @@ function Home() {
   }, []);
 
   /*
-   * Поки API повертає один загальний каталог,
-   * распределяем игры по секциям на основе данных API.
+   * Поки backend повертає один загальний каталог,
+   * розподіляємо ігри по секціях.
    */
 
   const specialOffers = games
@@ -83,12 +93,14 @@ function Home() {
   const recommendedGames = games.slice(0, 4);
 
   const budgetGames = games
-    .filter((game) => {
-      const price = Number(
-        game.price.replace(/[^\d.,]/g, "").replace(",", ".")
-      );
+    .filter((_, index) => {
+      const catalogGame = catalogGames[index];
 
-      return game.price === "Безкоштовно" || price <= 100;
+      if (!catalogGame) {
+        return false;
+      }
+
+      return catalogGame.price <= 100 / USD_TO_UAH;
     })
     .slice(0, 4);
 
@@ -97,7 +109,11 @@ function Home() {
   const newReleases = games.slice(3, 6);
 
   const freeGames = games
-    .filter((game) => game.price === "Безкоштовно")
+    .filter((_, index) => {
+      const catalogGame = catalogGames[index];
+
+      return catalogGame?.price <= 0;
+    })
     .slice(0, 3);
 
   return (
