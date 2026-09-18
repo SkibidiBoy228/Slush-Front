@@ -1,9 +1,9 @@
 import "./Header.css";
 
 const Header = () => {
-  const isAuthorized = Boolean(
-    localStorage.getItem("token"),
-  );
+  const isAuthorized =
+    Boolean(localStorage.getItem("accessToken")) ||
+    Boolean(sessionStorage.getItem("accessToken"));
 
   return (
     <header className="header">
