@@ -17,6 +17,13 @@
   align-items: center;
 }
 
+
+
+.header-home .header-container {
+  max-width: 1200px;
+}
+
+
 .logo {
   justify-self: start;
 
@@ -26,6 +33,8 @@
   letter-spacing: 2px;
   text-decoration: none;
 }
+
+/* Navigation */
 
 .navigation {
   display: flex;
@@ -46,7 +55,7 @@
   color: #1de0c4;
 }
 
-/* Неавторизованный пользователь */
+
 
 .header-login-button {
   justify-self: end;
@@ -133,13 +142,17 @@
   transform: translateY(0);
 }
 
+/* Mobile */
+
 @media (max-width: 700px) {
   .header {
     height: 55px;
   }
 
-  .header-container {
+  .header-container,
+  .header-home .header-container {
     padding: 0 16px;
+    max-width: none;
   }
 
   .logo {

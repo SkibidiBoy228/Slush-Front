@@ -5,6 +5,10 @@ import "./Header.css";
 const Header = () => {
   const [isAuthorized, setIsAuthorized] = useState(false);
 
+  const isHomePage =
+    window.location.pathname === "/" ||
+    window.location.pathname === "/mainPage";
+
   useEffect(() => {
     const path = window.location.pathname;
 
@@ -28,7 +32,11 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="header">
+    <header
+      className={`header ${
+        isHomePage ? "header-home" : ""
+      }`}
+    >
       <div className="header-container">
         <a href="/" className="logo">
           SLUSH
