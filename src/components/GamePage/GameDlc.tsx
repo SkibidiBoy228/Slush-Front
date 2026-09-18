@@ -18,7 +18,7 @@ function GameDlc({ dlcs }: GameDlcProps) {
       </div>
 
       <div className="dlc-list">
-        {dlcs.map((dlc, index) => (
+        {dlcs.map((_, index) => (
           <div className="dlc-row" key={index}>
             <div>
               <strong>DLC #{index + 1}</strong>
