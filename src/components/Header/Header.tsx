@@ -6,6 +6,20 @@ const Header = () => {
   const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
+    const path = window.location.pathname;
+
+    const isAuthPage =
+      path === "/login" ||
+      path === "/register" ||
+      path === "/forgot-password" ||
+      path === "/reset-password" ||
+      path === "/verify-email";
+
+    if (isAuthPage) {
+      setIsAuthorized(false);
+      return;
+    }
+
     const accessToken =
       localStorage.getItem("accessToken") ||
       sessionStorage.getItem("accessToken");
