@@ -8,10 +8,8 @@
   width: 100%;
   max-width: 900px;
   height: 100%;
-
   margin: 0 auto;
   padding: 0 20px;
-
   box-sizing: border-box;
 
   display: grid;
@@ -23,12 +21,9 @@
   justify-self: start;
 
   color: #1de0c4;
-
   font-size: 18px;
   font-weight: 600;
-
   letter-spacing: 2px;
-
   text-decoration: none;
 }
 
@@ -36,19 +31,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
   gap: 30px;
-
   margin: 0;
 }
 
 .navigation a {
   color: #ffffff;
-
   font-size: 12px;
-
   text-decoration: none;
-
   transition: color 0.2s ease;
 }
 
@@ -56,11 +46,12 @@
   color: #1de0c4;
 }
 
+/* Неавторизованный пользователь */
+
 .header-login-button {
   justify-self: end;
 
   display: flex;
-
   align-items: center;
   justify-content: center;
 
@@ -68,12 +59,10 @@
   height: 27px;
 
   border-radius: 14px;
-
   background: #0b7085;
+
   color: #ffffff;
-
   font-size: 9px;
-
   text-decoration: none;
 
   transition:
@@ -87,6 +76,50 @@
 }
 
 .header-login-button:active {
+  transform: translateY(0);
+}
+
+/* Авторизованный пользователь */
+
+.header-actions {
+  justify-self: end;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-icon-button {
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+
+  background: #0b7085;
+  color: #ffffff;
+
+  font-size: 14px;
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.header-icon-button:hover {
+  background: #0d849b;
+  transform: translateY(-1px);
+}
+
+.header-icon-button:active {
   transform: translateY(0);
 }
 
@@ -115,5 +148,11 @@
     width: 55px;
     height: 25px;
     font-size: 8px;
+  }
+
+  .header-icon-button {
+    width: 27px;
+    height: 27px;
+    font-size: 12px;
   }
 }

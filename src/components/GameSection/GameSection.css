@@ -1,0 +1,125 @@
+.game-section {
+  width: 100%;
+
+  margin-top: 34px;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 14px;
+}
+
+.section-heading h2 {
+  margin: 0;
+
+  color: #fff;
+
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.more-button {
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  color: #1de0c4;
+
+  font-size: 12px;
+
+  cursor: pointer;
+}
+
+.more-button span {
+  font-size: 17px;
+}
+
+.more-button:hover {
+  opacity: 0.8;
+}
+
+
+
+.games-row {
+  display: grid;
+
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  gap: 13px;
+
+  width: 100%;
+}
+
+
+
+.game-section-wide .games-row {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Рекомендовані / До 100 — 4 */
+
+.game-section-vertical .games-row {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+
+.slider-wrapper {
+  position: relative;
+}
+
+.slider-arrow {
+  position: absolute;
+
+  top: 50%;
+  z-index: 5;
+
+  transform: translateY(-50%);
+
+  width: 34px;
+  height: 54px;
+
+  border: none;
+  border-radius: 5px;
+
+  background: rgba(0, 26, 35, 0.9);
+
+  color: #fff;
+
+  font-size: 27px;
+
+  cursor: pointer;
+}
+
+.slider-arrow:hover {
+  color: #1de0c4;
+}
+
+.slider-arrow-left {
+  left: -10px;
+}
+
+.slider-arrow-right {
+  right: -10px;
+}
+
+
+@media (max-width: 1000px) {
+  .games-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .games-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  .section-heading h2 {
+    font-size: 18px;
+  }
+}

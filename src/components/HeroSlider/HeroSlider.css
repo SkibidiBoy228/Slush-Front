@@ -1,0 +1,474 @@
+.hero-slider-container {
+  width: 100%;
+  margin: 0;
+}
+
+.hero-section {
+  position: relative;
+
+  width: 100%;
+  height: 500px;
+
+  overflow: hidden;
+
+  background: #073b47;
+}
+
+.hero-background {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+}
+
+.hero-dark-overlay {
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0, 20, 28, 0.96) 0%,
+      rgba(0, 20, 28, 0.78) 32%,
+      rgba(0, 20, 28, 0.38) 68%,
+      rgba(0, 20, 28, 0.18) 100%
+    );
+}
+
+
+
+.store-panel {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  z-index: 5;
+
+  transform: translateX(-50%);
+
+  width: min(1180px, calc(100% - 70px));
+  height: 54px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 8px 0 9px;
+  box-sizing: border-box;
+
+  border-radius: 30px;
+
+  background: rgba(190, 221, 226, 0.96);
+}
+
+.store-search {
+  height: 40px;
+  width: 480px;
+
+  display: flex;
+  align-items: center;
+
+  overflow: hidden;
+  border-radius: 30px;
+
+  background: #073b47;
+}
+
+.store-search input {
+  flex: 1;
+
+  min-width: 0;
+  height: 100%;
+
+  padding: 0 13px;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  color: #fff;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.store-search input::placeholder {
+  color: #86a7ad;
+}
+
+/* ЛУПА СПРАВА ВНУТРИ ПОИСКА */
+.search-button {
+  width: 44px;
+  height: 100%;
+
+  flex-shrink: 0;
+
+  border: none;
+  background: #073b47;
+
+  color: #b9d8dc;
+
+  font-size: 24px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.search-button:hover {
+  color: #1de0c4;
+}
+
+/* КАТАЛОГ И НОВИНИ СПРАВА */
+.store-link {
+  height: 100%;
+
+  padding: 0 14px;
+
+  border: none;
+  background: transparent;
+
+  color: #174d59;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.store-link:first-of-type {
+  margin-left: auto;
+}
+
+.store-link:hover {
+  color: #008f82;
+}
+
+/* КРУЖКИ СПРАВА */
+.store-actions {
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  margin-left: 10px;
+}
+
+.store-circle {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 50%;
+
+  background: #8db3b8;
+
+  color: #174d59;
+
+  font-size: 20px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.store-circle:hover {
+  background: #d2ebee;
+  color: #007f76;
+}
+
+
+
+.hero-title-background {
+  position: absolute;
+
+  right: 35px;
+  bottom: 48px;
+
+  max-width: 70%;
+
+  color: rgba(255, 255, 255, 0.07);
+
+  font-size: clamp(40px, 6vw, 88px);
+  font-weight: 900;
+
+  white-space: nowrap;
+
+  pointer-events: none;
+}
+
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+
+  width: 430px;
+  max-width: 50%;
+
+  padding-top: 170px;
+  margin-left: max(55px, calc((100vw - 1180px) / 2 + 20px));
+}
+
+.hero-sale {
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+}
+
+.hero-discount {
+  padding: 5px 8px;
+
+  border-radius: 4px;
+
+  background: #ff5c9a;
+
+  color: #fff;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.hero-price {
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+}
+
+.hero-price strong {
+  color: #fff;
+  font-size: 21px;
+}
+
+.hero-price del {
+  color: #829da2;
+  font-size: 13px;
+}
+
+.hero-date {
+  display: block;
+
+  margin-top: 8px;
+
+  color: #86a9af;
+  font-size: 11px;
+}
+
+.hero-content h1 {
+  margin: 18px 0 12px;
+
+  color: #fff;
+
+  font-size: 32px;
+  line-height: 1.15;
+}
+
+.hero-content p {
+  max-width: 420px;
+
+  margin: 0;
+
+  color: #b6ced2;
+
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+
+
+.hero-arrow {
+  position: absolute;
+
+  top: 58%;
+  z-index: 4;
+
+  transform: translateY(-50%);
+
+  width: 38px;
+  height: 60px;
+
+  border: none;
+  border-radius: 5px;
+
+  background: rgba(0, 24, 32, 0.72);
+
+  color: #fff;
+
+  font-size: 32px;
+
+  cursor: pointer;
+}
+
+.hero-arrow:hover {
+  background: rgba(0, 24, 32, 0.95);
+  color: #1de0c4;
+}
+
+.hero-arrow-left {
+  left: 18px;
+}
+
+.hero-arrow-right {
+  right: 18px;
+}
+
+
+.thumbnail-section {
+  width: min(1180px, calc(100% - 70px));
+
+  margin: 0 auto;
+
+  padding: 12px 0 4px;
+}
+
+.thumbnail-list {
+  display: grid;
+
+  grid-template-columns: repeat(10, 1fr);
+
+  gap: 8px;
+}
+
+.thumbnail {
+  width: 100%;
+  height: 54px;
+
+  padding: 0;
+
+  border: 2px solid transparent;
+  border-radius: 4px;
+
+  overflow: hidden;
+
+  background: #073b47;
+
+  cursor: pointer;
+}
+
+.thumbnail img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  opacity: 0.55;
+
+  transition: opacity 0.2s;
+}
+
+.thumbnail:hover img,
+.thumbnail.selected img {
+  opacity: 1;
+}
+
+.thumbnail.selected {
+  border-color: #1de0c4;
+}
+
+
+
+@media (max-width: 1000px) {
+  .hero-section {
+    height: 470px;
+  }
+
+  .store-panel {
+    width: calc(100% - 40px);
+  }
+
+  .hero-content {
+    margin-left: 40px;
+    padding-top: 160px;
+  }
+
+  .thumbnail-section {
+    width: calc(100% - 40px);
+  }
+
+  .thumbnail-list {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .hero-section {
+    height: 500px;
+  }
+
+  .store-panel {
+    width: calc(100% - 24px);
+    height: auto;
+
+    min-height: 52px;
+
+    flex-wrap: wrap;
+
+    padding: 7px;
+  }
+
+  .store-search {
+    width: 100%;
+    margin-right: 0;
+  }
+
+  .store-link {
+    height: 38px;
+  }
+
+  .store-actions {
+    margin-left: auto;
+  }
+
+  .hero-content {
+    width: 75%;
+    max-width: none;
+
+    margin-left: 25px;
+    padding-top: 180px;
+  }
+
+  .hero-content h1 {
+    font-size: 25px;
+  }
+
+  .thumbnail-section {
+    width: calc(100% - 24px);
+  }
+
+  .thumbnail-list {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .thumbnail {
+    height: 45px;
+  }
+}
+
+@media (max-width: 480px) {
+  .store-link {
+    padding: 0 8px;
+    font-size: 12px;
+  }
+
+  .store-circle {
+    width: 36px;
+    height: 36px;
+  }
+
+  .hero-content {
+    width: calc(100% - 50px);
+    max-width: none;
+  }
+}
