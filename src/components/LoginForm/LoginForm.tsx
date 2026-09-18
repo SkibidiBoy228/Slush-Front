@@ -43,7 +43,7 @@ function LoginForm() {
       storage.setItem("accessToken", response.accessToken);
       storage.setItem("refreshToken", response.refreshToken);
 
-      window.location.href = "/";
+      window.location.href = "/mainPage";
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
