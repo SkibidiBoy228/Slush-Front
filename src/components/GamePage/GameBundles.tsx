@@ -1,5 +1,7 @@
+import type { GameExtra } from "../../types/game";
+
 interface GameBundleProps {
-  bundles: unknown[];
+  bundles: GameExtra[];
 }
 
 function GameBundles({ bundles }: GameBundleProps) {
@@ -14,11 +16,22 @@ function GameBundles({ bundles }: GameBundleProps) {
       </div>
 
       <div className="bundles-list">
-        {bundles.map((_, index) => (
-          <article className="bundle-card" key={index}>
-            <div>
-              <h3>Комплект {index + 1}</h3>
-              <p></p>
+        {bundles.map((bundle) => (
+          <article className="bundle-card" key={bundle.id}>
+            <img
+              src={bundle.image}
+              alt={bundle.title}
+              className="bundle-image"
+            />
+
+            <div className="bundle-info">
+              <h3>{bundle.title}</h3>
+
+              <p>{bundle.description}</p>
+
+              <strong>
+                {bundle.price.toLocaleString("uk-UA")} ₴
+              </strong>
             </div>
 
             <button className="cart-button">

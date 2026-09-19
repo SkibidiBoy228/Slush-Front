@@ -1,5 +1,7 @@
+import type { GameExtra } from "../../types/game";
+
 interface GameDlcProps {
-  dlcs: unknown[];
+  dlcs: GameExtra[];
 }
 
 function GameDlc({ dlcs }: GameDlcProps) {
@@ -18,15 +20,23 @@ function GameDlc({ dlcs }: GameDlcProps) {
       </div>
 
       <div className="dlc-list">
-        {dlcs.map((_, index) => (
-          <div className="dlc-row" key={index}>
-            <div>
-              <strong>DLC #{index + 1}</strong>
-              <span>Додатковий контент</span>
+        {dlcs.map((dlc) => (
+          <article className="dlc-row" key={dlc.id}>
+            <img
+              src={dlc.image}
+              alt={dlc.title}
+              className="dlc-image"
+            />
+
+            <div className="dlc-info">
+              <strong>{dlc.title}</strong>
+              <span>{dlc.description}</span>
             </div>
 
-            <span className="dlc-price">Деталі</span>
-          </div>
+            <span className="dlc-price">
+              {dlc.price.toLocaleString("uk-UA")} ₴
+            </span>
+          </article>
         ))}
       </div>
     </section>

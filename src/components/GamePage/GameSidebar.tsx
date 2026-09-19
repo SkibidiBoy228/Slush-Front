@@ -11,24 +11,32 @@ function GameSideBar({ game }: GameSidebarProps) {
 
   return (
     <aside className="game-sidebar">
-      <div className="game-rating">
+    <div className="game-rating">
+    {game.averageRating > 0 ? (
+        <>
         <strong>{game.averageRating.toFixed(1)}</strong>
 
         <div className="rating-stars">
-          {Array.from({ length: 5 }).map((_, index) => (
+            {Array.from({ length: 5 }).map((_, index) => (
             <span
-              key={index}
-              className={
+                key={index}
+                className={
                 index < Math.round(game.averageRating)
-                  ? "filled"
-                  : ""
-              }
+                    ? "filled"
+                    : ""
+                }
             >
-              ★
+                ★
             </span>
-          ))}
+            ))}
         </div>
-      </div>
+        </>
+    ) : (
+        <span className="no-rating">
+        Немає оцінки
+        </span>
+    )}
+    </div>
 
       <img
         className="sidebar-cover"

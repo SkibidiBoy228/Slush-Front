@@ -455,73 +455,127 @@
   gap: 10px;
 }
 
+/* Bundle */
+
 .bundle-card {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 18px;
+  gap: 16px;
+  min-width: 0;
+  padding: 14px;
   border-radius: 8px;
   background: #073b47;
 }
 
+.bundle-image {
+  width: 130px;
+  height: 74px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  object-fit: cover;
+  background: #0d4b58;
+}
+
+.bundle-info {
+  flex: 1;
+  min-width: 0;
+}
+
 .bundle-card h3 {
-  margin: 0 0 8px;
+  margin: 0 0 7px;
   color: #fff;
   font-size: 15px;
 }
 
 .bundle-card p {
   max-width: 650px;
-  margin: 0;
+  margin: 0 0 7px;
   color: #91b0b7;
   font-size: 12px;
   line-height: 1.6;
+
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.bundle-price {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .bundle-card .cart-button {
+  flex-shrink: 0;
   padding: 0 18px;
   border: 1px solid #1de0c4;
   background: transparent;
   color: #1de0c4;
 }
 
+/* DLC */
+
 .more-link {
   border: none;
   background: transparent;
   color: #1de0c4;
   cursor: pointer;
+  font-size: 12px;
 }
 
 .dlc-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 16px;
+  gap: 14px;
+  min-width: 0;
+  padding: 12px;
   border-radius: 8px;
   background: #073b47;
 }
 
-.dlc-row div {
+.dlc-image {
+  width: 110px;
+  height: 62px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  object-fit: cover;
+  background: #0d4b58;
+}
+
+.dlc-info {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 5px;
 }
 
-.dlc-row strong {
+.dlc-info strong {
+  overflow: hidden;
   color: #fff;
   font-size: 13px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
-.dlc-row span {
+.dlc-info span {
+  overflow: hidden;
   color: #87a7ae;
   font-size: 11px;
+  line-height: 1.4;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .dlc-price {
+  flex-shrink: 0;
   color: #fff !important;
   font-size: 13px !important;
+  font-weight: 600;
 }
+
+/* Mobile */
 
 @media (max-width: 700px) {
   .game-main-image-wrapper {
@@ -548,5 +602,27 @@
   .bundle-card {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .bundle-image {
+    width: 100%;
+    height: 150px;
+  }
+
+  .bundle-card .cart-button {
+    width: 100%;
+  }
+
+  .dlc-row {
+    align-items: flex-start;
+  }
+
+  .dlc-image {
+    width: 90px;
+    height: 55px;
+  }
+
+  .dlc-info span {
+    white-space: normal;
   }
 }
