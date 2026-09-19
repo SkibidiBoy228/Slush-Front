@@ -16,6 +16,14 @@ export interface FriendPlaying{
 
 }
 
+export interface GameExtra{
+    id: string;
+    title: string;
+    description: string;
+    image: string;
+    price: number;
+}
+
 export interface GameDetails{
     id: string;
     title: string;
@@ -29,8 +37,8 @@ export interface GameDetails{
     oldPrice: number;
     discountPercent: number;
     tags: string[];
-    dLcs: unknown[];
-    bundles: unknown[];
+    dLcs: GameExtra[];
+    bundles: GameExtra[];
     averageRating: number;
     reviews: GameReview[];
     friendsPlaying: FriendPlaying[];
