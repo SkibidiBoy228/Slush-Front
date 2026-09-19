@@ -10,22 +10,9 @@ import GameCard, {
 
 import { getGames } from "../../api/games";
 import type { CatalogGame } from "../../types/catalog";
+import { formatPrice, USD_TO_UAH } from "../../utils/price";
 
 import "./Home.css";
-
-const USD_TO_UAH = 42;
-
-function formatPrice(price: number): string {
-  if (price <= 0) {
-    return "Безкоштовно";
-  }
-
-  const uahPrice = price * USD_TO_UAH;
-
-  return `${uahPrice.toLocaleString("uk-UA", {
-    maximumFractionDigits: 0,
-  })}₴`;
-}
 
 function convertGame(game: CatalogGame): Game {
   return {
@@ -49,8 +36,6 @@ function convertGame(game: CatalogGame): Game {
 
 function Home() {
   const [catalogGames, setCatalogGames] = useState<CatalogGame[]>([]);
-  const [games, setGames] = useState<Game[]>([]);
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -66,7 +51,6 @@ function Home() {
         });
 
         setCatalogGames(response.items);
-        setGames(response.items.map(convertGame));
       } catch (err) {
         setError(
           err instanceof Error
@@ -81,40 +65,36 @@ function Home() {
     loadGames();
   }, []);
 
-  /*
-   * Поки backend повертає один загальний каталог,
-   * розподіляємо ігри по секціях.
-   */
+  const specialOffers = catalogGames
+    .filter((game) => game.discountPercent > 0)
+    .slice(0, 3)
+    .map(convertGame);
 
-  const specialOffers = games
-    .filter((game) => game.discount)
-    .slice(0, 3);
+  const recommendedGames = catalogGames
+    .slice(0, 8)
+    .map(convertGame);
 
-  const recommendedGames = games.slice(0, 4);
+  const budgetGames = catalogGames
+    .filter(
+      (game) =>
+        game.price > 0 &&
+        game.price <= 100 / USD_TO_UAH
+    )
+    .slice(0, 8)
+    .map(convertGame);
 
-  const budgetGames = games
-    .filter((_, index) => {
-      const catalogGame = catalogGames[index];
+  const popularGames = catalogGames
+    .slice(0, 3)
+    .map(convertGame);
 
-      if (!catalogGame) {
-        return false;
-      }
+  const newReleases = catalogGames
+    .slice(3, 6)
+    .map(convertGame);
 
-      return catalogGame.price <= 100 / USD_TO_UAH;
-    })
-    .slice(0, 4);
-
-  const popularGames = games.slice(0, 3);
-
-  const newReleases = games.slice(3, 6);
-
-  const freeGames = games
-    .filter((_, index) => {
-      const catalogGame = catalogGames[index];
-
-      return catalogGame?.price <= 0;
-    })
-    .slice(0, 3);
+  const freeGames = catalogGames
+    .filter((game) => game.price <= 0)
+    .slice(0, 3)
+    .map(convertGame);
 
   return (
     <div className="home-page">
