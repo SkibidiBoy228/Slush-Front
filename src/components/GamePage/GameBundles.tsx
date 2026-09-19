@@ -1,10 +1,15 @@
 import type { GameExtra } from "../../types/game";
+import { formatPrice } from "../../utils/price";
 
 interface GameBundleProps {
   bundles: GameExtra[];
+  fallbackImage: string;
 }
 
-function GameBundles({ bundles }: GameBundleProps) {
+function GameBundles({
+  bundles,
+  fallbackImage,
+}: GameBundleProps) {
   if (!bundles.length) {
     return null;
   }
@@ -19,7 +24,7 @@ function GameBundles({ bundles }: GameBundleProps) {
         {bundles.map((bundle) => (
           <article className="bundle-card" key={bundle.id}>
             <img
-              src={bundle.image}
+              src={bundle.image || fallbackImage}
               alt={bundle.title}
               className="bundle-image"
             />
@@ -29,8 +34,8 @@ function GameBundles({ bundles }: GameBundleProps) {
 
               <p>{bundle.description}</p>
 
-              <strong>
-                {bundle.price.toLocaleString("uk-UA")} ₴
+              <strong className="bundle-price">
+                {formatPrice(bundle.price)}
               </strong>
             </div>
 

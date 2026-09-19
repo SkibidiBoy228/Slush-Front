@@ -1,4 +1,5 @@
 import type { GameExtra } from "../../types/game";
+import { formatPrice } from "../../utils/price";
 
 interface GameDlcProps {
   dlcs: GameExtra[];
@@ -30,11 +31,12 @@ function GameDlc({ dlcs }: GameDlcProps) {
 
             <div className="dlc-info">
               <strong>{dlc.title}</strong>
+
               <span>{dlc.description}</span>
             </div>
 
             <span className="dlc-price">
-              {dlc.price.toLocaleString("uk-UA")} ₴
+              {formatPrice(dlc.price)}
             </span>
           </article>
         ))}

@@ -135,7 +135,9 @@ function GamePage({ appId }: GamePageProps) {
               />
             </section>
 
-            <GameBundles bundles={game.bundles} />
+            <GameBundles bundles={game.bundles} 
+              fallbackImage={game.thumbnail}
+              />
 
             <GameDlc dlcs={game.dLcs} />
 
