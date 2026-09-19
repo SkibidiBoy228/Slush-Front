@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 import { getGames, getGameDetails } from "../../api/games";
 import type { CatalogGame } from "../../types/catalog";
 
+import { formatPrice} from "../../utils/price";
+
 import "./HeroSlider.css";
 
-const USD_TO_UAH = 42;
 
 interface HeroSlide {
   id: string;
@@ -17,17 +18,7 @@ interface HeroSlide {
   discount?: string;
 }
 
-function formatPrice(price: number): string {
-  if (price <= 0) {
-    return "Безкоштовно";
-  }
 
-  const uahPrice = price * USD_TO_UAH;
-
-  return `${uahPrice.toLocaleString("uk-UA", {
-    maximumFractionDigits: 0,
-  })}₴`;
-}
 
 function convertGameToSlide(game: CatalogGame): HeroSlide {
   return {

@@ -33,6 +33,7 @@ function GamePage({ appId }: GamePageProps) {
 
         const gameData = await getGameDetails(appId);
         setGame(gameData);
+        console.log("GAME DATA:", gameData);
       } catch (error) {
         if (error instanceof Error) {
           setError(error.message);
