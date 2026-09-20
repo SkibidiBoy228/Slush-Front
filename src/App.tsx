@@ -8,6 +8,7 @@ import Home from "./pages/Home/Home";
 import GamePage from "./pages/GamePage/GamePage";
 import CharacteristicsPage from "./pages/CharacteristicsPage/CharacteristicsPage";
 import DlcPage from "./pages/DlcPage/DlcPage";
+import Profile from "./pages/Profile/Profile";
 
 function App() {
   const pathParts = window.location.pathname
@@ -24,15 +25,16 @@ function App() {
     if (pathParts[2] === "dlc") {
       const dlcId = pathParts[3];
 
-      return (
-        <DlcPage
-          appId={appId}
-          dlcId={dlcId}
-        />
-      );
+      return <DlcPage appId={appId} dlcId={dlcId} />;
     }
 
     return <GamePage appId={appId} />;
+  }
+
+  if (pathParts[0] === "profile" && pathParts[1]) {
+    const username = decodeURIComponent(pathParts[1]);
+
+    return <Profile username={username} />;
   }
 
   if (pathParts[0] === "login") {
