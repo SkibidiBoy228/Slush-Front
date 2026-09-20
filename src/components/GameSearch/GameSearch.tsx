@@ -7,6 +7,25 @@ import { formatPrice } from "../../utils/price";
 
 import "./GameSearch.css";
 
+function normalizeSearchQuery(query: string): string {
+  const normalized = query
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, " ");
+
+  const aliases: Record<string, string> = {
+    "кс 2": "Counter-Strike 2",
+    "кс2": "Counter-Strike 2",
+    "cs 2": "Counter-Strike 2",
+    cs2: "Counter-Strike 2",
+    "дота 2": "Dota 2",
+    "дота2": "Dota 2",
+    dota2: "Dota 2",
+  };
+
+  return aliases[normalized] ?? query.trim();
+}
+
 function GameSearch() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<CatalogGame[]>([]);
@@ -14,33 +33,48 @@ function GameSearch() {
   const [isOpen, setIsOpen] = useState(false);
 
   const searchRef = useRef<HTMLDivElement>(null);
+  const requestIdRef = useRef(0);
 
   useEffect(() => {
-    const timeout = setTimeout(async () => {
-      const trimmedQuery = query.trim();
+    const trimmedQuery = query.trim();
 
-      if (trimmedQuery.length < 2) {
-        setResults([]);
-        setIsOpen(false);
-        return;
-      }
+    if (trimmedQuery.length < 2) {
+      setResults([]);
+      setIsOpen(false);
+      setLoading(false);
+      return;
+    }
+
+    const timeout = setTimeout(async () => {
+      const requestId = ++requestIdRef.current;
 
       try {
         setLoading(true);
 
         const response = await getGames({
-          query: trimmedQuery,
+          query: normalizeSearchQuery(trimmedQuery),
           page: 1,
-          pageSize: 8,
+          pageSize: 7,
         });
 
-        setResults(response.items);
+        if (requestId !== requestIdRef.current) {
+          return;
+        }
+
+        setResults(response.items.slice(0, 7));
         setIsOpen(true);
       } catch (error) {
+        if (requestId !== requestIdRef.current) {
+          return;
+        }
+
         console.error("Не вдалося виконати пошук:", error);
         setResults([]);
+        setIsOpen(true);
       } finally {
-        setLoading(false);
+        if (requestId === requestIdRef.current) {
+          setLoading(false);
+        }
       }
     }, 400);
 
@@ -65,11 +99,12 @@ function GameSearch() {
   }, []);
 
   function openGame(game: CatalogGame) {
-    window.location.href = `/game/${game.id}`;
+    setIsOpen(false);
+    window.location.href = `/game/${encodeURIComponent(game.id)}`;
   }
 
   function handleSearchSubmit() {
-    if (query.trim().length >= 2 && results.length > 0) {
+    if (results.length > 0) {
       openGame(results[0]);
     }
   }
@@ -92,10 +127,15 @@ function GameSearch() {
               if (event.key === "Enter") {
                 handleSearchSubmit();
               }
+
+              if (event.key === "Escape") {
+                setIsOpen(false);
+              }
             }}
           />
 
           <button
+            type="button"
             className="search-button"
             aria-label="Пошук"
             onClick={handleSearchSubmit}
@@ -121,7 +161,8 @@ function GameSearch() {
             {!loading &&
               results.map((game) => (
                 <button
-                  key={game.id}
+                  type="button"
+                  key={`${game.source}-${game.id}`}
                   className="search-result"
                   onClick={() => openGame(game)}
                 >
@@ -146,6 +187,7 @@ function GameSearch() {
       </div>
 
       <button
+        type="button"
         className="store-link"
         onClick={() => {
           window.location.href = "/catalog";
@@ -155,6 +197,7 @@ function GameSearch() {
       </button>
 
       <button
+        type="button"
         className="store-link"
         onClick={() => {
           window.location.href = "/news";
@@ -165,6 +208,7 @@ function GameSearch() {
 
       <div className="store-actions">
         <button
+          type="button"
           className="store-circle"
           aria-label="Обране"
           onClick={() => {
@@ -175,6 +219,7 @@ function GameSearch() {
         </button>
 
         <button
+          type="button"
           className="store-circle"
           aria-label="Кошик"
           onClick={() => {
