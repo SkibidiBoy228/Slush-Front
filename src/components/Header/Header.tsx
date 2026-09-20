@@ -1,42 +1,43 @@
 import { useEffect, useState } from "react";
-
 import "./Header.css";
 
 const Header = () => {
   const [isAuthorized, setIsAuthorized] = useState(false);
 
-  const isHomePage =
-    window.location.pathname === "/" ||
-    window.location.pathname === "/mainPage";
+  const path = window.location.pathname;
+
+  const isAuthPage =
+    path === "/login" ||
+    path === "/register" ||
+    path === "/forgot-password" ||
+    path === "/reset-password" ||
+    path === "/verify-email";
 
   useEffect(() => {
-    const path = window.location.pathname;
+    const authPages = [
+      "/login",
+      "/register",
+      "/forgot-password",
+      "/reset-password",
+      "/verify-email",
+    ];
 
-    const isAuthPage =
-      path === "/login" ||
-      path === "/register" ||
-      path === "/forgot-password" ||
-      path === "/reset-password" ||
-      path === "/verify-email";
+    const isAuthPage = authPages.includes(window.location.pathname);
 
     if (isAuthPage) {
       setIsAuthorized(false);
       return;
     }
 
-    const accessToken =
-      localStorage.getItem("accessToken") ||
-      sessionStorage.getItem("accessToken");
+    const token =
+      localStorage.getItem("token") ||
+      sessionStorage.getItem("token");
 
-    setIsAuthorized(Boolean(accessToken));
+    setIsAuthorized(Boolean(token));
   }, []);
 
   return (
-    <header
-      className={`header ${
-        isHomePage ? "header-home" : ""
-      }`}
-    >
+    <header className={`header ${isAuthPage ? "header-auth" : "header-wide"}`}>
       <div className="header-container">
         <a href="/" className="logo">
           SLUSH
@@ -44,42 +45,19 @@ const Header = () => {
 
         <nav className="navigation">
           <a href="/mainPage">Крамниця</a>
-          <a href="/library">Бібліотека</a>
-          <a href="/chat">Чат</a>
+          <a href="/news">Новини</a>
+          <a href="/about">Про нас</a>
         </nav>
 
         {!isAuthorized ? (
-          <a
-            href="/login"
-            className="header-login-button"
-          >
+          <a href="/login" className="header-login-button">
             Увійти
           </a>
         ) : (
           <div className="header-actions">
-            <button
-              className="header-icon-button"
-              aria-label="Уведомления"
-              title="Уведомления"
-            >
-              🔔
-            </button>
-
-            <button
-              className="header-icon-button"
-              aria-label="Настройки"
-              title="Настройки"
-            >
-              ⚙
-            </button>
-
-            <button
-              className="header-avatar"
-              aria-label="Профиль"
-              title="Профиль"
-            >
-              👤
-            </button>
+            <button type="button">♡</button>
+            <button type="button">🛒</button>
+            <button type="button">Профіль</button>
           </div>
         )}
       </div>
