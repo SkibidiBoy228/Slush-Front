@@ -24,6 +24,11 @@ export interface GameExtra{
     price: number;
 }
 
+export interface PcRequirements {
+  minimum: string;
+  recommended: string;
+}
+
 export interface GameDetails{
     id: string;
     title: string;
@@ -39,6 +44,7 @@ export interface GameDetails{
     tags: string[];
     dLcs: GameExtra[];
     bundles: GameExtra[];
+    pcRequirements: PcRequirements;
     averageRating: number;
     reviews: GameReview[];
     friendsPlaying: FriendPlaying[];
