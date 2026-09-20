@@ -173,6 +173,25 @@
   color: #ff8fb8;
 }
 
+.game-page-search {
+  position: relative;
+
+  min-height: 54px;
+  margin-bottom: 25px;
+}
+
+.game-page-search .store-panel {
+  position: static;
+
+  width: 100%;
+  height: 54px;
+
+  transform: none;
+
+  box-sizing: border-box;
+}
+
+
 @media (max-width: 900px) {
   .game-layout {
     grid-template-columns: minmax(0, 1fr);

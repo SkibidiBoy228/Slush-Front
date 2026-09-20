@@ -92,7 +92,9 @@ function GamePage({ appId }: GamePageProps) {
 
       <main className="game-page-content">
 
+          <div className="game-page-search">
           <GameSearch />
+        </div>
 
         <nav className="game-tabs">
           <button className="active">Про гру</button>
