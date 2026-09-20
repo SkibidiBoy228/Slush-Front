@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { getGames, getGameDetails } from "../../api/games";
 import type { CatalogGame } from "../../types/catalog";
+import type { GameDetails } from "../../types/game";
 
 import { formatPrice } from "../../utils/price";
 
@@ -19,20 +20,32 @@ interface HeroSlide {
   discount?: string;
 }
 
-function convertGameToSlide(game: CatalogGame): HeroSlide {
+function convertGameToSlide(
+  game: CatalogGame,
+  details?: GameDetails
+): HeroSlide {
+  const price = details?.price ?? game.price;
+  const oldPrice = details?.oldPrice ?? game.oldPrice;
+  const discountPercent =
+    details?.discountPercent ?? game.discountPercent;
+
   return {
     id: game.id,
-    title: game.title,
-    description: "",
-    image: game.thumbnail,
-    price: formatPrice(game.price),
+    title: details?.title || game.title,
+    description: details?.description
+      ? details.description.replace(/<[^>]*>/g, "")
+      : "",
+    image: details?.thumbnail || game.thumbnail,
+    price: formatPrice(price),
+
     oldPrice:
-      game.oldPrice > game.price && game.price > 0
-        ? formatPrice(game.oldPrice)
+      oldPrice > price && price > 0
+        ? formatPrice(oldPrice)
         : undefined,
+
     discount:
-      game.discountPercent > 0
-        ? `-${game.discountPercent}%`
+      discountPercent > 0
+        ? `-${discountPercent}%`
         : undefined,
   };
 }
@@ -43,56 +56,72 @@ function HeroSlider() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isCancelled = false;
+
     async function loadSlides() {
       try {
+        setLoading(true);
+
         const response = await getGames({
           page: 1,
           pageSize: 10,
         });
 
-        const slides = response.items.map(convertGameToSlide);
+        const paidGames = response.items.filter(
+          (game) => game.price > 0
+        );
 
-        setHeroSlides(slides);
+        const slidesWithDetails = await Promise.all(
+          paidGames.map(async (game) => {
+            try {
+              const details = await getGameDetails(game.id);
+
+              // Дополнительная защита от бесплатных игр
+              if (details.price <= 0) {
+                return null;
+              }
+
+              return convertGameToSlide(game, details);
+            } catch (error) {
+              console.error(
+                `Не вдалося завантажити дані гри ${game.id}:`,
+                error
+              );
+
+              // Если детали не загрузились, используем данные каталога
+              return game.price > 0
+                ? convertGameToSlide(game)
+                : null;
+            }
+          })
+        );
+
+        const validSlides = slidesWithDetails.filter(
+          (slide): slide is HeroSlide => slide !== null
+        );
+
+        if (!isCancelled) {
+          setHeroSlides(validSlides);
+          setActiveSlide(0);
+        }
       } catch (error) {
-        console.error("Не вдалося завантажити слайдер:", error);
+        console.error(
+          "Не вдалося завантажити слайдер:",
+          error
+        );
       } finally {
-        setLoading(false);
+        if (!isCancelled) {
+          setLoading(false);
+        }
       }
     }
 
     loadSlides();
+
+    return () => {
+      isCancelled = true;
+    };
   }, []);
-
-  const activeGame = heroSlides[activeSlide];
-
-  useEffect(() => {
-    if (!activeGame) {
-      return;
-    }
-
-    async function loadDescription() {
-      try {
-        const details = await getGameDetails(activeGame.id);
-
-        setHeroSlides((currentSlides) =>
-          currentSlides.map((slide) =>
-            slide.id === activeGame.id
-              ? {
-                  ...slide,
-                  description: details.description
-                    ? details.description.replace(/<[^>]*>/g, "")
-                    : "",
-                }
-              : slide
-          )
-        );
-      } catch (error) {
-        console.error("Не вдалося завантажити опис гри:", error);
-      }
-    }
-
-    loadDescription();
-  }, [activeGame?.id]);
 
   if (loading) {
     return (
@@ -146,12 +175,12 @@ function HeroSlider() {
         <div className="hero-dark-overlay" />
 
         <div
-        className="hero-search-container"
-        onClick={(event) => event.stopPropagation()}
-        onKeyDown={(event) => event.stopPropagation()}
-      >
-        <GameSearch />
-      </div>
+          className="hero-search-container"
+          onClick={(event) => event.stopPropagation()}
+          onKeyDown={(event) => event.stopPropagation()}
+        >
+          <GameSearch />
+        </div>
 
         <div className="hero-title-background">
           {slide.title}
