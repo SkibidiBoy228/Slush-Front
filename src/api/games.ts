@@ -69,43 +69,54 @@ export async function getGameDetails(
     );
   }
 
-    return {
+  return {
     ...data,
 
+    pcRequirements:
+      data.pcRequirements ??
+      data.PcRequirements ??
+      undefined,
+
     dLcs:
-        data.dLcs ??
-        data.dlCs ??
-        data.DLCs ??
-        [],
+      data.dLcs ??
+      data.dlCs ??
+      data.DLCs ??
+      data.dlcs ??
+      [],
 
     bundles:
-        data.bundles ??
-        data.Bundles ??
-        [],
+      data.bundles ??
+      data.Bundles ??
+      [],
 
     screenshots:
-        data.screenshots ??
-        data.Screenshots ??
-        [],
+      data.screenshots ??
+      data.Screenshots ??
+      [],
 
     reviews:
-        data.reviews ??
-        data.Reviews ??
-        [],
+      data.reviews ??
+      data.Reviews ??
+      [],
 
     friendsPlaying:
-        data.friendsPlaying ??
-        data.FriendsPlaying ??
-        [],
+      data.friendsPlaying ??
+      data.FriendsPlaying ??
+      [],
+
+    tags:
+      data.tags ??
+      data.Tags ??
+      [],
 
     isInWishlist:
-        data.isInWishlist ??
-        data.IsInWishlist ??
-        false,
+      data.isInWishlist ??
+      data.IsInWishlist ??
+      false,
 
     isInCart:
-        data.isInCart ??
-        data.IsInCart ??
-        false,
-    };
+      data.isInCart ??
+      data.IsInCart ??
+      false,
+  };
 }

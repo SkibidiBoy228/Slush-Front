@@ -4,42 +4,61 @@ import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword/ResetPassword";
 import VerifyEmail from "./pages/VerifyEmail/VerifyEmail";
 import Home from "./pages/Home/Home";
+
 import GamePage from "./pages/GamePage/GamePage";
+import CharacteristicsPage from "./pages/CharacteristicsPage/CharacteristicsPage";
+import DlcPage from "./pages/DlcPage/DlcPage";
 
 function App() {
-  const path = window.location.pathname;
+  const pathParts = window.location.pathname
+    .split("/")
+    .filter(Boolean);
 
-  if (path.startsWith("/game/")) {
-    const appId = path
-      .split("/")[2]
-      ?.trim();
+  if (pathParts[0] === "game" && pathParts[1]) {
+    const appId = pathParts[1];
 
-    if (appId) {
-      return <GamePage appId={appId} />;
+    if (pathParts[2] === "characteristics") {
+      return <CharacteristicsPage appId={appId} />;
     }
+
+    if (pathParts[2] === "dlc") {
+      const dlcId = pathParts[3];
+
+      return (
+        <DlcPage
+          appId={appId}
+          dlcId={dlcId}
+        />
+      );
+    }
+
+    return <GamePage appId={appId} />;
   }
 
-  if (path === "/login") {
+  if (pathParts[0] === "login") {
     return <LoginPage />;
   }
 
-  if (path === "/register") {
+  if (pathParts[0] === "register") {
     return <Register />;
   }
 
-  if (path === "/forgot-password") {
+  if (pathParts[0] === "forgot-password") {
     return <ForgotPassword />;
   }
 
-  if (path === "/reset-password") {
+  if (pathParts[0] === "reset-password") {
     return <ResetPassword />;
   }
 
-  if (path === "/verify-email") {
+  if (pathParts[0] === "verify-email") {
     return <VerifyEmail />;
   }
 
-  if (path === "/mainPage" || path === "/") {
+  if (
+    window.location.pathname === "/" ||
+    window.location.pathname === "/mainPage"
+  ) {
     return <Home />;
   }
 

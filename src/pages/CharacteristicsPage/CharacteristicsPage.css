@@ -1,0 +1,98 @@
+.game-characteristics {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.platform-selector {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  width: 323px;
+  height: 42px;
+  padding: 0 16px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #126b7c;
+  border-radius: 10px;
+
+  background: #073b47;
+  color: #fff;
+
+  font-size: 13px;
+}
+
+.platform-icon {
+  font-size: 16px;
+}
+
+.platform-arrow {
+  margin-left: auto;
+  font-size: 18px;
+}
+
+.requirements-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 42px;
+
+  margin-top: 25px;
+}
+
+.requirements-column {
+  min-width: 0;
+}
+
+.requirements-column h2 {
+  margin: 0 0 18px;
+
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.requirements-content {
+  color: #c0d2d6;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.requirements-content p {
+  margin: 0 0 13px;
+}
+
+.requirements-content strong,
+.requirements-content b {
+  color: #fff;
+  font-weight: 700;
+}
+
+.requirements-content br {
+  line-height: 1.5;
+}
+
+.requirements-content ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.requirements-content li {
+  margin-bottom: 8px;
+}
+
+.empty-requirements {
+  color: #85a5ac;
+  font-size: 12px;
+}
+
+@media (max-width: 700px) {
+  .platform-selector {
+    width: 100%;
+  }
+
+  .requirements-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+}
