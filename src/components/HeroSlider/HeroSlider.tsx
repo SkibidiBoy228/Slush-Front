@@ -3,10 +3,11 @@ import { useEffect, useState } from "react";
 import { getGames, getGameDetails } from "../../api/games";
 import type { CatalogGame } from "../../types/catalog";
 
-import { formatPrice} from "../../utils/price";
+import { formatPrice } from "../../utils/price";
+
+import GameSearch from "../GameSearch/GameSearch";
 
 import "./HeroSlider.css";
-
 
 interface HeroSlide {
   id: string;
@@ -17,8 +18,6 @@ interface HeroSlide {
   oldPrice?: string;
   discount?: string;
 }
-
-
 
 function convertGameToSlide(game: CatalogGame): HeroSlide {
   return {
@@ -88,10 +87,7 @@ function HeroSlider() {
           )
         );
       } catch (error) {
-        console.error(
-          "Не вдалося завантажити опис гри:",
-          error
-        );
+        console.error("Не вдалося завантажити опис гри:", error);
       }
     }
 
@@ -149,48 +145,7 @@ function HeroSlider() {
 
         <div className="hero-dark-overlay" />
 
-        <div
-          className="store-panel"
-          onClick={(event) => event.stopPropagation()}
-        >
-          <div className="store-search">
-            <input
-              type="text"
-              placeholder="Пошук у Крамниці..."
-            />
-
-            <button
-              className="search-button"
-              aria-label="Пошук"
-            >
-              ⌕
-            </button>
-          </div>
-
-          <button className="store-link">
-            Каталог
-          </button>
-
-          <button className="store-link">
-            Новини
-          </button>
-
-          <div className="store-actions">
-            <button
-              className="store-circle"
-              aria-label="Обране"
-            >
-              ♡
-            </button>
-
-            <button
-              className="store-circle"
-              aria-label="Кошик"
-            >
-              🛒
-            </button>
-          </div>
-        </div>
+        <GameSearch />
 
         <div className="hero-title-background">
           {slide.title}
@@ -243,10 +198,7 @@ function HeroSlider() {
         </button>
       </div>
 
-      <div
-        className="thumbnail-section"
-        onClick={(event) => event.stopPropagation()}
-      >
+      <div className="thumbnail-section">
         <div className="thumbnail-list">
           {heroSlides.map((item, index) => (
             <button
