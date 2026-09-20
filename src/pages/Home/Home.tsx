@@ -8,38 +8,51 @@ import GameCard, {
   type Game,
 } from "../../components/GameCard/GameCard";
 
-import { getGames } from "../../api/games";
+import { getGames, getGameDetails } from "../../api/games";
 import type { CatalogGame } from "../../types/catalog";
+import type { GameDetails } from "../../types/game";
 import { formatPrice, USD_TO_UAH } from "../../utils/price";
 
 import "./Home.css";
 
-function convertGame(game: CatalogGame): Game {
+type ActualGame = CatalogGame & {
+  details: GameDetails;
+};
+
+function convertGame(game: ActualGame): Game {
+  const details = game.details;
+
+  const price = details.price;
+  const oldPrice = details.oldPrice;
+  const discountPercent = details.discountPercent;
+
   return {
     id: game.id,
-    title: game.title,
-    image: game.thumbnail,
+    title: details.title || game.title,
+    image: details.thumbnail || game.thumbnail,
 
-    price: formatPrice(game.price),
+    price: formatPrice(price),
 
     oldPrice:
-      game.oldPrice > game.price && game.price > 0
-        ? formatPrice(game.oldPrice)
+      oldPrice > price && price > 0
+        ? formatPrice(oldPrice)
         : undefined,
 
     discount:
-      game.discountPercent > 0
-        ? `-${game.discountPercent}%`
+      discountPercent > 0
+        ? `-${discountPercent}%`
         : undefined,
   };
 }
 
 function Home() {
-  const [catalogGames, setCatalogGames] = useState<CatalogGame[]>([]);
+  const [catalogGames, setCatalogGames] = useState<ActualGame[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
+    let isCancelled = false;
+
     async function loadGames() {
       try {
         setLoading(true);
@@ -50,49 +63,90 @@ function Home() {
           pageSize: 50,
         });
 
-        setCatalogGames(response.items);
-      } catch (err) {
-        setError(
-          err instanceof Error
-            ? err.message
-            : "Не вдалося завантажити ігри"
+        const actualGames = await Promise.all(
+          response.items.map(async (game) => {
+            try {
+              const details = await getGameDetails(game.id);
+
+              return {
+                ...game,
+                details,
+              };
+            } catch (error) {
+              console.error(
+                `Не вдалося завантажити дані гри ${game.id}:`,
+                error
+              );
+
+              return null;
+            }
+          })
         );
+
+        const validGames = actualGames.filter(
+          (game): game is ActualGame => game !== null
+        );
+
+        if (!isCancelled) {
+          setCatalogGames(validGames);
+        }
+      } catch (err) {
+        if (!isCancelled) {
+          setError(
+            err instanceof Error
+              ? err.message
+              : "Не вдалося завантажити ігри"
+          );
+        }
       } finally {
-        setLoading(false);
+        if (!isCancelled) {
+          setLoading(false);
+        }
       }
     }
 
     loadGames();
+
+    return () => {
+      isCancelled = true;
+    };
   }, []);
 
   const specialOffers = catalogGames
-    .filter((game) => game.discountPercent > 0)
+    .filter(
+      (game) =>
+        game.details.price > 0 &&
+        game.details.discountPercent > 0
+    )
     .slice(0, 3)
     .map(convertGame);
 
   const recommendedGames = catalogGames
+    .filter((game) => game.details.price > 0)
     .slice(0, 8)
     .map(convertGame);
 
   const budgetGames = catalogGames
     .filter(
       (game) =>
-        game.price > 0 &&
-        game.price <= 100 / USD_TO_UAH
+        game.details.price > 0 &&
+        game.details.price <= 100 / USD_TO_UAH
     )
     .slice(0, 8)
     .map(convertGame);
 
   const popularGames = catalogGames
+    .filter((game) => game.details.price > 0)
     .slice(0, 3)
     .map(convertGame);
 
   const newReleases = catalogGames
+    .filter((game) => game.details.price > 0)
     .slice(3, 6)
     .map(convertGame);
 
   const freeGames = catalogGames
-    .filter((game) => game.price <= 0)
+    .filter((game) => game.details.price <= 0)
     .slice(0, 3)
     .map(convertGame);
 
