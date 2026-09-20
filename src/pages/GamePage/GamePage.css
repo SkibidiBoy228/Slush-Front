@@ -175,6 +175,7 @@
 
 .game-page-search {
   position: relative;
+  z-index: 10;
 
   min-height: 54px;
   margin-bottom: 25px;
@@ -189,6 +190,10 @@
   transform: none;
 
   box-sizing: border-box;
+}
+
+.game-page-search .search-results {
+  max-height: min(520px, calc(100vh - 180px));
 }
 
 

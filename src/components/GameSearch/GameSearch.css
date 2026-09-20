@@ -4,34 +4,35 @@
   left: 50%;
   z-index: 5;
 
-  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
 
   width: min(1180px, calc(100% - 70px));
   height: 54px;
 
-  display: flex;
-  align-items: center;
-
   padding: 0 8px 0 9px;
   box-sizing: border-box;
 
-  border-radius: 30px;
+  transform: translateX(-50%);
 
+  border-radius: 30px;
   background: rgba(190, 221, 226, 0.96);
 }
 
 .store-search-wrapper {
   position: relative;
+  z-index: 1001;
+
   width: 480px;
   flex-shrink: 0;
 }
 
 .store-search {
-  height: 40px;
-  width: 100%;
-
   display: flex;
   align-items: center;
+
+  width: 100%;
+  height: 40px;
 
   overflow: hidden;
   border-radius: 30px;
@@ -82,27 +83,54 @@
   color: #1de0c4;
 }
 
+/* ВЫПАДАЮЩИЙ СПИСОК ПОИСКА */
+
 .search-results {
   position: absolute;
   top: 48px;
   left: 0;
   right: 0;
-  z-index: 20;
+  z-index: 1000;
 
-  overflow: hidden;
+  max-height: min(520px, calc(100vh - 140px));
+
+  overflow-x: hidden;
+  overflow-y: auto;
 
   border-radius: 14px;
 
   background: #073b47;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+
+  overscroll-behavior: contain;
+
+  scrollbar-width: thin;
+  scrollbar-color: #6d9da5 #073b47;
+}
+
+.search-results::-webkit-scrollbar {
+  width: 7px;
+}
+
+.search-results::-webkit-scrollbar-track {
+  background: #073b47;
+  border-radius: 14px;
+}
+
+.search-results::-webkit-scrollbar-thumb {
+  background: #6d9da5;
+  border-radius: 14px;
+}
+
+.search-results::-webkit-scrollbar-thumb:hover {
+  background: #8db3b8;
 }
 
 .search-result {
-  width: 100%;
-
   display: flex;
   align-items: center;
 
+  width: 100%;
   gap: 12px;
 
   padding: 9px 12px;
@@ -137,11 +165,11 @@
 }
 
 .search-result-info {
-  min-width: 0;
-
   display: flex;
   flex-direction: column;
   gap: 4px;
+
+  min-width: 0;
 }
 
 .search-result-info strong {
@@ -169,7 +197,7 @@
   text-align: center;
 }
 
-/* КАТАЛОГ И НОВИНИ */
+/* КАТАЛОГ И НОВОСТИ */
 
 .store-link {
   height: 100%;
@@ -197,24 +225,23 @@
   color: #008f82;
 }
 
-/* КНОПКИ ИЗБРАННОГО И КОРЗИНЫ */
+/* ИЗБРАННОЕ И КОРЗИНА */
 
 .store-actions {
   display: flex;
   align-items: center;
-
   gap: 9px;
 
   margin-left: 10px;
 }
 
 .store-circle {
-  width: 40px;
-  height: 40px;
-
   display: flex;
   align-items: center;
   justify-content: center;
+
+  width: 40px;
+  height: 40px;
 
   padding: 0;
 
@@ -236,6 +263,8 @@
   color: #007f76;
 }
 
+/* АДАПТИВНОСТЬ */
+
 @media (max-width: 1000px) {
   .store-panel {
     width: calc(100% - 40px);
@@ -250,7 +279,6 @@
   .store-panel {
     width: calc(100% - 24px);
     height: auto;
-
     min-height: 52px;
 
     flex-wrap: wrap;
@@ -268,6 +296,10 @@
 
   .store-actions {
     margin-left: auto;
+  }
+
+  .search-results {
+    max-height: calc(100vh - 180px);
   }
 }
 
