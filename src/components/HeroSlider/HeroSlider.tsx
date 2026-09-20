@@ -145,7 +145,13 @@ function HeroSlider() {
 
         <div className="hero-dark-overlay" />
 
+        <div
+        className="hero-search-container"
+        onClick={(event) => event.stopPropagation()}
+        onKeyDown={(event) => event.stopPropagation()}
+      >
         <GameSearch />
+      </div>
 
         <div className="hero-title-background">
           {slide.title}
