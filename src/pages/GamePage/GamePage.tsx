@@ -4,6 +4,8 @@ import DOMPurify from "dompurify";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 
+import GameSearch from "../../components/GameSearch/GameSearch";
+
 import GameGallery from "../../components/GamePage/GameGallery";
 import GameSidebar from "../../components/GamePage/GameSidebar";
 import GameReviews from "../../components/GamePage/GameReviews";
@@ -33,6 +35,7 @@ function GamePage({ appId }: GamePageProps) {
 
         const gameData = await getGameDetails(appId);
         setGame(gameData);
+
         console.log("GAME DATA:", gameData);
       } catch (error) {
         if (error instanceof Error) {
@@ -89,21 +92,7 @@ function GamePage({ appId }: GamePageProps) {
 
       <main className="game-page-content">
         <div className="game-page-topbar">
-          <div className="game-search">
-            <input
-              type="text"
-              placeholder="Пошук у Крамниці..."
-            />
-            <span>⌕</span>
-          </div>
-
-          <nav className="game-store-navigation">
-            <a href="/mainPage">Каталог</a>
-            <a href="/news">Новини</a>
-
-            <button aria-label="Обране">♡</button>
-            <button aria-label="Кошик">🛒</button>
-          </nav>
+          <GameSearch />
         </div>
 
         <nav className="game-tabs">
@@ -135,9 +124,10 @@ function GamePage({ appId }: GamePageProps) {
               />
             </section>
 
-            <GameBundles bundles={game.bundles} 
+            <GameBundles
+              bundles={game.bundles}
               fallbackImage={game.thumbnail}
-              />
+            />
 
             <GameDlc dlcs={game.dLcs} />
 

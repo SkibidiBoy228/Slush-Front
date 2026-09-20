@@ -64,23 +64,6 @@
   font-size: 23px;
 }
 
-.game-store-navigation {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.game-store-navigation a,
-.game-store-navigation button {
-  border: none;
-  background: transparent;
-  color: #174d59;
-  font-family: inherit;
-  font-size: 12px;
-  text-decoration: none;
-  cursor: pointer;
-}
-
 .game-store-navigation button {
   display: flex;
   align-items: center;
