@@ -1,6 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ChangeEvent } from "react";
+
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
+
 import {
   getProfileComments,
   getProfileGames,
@@ -10,7 +12,10 @@ import {
   getProfileScreenshots,
   getProfileVideos,
   getUserProfile,
+  uploadAvatar,
+  uploadBanner,
 } from "../../api/profile";
+
 import type {
   UserProfile,
   ProfileComment,
@@ -21,6 +26,7 @@ import type {
   ProfileScreenshot,
   ProfileVideo,
 } from "../../types/profile";
+
 import "./Profile.css";
 
 interface ProfileProps {
@@ -48,6 +54,10 @@ const Profile = ({ username }: ProfileProps) => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
 
   useEffect(() => {
     let isCancelled = false;
@@ -124,13 +134,102 @@ const Profile = ({ username }: ProfileProps) => {
     );
   }, [profile]);
 
+    const handleAvatarUpload = async (
+    event: ChangeEvent<HTMLInputElement>
+    ) => {
+    const file = event.target.files?.[0];
+
+    if (!file || !profile) {
+        return;
+    }
+
+    try {
+        setIsUploading(true);
+        setUploadError("");
+
+        const response = await uploadAvatar(file);
+        const avatarUrl = response.url;
+
+        setProfile((previousProfile) =>
+        previousProfile
+            ? {
+                ...previousProfile,
+                avatarUrl,
+            }
+            : previousProfile
+        );
+
+        setIsEditModalOpen(false);
+    } catch (uploadRequestError) {
+        setUploadError(
+        uploadRequestError instanceof Error
+            ? uploadRequestError.message
+            : "Не вдалося завантажити аватарку"
+        );
+    } finally {
+        setIsUploading(false);
+        event.target.value = "";
+    }
+    };
+
+  const handleBannerUpload = async (
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+
+    if (!file || !profile) {
+      return;
+    }
+
+    try {
+      setIsUploading(true);
+      setUploadError("");
+
+      const response = await uploadBanner(file);
+      const coverUrl = response.url;
+
+      setProfile((previousProfile) =>
+        previousProfile
+          ? {
+              ...previousProfile,
+              coverUrl,
+            }
+          : previousProfile
+      );
+
+      setIsEditModalOpen(false);
+    } catch (uploadRequestError) {
+      setUploadError(
+        uploadRequestError instanceof Error
+          ? uploadRequestError.message
+          : "Не вдалося завантажити банер"
+      );
+    } finally {
+      setIsUploading(false);
+      event.target.value = "";
+    }
+  };
+
+  const closeEditModal = () => {
+    if (isUploading) {
+      return;
+    }
+
+    setIsEditModalOpen(false);
+    setUploadError("");
+  };
+
   if (isLoading) {
     return (
       <div className="profile-page">
         <Header />
+
         <main className="profile-container">
-          <div className="profile-message">Завантаження профілю...</div>
+          <div className="profile-message">
+            Завантаження профілю...
+          </div>
         </main>
+
         <Footer />
       </div>
     );
@@ -140,11 +239,13 @@ const Profile = ({ username }: ProfileProps) => {
     return (
       <div className="profile-page">
         <Header />
+
         <main className="profile-container">
           <div className="profile-message profile-error">
             {error || "Профіль не знайдено"}
           </div>
         </main>
+
         <Footer />
       </div>
     );
@@ -159,7 +260,9 @@ const Profile = ({ username }: ProfileProps) => {
           <div
             className="profile-cover"
             style={{
-              backgroundImage: `url("${profile.coverUrl}")`,
+              backgroundImage: profile.coverUrl
+                ? `url("${profile.coverUrl}")`
+                : undefined,
             }}
           />
 
@@ -180,7 +283,14 @@ const Profile = ({ username }: ProfileProps) => {
               <p>{profile.bio}</p>
             </div>
 
-            <button className="profile-edit-button" type="button">
+            <button
+              className="profile-edit-button"
+              type="button"
+              onClick={() => {
+                setUploadError("");
+                setIsEditModalOpen(true);
+              }}
+            >
               Редагувати профіль
             </button>
           </div>
@@ -236,6 +346,7 @@ const Profile = ({ username }: ProfileProps) => {
                 {games.map((game) => (
                   <article className="game-card" key={game.id}>
                     <img src={game.imageUrl} alt={game.title} />
+
                     <div className="game-card-info">
                       <h3>{game.title}</h3>
                       <span>{formatPrice(game.price)}</span>
@@ -245,7 +356,9 @@ const Profile = ({ username }: ProfileProps) => {
               </div>
 
               {!games.length && (
-                <p className="empty-section">Ігор поки немає</p>
+                <p className="empty-section">
+                  Ігор поки немає
+                </p>
               )}
             </section>
 
@@ -262,6 +375,7 @@ const Profile = ({ username }: ProfileProps) => {
                       src={post.authorAvatarUrl}
                       alt={post.authorUsername}
                     />
+
                     <div>
                       <strong>{post.authorUsername}</strong>
                       <small>{post.createdAt}</small>
@@ -287,7 +401,9 @@ const Profile = ({ username }: ProfileProps) => {
               ))}
 
               {!posts.length && (
-                <p className="empty-section">Обговорень поки немає</p>
+                <p className="empty-section">
+                  Обговорень поки немає
+                </p>
               )}
             </section>
 
@@ -299,15 +415,24 @@ const Profile = ({ username }: ProfileProps) => {
 
               <div className="media-grid">
                 {screenshots.map((screenshot) => (
-                  <article className="media-card" key={screenshot.id}>
-                    <img src={screenshot.imageUrl} alt={screenshot.gameTitle} />
+                  <article
+                    className="media-card"
+                    key={screenshot.id}
+                  >
+                    <img
+                      src={screenshot.imageUrl}
+                      alt={screenshot.gameTitle}
+                    />
+
                     <span>{screenshot.gameTitle}</span>
                   </article>
                 ))}
               </div>
 
               {!screenshots.length && (
-                <p className="empty-section">Скриншотів поки немає</p>
+                <p className="empty-section">
+                  Скриншотів поки немає
+                </p>
               )}
             </section>
 
@@ -326,14 +451,20 @@ const Profile = ({ username }: ProfileProps) => {
                     target="_blank"
                     rel="noreferrer"
                   >
-                    <img src={video.thumbnailUrl} alt={video.title} />
+                    <img
+                      src={video.thumbnailUrl}
+                      alt={video.title}
+                    />
+
                     <span>{video.title}</span>
                   </a>
                 ))}
               </div>
 
               {!videos.length && (
-                <p className="empty-section">Відео поки немає</p>
+                <p className="empty-section">
+                  Відео поки немає
+                </p>
               )}
             </section>
 
@@ -344,16 +475,29 @@ const Profile = ({ username }: ProfileProps) => {
               </div>
 
               {reviews.map((review, index) => (
-                <article className="review-card" key={`${review.gameId}-${index}`}>
+                <article
+                  className="review-card"
+                  key={`${review.gameId}-${index}`}
+                >
                   {review.gameBannerUrl && (
-                    <img src={review.gameBannerUrl} alt={review.gameTitle} />
+                    <img
+                      src={review.gameBannerUrl}
+                      alt={review.gameTitle}
+                    />
                   )}
 
                   <div>
                     <h3>{review.gameTitle}</h3>
+
                     <div className="review-rating">
-                      {"★".repeat(Math.max(0, Math.min(5, review.rating)))}
+                      {"★".repeat(
+                        Math.max(
+                          0,
+                          Math.min(5, review.rating)
+                        )
+                      )}
                     </div>
+
                     <p>{review.text}</p>
                     <small>{review.createdAt}</small>
                   </div>
@@ -361,7 +505,9 @@ const Profile = ({ username }: ProfileProps) => {
               ))}
 
               {!reviews.length && (
-                <p className="empty-section">Рецензій поки немає</p>
+                <p className="empty-section">
+                  Рецензій поки немає
+                </p>
               )}
             </section>
 
@@ -372,7 +518,10 @@ const Profile = ({ username }: ProfileProps) => {
               </div>
 
               {guides.map((guide, index) => (
-                <article className="guide-card" key={`${guide.guideTitle}-${index}`}>
+                <article
+                  className="guide-card"
+                  key={`${guide.guideTitle}-${index}`}
+                >
                   <h3>{guide.guideTitle}</h3>
                   <span>{guide.gameTitle}</span>
                   <p>{guide.textSnippet}</p>
@@ -381,7 +530,9 @@ const Profile = ({ username }: ProfileProps) => {
               ))}
 
               {!guides.length && (
-                <p className="empty-section">Гайдів поки немає</p>
+                <p className="empty-section">
+                  Гайдів поки немає
+                </p>
               )}
             </section>
 
@@ -392,16 +543,23 @@ const Profile = ({ username }: ProfileProps) => {
               </div>
 
               <div className="comment-form">
-                <input placeholder="Залишити коментар..." disabled />
+                <input
+                  placeholder="Залишити коментар..."
+                  disabled
+                />
               </div>
 
               {comments.map((comment) => (
-                <article className="comment-card" key={comment.id}>
+                <article
+                  className="comment-card"
+                  key={comment.id}
+                >
                   <div className="content-card-header">
                     <img
                       src={comment.authorAvatarUrl}
                       alt={comment.authorUsername}
                     />
+
                     <div>
                       <strong>{comment.authorUsername}</strong>
                       <small>{comment.createdAt}</small>
@@ -413,7 +571,9 @@ const Profile = ({ username }: ProfileProps) => {
               ))}
 
               {!comments.length && (
-                <p className="empty-section">Коментарів поки немає</p>
+                <p className="empty-section">
+                  Коментарів поки немає
+                </p>
               )}
             </section>
           </div>
@@ -440,30 +600,37 @@ const Profile = ({ username }: ProfileProps) => {
                   <span>Значки</span>
                   <strong>{profile.counters.badges}</strong>
                 </div>
+
                 <div>
                   <span>Ігри</span>
                   <strong>{profile.counters.games}</strong>
                 </div>
+
                 <div>
                   <span>У бажаному</span>
                   <strong>{profile.counters.wishlist}</strong>
                 </div>
+
                 <div>
                   <span>Обговорення</span>
                   <strong>{profile.counters.discussions}</strong>
                 </div>
+
                 <div>
                   <span>Скриншоти</span>
                   <strong>{profile.counters.screenshots}</strong>
                 </div>
+
                 <div>
                   <span>Відео</span>
                   <strong>{profile.counters.videos}</strong>
                 </div>
+
                 <div>
                   <span>Гайди</span>
                   <strong>{profile.counters.guides}</strong>
                 </div>
+
                 <div>
                   <span>Рецензії</span>
                   <strong>{profile.counters.reviews}</strong>
@@ -480,11 +647,17 @@ const Profile = ({ username }: ProfileProps) => {
               <div className="friends-list">
                 {profile.friends.map((friend) => (
                   <a
-                    href={`/profile/${encodeURIComponent(friend.username)}`}
+                    href={`/profile/${encodeURIComponent(
+                      friend.username
+                    )}`}
                     className="friend-item"
                     key={friend.id}
                   >
-                    <img src={friend.avatarUrl} alt={friend.username} />
+                    <img
+                      src={friend.avatarUrl}
+                      alt={friend.username}
+                    />
+
                     <div>
                       <strong>{friend.username}</strong>
                       <span>Рівень {friend.level}</span>
@@ -494,12 +667,74 @@ const Profile = ({ username }: ProfileProps) => {
               </div>
 
               {!profile.friends.length && (
-                <p className="empty-section">Друзів поки немає</p>
+                <p className="empty-section">
+                  Друзів поки немає
+                </p>
               )}
             </section>
           </aside>
         </div>
       </main>
+
+      {isEditModalOpen && (
+        <div
+          className="profile-edit-overlay"
+          onClick={closeEditModal}
+        >
+          <div
+            className="profile-edit-modal"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="profile-edit-modal-header">
+              <h2>Редагування профілю</h2>
+
+              <button
+                type="button"
+                onClick={closeEditModal}
+                disabled={isUploading}
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="profile-edit-options">
+              <label className="profile-upload-option">
+                <span>Змінити аватарку</span>
+
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  onChange={handleAvatarUpload}
+                  disabled={isUploading}
+                />
+              </label>
+
+              <label className="profile-upload-option">
+                <span>Змінити банер</span>
+
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  onChange={handleBannerUpload}
+                  disabled={isUploading}
+                />
+              </label>
+            </div>
+
+            {isUploading && (
+              <p className="profile-upload-status">
+                Завантаження файлу...
+              </p>
+            )}
+
+            {uploadError && (
+              <p className="profile-upload-error">
+                {uploadError}
+              </p>
+            )}
+          </div>
+        </div>
+      )}
 
       <Footer />
     </div>

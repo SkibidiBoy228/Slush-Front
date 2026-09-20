@@ -40,8 +40,15 @@ function LoginForm() {
 
       const storage = rememberMe ? localStorage : sessionStorage;
 
+      const anotherStorage = rememberMe ? sessionStorage : localStorage;
+
       storage.setItem("accessToken", response.accessToken);
       storage.setItem("refreshToken", response.refreshToken);
+
+      anotherStorage.removeItem("accessToken");
+      anotherStorage.removeItem("refreshToken");
+
+      window.dispatchEvent(new Event("auth-changed"));
 
       window.location.href = "/mainPage";
     } catch (error) {
@@ -61,36 +68,28 @@ function LoginForm() {
 
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="loginOrEmail">
-            Логін або e-mail
-          </label>
+          <label htmlFor="loginOrEmail">Логін або e-mail</label>
 
           <input
             id="loginOrEmail"
             type="text"
             placeholder="Введіть ваш логін або e-mail..."
             value={loginOrEmail}
-            onChange={(event) =>
-              setLoginOrEmail(event.target.value)
-            }
+            onChange={(event) => setLoginOrEmail(event.target.value)}
             disabled={loading}
             autoComplete="username"
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="password">
-            Пароль
-          </label>
+          <label htmlFor="password">Пароль</label>
 
           <input
             id="password"
             type="password"
             placeholder="Введіть ваш пароль..."
             value={password}
-            onChange={(event) =>
-              setPassword(event.target.value)
-            }
+            onChange={(event) => setPassword(event.target.value)}
             disabled={loading}
             autoComplete="current-password"
           />
@@ -101,43 +100,27 @@ function LoginForm() {
             <input
               type="checkbox"
               checked={rememberMe}
-              onChange={(event) =>
-                setRememberMe(event.target.checked)
-              }
+              onChange={(event) => setRememberMe(event.target.checked)}
               disabled={loading}
             />
 
             <span>Запам'ятати мене</span>
           </label>
 
-          <a
-            href="/forgot-password"
-            className="forgot-password"
-          >
+          <a href="/forgot-password" className="forgot-password">
             Не пам'ятаю пароль
           </a>
         </div>
 
-        {error && (
-          <div className="form-message form-error">
-            {error}
-          </div>
-        )}
+        {error && <div className="form-message form-error">{error}</div>}
 
-        <button
-          className="login-button"
-          type="submit"
-          disabled={loading}
-        >
+        <button className="login-button" type="submit" disabled={loading}>
           {loading ? "Завантаження..." : "Продовжити"}
         </button>
       </form>
 
       <div className="register-link">
-        Не маєте акаунту?{" "}
-        <a href="/register">
-          Зареєструйтесь
-        </a>
+        Не маєте акаунту? <a href="/register">Зареєструйтесь</a>
       </div>
     </section>
   );

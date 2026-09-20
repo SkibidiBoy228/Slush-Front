@@ -10,6 +10,8 @@ import CharacteristicsPage from "./pages/CharacteristicsPage/CharacteristicsPage
 import DlcPage from "./pages/DlcPage/DlcPage";
 import Profile from "./pages/Profile/Profile";
 
+import { isAuthenticated } from "./api/client";
+
 function App() {
   const pathParts = window.location.pathname
     .split("/")
@@ -32,6 +34,11 @@ function App() {
   }
 
   if (pathParts[0] === "profile" && pathParts[1]) {
+    if (!isAuthenticated()) {
+      window.location.replace("/login");
+      return null;
+    }
+
     const username = decodeURIComponent(pathParts[1]);
 
     return <Profile username={username} />;

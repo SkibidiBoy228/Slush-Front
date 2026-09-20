@@ -12,6 +12,7 @@ import type{
 
 } from "../types/profile";
 
+import { getAccessToken } from "./client";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -99,3 +100,47 @@ export async function getProfileComments(
     );
 }
 
+async function uploadMedia(
+  endpoint: "avatar" | "banner",
+  file: File
+): Promise<{ url: string }> {
+  const token = getAccessToken();
+
+  if (!token) {
+    throw new Error("Необхідно авторизуватися");
+  }
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const response = await fetch(`${API_URL}/api/Media/${endpoint}`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  const contentType = response.headers.get("content-type");
+
+  const data = contentType?.includes("application/json")
+    ? await response.json()
+    : await response.text();
+
+  if (!response.ok) {
+    throw new Error(
+      typeof data === "string"
+        ? data
+        : data?.message || "Не вдалося завантажити зображення"
+    );
+  }
+
+  return data as { url: string };
+}
+export async function uploadAvatar(file:File) : Promise<{url: string}> {
+    return uploadMedia("avatar", file);
+}
+
+export async function uploadBanner(file: File): Promise<{ url: string }> {
+  return uploadMedia("banner", file);
+}
