@@ -6,6 +6,8 @@ import {
   logout,
 } from "../../api/client";
 
+import { getUserProfile } from "../../api/profile";
+
 import "./Header.css";
 
 const AUTH_PAGES = [
@@ -19,15 +21,27 @@ const AUTH_PAGES = [
 const Header = () => {
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   const path = window.location.pathname;
   const isAuthPage = AUTH_PAGES.includes(path);
 
-  const updateAuthState = () => {
+  const updateAuthState = async () => {
     const token = getAccessToken();
+    const currentUsername = token ? getCurrentUsername() : null;
 
     setIsAuthorized(Boolean(token));
-    setUsername(token ? getCurrentUsername() : null);
+    setUsername(currentUsername);
+    setAvatarUrl(null);
+
+    if (currentUsername) {
+      try {
+        const profile = await getUserProfile(currentUsername);
+        setAvatarUrl(profile.avatarUrl || null);
+      } catch (error) {
+        console.error("Не удалось загрузить аватар:", error);
+      }
+    }
   };
 
   useEffect(() => {
@@ -74,16 +88,38 @@ const Header = () => {
           </a>
         ) : (
           <div className="header-actions">
-            <button type="button" aria-label="Обране">
-              ♡
+            <button
+              type="button"
+              className="header-icon-button"
+              aria-label="Налаштування"
+            >
+              ⚙
             </button>
 
-            <button type="button" aria-label="Кошик">
-              🛒
+            <button
+              type="button"
+              className="header-icon-button"
+              aria-label="Сповіщення"
+            >
+              ♧
             </button>
 
-            <a href={profileUrl} className="header-profile-button">
-              {username || "Профіль"}
+            <a
+              href={profileUrl}
+              className="header-avatar-link"
+              aria-label="Відкрити профіль"
+            >
+              {avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt="Аватар пользователя"
+                  className="header-avatar-image"
+                />
+              ) : (
+                <span className="header-avatar-fallback">
+                  {username?.charAt(0).toUpperCase() || "U"}
+                </span>
+              )}
             </a>
 
             <button
