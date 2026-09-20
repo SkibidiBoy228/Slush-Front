@@ -27,16 +27,6 @@
   box-sizing: border-box;
 }
 
-.game-page-topbar {
-  display: flex;
-  align-items: center;
-
-  padding: 8px;
-
-  border-radius: 9px;
-
-  background: rgba(190, 221, 226, 0.96);
-}
 
 .game-tabs {
   display: flex;
