@@ -1,100 +1,65 @@
 .game-page {
   min-height: 100vh;
+
   overflow-x: hidden;
+
   background:
     linear-gradient(
       rgba(0, 31, 41, 0.86),
       rgba(0, 31, 41, 0.96)
     ),
     url("/background.png");
+
   background-size: cover;
   background-position: center top;
   background-attachment: fixed;
+
   color: #fff;
   font-family: Arial, sans-serif;
 }
 
 .game-page-content {
   width: min(1200px, calc(100% - 40px));
+
   margin: 0 auto;
   padding: 20px 0 60px;
+
   box-sizing: border-box;
 }
 
 .game-page-topbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 25px;
+
   padding: 8px;
+
   border-radius: 9px;
+
   background: rgba(190, 221, 226, 0.96);
-}
-
-.game-search {
-  display: flex;
-  align-items: center;
-  width: 42%;
-  height: 40px;
-  overflow: hidden;
-  border-radius: 6px;
-  background: #073b47;
-}
-
-.game-search input {
-  min-width: 0;
-  flex: 1;
-  height: 100%;
-  padding: 0 13px;
-  border: none;
-  outline: none;
-  background: transparent;
-  color: #fff;
-  font-family: inherit;
-  font-size: 13px;
-}
-
-.game-search input::placeholder {
-  color: #87a7ae;
-}
-
-.game-search span {
-  padding: 0 14px;
-  color: #b9d8dc;
-  font-size: 23px;
-}
-
-.game-store-navigation button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: #b9dce1;
-  font-size: 18px;
-}
-
-.game-store-navigation a:hover,
-.game-store-navigation button:hover {
-  color: #008f82;
 }
 
 .game-tabs {
   display: flex;
   gap: 28px;
+
   margin-top: 25px;
+
   border-bottom: 1px solid #1b4d58;
 }
 
 .game-tabs button {
   position: relative;
+
   padding: 0 0 15px;
+
   border: none;
   background: transparent;
+
   color: #799ba3;
+
   font-family: inherit;
   font-size: 13px;
+
   cursor: pointer;
 }
 
@@ -104,25 +69,35 @@
 
 .game-tabs button.active::after {
   position: absolute;
+
   right: 0;
   bottom: -1px;
   left: 0;
+
   height: 2px;
+
   background: #1de0c4;
+
   content: "";
 }
 
 .game-layout {
   display: grid;
+
   grid-template-columns: minmax(0, 1fr) 300px;
+
   align-items: start;
+
   gap: 28px;
+
   margin-top: 28px;
 }
 
 .game-main-content h1 {
   margin: 0 0 20px;
+
   color: #fff;
+
   font-size: 31px;
   font-weight: 600;
 }
@@ -130,15 +105,21 @@
 .game-tags {
   display: flex;
   flex-wrap: wrap;
+
   gap: 8px;
+
   margin-top: 17px;
 }
 
 .game-tags span {
   padding: 7px 10px;
+
   border-radius: 4px;
+
   background: #174b56;
+
   color: #a6c4c9;
+
   font-size: 11px;
 }
 
@@ -148,13 +129,17 @@
 
 .game-description h2 {
   margin: 0 0 15px;
+
   color: #fff;
+
   font-size: 22px;
 }
 
 .steam-description {
   overflow: hidden;
+
   color: #b5cdd2;
+
   font-size: 13px;
   line-height: 1.7;
 }
@@ -162,10 +147,13 @@
 .steam-description img,
 .steam-description video {
   display: block;
+
   width: 100%;
   max-width: 100%;
   height: auto;
+
   margin: 15px 0;
+
   border-radius: 7px;
 }
 
@@ -175,15 +163,19 @@
 
 .game-page-state {
   min-height: 100vh;
+
   background: #002f3d;
   color: #fff;
 }
 
 .state-content {
   display: flex;
+
   align-items: center;
   justify-content: center;
+
   min-height: 400px;
+
   font-size: 18px;
 }
 
@@ -203,10 +195,6 @@
   .sidebar-cover {
     max-width: 280px;
   }
-
-  .game-search {
-    width: 50%;
-  }
 }
 
 @media (max-width: 650px) {
@@ -214,22 +202,9 @@
     width: calc(100% - 24px);
   }
 
-  .game-page-topbar {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .game-search {
-    width: 100%;
-  }
-
-  .game-store-navigation {
-    justify-content: flex-end;
-    gap: 12px;
-  }
-
   .game-tabs {
     gap: 18px;
+
     overflow-x: auto;
   }
 
