@@ -29,25 +29,28 @@ type PriceFilter =
   | "900";
 
 function convertGame(game: CatalogGame): Game {
+  const hasPrice = game.price > 0;
+  const hasDiscount =
+    hasPrice &&
+    game.oldPrice > game.price &&
+    game.discountPercent > 0;
+
   return {
     id: game.id,
     title: game.title,
     image: game.thumbnail,
 
-    price:
-      game.price > 0
-        ? formatPrice(game.price)
-        : "Безкоштовно",
+    price: hasPrice
+      ? formatPrice(game.price)
+      : "Безкоштовно",
 
-    oldPrice:
-      game.oldPrice > game.price && game.price > 0
-        ? formatPrice(game.oldPrice)
-        : undefined,
+    oldPrice: hasDiscount
+      ? formatPrice(game.oldPrice)
+      : undefined,
 
-    discount:
-      game.discountPercent > 0
-        ? `-${game.discountPercent}%`
-        : undefined,
+    discount: game.discountPercent > 0
+      ? `-${game.discountPercent}%`
+      : undefined,
   };
 }
 
@@ -83,7 +86,7 @@ function Catalog() {
         const response = await getGames({
           query: query.trim() || undefined,
           page: 1,
-          pageSize: 50,
+          pageSize: 24,
         });
 
         if (!cancelled) {
@@ -114,44 +117,19 @@ function Catalog() {
   const filteredGames = useMemo(() => {
     let result = [...games];
 
-    switch (priceFilter) {
-      case "free":
-        result = result.filter(
-          (game) => game.price <= 0
-        );
-        break;
+    if (priceFilter === "free") {
+      result = result.filter((game) => game.price <= 0);
+    }
 
-      case "100":
-        result = result.filter(
-          (game) =>
-            game.price > 0 &&
-            game.price <= 100 / USD_TO_UAH
-        );
-        break;
+    if (priceFilter !== "all" && priceFilter !== "free") {
+      const maxPrice =
+        Number(priceFilter) / USD_TO_UAH;
 
-      case "300":
-        result = result.filter(
-          (game) =>
-            game.price > 0 &&
-            game.price <= 300 / USD_TO_UAH
-        );
-        break;
-
-      case "600":
-        result = result.filter(
-          (game) =>
-            game.price > 0 &&
-            game.price <= 600 / USD_TO_UAH
-        );
-        break;
-
-      case "900":
-        result = result.filter(
-          (game) =>
-            game.price > 0 &&
-            game.price <= 900 / USD_TO_UAH
-        );
-        break;
+      result = result.filter(
+        (game) =>
+          game.price > 0 &&
+          game.price <= maxPrice
+      );
     }
 
     if (onlyDiscounts) {
@@ -181,15 +159,13 @@ function Catalog() {
           a.title.localeCompare(b.title)
         );
         break;
+
+      default:
+        break;
     }
 
     return result;
-  }, [
-    games,
-    priceFilter,
-    onlyDiscounts,
-    sort,
-  ]);
+  }, [games, priceFilter, onlyDiscounts, sort]);
 
   function resetFilters() {
     setPriceFilter("all");
@@ -200,7 +176,10 @@ function Catalog() {
   return (
     <div className="catalog-page">
       <Header />
-      <GameSearch />
+
+      <div className="search-section">
+        <GameSearch />
+      </div>
 
       <main className="catalog-main">
         <div className="catalog-container">

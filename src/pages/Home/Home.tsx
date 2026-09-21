@@ -15,25 +15,28 @@ import { formatPrice, USD_TO_UAH } from "../../utils/price";
 import "./Home.css";
 
 function convertGame(game: CatalogGame): Game {
+  const hasPrice = game.price > 0;
+  const hasDiscount =
+    game.discountPercent > 0 &&
+    game.oldPrice > game.price &&
+    game.price > 0;
+
   return {
     id: game.id,
     title: game.title,
     image: game.thumbnail,
 
-    price:
-      game.price > 0
-        ? formatPrice(game.price)
-        : "Безкоштовно",
+    price: hasPrice
+      ? formatPrice(game.price)
+      : "Безкоштовно",
 
-    oldPrice:
-      game.oldPrice > game.price && game.price > 0
-        ? formatPrice(game.oldPrice)
-        : undefined,
+    oldPrice: hasDiscount
+      ? formatPrice(game.oldPrice)
+      : undefined,
 
-    discount:
-      game.discountPercent > 0
-        ? `-${game.discountPercent}%`
-        : undefined,
+    discount: game.discountPercent > 0
+      ? `-${game.discountPercent}%`
+      : undefined,
   };
 }
 
@@ -49,12 +52,9 @@ function Home() {
       try {
         setLoading(true);
         setError("");
-
-        // Получаем только список игр.
-        // Детальные запросы к каждой игре больше не выполняются.
         const response = await getGames({
           page: 1,
-          pageSize: 12,
+          pageSize: 18,
         });
 
         if (!isCancelled) {
@@ -82,36 +82,29 @@ function Home() {
     };
   }, []);
 
-  const specialOffers = catalogGames
-    .filter(
-      (game) =>
-        game.price > 0 &&
-        game.discountPercent > 0
-    )
+  const paidGames = catalogGames.filter(
+    (game) => game.price > 0
+  );
+
+  const specialOffers = paidGames
+    .filter((game) => game.discountPercent > 0)
     .slice(0, 3)
     .map(convertGame);
 
-  const recommendedGames = catalogGames
-    .filter((game) => game.price > 0)
+  const recommendedGames = paidGames
     .slice(0, 8)
     .map(convertGame);
 
-  const budgetGames = catalogGames
-    .filter(
-      (game) =>
-        game.price > 0 &&
-        game.price <= 100 / USD_TO_UAH
-    )
+  const budgetGames = paidGames
+    .filter((game) => game.price <= 100 / USD_TO_UAH)
     .slice(0, 8)
     .map(convertGame);
 
-  const popularGames = catalogGames
-    .filter((game) => game.price > 0)
+  const popularGames = paidGames
     .slice(0, 3)
     .map(convertGame);
 
-  const newReleases = catalogGames
-    .filter((game) => game.price > 0)
+  const newReleases = paidGames
     .slice(3, 6)
     .map(convertGame);
 
@@ -135,7 +128,7 @@ function Home() {
           )}
 
           {error && (
-            <div className="catalog-message">
+            <div className="catalog-message error">
               {error}
             </div>
           )}
@@ -166,6 +159,7 @@ function Home() {
                     <h2>Хіти продажу</h2>
 
                     <button
+                      type="button"
                       className="column-arrow"
                       aria-label="Наступні"
                     >
@@ -176,7 +170,7 @@ function Home() {
                   <div className="column-games">
                     {popularGames.map((game) => (
                       <GameCard
-                        key={game.id}
+                        key={`popular-${game.id}`}
                         game={game}
                         variant="small"
                       />
@@ -189,6 +183,7 @@ function Home() {
                     <h2>Нові релізи</h2>
 
                     <button
+                      type="button"
                       className="column-arrow"
                       aria-label="Наступні"
                     >
@@ -199,7 +194,7 @@ function Home() {
                   <div className="column-games">
                     {newReleases.map((game) => (
                       <GameCard
-                        key={game.id}
+                        key={`new-${game.id}`}
                         game={game}
                         variant="small"
                       />
@@ -212,6 +207,7 @@ function Home() {
                     <h2>Безкоштовні</h2>
 
                     <button
+                      type="button"
                       className="column-arrow"
                       aria-label="Наступні"
                     >
@@ -222,7 +218,7 @@ function Home() {
                   <div className="column-games">
                     {freeGames.map((game) => (
                       <GameCard
-                        key={game.id}
+                        key={`free-${game.id}`}
                         game={game}
                         variant="small"
                       />
