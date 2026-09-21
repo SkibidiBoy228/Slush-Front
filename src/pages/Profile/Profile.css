@@ -28,25 +28,29 @@
 }
 
 .profile-top {
-  overflow: hidden;
+  position: relative;
+  overflow: visible;
   border-radius: 8px;
   background: #004653;
 }
 
 .profile-cover {
   height: 180px;
+  border-radius: 8px 8px 0 0;
   background-color: #07515e;
   background-size: cover;
   background-position: center;
 }
 
 .profile-main-info {
+  position: relative;
+  z-index: 1000;
   min-height: 115px;
   padding: 0 22px 20px;
   display: flex;
   align-items: center;
   gap: 18px;
-  position: relative;
+  border-radius: 0 0 8px 8px;
 }
 
 .profile-avatar {
@@ -610,6 +614,7 @@
 
 .profile-actions-wrapper {
   position: relative;
+  z-index: 10000;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -649,14 +654,12 @@
   background: #0b7085;
 }
 
-/* Выпадающее меню действий */
-
 .profile-actions-menu {
   position: absolute;
   top: 38px;
   right: 0;
-  z-index: 100;
-  width: 235px;
+  z-index: 99999;
+  width: 245px;
   padding: 6px 0;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 4px;
@@ -676,6 +679,7 @@
   color: #d6d7d8;
   font-size: 12px;
   text-align: left;
+  white-space: nowrap;
   cursor: pointer;
   transition:
     background 0.15s ease,
