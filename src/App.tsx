@@ -11,6 +11,8 @@ import DlcPage from "./pages/DlcPage/DlcPage";
 import Profile from "./pages/Profile/Profile";
 import EditProfile from "./pages/EditProfile/EditProfile";
 
+import Catalog from "./pages/Catalog/Catalog";
+
 import { usePresence } from "./hooks/usePresence";
 
 import { isAuthenticated } from "./api/client";
@@ -58,6 +60,10 @@ function App() {
     return <EditProfile />;
   }
 
+  if (pathParts[0] === "catalog") {
+    return <Catalog />;
+  }
+  
   if (pathParts[0] === "login") {
     return <LoginPage />;
   }

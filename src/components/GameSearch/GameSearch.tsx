@@ -104,9 +104,16 @@ function GameSearch() {
   }
 
   function handleSearchSubmit() {
-    if (results.length > 0) {
-      openGame(results[0]);
+    const trimmedQuery = query.trim();
+
+    if (!trimmedQuery) {
+      window.location.href = "/catalog";
+      return;
     }
+
+    window.location.href = `/catalog?query=${encodeURIComponent(
+      trimmedQuery
+    )}`;
   }
 
   return (

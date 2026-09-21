@@ -1,5 +1,3 @@
-
-
 export function getAccessToken(): string | null {
   return (
     localStorage.getItem("accessToken") ||
@@ -93,8 +91,19 @@ export async function apiRequest<T>(
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(errorText || "Request failed");
+
+    throw new Error(errorText || `Ошибка запроса: ${response.status}`);
   }
 
-  return response.json();
+  const responseText = await response.text();
+
+  if (!responseText.trim()) {
+    return undefined as T;
+  }
+
+  try {
+    return JSON.parse(responseText) as T;
+  } catch {
+    return responseText as T;
+  }
 }

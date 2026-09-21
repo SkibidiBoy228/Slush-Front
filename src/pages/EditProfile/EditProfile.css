@@ -35,11 +35,11 @@
 .profile-banner-preview {
   width: 100%;
   height: 220px;
+  border: 1px solid #30333d;
   border-radius: 14px;
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-  border: 1px solid #30333d;
 }
 
 .empty-banner {
@@ -193,22 +193,71 @@
   line-height: 1.5;
 }
 
-.media-actions {
+.video-upload-form {
   display: flex;
-  gap: 12px;
-  margin-top: 20px;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 22px;
+  padding: 20px;
+  border: 1px solid #303440;
+  border-radius: 10px;
+  background: #191b22;
+}
+
+.video-upload-form h3 {
+  margin: 0 0 4px;
+  font-size: 17px;
+}
+
+.video-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.video-form-field label {
+  color: #e5e7ee;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.video-form-field input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px 13px;
+  border: 1px solid #343743;
+  border-radius: 8px;
+  outline: none;
+  background: #111318;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.video-form-field input:focus {
+  border-color: #6875ff;
+}
+
+.video-form-field input[type="file"] {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.selected-file {
+  color: #9296a5;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.upload-video-button {
+  align-self: flex-start;
+  margin-top: 4px;
 }
 
 .media-button:disabled {
   cursor: not-allowed;
   opacity: 0.45;
-}
-
-.media-hint {
-  margin: 14px 0 0;
-  color: #737887;
-  font-size: 12px;
-  line-height: 1.5;
 }
 
 .success-message,
@@ -274,68 +323,19 @@
   text-align: center;
   color: #a0a4b3;
 }
-.video-upload-form {
+
+.media-actions {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-top: 22px;
-  padding: 20px;
-  border: 1px solid #303440;
-  border-radius: 10px;
-  background: #191b22;
+  gap: 12px;
+  margin-top: 20px;
 }
 
-.video-upload-form h3 {
-  margin: 0 0 4px;
-  font-size: 17px;
-}
-
-.video-form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.video-form-field label {
-  color: #e5e7ee;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.video-form-field input {
-  box-sizing: border-box;
-  width: 100%;
-  padding: 12px 13px;
-  border: 1px solid #343743;
-  border-radius: 8px;
-  outline: none;
-  background: #111318;
-  color: #ffffff;
-  font-family: inherit;
-  font-size: 14px;
-}
-
-.video-form-field input:focus {
-  border-color: #6875ff;
-}
-
-.video-form-field input[type="file"] {
-  padding: 10px;
-  cursor: pointer;
-}
-
-.selected-file {
-  color: #9296a5;
+.media-hint {
+  margin: 14px 0 0;
+  color: #737887;
   font-size: 12px;
-  overflow-wrap: anywhere;
+  line-height: 1.5;
 }
-
-.upload-video-button {
-  align-self: flex-start;
-  margin-top: 4px;
-}
-
-
 
 @media (max-width: 600px) {
   .edit-profile-page {
@@ -365,10 +365,8 @@
   }
 
   .cancel-button,
-  .save-button {
-    width: 100%;
-  }
-    .upload-video-button {
+  .save-button,
+  .upload-video-button {
     width: 100%;
   }
 }

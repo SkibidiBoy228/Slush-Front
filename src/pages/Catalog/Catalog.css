@@ -1,0 +1,261 @@
+.catalog-page {
+  min-height: 100vh;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  overflow-x: hidden;
+  background:
+    linear-gradient(
+      rgba(0, 31, 41, 0.86),
+      rgba(0, 31, 41, 0.94)
+    ),
+    url("/background.png");
+  background-size: cover;
+  background-position: center top;
+  background-attachment: fixed;
+}
+
+.catalog-main {
+  padding-top: 105px;
+  padding-bottom: 70px;
+}
+
+.catalog-container {
+  width: min(1200px, calc(100% - 40px));
+  margin: 0 auto;
+}
+
+.catalog-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.catalog-sort {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #9dbbc1;
+  font-size: 12px;
+}
+
+.catalog-sort select {
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.catalog-sort option {
+  background: #073b47;
+  color: #fff;
+}
+
+.catalog-view-switcher {
+  display: flex;
+  gap: 5px;
+}
+
+.view-button {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: #6e969f;
+  font-size: 19px;
+  cursor: pointer;
+}
+
+.view-button.active {
+  color: #1de0c4;
+}
+
+.view-button:disabled {
+  cursor: default;
+}
+
+.catalog-layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.catalog-filters {
+  padding: 12px;
+  border-radius: 10px;
+  background: #073b47;
+}
+
+.filters-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 13px;
+}
+
+.filters-heading h2 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.filters-heading button {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #1de0c4;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.tag-search {
+  width: 100%;
+  height: 32px;
+  box-sizing: border-box;
+  padding: 0 10px;
+  border: 1px solid rgba(157, 205, 211, 0.15);
+  border-radius: 6px;
+  outline: none;
+  background: #052f3a;
+  color: #fff;
+  font-size: 11px;
+}
+
+.tag-search::placeholder {
+  color: #719ba3;
+}
+
+.filter-section {
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(157, 205, 211, 0.13);
+}
+
+.filter-section:last-child {
+  border-bottom: none;
+}
+
+.filter-section h3 {
+  margin: 0 0 12px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.filter-unavailable {
+  display: block;
+  color: #719ba3;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.radio-option,
+.checkbox-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0;
+  color: #a8c6cb;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.radio-option input,
+.checkbox-option input {
+  accent-color: #1de0c4;
+  cursor: pointer;
+}
+
+.filter-section.collapsed {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+}
+
+.filter-section.collapsed h3 {
+  margin: 0;
+}
+
+.filter-section.collapsed span {
+  color: #8aafb6;
+  font-size: 14px;
+}
+
+.catalog-results {
+  min-width: 0;
+}
+
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.catalog-grid .game-card-vertical .game-image-wrapper {
+  height: 230px;
+}
+
+.catalog-message {
+  padding: 45px 20px;
+  border-radius: 10px;
+  background: #073b47;
+  color: #a8c6cb;
+  font-size: 14px;
+  text-align: center;
+}
+
+.catalog-message.error {
+  color: #ff8cae;
+}
+
+@media (max-width: 1050px) {
+  .catalog-layout {
+    grid-template-columns: 200px minmax(0, 1fr);
+  }
+
+  .catalog-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .catalog-main {
+    padding-top: 145px;
+  }
+
+  .catalog-container {
+    width: calc(100% - 24px);
+  }
+
+  .catalog-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .catalog-filters {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .catalog-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .catalog-grid .game-card-vertical .game-image-wrapper {
+    height: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .catalog-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .catalog-grid .game-card-vertical .game-image-wrapper {
+    height: 250px;
+  }
+}
