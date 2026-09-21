@@ -7,6 +7,7 @@ import {
   uploadAvatar,
   uploadBanner,
   uploadUserVideo,
+  uploadUserScreenshot,
 } from "../../api/profile";
 
 import { getAccessToken } from "../../api/client";
@@ -31,6 +32,13 @@ function EditProfile() {
   const [videoMessage, setVideoMessage] = useState("");
   const [videoError, setVideoError] = useState("");
 
+  const [screenshotFile, setScreenshotFile] = useState<File | null>(null);
+  const [screenshotGameId, setScreenshotGameId] = useState("");
+  const [screenshotGameTitle, setScreenshotGameTitle] = useState("");
+  const [uploadingScreenshot, setUploadingScreenshot] = useState(false);
+  const [screenshotMessage, setScreenshotMessage] = useState("");
+  const [screenshotError, setScreenshotError] = useState("");
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
@@ -39,6 +47,7 @@ function EditProfile() {
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const bannerInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
+  const screenshotInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -65,14 +74,14 @@ function EditProfile() {
         const profile = await getUserProfile(currentUsername);
 
         setUsername(profile.username);
-        setBio(profile.bio ?? "");
+        setBio(profile.bio === "No bio yet." ? "" : profile.bio ?? "");
         setAvatarUrl(profile.avatarUrl ?? "");
         setBannerUrl(profile.coverUrl ?? "");
       } catch (err) {
         setError(
           err instanceof Error
             ? err.message
-            : "Не удалось загрузить профиль",
+            : "Не удалось загрузить профиль"
         );
       } finally {
         setLoading(false);
@@ -83,7 +92,7 @@ function EditProfile() {
   }, []);
 
   const handleAvatarChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
 
@@ -94,7 +103,7 @@ function EditProfile() {
   };
 
   const handleBannerChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
 
@@ -105,7 +114,7 @@ function EditProfile() {
   };
 
   const handleVideoChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
 
@@ -114,6 +123,18 @@ function EditProfile() {
     setVideoFile(file);
     setVideoMessage("");
     setVideoError("");
+  };
+
+  const handleScreenshotChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    setScreenshotFile(file);
+    setScreenshotMessage("");
+    setScreenshotError("");
   };
 
   const handleVideoUpload = async () => {
@@ -164,10 +185,58 @@ function EditProfile() {
       setVideoError(
         err instanceof Error
           ? err.message
-          : "Не удалось загрузить видео",
+          : "Не удалось загрузить видео"
       );
     } finally {
       setUploadingVideo(false);
+    }
+  };
+
+  const handleScreenshotUpload = async () => {
+    setScreenshotMessage("");
+    setScreenshotError("");
+
+    if (!screenshotFile) {
+      setScreenshotError("Выберите изображение");
+      return;
+    }
+
+    if (!screenshotGameId.trim()) {
+      setScreenshotError("Введите ID игры");
+      return;
+    }
+
+    if (!screenshotGameTitle.trim()) {
+      setScreenshotError("Введите название игры");
+      return;
+    }
+
+    setUploadingScreenshot(true);
+
+    try {
+      await uploadUserScreenshot({
+        file: screenshotFile,
+        gameId: screenshotGameId.trim(),
+        gameTitle: screenshotGameTitle.trim(),
+      });
+
+      setScreenshotFile(null);
+      setScreenshotGameId("");
+      setScreenshotGameTitle("");
+
+      if (screenshotInputRef.current) {
+        screenshotInputRef.current.value = "";
+      }
+
+      setScreenshotMessage("Скриншот успешно загружен");
+    } catch (err) {
+      setScreenshotError(
+        err instanceof Error
+          ? err.message
+          : "Не удалось загрузить скриншот"
+      );
+    } finally {
+      setUploadingScreenshot(false);
     }
   };
 
@@ -187,7 +256,7 @@ function EditProfile() {
         setBannerUrl(result.url);
       }
 
-      await updateProfile({
+      const updatedProfile = await updateProfile({
         username: username.trim(),
         bio: bio.trim(),
       });
@@ -196,11 +265,19 @@ function EditProfile() {
       setBannerFile(null);
 
       setMessage("Профиль успешно обновлён");
+
+      const updatedUsername = updatedProfile.username || username.trim();
+
+      setTimeout(() => {
+        window.location.href = `/profile/${encodeURIComponent(
+          updatedUsername
+        )}`;
+      }, 500);
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
-          : "Не удалось сохранить изменения",
+          : "Не удалось сохранить изменения"
       );
     } finally {
       setSaving(false);
@@ -228,7 +305,6 @@ function EditProfile() {
       <div className="edit-profile-card">
         <div className="edit-profile-heading">
           <h1>Редактировать профиль</h1>
-
           <p>
             Настройте внешний вид и информацию о своём профиле
           </p>
@@ -417,19 +493,84 @@ function EditProfile() {
             </button>
           </div>
 
-          <div className="media-actions">
+          <div className="video-upload-form">
+            <h3>Добавить скриншот</h3>
+
+            <div className="video-form-field">
+              <label htmlFor="screenshot-game-id">
+                ID игры
+              </label>
+
+              <input
+                id="screenshot-game-id"
+                type="text"
+                value={screenshotGameId}
+                onChange={(event) =>
+                  setScreenshotGameId(event.target.value)
+                }
+                placeholder="Например: 730"
+              />
+            </div>
+
+            <div className="video-form-field">
+              <label htmlFor="screenshot-game-title">
+                Название игры
+              </label>
+
+              <input
+                id="screenshot-game-title"
+                type="text"
+                value={screenshotGameTitle}
+                onChange={(event) =>
+                  setScreenshotGameTitle(event.target.value)
+                }
+                placeholder="Например: Counter-Strike 2"
+              />
+            </div>
+
+            <div className="video-form-field">
+              <label htmlFor="screenshot-file">
+                Изображение
+              </label>
+
+              <input
+                ref={screenshotInputRef}
+                id="screenshot-file"
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                onChange={handleScreenshotChange}
+              />
+
+              {screenshotFile && (
+                <span className="selected-file">
+                  Выбран файл: {screenshotFile.name}
+                </span>
+              )}
+            </div>
+
+            {screenshotMessage && (
+              <p className="success-message">
+                {screenshotMessage}
+              </p>
+            )}
+
+            {screenshotError && (
+              <p className="error-message">
+                {screenshotError}
+              </p>
+            )}
+
             <button
               type="button"
-              className="media-button"
-              disabled
+              className="media-button upload-video-button"
+              disabled={uploadingScreenshot}
+              onClick={handleScreenshotUpload}
             >
-              + Добавить скриншот
+              {uploadingScreenshot
+                ? "Загрузка скриншота..."
+                : "Загрузить скриншот"}
             </button>
           </div>
-
-          <p className="media-hint">
-            Загрузка скриншотов пока недоступна.
-          </p>
         </div>
 
         {message && (

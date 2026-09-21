@@ -93,7 +93,7 @@ async function uploadMedia(
   const token = getAccessToken();
 
   if (!token) {
-    throw new Error("Необхідно авторизуватися");
+    throw new Error("Необходимо авторизоваться");
   }
 
   const formData = new FormData();
@@ -117,7 +117,7 @@ async function uploadMedia(
     throw new Error(
       typeof data === "string"
         ? data
-        : data?.message || "Не вдалося завантажити зображення"
+        : data?.message || "Не удалось загрузить изображение"
     );
   }
 
@@ -185,6 +185,36 @@ export async function uploadUserVideo(
   formData.append("title", data.title);
 
   return apiRequest<UploadedVideoResponse>("/api/Media/video", {
+    method: "POST",
+    body: formData,
+  });
+}
+
+export interface UploadScreenshotRequest {
+  file: File;
+  gameId: string;
+  gameTitle: string;
+}
+
+export interface UploadedScreenshotResponse {
+  id: string;
+  userId: string;
+  gameId: string;
+  gameTitle: string;
+  imageUrl: string;
+  createdAt: string;
+}
+
+export async function uploadUserScreenshot(
+  data: UploadScreenshotRequest
+): Promise<UploadedScreenshotResponse> {
+  const formData = new FormData();
+
+  formData.append("file", data.file);
+  formData.append("gameId", data.gameId);
+  formData.append("gameTitle", data.gameTitle);
+
+  return apiRequest<UploadedScreenshotResponse>("/api/Media/screenshot", {
     method: "POST",
     body: formData,
   });
