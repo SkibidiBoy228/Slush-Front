@@ -13,11 +13,15 @@
   position: relative;
   z-index: 20;
   width: 100%;
-  padding-top: 1px;
+  min-height: 125px;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .catalog-main {
-  padding-top: 45px;
+  position: relative;
+  z-index: 1;
+  padding-top: 25px;
   padding-bottom: 70px;
 }
 
@@ -274,7 +278,6 @@
   color: #ff91a9;
 }
 
-/* GameCard может использовать absolute для скидки */
 .catalog-grid .game-image-wrapper {
   position: relative;
   overflow: hidden;
