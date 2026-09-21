@@ -8,45 +8,37 @@ import GameCard, {
   type Game,
 } from "../../components/GameCard/GameCard";
 
-import { getGames, getGameDetails } from "../../api/games";
+import { getGames } from "../../api/games";
 import type { CatalogGame } from "../../types/catalog";
-import type { GameDetails } from "../../types/game";
 import { formatPrice, USD_TO_UAH } from "../../utils/price";
 
 import "./Home.css";
 
-type ActualGame = CatalogGame & {
-  details: GameDetails;
-};
-
-function convertGame(game: ActualGame): Game {
-  const details = game.details;
-
-  const price = details.price;
-  const oldPrice = details.oldPrice;
-  const discountPercent = details.discountPercent;
-
+function convertGame(game: CatalogGame): Game {
   return {
     id: game.id,
-    title: details.title || game.title,
-    image: details.thumbnail || game.thumbnail,
+    title: game.title,
+    image: game.thumbnail,
 
-    price: formatPrice(price),
+    price:
+      game.price > 0
+        ? formatPrice(game.price)
+        : "Безкоштовно",
 
     oldPrice:
-      oldPrice > price && price > 0
-        ? formatPrice(oldPrice)
+      game.oldPrice > game.price && game.price > 0
+        ? formatPrice(game.oldPrice)
         : undefined,
 
     discount:
-      discountPercent > 0
-        ? `-${discountPercent}%`
+      game.discountPercent > 0
+        ? `-${game.discountPercent}%`
         : undefined,
   };
 }
 
 function Home() {
-  const [catalogGames, setCatalogGames] = useState<ActualGame[]>([]);
+  const [catalogGames, setCatalogGames] = useState<CatalogGame[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -58,37 +50,15 @@ function Home() {
         setLoading(true);
         setError("");
 
+        // Получаем только список игр.
+        // Детальные запросы к каждой игре больше не выполняются.
         const response = await getGames({
           page: 1,
-          pageSize: 50,
+          pageSize: 12,
         });
 
-        const actualGames = await Promise.all(
-          response.items.map(async (game) => {
-            try {
-              const details = await getGameDetails(game.id);
-
-              return {
-                ...game,
-                details,
-              };
-            } catch (error) {
-              console.error(
-                `Не вдалося завантажити дані гри ${game.id}:`,
-                error
-              );
-
-              return null;
-            }
-          })
-        );
-
-        const validGames = actualGames.filter(
-          (game): game is ActualGame => game !== null
-        );
-
         if (!isCancelled) {
-          setCatalogGames(validGames);
+          setCatalogGames(response.items);
         }
       } catch (err) {
         if (!isCancelled) {
@@ -115,38 +85,38 @@ function Home() {
   const specialOffers = catalogGames
     .filter(
       (game) =>
-        game.details.price > 0 &&
-        game.details.discountPercent > 0
+        game.price > 0 &&
+        game.discountPercent > 0
     )
     .slice(0, 3)
     .map(convertGame);
 
   const recommendedGames = catalogGames
-    .filter((game) => game.details.price > 0)
+    .filter((game) => game.price > 0)
     .slice(0, 8)
     .map(convertGame);
 
   const budgetGames = catalogGames
     .filter(
       (game) =>
-        game.details.price > 0 &&
-        game.details.price <= 100 / USD_TO_UAH
+        game.price > 0 &&
+        game.price <= 100 / USD_TO_UAH
     )
     .slice(0, 8)
     .map(convertGame);
 
   const popularGames = catalogGames
-    .filter((game) => game.details.price > 0)
+    .filter((game) => game.price > 0)
     .slice(0, 3)
     .map(convertGame);
 
   const newReleases = catalogGames
-    .filter((game) => game.details.price > 0)
+    .filter((game) => game.price > 0)
     .slice(3, 6)
     .map(convertGame);
 
   const freeGames = catalogGames
-    .filter((game) => game.details.price <= 0)
+    .filter((game) => game.price <= 0)
     .slice(0, 3)
     .map(convertGame);
 
@@ -264,6 +234,7 @@ function Home() {
           )}
         </div>
       </main>
+
       <Footer />
     </div>
   );
