@@ -27,6 +27,9 @@ import type {
   ProfileVideo,
 } from "../../types/profile";
 
+import { getCurrentUsername } from "../../api/client";
+
+
 import "./Profile.css";
 
 interface ProfileProps {
@@ -58,6 +61,7 @@ const Profile = ({ username }: ProfileProps) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
+  const [isActionsMenuOpen, setIsActionsMenuOpen] = useState(false);
 
   useEffect(() => {
     let isCancelled = false;
@@ -219,6 +223,11 @@ const Profile = ({ username }: ProfileProps) => {
     setUploadError("");
   };
 
+  const currentUsername = getCurrentUsername();
+
+  const isOwnProfile =
+    currentUsername?.toLowerCase() === username.toLowerCase();
+
   if (isLoading) {
     return (
       <div className="profile-page">
@@ -283,16 +292,65 @@ const Profile = ({ username }: ProfileProps) => {
               <p>{profile.bio}</p>
             </div>
 
-            <button
-              className="profile-edit-button"
-              type="button"
-              onClick={() => {
-                setUploadError("");
-                setIsEditModalOpen(true);
-              }}
-            >
-              Редагувати профіль
-            </button>
+            {isOwnProfile ? (
+              <button
+                type="button"
+                className="profile-edit-button"
+                onClick={() => setIsEditModalOpen(true)}
+              >
+                Редагувати профіль
+              </button>
+            ) : (
+              <div className="profile-actions-wrapper">
+                <button
+                  type="button"
+                  className="profile-message-button"
+                  onClick={() => {
+                    // Здесь позже можно открыть переписку
+                    console.log("Написать сообщение");
+                  }}
+                >
+                  Написати повідомлення
+                </button>
+
+                <button
+                  type="button"
+                  className="profile-more-button"
+                  onClick={() => setIsActionsMenuOpen((prev) => !prev)}
+                  aria-label="Додаткові дії"
+                >
+                  ⋯
+                </button>
+
+                {isActionsMenuOpen && (
+                  <div className="profile-actions-menu">
+                    <button type="button">
+                      🏅 Видати нагороду спільноти
+                    </button>
+
+                    <button type="button">
+                      🏆 Колекція значків
+                    </button>
+
+                    <button type="button" disabled>
+                      👥 Запросити до групи
+                    </button>
+
+                    <button type="button">
+                      ❤️ Додати в друзі
+                    </button>
+
+                    <button type="button">
+                      🚫 Заблокувати
+                    </button>
+
+                    <button type="button">
+                      🚩 Поскаржитися
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </section>
 

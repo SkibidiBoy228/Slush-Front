@@ -608,6 +608,90 @@
   font-size: 12px;
 }
 
+.profile-actions-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.profile-message-button {
+  height: 30px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 15px;
+  background: #1de0c4;
+  color: #003b49;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.profile-message-button:hover {
+  background: #35f5da;
+}
+
+.profile-more-button {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  background: #075267;
+  color: #ffffff;
+  font-size: 20px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.profile-more-button:hover {
+  background: #0b7085;
+}
+
+/* Выпадающее меню действий */
+
+.profile-actions-menu {
+  position: absolute;
+  top: 38px;
+  right: 0;
+  z-index: 100;
+  width: 235px;
+  padding: 6px 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  background: #171a21;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.profile-actions-menu button {
+  width: 100%;
+  min-height: 36px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border: none;
+  background: transparent;
+  color: #d6d7d8;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.profile-actions-menu button:hover:not(:disabled) {
+  background: #2a475e;
+  color: #ffffff;
+}
+
+.profile-actions-menu button:disabled {
+  color: #555b62;
+  cursor: not-allowed;
+}
+
 @media (max-width: 900px) {
   .profile-layout {
     grid-template-columns: 1fr;
