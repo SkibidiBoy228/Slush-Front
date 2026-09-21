@@ -8,40 +8,53 @@ import GameCard, {
   type Game,
 } from "../../components/GameCard/GameCard";
 
-import { getGames } from "../../api/games";
+import {
+  getGames,
+  getGameDetails,
+} from "../../api/games";
+
 import type { CatalogGame } from "../../types/catalog";
+import type { GameDetails } from "../../types/game";
+
 import { formatPrice, USD_TO_UAH } from "../../utils/price";
 
 import "./Home.css";
 
-function convertGame(game: CatalogGame): Game {
-  const hasPrice = game.price > 0;
+type ActualGame = CatalogGame & {
+  details: GameDetails;
+};
+
+function convertGame(game: ActualGame): Game {
+  const { details } = game;
+
+  const hasPrice = details.price > 0;
+
   const hasDiscount =
-    game.discountPercent > 0 &&
-    game.oldPrice > game.price &&
-    game.price > 0;
+    hasPrice &&
+    details.oldPrice > details.price &&
+    details.discountPercent > 0;
 
   return {
     id: game.id,
-    title: game.title,
-    image: game.thumbnail,
+    title: details.title || game.title,
+    image: details.thumbnail || game.thumbnail,
 
     price: hasPrice
-      ? formatPrice(game.price)
+      ? formatPrice(details.price)
       : "Безкоштовно",
 
     oldPrice: hasDiscount
-      ? formatPrice(game.oldPrice)
+      ? formatPrice(details.oldPrice)
       : undefined,
 
-    discount: game.discountPercent > 0
-      ? `-${game.discountPercent}%`
+    discount: details.discountPercent > 0
+      ? `-${details.discountPercent}%`
       : undefined,
   };
 }
 
 function Home() {
-  const [catalogGames, setCatalogGames] = useState<CatalogGame[]>([]);
+  const [catalogGames, setCatalogGames] = useState<ActualGame[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -52,13 +65,34 @@ function Home() {
       try {
         setLoading(true);
         setError("");
+
         const response = await getGames({
           page: 1,
           pageSize: 18,
         });
 
+        const detailedGames: ActualGame[] = [];
+
+        for (const game of response.items) {
+          if (isCancelled) return;
+
+          try {
+            const details = await getGameDetails(game.id);
+
+            detailedGames.push({
+              ...game,
+              details,
+            });
+          } catch (detailsError) {
+            console.warn(
+              `Не вдалося завантажити деталі гри ${game.id}`,
+              detailsError
+            );
+          }
+        }
+
         if (!isCancelled) {
-          setCatalogGames(response.items);
+          setCatalogGames(detailedGames);
         }
       } catch (err) {
         if (!isCancelled) {
@@ -83,11 +117,11 @@ function Home() {
   }, []);
 
   const paidGames = catalogGames.filter(
-    (game) => game.price > 0
+    (game) => game.details.price > 0
   );
 
   const specialOffers = paidGames
-    .filter((game) => game.discountPercent > 0)
+    .filter((game) => game.details.discountPercent > 0)
     .slice(0, 3)
     .map(convertGame);
 
@@ -96,7 +130,11 @@ function Home() {
     .map(convertGame);
 
   const budgetGames = paidGames
-    .filter((game) => game.price <= 100 / USD_TO_UAH)
+    .filter(
+      (game) =>
+        game.details.price > 0 &&
+        game.details.price <= 100 / USD_TO_UAH
+    )
     .slice(0, 8)
     .map(convertGame);
 
@@ -109,7 +147,7 @@ function Home() {
     .map(convertGame);
 
   const freeGames = catalogGames
-    .filter((game) => game.price <= 0)
+    .filter((game) => game.details.price <= 0)
     .slice(0, 3)
     .map(convertGame);
 

@@ -7,11 +7,21 @@ import GameCard, {
   type Game,
 } from "../../components/GameCard/GameCard";
 
-import { getGames } from "../../api/games";
+import {
+  getGames,
+  getGameDetails,
+} from "../../api/games";
+
 import type { CatalogGame } from "../../types/catalog";
+import type { GameDetails } from "../../types/game";
+
 import { formatPrice, USD_TO_UAH } from "../../utils/price";
 
 import "./Catalog.css";
+
+type ActualGame = CatalogGame & {
+  details: GameDetails;
+};
 
 type SortOption =
   | "relevance"
@@ -28,34 +38,37 @@ type PriceFilter =
   | "600"
   | "900";
 
-function convertGame(game: CatalogGame): Game {
-  const hasPrice = game.price > 0;
+function convertGame(game: ActualGame): Game {
+  const { details } = game;
+
+  const hasPrice = details.price > 0;
+
   const hasDiscount =
     hasPrice &&
-    game.oldPrice > game.price &&
-    game.discountPercent > 0;
+    details.oldPrice > details.price &&
+    details.discountPercent > 0;
 
   return {
     id: game.id,
-    title: game.title,
-    image: game.thumbnail,
+    title: details.title || game.title,
+    image: details.thumbnail || game.thumbnail,
 
     price: hasPrice
-      ? formatPrice(game.price)
+      ? formatPrice(details.price)
       : "Безкоштовно",
 
     oldPrice: hasDiscount
-      ? formatPrice(game.oldPrice)
+      ? formatPrice(details.oldPrice)
       : undefined,
 
-    discount: game.discountPercent > 0
-      ? `-${game.discountPercent}%`
+    discount: details.discountPercent > 0
+      ? `-${details.discountPercent}%`
       : undefined,
   };
 }
 
 function Catalog() {
-  const [games, setGames] = useState<CatalogGame[]>([]);
+  const [games, setGames] = useState<ActualGame[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -86,11 +99,31 @@ function Catalog() {
         const response = await getGames({
           query: query.trim() || undefined,
           page: 1,
-          pageSize: 24,
+          pageSize: 12,
         });
 
+        const detailedGames: ActualGame[] = [];
+
+        for (const game of response.items) {
+          if (cancelled) return;
+
+          try {
+            const details = await getGameDetails(game.id);
+
+            detailedGames.push({
+              ...game,
+              details,
+            });
+          } catch (detailsError) {
+            console.warn(
+              `Не вдалося завантажити деталі гри ${game.id}`,
+              detailsError
+            );
+          }
+        }
+
         if (!cancelled) {
-          setGames(response.items);
+          setGames(detailedGames);
         }
       } catch (err) {
         if (!cancelled) {
@@ -118,7 +151,9 @@ function Catalog() {
     let result = [...games];
 
     if (priceFilter === "free") {
-      result = result.filter((game) => game.price <= 0);
+      result = result.filter(
+        (game) => game.details.price <= 0
+      );
     }
 
     if (priceFilter !== "all" && priceFilter !== "free") {
@@ -127,36 +162,43 @@ function Catalog() {
 
       result = result.filter(
         (game) =>
-          game.price > 0 &&
-          game.price <= maxPrice
+          game.details.price > 0 &&
+          game.details.price <= maxPrice
       );
     }
 
     if (onlyDiscounts) {
       result = result.filter(
-        (game) => game.discountPercent > 0
+        (game) => game.details.discountPercent > 0
       );
     }
 
     switch (sort) {
       case "price-asc":
-        result.sort((a, b) => a.price - b.price);
+        result.sort(
+          (a, b) => a.details.price - b.details.price
+        );
         break;
 
       case "price-desc":
-        result.sort((a, b) => b.price - a.price);
+        result.sort(
+          (a, b) => b.details.price - a.details.price
+        );
         break;
 
       case "discount":
         result.sort(
           (a, b) =>
-            b.discountPercent - a.discountPercent
+            b.details.discountPercent -
+            a.details.discountPercent
         );
         break;
 
       case "name":
         result.sort((a, b) =>
-          a.title.localeCompare(b.title)
+          a.details.title.localeCompare(
+            b.details.title
+          )
         );
         break;
 
