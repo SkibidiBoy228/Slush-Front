@@ -39,6 +39,8 @@ export interface UserProfile{
     counters: ProfileCounters;
     badges: Badge[];
     friends: ProfileFriend[];
+    isOnline: boolean;
+    lastSeenAt : string | null;
 }
 
 export interface ProfileReview{

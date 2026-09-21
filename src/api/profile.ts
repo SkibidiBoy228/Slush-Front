@@ -12,7 +12,7 @@ import type{
 
 } from "../types/profile";
 
-import { getAccessToken } from "./client";
+import { apiRequest,getAccessToken } from "./client";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -143,4 +143,56 @@ export async function uploadAvatar(file:File) : Promise<{url: string}> {
 
 export async function uploadBanner(file: File): Promise<{ url: string }> {
   return uploadMedia("banner", file);
+}
+
+export interface UpdateProfileRequest{
+    username?: string;
+    bio?:string;
+}
+
+export interface UpdateProfileResponse{
+    message: string;
+    username: string;
+    bio: string;
+}
+
+export async function updateProfile(
+    data: UpdateProfileRequest
+): Promise<UpdateProfileResponse>{
+    return apiRequest<UpdateProfileResponse>("/api/UserProfile/settings",{
+        method: "PUT",
+        body: JSON.stringify(data)
+    });
+}
+
+export interface UploadVideoRequest{
+    file: File;
+    gameId:string;
+    gameTitle: string;
+    title: string;
+}
+
+export interface UploadedVideoResponse{
+    id: string;
+    userId: string;
+    gameId:string;
+    gameTitle: string;
+    title: string;
+    videoUrl: string;
+    thumbnailUrl: string;
+    createdAt: string;
+}
+
+export async function uploadUserVideo(
+    data: UploadVideoRequest
+) : Promise<UploadedVideoResponse>{
+    const formData = new FormData();
+    formData.append("file", data.file);
+    formData.append("gameId", data.gameId);
+    formData.append("gameTitle", data.gameTitle);
+    formData.append("title", data.title);
+    return apiRequest<UploadedVideoResponse>("/api/Media/video",{
+        method: "POST",
+        body: formData,
+    })
 }

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ChangeEvent } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
@@ -12,8 +12,6 @@ import {
   getProfileScreenshots,
   getProfileVideos,
   getUserProfile,
-  uploadAvatar,
-  uploadBanner,
 } from "../../api/profile";
 
 import type {
@@ -28,7 +26,6 @@ import type {
 } from "../../types/profile";
 
 import { getCurrentUsername } from "../../api/client";
-
 
 import "./Profile.css";
 
@@ -57,10 +54,6 @@ const Profile = ({ username }: ProfileProps) => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
-
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadError, setUploadError] = useState("");
   const [isActionsMenuOpen, setIsActionsMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -138,90 +131,20 @@ const Profile = ({ username }: ProfileProps) => {
     );
   }, [profile]);
 
-    const handleAvatarUpload = async (
-    event: ChangeEvent<HTMLInputElement>
-    ) => {
-    const file = event.target.files?.[0];
+  useEffect(() => {
+    const interval = window.setInterval(async () => {
+      try {
+        const updatedProfile = await getUserProfile(username);
+        setProfile(updatedProfile);
+      } catch (error) {
+        console.error("Не вдалося оновити статус:", error);
+      }
+    }, 30_000);
 
-    if (!file || !profile) {
-        return;
-    }
-
-    try {
-        setIsUploading(true);
-        setUploadError("");
-
-        const response = await uploadAvatar(file);
-        const avatarUrl = response.url;
-
-        setProfile((previousProfile) =>
-        previousProfile
-            ? {
-                ...previousProfile,
-                avatarUrl,
-            }
-            : previousProfile
-        );
-
-        setIsEditModalOpen(false);
-    } catch (uploadRequestError) {
-        setUploadError(
-        uploadRequestError instanceof Error
-            ? uploadRequestError.message
-            : "Не вдалося завантажити аватарку"
-        );
-    } finally {
-        setIsUploading(false);
-        event.target.value = "";
-    }
+    return () => {
+      window.clearInterval(interval);
     };
-
-  const handleBannerUpload = async (
-    event: ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
-
-    if (!file || !profile) {
-      return;
-    }
-
-    try {
-      setIsUploading(true);
-      setUploadError("");
-
-      const response = await uploadBanner(file);
-      const coverUrl = response.url;
-
-      setProfile((previousProfile) =>
-        previousProfile
-          ? {
-              ...previousProfile,
-              coverUrl,
-            }
-          : previousProfile
-      );
-
-      setIsEditModalOpen(false);
-    } catch (uploadRequestError) {
-      setUploadError(
-        uploadRequestError instanceof Error
-          ? uploadRequestError.message
-          : "Не вдалося завантажити банер"
-      );
-    } finally {
-      setIsUploading(false);
-      event.target.value = "";
-    }
-  };
-
-  const closeEditModal = () => {
-    if (isUploading) {
-      return;
-    }
-
-    setIsEditModalOpen(false);
-    setUploadError("");
-  };
+  }, [username]);
 
   const currentUsername = getCurrentUsername();
 
@@ -285,8 +208,25 @@ const Profile = ({ username }: ProfileProps) => {
             <div className="profile-user-info">
               <h1>{profile.username}</h1>
 
-              <span className={`profile-status ${profile.status}`}>
-                {profile.status}
+              <span
+                className={`profile-status ${
+                  profile.isOnline ? "online" : "offline"
+                }`}
+              >
+                <span className="profile-status-dot" />
+
+                {profile.isOnline
+                  ? "В сети"
+                  : profile.lastSeenAt
+                    ? `Был в сети ${new Date(
+                        profile.lastSeenAt
+                      ).toLocaleString("ru-RU", {
+                        day: "numeric",
+                        month: "long",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}`
+                    : "Не в сети"}
               </span>
 
               <p>{profile.bio}</p>
@@ -296,7 +236,9 @@ const Profile = ({ username }: ProfileProps) => {
               <button
                 type="button"
                 className="profile-edit-button"
-                onClick={() => setIsEditModalOpen(true)}
+                onClick={() => {
+                  window.location.href = "/edit-profile";
+                }}
               >
                 Редагувати профіль
               </button>
@@ -306,7 +248,6 @@ const Profile = ({ username }: ProfileProps) => {
                   type="button"
                   className="profile-message-button"
                   onClick={() => {
-                    // Здесь позже можно открыть переписку
                     console.log("Написать сообщение");
                   }}
                 >
@@ -316,7 +257,9 @@ const Profile = ({ username }: ProfileProps) => {
                 <button
                   type="button"
                   className="profile-more-button"
-                  onClick={() => setIsActionsMenuOpen((prev) => !prev)}
+                  onClick={() =>
+                    setIsActionsMenuOpen((prev) => !prev)
+                  }
                   aria-label="Додаткові дії"
                 >
                   ⋯
@@ -549,10 +492,7 @@ const Profile = ({ username }: ProfileProps) => {
 
                     <div className="review-rating">
                       {"★".repeat(
-                        Math.max(
-                          0,
-                          Math.min(5, review.rating)
-                        )
+                        Math.max(0, Math.min(5, review.rating))
                       )}
                     </div>
 
@@ -733,66 +673,6 @@ const Profile = ({ username }: ProfileProps) => {
           </aside>
         </div>
       </main>
-
-      {isEditModalOpen && (
-        <div
-          className="profile-edit-overlay"
-          onClick={closeEditModal}
-        >
-          <div
-            className="profile-edit-modal"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="profile-edit-modal-header">
-              <h2>Редагування профілю</h2>
-
-              <button
-                type="button"
-                onClick={closeEditModal}
-                disabled={isUploading}
-              >
-                ×
-              </button>
-            </div>
-
-            <div className="profile-edit-options">
-              <label className="profile-upload-option">
-                <span>Змінити аватарку</span>
-
-                <input
-                  type="file"
-                  accept="image/png,image/jpeg,image/webp"
-                  onChange={handleAvatarUpload}
-                  disabled={isUploading}
-                />
-              </label>
-
-              <label className="profile-upload-option">
-                <span>Змінити банер</span>
-
-                <input
-                  type="file"
-                  accept="image/png,image/jpeg,image/webp"
-                  onChange={handleBannerUpload}
-                  disabled={isUploading}
-                />
-              </label>
-            </div>
-
-            {isUploading && (
-              <p className="profile-upload-status">
-                Завантаження файлу...
-              </p>
-            )}
-
-            {uploadError && (
-              <p className="profile-upload-error">
-                {uploadError}
-              </p>
-            )}
-          </div>
-        </div>
-      )}
 
       <Footer />
     </div>

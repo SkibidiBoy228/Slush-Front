@@ -9,10 +9,15 @@ import GamePage from "./pages/GamePage/GamePage";
 import CharacteristicsPage from "./pages/CharacteristicsPage/CharacteristicsPage";
 import DlcPage from "./pages/DlcPage/DlcPage";
 import Profile from "./pages/Profile/Profile";
+import EditProfile from "./pages/EditProfile/EditProfile";
+
+import { usePresence } from "./hooks/usePresence";
 
 import { isAuthenticated } from "./api/client";
 
 function App() {
+  usePresence();
+
   const pathParts = window.location.pathname
     .split("/")
     .filter(Boolean);
@@ -42,6 +47,15 @@ function App() {
     const username = decodeURIComponent(pathParts[1]);
 
     return <Profile username={username} />;
+  }
+
+  if (pathParts[0] === "edit-profile") {
+    if (!isAuthenticated()) {
+      window.location.replace("/login");
+      return null;
+    }
+
+    return <EditProfile />;
   }
 
   if (pathParts[0] === "login") {
