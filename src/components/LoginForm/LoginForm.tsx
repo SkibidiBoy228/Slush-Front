@@ -4,6 +4,34 @@ import { login } from "../../api/auth";
 
 import "./LoginForm.css";
 
+function getRoleFromToken(token: string): string | null {
+  try {
+    const payloadBase64 = token.split(".")[1];
+
+    if (!payloadBase64) {
+      return null;
+    }
+
+    const payload = JSON.parse(
+      decodeURIComponent(
+        atob(payloadBase64.replace(/-/g, "+").replace(/_/g, "/"))
+          .split("")
+          .map(
+            (char) =>
+              "%" + ("00" + char.charCodeAt(0).toString(16)).slice(-2)
+          )
+          .join("")
+      )
+    );
+
+    return payload[
+      "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+    ] || payload.role || null;
+  } catch {
+    return null;
+  }
+}
+
 function LoginForm() {
   const [loginOrEmail, setLoginOrEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -39,7 +67,6 @@ function LoginForm() {
       });
 
       const storage = rememberMe ? localStorage : sessionStorage;
-
       const anotherStorage = rememberMe ? sessionStorage : localStorage;
 
       storage.setItem("accessToken", response.accessToken);
@@ -50,7 +77,20 @@ function LoginForm() {
 
       window.dispatchEvent(new Event("auth-changed"));
 
-      window.location.href = "/mainPage";
+      const role = getRoleFromToken(response.accessToken);
+
+      const normalizedRole = role?.toLowerCase();
+
+      if (
+        normalizedRole === "analyst" ||
+        normalizedRole === "moderator" ||
+        normalizedRole === "admin" ||
+        normalizedRole === "superadmin"
+      ) {
+        window.location.href = import.meta.env.VITE_ADMIN_URL;
+      } else {
+        window.location.href = "/mainPage";
+      }
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
