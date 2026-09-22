@@ -8,9 +8,11 @@
 }
 
 .store-panel {
-  position: absolute;
+  position: relative;
+
   top: 18px;
-  left: 50%;
+  left: auto;
+
   z-index: 5;
 
   display: flex;
@@ -19,10 +21,12 @@
   width: min(1180px, calc(100% - 70px));
   height: 54px;
 
+  margin: 0 auto;
+
   padding: 0 8px 0 9px;
   box-sizing: border-box;
 
-  transform: translateX(-50%);
+  transform: none;
 
   border-radius: 30px;
   background: rgba(190, 221, 226, 0.96);

@@ -98,9 +98,7 @@ export default function WishlistPage() {
         <div className="wishlist-page">
             <Header />
 
-                <div className="store-panel">
-                    <GameSearch />
-                </div>
+            <GameSearch />
 
             <main className="wishlist-content">
                 <h1>Мій список бажаного</h1>

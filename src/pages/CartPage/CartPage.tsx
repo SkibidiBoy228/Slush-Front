@@ -91,9 +91,9 @@ export default function CartPage() {
     return (
         <div className="cart-page">
             <Header />
-                <div className="store-panel">
-                    <GameSearch />
-                </div>
+
+
+            <GameSearch />
 
 
             <main className="cart-content">
