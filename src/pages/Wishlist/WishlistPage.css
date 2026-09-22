@@ -7,12 +7,12 @@
 .wishlist-content {
     width: min(1180px, calc(100% - 40px));
     margin: 0 auto;
-    padding-top: 42px;
     padding-bottom: 80px;
 }
 
 .wishlist-content h1 {
     margin: 0 0 24px;
+
     font-size: 24px;
     font-weight: 700;
 }
@@ -21,13 +21,19 @@
     display: grid;
     grid-template-columns: 215px 1fr;
     gap: 18px;
+
     align-items: start;
 }
 
+/* ФИЛЬТРЫ */
+
 .wishlist-filters {
     background: #00576a;
+
     border-radius: 8px;
+
     padding: 14px 10px;
+
     box-sizing: border-box;
 }
 
@@ -35,6 +41,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     margin-bottom: 14px;
 }
 
@@ -44,15 +51,21 @@
 
 .filters-header button {
     border: 0;
+
     background: transparent;
+
     color: #00d6c8;
+
     cursor: pointer;
+
     font-size: 11px;
 }
 
 .wishlist-filters > label {
     display: block;
+
     margin-bottom: 8px;
+
     font-size: 11px;
     font-weight: 600;
 }
@@ -60,111 +73,198 @@
 .wishlist-filters select {
     width: 100%;
     height: 32px;
+
     padding: 0 9px;
+
     border: 0;
     border-radius: 7px;
+
     background: #08677a;
     color: #ffffff;
+
     font-size: 11px;
+
     outline: none;
 }
 
 .filter-divider {
     height: 1px;
+
     margin: 12px 0;
+
     background: rgba(255, 255, 255, 0.1);
 }
 
 .price-options {
     display: flex;
     flex-direction: column;
+
     gap: 8px;
 }
 
 .price-options label {
     display: flex;
     align-items: center;
+
     gap: 7px;
+
     font-size: 11px;
+
     cursor: pointer;
 }
 
 .price-options input {
     margin: 0;
+
     accent-color: #00d6c8;
 }
 
+
+
 .wishlist-results {
     min-height: 176px;
+
     background: #00576a;
+
     border-radius: 10px;
+
     padding: 12px;
+
     box-sizing: border-box;
 }
+
+
 
 .wishlist-toolbar {
     display: flex;
     align-items: center;
-    gap: 2px;
+
+    gap: 10px;
+
     margin-bottom: 20px;
 }
 
 .wishlist-toolbar > input {
-    width: 200px;
-    height: 24px;
-    padding: 0 5px;
+    width: 250px;
+    height: 40px;
+
+    padding: 0 15px;
+
     box-sizing: border-box;
-    border: 1px solid #ccc;
+
+    border: 1px solid rgba(190, 221, 226, 0.25);
+    border-radius: 20px;
+
     outline: none;
-    font-size: 14px;
+
+    background: #073b47;
+    color: #ffffff;
+
+    font-family: inherit;
+    font-size: 13px;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.wishlist-toolbar > input::placeholder {
+    color: #86a7ad;
+}
+
+.wishlist-toolbar > input:focus {
+    border-color: #1de0c4;
+
+    box-shadow:
+        0 0 0 2px rgba(29, 224, 196, 0.1);
 }
 
 .wishlist-toolbar label {
     display: flex;
     align-items: center;
-    gap: 4px;
-    font-size: 16px;
+
+    gap: 7px;
+
+    color: #ffffff;
+
+    font-size: 13px;
 }
 
 .wishlist-toolbar select {
-    height: 24px;
-    font-size: 14px;
+    height: 40px;
+
+    padding: 0 12px;
+
+    border: 1px solid rgba(190, 221, 226, 0.25);
+    border-radius: 8px;
+
+    outline: none;
+
+    background: #073b47;
+    color: #ffffff;
+
+    font-family: inherit;
+    font-size: 13px;
+
+    cursor: pointer;
+
+    transition: border-color 0.2s ease;
 }
+
+.wishlist-toolbar select:focus {
+    border-color: #1de0c4;
+}
+
+
 
 .wishlist-empty {
     min-height: 110px;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     color: #c7dce1;
+
     font-size: 14px;
 }
+
+
 
 .wishlist-games {
     display: flex;
     flex-direction: column;
+
     gap: 10px;
 }
 
 .wishlist-game {
     display: grid;
     grid-template-columns: 150px 1fr auto;
+
     gap: 15px;
+
     align-items: center;
+
     padding: 10px;
+
     background: #064c5c;
+
     border-radius: 8px;
 }
 
 .wishlist-game img {
     width: 150px;
     height: 80px;
+
     object-fit: cover;
+
     border-radius: 5px;
 }
 
 .wishlist-game-info h3 {
     margin: 0 0 8px;
+
     font-size: 16px;
 }
 
@@ -175,28 +275,43 @@
 .wishlist-game-actions {
     display: flex;
     flex-direction: column;
+
     gap: 7px;
 }
 
 .wishlist-game-actions button {
     min-width: 130px;
+
     padding: 8px 12px;
+
     border: 0;
     border-radius: 18px;
+
     background: #00aeb0;
     color: #ffffff;
+
     cursor: pointer;
+
+    transition: background 0.2s ease;
 }
-.store-panel{
-    margin-bottom: 20px;
-}
+
 .wishlist-game-actions button:hover {
     background: #00c5c1;
 }
 
+/* АДАПТИВНОСТЬ */
+
 @media (max-width: 800px) {
     .wishlist-layout {
         grid-template-columns: 1fr;
+    }
+
+    .wishlist-toolbar {
+        flex-wrap: wrap;
+    }
+
+    .wishlist-toolbar > input {
+        width: 100%;
     }
 
     .wishlist-game {

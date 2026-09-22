@@ -100,6 +100,7 @@ function GameSearch() {
 
   function openGame(game: CatalogGame) {
     setIsOpen(false);
+
     window.location.href = `/game/${encodeURIComponent(game.id)}`;
   }
 
@@ -117,124 +118,126 @@ function GameSearch() {
   }
 
   return (
-    <div className="store-panel">
-      <div className="store-search-wrapper" ref={searchRef}>
-        <div className="store-search">
-          <input
-            type="text"
-            value={query}
-            placeholder="Пошук у Крамниці..."
-            onChange={(event) => setQuery(event.target.value)}
-            onFocus={() => {
-              if (results.length > 0) {
-                setIsOpen(true);
-              }
-            }}
-            onKeyDown={(event) => {
-              if (event.key === "Enter") {
-                handleSearchSubmit();
-              }
+    <div className="game-search-container">
+      <div className="store-panel">
+        <div className="store-search-wrapper" ref={searchRef}>
+          <div className="store-search">
+            <input
+              type="text"
+              value={query}
+              placeholder="Пошук у Крамниці..."
+              onChange={(event) => setQuery(event.target.value)}
+              onFocus={() => {
+                if (results.length > 0) {
+                  setIsOpen(true);
+                }
+              }}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  handleSearchSubmit();
+                }
 
-              if (event.key === "Escape") {
-                setIsOpen(false);
-              }
+                if (event.key === "Escape") {
+                  setIsOpen(false);
+                }
+              }}
+            />
+
+            <button
+              type="button"
+              className="search-button"
+              aria-label="Пошук"
+              onClick={handleSearchSubmit}
+            >
+              ⌕
+            </button>
+          </div>
+
+          {isOpen && (
+            <div className="search-results">
+              {loading && (
+                <div className="search-message">
+                  Пошук...
+                </div>
+              )}
+
+              {!loading && results.length === 0 && (
+                <div className="search-message">
+                  Ігор не знайдено
+                </div>
+              )}
+
+              {!loading &&
+                results.map((game) => (
+                  <button
+                    type="button"
+                    key={`${game.source}-${game.id}`}
+                    className="search-result"
+                    onClick={() => openGame(game)}
+                  >
+                    <img
+                      src={game.thumbnail}
+                      alt={game.title}
+                    />
+
+                    <span className="search-result-info">
+                      <strong>{game.title}</strong>
+
+                      <span>
+                        {game.price > 0
+                          ? formatPrice(game.price)
+                          : "Безкоштовно"}
+                      </span>
+                    </span>
+                  </button>
+                ))}
+            </div>
+          )}
+        </div>
+
+        <button
+          type="button"
+          className="store-link"
+          onClick={() => {
+            window.location.href = "/catalog";
+          }}
+        >
+          Каталог
+        </button>
+
+        <button
+          type="button"
+          className="store-link"
+          onClick={() => {
+            window.location.href = "/news";
+          }}
+        >
+          Новини
+        </button>
+
+        <div className="store-actions">
+          <button
+            type="button"
+            className="store-circle"
+            aria-label="Обране"
+            onClick={() => {
+              window.location.href = "/wishlist";
             }}
-          />
+          >
+            ♡
+          </button>
 
           <button
             type="button"
-            className="search-button"
-            aria-label="Пошук"
-            onClick={handleSearchSubmit}
+            className="store-circle"
+            aria-label="Кошик"
+            onClick={() => {
+              window.location.href = "/cart";
+            }}
           >
-            ⌕
+            🛒
           </button>
         </div>
-
-        {isOpen && (
-          <div className="search-results">
-            {loading && (
-              <div className="search-message">
-                Пошук...
-              </div>
-            )}
-
-            {!loading && results.length === 0 && (
-              <div className="search-message">
-                Ігор не знайдено
-              </div>
-            )}
-
-            {!loading &&
-              results.map((game) => (
-                <button
-                  type="button"
-                  key={`${game.source}-${game.id}`}
-                  className="search-result"
-                  onClick={() => openGame(game)}
-                >
-                  <img
-                    src={game.thumbnail}
-                    alt={game.title}
-                  />
-
-                  <span className="search-result-info">
-                    <strong>{game.title}</strong>
-
-                    <span>
-                      {game.price > 0
-                        ? formatPrice(game.price)
-                        : "Безкоштовно"}
-                    </span>
-                  </span>
-                </button>
-              ))}
-          </div>
-        )}
-      </div>
-
-      <button
-        type="button"
-        className="store-link"
-        onClick={() => {
-          window.location.href = "/catalog";
-        }}
-      >
-        Каталог
-      </button>
-
-      <button
-        type="button"
-        className="store-link"
-        onClick={() => {
-          window.location.href = "/news";
-        }}
-      >
-        Новини
-      </button>
-
-      <div className="store-actions">
-        <button
-          type="button"
-          className="store-circle"
-          aria-label="Обране"
-          onClick={() => {
-            window.location.href = "/wishlist";
-          }}
-        >
-          ♡
-        </button>
-
-        <button
-          type="button"
-          className="store-circle"
-          aria-label="Кошик"
-          onClick={() => {
-            window.location.href = "/cart";
-          }}
-        >
-          🛒
-        </button>
       </div>
     </div>
   );
