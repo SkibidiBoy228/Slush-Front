@@ -1,169 +1,224 @@
-import { useEffect, useState } from "react";
-
+import { useEffect, useMemo, useState } from "react";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import GameSearch from "../../components/GameSearch/GameSearch";
-
 import {
-  addToWishlist,
-  clearCart,
-  getCart,
-  removeFromCart,
-  type StoreItem,
+    addToWishlist,
+    clearCart,
+    getCart,
+    removeFromCart,
+    type StoreItem,
 } from "../../api/store";
-
-import { formatPrice } from "../../utils/price";
 import "./CartPage.css";
 
-function CartPage(){
-    const [games, setGames] = useState<StoreItem[]>([]);
+export default function CartPage() {
+    const [cart, setCart] = useState<StoreItem[]>([]);
     const [loading, setLoading] = useState(true);
-    const [processingId, setProcessingId] = useState<string | null>(null);
-    const [isClearing, setIsClearing] = useState(false);
 
-    useEffect(()=>{
-        const loadCart = async ()=>{
-            try{
-                const data = await getCart();
-                setGames(data);
-            }catch(error){
-                console.error("Не вдалося заванатажити кошик:", error);
-            }finally{
-                setLoading(false);
-            }
-        };
+    useEffect(() => {
         loadCart();
     }, []);
 
-    const handleRemove = async(gameId: string) =>{
-        setProcessingId(gameId);
-        try{
-            await removeFromCart(gameId);
-            setGames((previous)=>previous.filter((game)=>game.gameId !== gameId));
-        }catch(error){
-            console.error("НЕ вдалося видалити гру:", error);
-            alert("Не вдалося видалити гру з кошика");
-        }finally{
-            setProcessingId(null);
+    async function loadCart() {
+        try {
+            setLoading(true);
+
+            const data = await getCart();
+
+            setCart(data);
+        } catch (error) {
+            console.error("Помилка завантаження кошика:", error);
+        } finally {
+            setLoading(false);
         }
-    };
-    const handleMoveToWishlish = async (game: StoreItem) =>{
-        setProcessingId(game.gameId);
-        try{
+    }
+
+    async function handleRemove(gameId: string) {
+        try {
+            await removeFromCart(gameId);
+
+            setCart((prev) =>
+                prev.filter((game) => game.gameId !== gameId)
+            );
+        } catch (error) {
+            console.error("Помилка видалення з кошика:", error);
+        }
+    }
+
+    async function handleMoveToWishlist(game: StoreItem) {
+        try {
             await addToWishlist({
                 gameId: game.gameId,
                 title: game.title,
                 imageUrl: game.imageUrl,
                 price: game.price,
             });
-            await removeFromCart(game.gameId);
-            setGames((previous)=>previous.filter((item)=>item.gameId !==game.gameId));
-        }catch(error){
-            console.error("Не вдалося перемістити гру:",error);
-            alert("Не вдалося перемістити гру до бажаного.");
-        }finally{
-            setProcessingId(null);
-        };
-    }
 
-    const handleClearCart = async() =>{
-        if (games.length === 0) return;
-        setIsClearing(true);
-        try{
-            await clearCart();
-            setGames([]);
-        }catch(error){
-            console.error("Не вдалося очистити кошик:", error);
-            alert("Не вдалося очистити кошик.");
-        }finally{
-            setIsClearing(false);
+            await removeFromCart(game.gameId);
+
+            setCart((prev) =>
+                prev.filter((item) => item.gameId !== game.gameId)
+            );
+        } catch (error) {
+            console.error(
+                "Помилка переміщення в обране:",
+                error
+            );
         }
     }
-    const totalPrice = games.reduce((sum,game)=>sum + game.price, 0);
+
+    async function handleClearCart() {
+        try {
+            await clearCart();
+
+            setCart([]);
+        } catch (error) {
+            console.error("Помилка очищення кошика:", error);
+        }
+    }
+
+    const total = useMemo(() => {
+        return cart.reduce(
+            (sum, game) => sum + game.price,
+            0
+        );
+    }, [cart]);
+
+
+
+    const savings = 0;
 
     return (
-        <div className="cart-layout">
-            <Header/>
-            <div className="store-search-wrapper">
-                <GameSearch/>
+        <div className="cart-page">
+            <Header />
+
+            <div className="game-search-container">
+                <div className="store-panel">
+                    <GameSearch />
+                </div>
             </div>
-            <main className="cart-page">
+
+
+            <main className="cart-content">
                 <h1>Мій кошик</h1>
-                {loading ? (
-                    <p className="cart-message">Завантаження...</p>
-                ): (
-                    <div className="cart-content">
-                        <section className="cart-products">
-                            {games.length === 0 ? (
-                                <p className="cart-message">Ваш кошик порожній...</p>
-                            ): (
-                                games.map((game)=>(
-                                    <article className="cart-card" key = {game.gameId}>
-                                        <img src = {game.imageUrl}
-                                            alt= {game.title}
-                                            className="cart-card-image"/>
-                                            <div className="cart-card-info">
-                                                <h2>{game.title}</h2>
-                                                <button className="move-to-wishlist"
-                                                    onClick={()=>handleMoveToWishlish(game)}
-                                                    disabled = {processingId === game.gameId}
-                                                    >
-                                                        Перемістити до Бажаного
-                                                    </button>
-                                            </div>
-                                            <strong className="cart-card-price">
-                                                {formatPrice(game.price)}
-                                            </strong>
-                                            <button className="cart-remove-button"
-                                                onClick={()=>handleRemove(game.gameId)}
-                                                disabled={processingId === game.gameId}
-                                                aria-label = {`Видалити ${game.title} з кошика`}>
-                                                     ×
-                                                </button>
-                                    </article>
-                                ))
-                            )}
-                        </section>
-                        <aside className="cart-summary">
-                            <div className="summary-row">
-                                <span>Ви заощадите</span>
-                                <strong>0 ₴</strong>
-                            </div>
-                            <div className="summary-row summary-total">
-                                <span>Усього</span>
-                                <strong>{formatPrice(totalPrice)}</strong>
-                            </div>
 
-                            <p className="summary-note">
-                                Якщо застосовно, податок із продажу буде розраховано в процесі
-                                оплати.
-                            </p>
-                             <button
-                                className="checkout-button"
-                                disabled={games.length === 0}
-                            >
-                                Перейти до оплати
-                            </button>
+                <div className="cart-layout">
+                    <section className="cart-items">
+                        {loading ? (
+                            <div className="cart-empty">
+                                Завантаження...
+                            </div>
+                        ) : cart.length === 0 ? (
+                            <div className="cart-empty">
+                                Ваш кошик порожній...
+                            </div>
+                        ) : (
+                            cart.map((game) => (
+                                <article
+                                    className="cart-item"
+                                    key={game.gameId}
+                                >
+                                    <img
+                                        src={game.imageUrl}
+                                        alt={game.title}
+                                    />
 
-                            <button
-                                className="continue-button"
-                                onClick={() => {
-                                window.location.href = "/catalog";
-                                }}
-                            >
-                                Продовжити покупки
-                            </button>
-                            <button className="clear-cart-button"
-                                onClick={handleClearCart}
-                                disabled = {isClearing || games.length === 0}>
-                                    {isClearing ? "Очищення..." : "Очистити кошик"}
-                                </button>
-                        </aside>
-                    </div>
-                )}
+                                    <div className="cart-item-info">
+                                        <h3>{game.title}</h3>
+
+                                        <strong>
+                                            {game.price.toLocaleString(
+                                                "uk-UA"
+                                            )}{" "}
+                                            ₴
+                                        </strong>
+                                    </div>
+
+                                    <div className="cart-item-actions">
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                handleMoveToWishlist(
+                                                    game
+                                                )
+                                            }
+                                        >
+                                            ♡
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                handleRemove(
+                                                    game.gameId
+                                                )
+                                            }
+                                        >
+                                            Видалити
+                                        </button>
+                                    </div>
+                                </article>
+                            ))
+                        )}
+                    </section>
+
+                    <aside className="cart-summary">
+                        <div className="summary-row">
+                            <span>Ви заощадите</span>
+
+                            <strong>
+                                {savings.toLocaleString("uk-UA")} ₴
+                            </strong>
+                        </div>
+
+                        <div className="summary-row">
+                            <span>Усього</span>
+
+                            <strong>
+                                {cart.length === 0
+                                    ? "Безкоштовно"
+                                    : `${total.toLocaleString(
+                                          "uk-UA"
+                                      )} ₴`}
+                            </strong>
+                        </div>
+
+                        <p className="summary-note">
+                            Якщо застосовано, податок і продажу буде
+                            розраховано в процесі оплати.
+                        </p>
+
+                        <button
+                            className="checkout-button"
+                            type="button"
+                            disabled={cart.length === 0}
+                        >
+                            Перейти до оплати
+                        </button>
+
+                        <button
+                            className="continue-button"
+                            type="button"
+                            onClick={() => {
+                                window.location.href = "/";
+                            }}
+                        >
+                            Продовжити покупки
+                        </button>
+
+                        <button
+                            className="clear-cart-button"
+                            type="button"
+                            disabled={cart.length === 0}
+                            onClick={handleClearCart}
+                        >
+                            Очистити кошик
+                        </button>
+                    </aside>
+                </div>
             </main>
-            <Footer/>
+
+            <Footer />
         </div>
-    )
+    );
 }
-export default CartPage;
