@@ -6,6 +6,8 @@ export interface StoreItem {
     imageUrl: string;
     price: number;
     addedAt: string;
+    oldPrice: number;
+    discountPercent: number;
 }
 
 export interface AddToStoreRequest {
@@ -13,6 +15,8 @@ export interface AddToStoreRequest {
     title: string;
     imageUrl: string;
     price: number;
+    oldPrice: number;
+    discountPercent: number;
 }
 
 export function getWishlist(): Promise<StoreItem[]> {

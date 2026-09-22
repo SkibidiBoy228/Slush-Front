@@ -298,8 +298,36 @@
 .wishlist-game-actions button:hover {
     background: #00c5c1;
 }
+.wishlist-price {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
 
-/* АДАПТИВНОСТЬ */
+.wishlist-old-price {
+    color: #86a7ad;
+    font-size: 12px;
+    text-decoration: line-through;
+}
+
+.wishlist-price strong {
+    color: #ffffff;
+    font-size: 15px;
+}
+
+.wishlist-discount {
+    padding: 3px 7px;
+
+    border-radius: 5px;
+
+    background: #00aaa9;
+    color: #003b49;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
 
 @media (max-width: 800px) {
     .wishlist-layout {

@@ -52,6 +52,8 @@ export default function CartPage() {
                 title: game.title,
                 imageUrl: game.imageUrl,
                 price: game.price,
+                oldPrice: game.oldPrice,
+                discountPercent: game.discountPercent,
             });
 
             await removeFromCart(game.gameId);
@@ -77,6 +79,9 @@ export default function CartPage() {
         }
     }
 
+    /*
+     * Загальна ціна зі знижками
+     */
     const total = useMemo(() => {
         return cart.reduce(
             (sum, game) => sum + game.price,
@@ -84,17 +89,52 @@ export default function CartPage() {
         );
     }, [cart]);
 
+    /*
+     * Загальна ціна без знижок
+     */
+    const oldTotal = useMemo(() => {
+        return cart.reduce(
+            (sum, game) => {
+                const oldPrice =
+                    game.oldPrice > 0
+                        ? game.oldPrice
+                        : game.price;
 
+                return sum + oldPrice;
+            },
+            0
+        );
+    }, [cart]);
 
-    const savings = 0;
+    /*
+     * Загальная економія
+     *
+     * Наприклад:
+     *
+     * OldPrice = 1000
+     * Price = 700
+     *
+     * Економія = 300
+     */
+    const savings = useMemo(() => {
+        return cart.reduce(
+            (sum, game) => {
+                const saving = Math.max(
+                    0,
+                    game.oldPrice - game.price
+                );
+
+                return sum + saving;
+            },
+            0
+        );
+    }, [cart]);
 
     return (
         <div className="cart-page">
             <Header />
 
-
             <GameSearch />
-
 
             <main className="cart-content">
                 <h1>Мій кошик</h1>
@@ -123,12 +163,29 @@ export default function CartPage() {
                                     <div className="cart-item-info">
                                         <h3>{game.title}</h3>
 
-                                        <strong>
-                                            {game.price.toLocaleString(
-                                                "uk-UA"
-                                            )}{" "}
-                                            ₴
-                                        </strong>
+                                        <div className="cart-price">
+                                            {game.oldPrice > game.price && (
+                                                <span className="cart-old-price">
+                                                    {game.oldPrice.toLocaleString(
+                                                        "uk-UA"
+                                                    )}{" "}
+                                                    ₴
+                                                </span>
+                                            )}
+
+                                            <strong>
+                                                {game.price.toLocaleString(
+                                                    "uk-UA"
+                                                )}{" "}
+                                                ₴
+                                            </strong>
+
+                                            {game.discountPercent > 0 && (
+                                                <span className="cart-discount">
+                                                    -{game.discountPercent}%
+                                                </span>
+                                            )}
+                                        </div>
                                     </div>
 
                                     <div className="cart-item-actions">
@@ -139,6 +196,7 @@ export default function CartPage() {
                                                     game
                                                 )
                                             }
+                                            aria-label="Додати до обраного"
                                         >
                                             ♡
                                         </button>
@@ -161,14 +219,26 @@ export default function CartPage() {
 
                     <aside className="cart-summary">
                         <div className="summary-row">
-                            <span>Ви заощадите</span>
+                            <span>Ціна без знижки</span>
 
                             <strong>
-                                {savings.toLocaleString("uk-UA")} ₴
+                                {cart.length === 0
+                                    ? "0 ₴"
+                                    : `${oldTotal.toLocaleString(
+                                          "uk-UA"
+                                      )} ₴`}
                             </strong>
                         </div>
 
                         <div className="summary-row">
+                            <span>Ви заощадите</span>
+
+                            <strong className="summary-savings">
+                                {savings.toLocaleString("uk-UA")} ₴
+                            </strong>
+                        </div>
+
+                        <div className="summary-row summary-total">
                             <span>Усього</span>
 
                             <strong>

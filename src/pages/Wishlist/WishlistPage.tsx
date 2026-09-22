@@ -54,6 +54,8 @@ export default function WishlistPage() {
                 title: game.title,
                 imageUrl: game.imageUrl,
                 price: game.price,
+                oldPrice: game.oldPrice,
+                discountPercent: game.discountPercent,
             });
 
             await removeFromWishlist(game.gameId);
@@ -267,13 +269,23 @@ export default function WishlistPage() {
 
                                         <div className="wishlist-game-info">
                                             <h3>{game.title}</h3>
+                                            <div className="wishlist-price">
+                                                {game.oldPrice > game.price && (
+                                                    <span className="wishlist-old-price">
+                                                        {game.oldPrice.toLocaleString("uk-UA")} ₴
+                                                    </span>
+                                                )}
 
-                                            <strong>
-                                                {game.price.toLocaleString(
-                                                    "uk-UA"
-                                                )}{" "}
-                                                ₴
-                                            </strong>
+                                                <strong>
+                                                    {game.price.toLocaleString("uk-UA")} ₴
+                                                </strong>
+
+                                                {game.discountPercent > 0 && (
+                                                    <span className="wishlist-discount">
+                                                        -{game.discountPercent}%
+                                                    </span>
+                                                )}
+                                            </div>
                                         </div>
 
                                         <div className="wishlist-game-actions">
