@@ -30,6 +30,8 @@ function GameSideBar({ game }: GameSidebarProps) {
     title: game.title,
     imageUrl: game.thumbnail,
     price: game.price,
+    oldPrice: game.oldPrice,
+    discountPercent: game.discountPercent,
   };
 
   const handleCartClick = async () => {
