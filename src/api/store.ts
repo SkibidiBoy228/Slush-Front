@@ -5,9 +5,9 @@ export interface StoreItem {
     title: string;
     imageUrl: string;
     price: number;
-    addedAt: string;
     oldPrice: number;
     discountPercent: number;
+    addedAt: string;
 }
 
 export interface AddToStoreRequest {

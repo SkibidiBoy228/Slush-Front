@@ -1,13 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
+
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import GameSearch from "../../components/GameSearch/GameSearch";
+
 import {
     addToCart,
     getWishlist,
     removeFromWishlist,
     type StoreItem,
 } from "../../api/store";
+
 import "./WishlistPage.css";
 
 export default function WishlistPage() {
@@ -29,7 +32,10 @@ export default function WishlistPage() {
 
             setWishlist(data);
         } catch (error) {
-            console.error("Помилка завантаження обраного:", error);
+            console.error(
+                "Помилка завантаження обраного:",
+                error
+            );
         } finally {
             setLoading(false);
         }
@@ -40,10 +46,15 @@ export default function WishlistPage() {
             await removeFromWishlist(gameId);
 
             setWishlist((prev) =>
-                prev.filter((game) => game.gameId !== gameId)
+                prev.filter(
+                    (game) => game.gameId !== gameId
+                )
             );
         } catch (error) {
-            console.error("Помилка видалення з обраного:", error);
+            console.error(
+                "Помилка видалення з обраного:",
+                error
+            );
         }
     }
 
@@ -61,10 +72,16 @@ export default function WishlistPage() {
             await removeFromWishlist(game.gameId);
 
             setWishlist((prev) =>
-                prev.filter((item) => item.gameId !== game.gameId)
+                prev.filter(
+                    (item) =>
+                        item.gameId !== game.gameId
+                )
             );
         } catch (error) {
-            console.error("Помилка додавання в кошик:", error);
+            console.error(
+                "Помилка додавання в кошик:",
+                error
+            );
         }
     }
 
@@ -72,19 +89,35 @@ export default function WishlistPage() {
         let result = [...wishlist];
 
         if (search.trim()) {
-            const query = search.toLowerCase();
+            const query = search
+                .trim()
+                .toLowerCase();
 
             result = result.filter((game) =>
-                game.title.toLowerCase().includes(query)
+                game.title
+                    .toLowerCase()
+                    .includes(query)
+            );
+        }
+
+        if (sort === "discount") {
+            result.sort(
+                (a, b) =>
+                    b.discountPercent -
+                    a.discountPercent
             );
         }
 
         if (sort === "price-asc") {
-            result.sort((a, b) => a.price - b.price);
+            result.sort(
+                (a, b) => a.price - b.price
+            );
         }
 
         if (sort === "price-desc") {
-            result.sort((a, b) => b.price - a.price);
+            result.sort(
+                (a, b) => b.price - a.price
+            );
         }
 
         if (sort === "name") {
@@ -124,7 +157,9 @@ export default function WishlistPage() {
                         <label>Пошук тегів</label>
 
                         <select>
-                            <option>Будь-які теги</option>
+                            <option>
+                                Будь-які теги
+                            </option>
                         </select>
 
                         <div className="filter-divider" />
@@ -132,7 +167,9 @@ export default function WishlistPage() {
                         <label>Жанр</label>
 
                         <select>
-                            <option>Усі жанри</option>
+                            <option>
+                                Усі жанри
+                            </option>
                         </select>
 
                         <div className="filter-divider" />
@@ -141,27 +178,42 @@ export default function WishlistPage() {
 
                         <div className="price-options">
                             <label>
-                                <input type="radio" name="price" />
+                                <input
+                                    type="radio"
+                                    name="price"
+                                />
                                 Безкоштовно
                             </label>
 
                             <label>
-                                <input type="radio" name="price" />
+                                <input
+                                    type="radio"
+                                    name="price"
+                                />
                                 До 100 гривень
                             </label>
 
                             <label>
-                                <input type="radio" name="price" />
+                                <input
+                                    type="radio"
+                                    name="price"
+                                />
                                 До 300 гривень
                             </label>
 
                             <label>
-                                <input type="radio" name="price" />
+                                <input
+                                    type="radio"
+                                    name="price"
+                                />
                                 До 600 гривень
                             </label>
 
                             <label>
-                                <input type="radio" name="price" />
+                                <input
+                                    type="radio"
+                                    name="price"
+                                />
                                 До 900 гривень
                             </label>
 
@@ -180,7 +232,9 @@ export default function WishlistPage() {
                         <label>Знижки</label>
 
                         <select>
-                            <option>Усі знижки</option>
+                            <option>
+                                Усі знижки
+                            </option>
                         </select>
 
                         <div className="filter-divider" />
@@ -188,7 +242,9 @@ export default function WishlistPage() {
                         <label>Тип</label>
 
                         <select>
-                            <option>Усі типи</option>
+                            <option>
+                                Усі типи
+                            </option>
                         </select>
 
                         <div className="filter-divider" />
@@ -196,7 +252,9 @@ export default function WishlistPage() {
                         <label>Особливості</label>
 
                         <select>
-                            <option>Усі особливості</option>
+                            <option>
+                                Усі особливості
+                            </option>
                         </select>
 
                         <div className="filter-divider" />
@@ -204,7 +262,9 @@ export default function WishlistPage() {
                         <label>Платформа</label>
 
                         <select>
-                            <option>Усі платформи</option>
+                            <option>
+                                Усі платформи
+                            </option>
                         </select>
                     </aside>
 
@@ -215,7 +275,9 @@ export default function WishlistPage() {
                                 placeholder="Пошук у бажаному..."
                                 value={search}
                                 onChange={(e) =>
-                                    setSearch(e.target.value)
+                                    setSearch(
+                                        e.target.value
+                                    )
                                 }
                             />
 
@@ -225,7 +287,9 @@ export default function WishlistPage() {
                                 <select
                                     value={sort}
                                     onChange={(e) =>
-                                        setSort(e.target.value)
+                                        setSort(
+                                            e.target.value
+                                        )
                                     }
                                 >
                                     <option value="discount">
@@ -257,60 +321,83 @@ export default function WishlistPage() {
                             </div>
                         ) : (
                             <div className="wishlist-games">
-                                {filteredWishlist.map((game) => (
-                                    <article
-                                        className="wishlist-game"
-                                        key={game.gameId}
-                                    >
-                                        <img
-                                            src={game.imageUrl}
-                                            alt={game.title}
-                                        />
+                                {filteredWishlist.map(
+                                    (game) => (
+                                        <article
+                                            className="wishlist-game"
+                                            key={game.gameId}
+                                        >
+                                            <img
+                                                src={
+                                                    game.imageUrl
+                                                }
+                                                alt={
+                                                    game.title
+                                                }
+                                            />
 
-                                        <div className="wishlist-game-info">
-                                            <h3>{game.title}</h3>
-                                            <div className="wishlist-price">
-                                                {game.oldPrice > game.price && (
-                                                    <span className="wishlist-old-price">
-                                                        {game.oldPrice.toLocaleString("uk-UA")} ₴
-                                                    </span>
-                                                )}
+                                            <div className="wishlist-game-info">
+                                                <h3>
+                                                    {game.title}
+                                                </h3>
 
-                                                <strong>
-                                                    {game.price.toLocaleString("uk-UA")} ₴
-                                                </strong>
+                                                <div className="wishlist-price">
+                                                    {game.oldPrice >
+                                                        game.price && (
+                                                        <span className="wishlist-old-price">
+                                                            {game.oldPrice.toLocaleString(
+                                                                "uk-UA"
+                                                            )}{" "}
+                                                            ₴
+                                                        </span>
+                                                    )}
 
-                                                {game.discountPercent > 0 && (
-                                                    <span className="wishlist-discount">
-                                                        -{game.discountPercent}%
-                                                    </span>
-                                                )}
+                                                    <strong>
+                                                        {game.price.toLocaleString(
+                                                            "uk-UA"
+                                                        )}{" "}
+                                                        ₴
+                                                    </strong>
+
+                                                    {game.discountPercent >
+                                                        0 && (
+                                                        <span className="wishlist-discount">
+                                                            -
+                                                            {
+                                                                game.discountPercent
+                                                            }
+                                                            %
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div className="wishlist-game-actions">
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    handleAddToCart(game)
-                                                }
-                                            >
-                                                Додати в кошик
-                                            </button>
+                                            <div className="wishlist-game-actions">
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        handleAddToCart(
+                                                            game
+                                                        )
+                                                    }
+                                                >
+                                                    Додати в кошик
+                                                </button>
 
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    handleRemove(
-                                                        game.gameId
-                                                    )
-                                                }
-                                            >
-                                                Видалити
-                                            </button>
-                                        </div>
-                                    </article>
-                                ))}
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        handleRemove(
+                                                            game.gameId
+                                                        )
+                                                    }
+                                                >
+                                                    Видалити
+                                                </button>
+                                            </div>
+                                        </article>
+                                    )
+                                )}
                             </div>
                         )}
                     </section>

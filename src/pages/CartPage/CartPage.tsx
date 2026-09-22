@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
+
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import GameSearch from "../../components/GameSearch/GameSearch";
+
 import {
     addToWishlist,
     clearCart,
@@ -9,6 +11,7 @@ import {
     removeFromCart,
     type StoreItem,
 } from "../../api/store";
+
 import "./CartPage.css";
 
 export default function CartPage() {
@@ -27,7 +30,10 @@ export default function CartPage() {
 
             setCart(data);
         } catch (error) {
-            console.error("Помилка завантаження кошика:", error);
+            console.error(
+                "Помилка завантаження кошика:",
+                error
+            );
         } finally {
             setLoading(false);
         }
@@ -38,14 +44,21 @@ export default function CartPage() {
             await removeFromCart(gameId);
 
             setCart((prev) =>
-                prev.filter((game) => game.gameId !== gameId)
+                prev.filter(
+                    (game) => game.gameId !== gameId
+                )
             );
         } catch (error) {
-            console.error("Помилка видалення з кошика:", error);
+            console.error(
+                "Помилка видалення з кошика:",
+                error
+            );
         }
     }
 
-    async function handleMoveToWishlist(game: StoreItem) {
+    async function handleMoveToWishlist(
+        game: StoreItem
+    ) {
         try {
             await addToWishlist({
                 gameId: game.gameId,
@@ -59,7 +72,10 @@ export default function CartPage() {
             await removeFromCart(game.gameId);
 
             setCart((prev) =>
-                prev.filter((item) => item.gameId !== game.gameId)
+                prev.filter(
+                    (item) =>
+                        item.gameId !== game.gameId
+                )
             );
         } catch (error) {
             console.error(
@@ -75,13 +91,13 @@ export default function CartPage() {
 
             setCart([]);
         } catch (error) {
-            console.error("Помилка очищення кошика:", error);
+            console.error(
+                "Помилка очищення кошика:",
+                error
+            );
         }
     }
 
-    /*
-     * Загальна ціна зі знижками
-     */
     const total = useMemo(() => {
         return cart.reduce(
             (sum, game) => sum + game.price,
@@ -89,9 +105,6 @@ export default function CartPage() {
         );
     }, [cart]);
 
-    /*
-     * Загальна ціна без знижок
-     */
     const oldTotal = useMemo(() => {
         return cart.reduce(
             (sum, game) => {
@@ -106,26 +119,14 @@ export default function CartPage() {
         );
     }, [cart]);
 
-    /*
-     * Загальная економія
-     *
-     * Наприклад:
-     *
-     * OldPrice = 1000
-     * Price = 700
-     *
-     * Економія = 300
-     */
     const savings = useMemo(() => {
         return cart.reduce(
-            (sum, game) => {
-                const saving = Math.max(
+            (sum, game) =>
+                sum +
+                Math.max(
                     0,
                     game.oldPrice - game.price
-                );
-
-                return sum + saving;
-            },
+                ),
             0
         );
     }, [cart]);
@@ -156,15 +157,20 @@ export default function CartPage() {
                                     key={game.gameId}
                                 >
                                     <img
-                                        src={game.imageUrl}
+                                        src={
+                                            game.imageUrl
+                                        }
                                         alt={game.title}
                                     />
 
                                     <div className="cart-item-info">
-                                        <h3>{game.title}</h3>
+                                        <h3>
+                                            {game.title}
+                                        </h3>
 
                                         <div className="cart-price">
-                                            {game.oldPrice > game.price && (
+                                            {game.oldPrice >
+                                                game.price && (
                                                 <span className="cart-old-price">
                                                     {game.oldPrice.toLocaleString(
                                                         "uk-UA"
@@ -180,9 +186,14 @@ export default function CartPage() {
                                                 ₴
                                             </strong>
 
-                                            {game.discountPercent > 0 && (
+                                            {game.discountPercent >
+                                                0 && (
                                                 <span className="cart-discount">
-                                                    -{game.discountPercent}%
+                                                    -
+                                                    {
+                                                        game.discountPercent
+                                                    }
+                                                    %
                                                 </span>
                                             )}
                                         </div>
@@ -219,7 +230,9 @@ export default function CartPage() {
 
                     <aside className="cart-summary">
                         <div className="summary-row">
-                            <span>Ціна без знижки</span>
+                            <span>
+                                Ціна без знижки
+                            </span>
 
                             <strong>
                                 {cart.length === 0
@@ -231,10 +244,15 @@ export default function CartPage() {
                         </div>
 
                         <div className="summary-row">
-                            <span>Ви заощадите</span>
+                            <span>
+                                Ви заощадите
+                            </span>
 
                             <strong className="summary-savings">
-                                {savings.toLocaleString("uk-UA")} ₴
+                                {savings.toLocaleString(
+                                    "uk-UA"
+                                )}{" "}
+                                ₴
                             </strong>
                         </div>
 
@@ -251,14 +269,17 @@ export default function CartPage() {
                         </div>
 
                         <p className="summary-note">
-                            Якщо застосовано, податок і продажу буде
-                            розраховано в процесі оплати.
+                            Якщо застосовано, податок і
+                            продажу буде розраховано в
+                            процесі оплати.
                         </p>
 
                         <button
                             className="checkout-button"
                             type="button"
-                            disabled={cart.length === 0}
+                            disabled={
+                                cart.length === 0
+                            }
                         >
                             Перейти до оплати
                         </button>
@@ -267,7 +288,8 @@ export default function CartPage() {
                             className="continue-button"
                             type="button"
                             onClick={() => {
-                                window.location.href = "/";
+                                window.location.href =
+                                    "/";
                             }}
                         >
                             Продовжити покупки
@@ -276,8 +298,12 @@ export default function CartPage() {
                         <button
                             className="clear-cart-button"
                             type="button"
-                            disabled={cart.length === 0}
-                            onClick={handleClearCart}
+                            disabled={
+                                cart.length === 0
+                            }
+                            onClick={
+                                handleClearCart
+                            }
                         >
                             Очистити кошик
                         </button>
