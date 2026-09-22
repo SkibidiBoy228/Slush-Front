@@ -187,7 +187,9 @@
     color: #ffffff;
     cursor: pointer;
 }
-
+.store-panel{
+    margin-bottom: 20px;
+}
 .wishlist-game-actions button:hover {
     background: #00c5c1;
 }

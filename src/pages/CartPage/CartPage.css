@@ -161,6 +161,10 @@
     cursor: default;
 }
 
+.store-panel{
+    margin-bottom: 20px;
+}
+
 @media (max-width: 800px) {
     .cart-layout {
         grid-template-columns: 1fr;
