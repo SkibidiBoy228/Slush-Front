@@ -13,8 +13,7 @@ import EditProfile from "./pages/EditProfile/EditProfile";
 
 import Catalog from "./pages/Catalog/Catalog";
 import WishlistPage from "./pages/Wishlist/WishlistPage";
-import CartPage from "./pages/CartPage/Cartpage";
-
+import CartPage from "./pages/CartPage/CartPage";
 import { usePresence } from "./hooks/usePresence";
 import { isAuthenticated } from "./api/client";
 
