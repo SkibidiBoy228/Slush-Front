@@ -12,9 +12,10 @@ import Profile from "./pages/Profile/Profile";
 import EditProfile from "./pages/EditProfile/EditProfile";
 
 import Catalog from "./pages/Catalog/Catalog";
+import WishlistPage from "./pages/Wishlist/WishlistPage";
+import CartPage from "./pages/CartPage/Cartpage";
 
 import { usePresence } from "./hooks/usePresence";
-
 import { isAuthenticated } from "./api/client";
 
 function App() {
@@ -60,10 +61,28 @@ function App() {
     return <EditProfile />;
   }
 
+  if (pathParts[0] === "wishlist") {
+    if (!isAuthenticated()) {
+      window.location.replace("/login");
+      return null;
+    }
+
+    return <WishlistPage />;
+  }
+
+  if (pathParts[0] === "cart") {
+    if (!isAuthenticated()) {
+      window.location.replace("/login");
+      return null;
+    }
+
+    return <CartPage />;
+  }
+
   if (pathParts[0] === "catalog") {
     return <Catalog />;
   }
-  
+
   if (pathParts[0] === "login") {
     return <LoginPage />;
   }

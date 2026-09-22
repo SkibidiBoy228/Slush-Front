@@ -18,7 +18,7 @@ const Footer = () =>{
                         of America and elsewhere.
                     </p>
                 </div>
-                <div className="social">
+                <div className="socials">
                     <a href="#">f</a>
                     <a href="#">◎</a>
                     <a href="#">𝕏</a>
