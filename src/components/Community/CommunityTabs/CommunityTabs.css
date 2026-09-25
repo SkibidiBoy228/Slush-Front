@@ -1,0 +1,52 @@
+.community-tabs {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  margin-top: 20px;
+
+  border-bottom: 1px solid #2a2d33;
+}
+
+.community-tabs button {
+  position: relative;
+
+  padding: 14px 22px;
+
+  border: none;
+  background: transparent;
+
+  color: #8d929b;
+
+  font-size: 15px;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition:
+    color 0.15s ease,
+    background 0.15s ease;
+}
+
+.community-tabs button:hover {
+  color: #ffffff;
+}
+
+.community-tabs button.active {
+  color: #ffffff;
+}
+
+.community-tabs button.active::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: -1px;
+
+  height: 2px;
+
+  background: #66c0f4;
+}

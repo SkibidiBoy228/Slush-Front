@@ -1,0 +1,163 @@
+.community-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+
+.community-sidebar-search {
+  width: 100%;
+}
+
+.community-sidebar-search input {
+  width: 100%;
+  height: 42px;
+
+  padding: 0 13px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #30343b;
+  border-radius: 4px;
+
+  outline: none;
+
+  background: #17191d;
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 14px;
+
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.community-sidebar-search input::placeholder {
+  color: #777d86;
+}
+
+.community-sidebar-search input:focus {
+  border-color: #4b525c;
+  background: #1a1c21;
+}
+
+/* Sections */
+
+.community-sidebar-section {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.community-sidebar-section h3 {
+  margin: 0;
+  padding: 0 4px;
+
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+
+.community-filter-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.community-filter-item {
+  width: 100%;
+  min-height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 10px;
+
+  border: none;
+  border-radius: 3px;
+
+  background: transparent;
+
+  color: #9a9fa7;
+
+  font-family: inherit;
+  font-size: 14px;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    color 0.15s ease,
+    background 0.15s ease;
+}
+
+.community-filter-item:hover {
+  background: #202329;
+  color: #ffffff;
+}
+
+.community-filter-item.active {
+  background: #252a31;
+  color: #ffffff;
+}
+
+.community-filter-count {
+  min-width: 24px;
+
+  color: #6f757e;
+
+  font-size: 12px;
+  text-align: right;
+}
+
+.community-filter-item.active .community-filter-count {
+  color: #66c0f4;
+}
+
+/* Sorting */
+
+.community-sort-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.community-sort-list button {
+  width: 100%;
+  min-height: 36px;
+
+  padding: 0 10px;
+
+  border: none;
+  border-radius: 3px;
+
+  background: transparent;
+
+  color: #8f959e;
+
+  font-family: inherit;
+  font-size: 14px;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    color 0.15s ease,
+    background 0.15s ease;
+}
+
+.community-sort-list button:hover {
+  background: #202329;
+  color: #ffffff;
+}
+
+.community-sort-list button.active {
+  color: #66c0f4;
+}

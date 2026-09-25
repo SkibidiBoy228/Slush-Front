@@ -109,13 +109,13 @@ function GamePage({ appId }: GamePageProps) {
             Характеристики
           </button>
 
-          <button
-            onClick={() => {
-              alert("Розділ спільноти поки що в розробці");
-            }}
-          >
-            Спільнота
-          </button>
+        <button
+          onClick={() => {
+            window.location.href = `/game/${game.id}/community`;
+          }}
+        >
+          Спільнота
+        </button>
         </nav>
 
         <div className="game-layout">
