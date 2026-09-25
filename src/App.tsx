@@ -10,6 +10,7 @@ import CharacteristicsPage from "./pages/CharacteristicsPage/CharacteristicsPage
 import DlcPage from "./pages/DlcPage/DlcPage";
 import Profile from "./pages/Profile/Profile";
 import EditProfile from "./pages/EditProfile/EditProfile";
+import CommunityPage from "./pages/CommunityPage/CommunityPage";
 
 import Catalog from "./pages/Catalog/Catalog";
 import WishlistPage from "./pages/Wishlist/WishlistPage";
@@ -36,6 +37,9 @@ function App() {
 
       return <DlcPage appId={appId} dlcId={dlcId} />;
     }
+    if (pathParts[2] === "community") {
+    return <CommunityPage gameId={appId} />;
+  }
 
     return <GamePage appId={appId} />;
   }
