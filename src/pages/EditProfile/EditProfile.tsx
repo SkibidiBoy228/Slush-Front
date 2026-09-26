@@ -25,6 +25,7 @@ function EditProfile() {
   const [bannerFile, setBannerFile] = useState<File | null>(null);
 
   const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
   const [videoTitle, setVideoTitle] = useState("");
   const [videoGameId, setVideoGameId] = useState("");
   const [videoGameTitle, setVideoGameTitle] = useState("");
@@ -33,6 +34,7 @@ function EditProfile() {
   const [videoError, setVideoError] = useState("");
 
   const [screenshotFile, setScreenshotFile] = useState<File | null>(null);
+  const [screenshotPreviewUrl, setScreenshotPreviewUrl] = useState<string | null>(null);
   const [screenshotGameId, setScreenshotGameId] = useState("");
   const [screenshotGameTitle, setScreenshotGameTitle] = useState("");
   const [uploadingScreenshot, setUploadingScreenshot] = useState(false);
@@ -120,7 +122,14 @@ function EditProfile() {
 
     if (!file) return;
 
+    if(videoPreviewUrl){
+      URL.revokeObjectURL(videoPreviewUrl);
+    }
+
+    const previewUrl = URL.createObjectURL(file);
+
     setVideoFile(file);
+    setVideoPreviewUrl(previewUrl)
     setVideoMessage("");
     setVideoError("");
   };
@@ -132,7 +141,14 @@ function EditProfile() {
 
     if (!file) return;
 
+    if(screenshotPreviewUrl){
+      URL.revokeObjectURL(screenshotPreviewUrl);
+    }
+
+    const previewUrl = URL.createObjectURL(file);
+
     setScreenshotFile(file);
+    setScreenshotPreviewUrl(previewUrl);
     setScreenshotMessage("");
     setScreenshotError("");
   };
@@ -175,6 +191,11 @@ function EditProfile() {
       setVideoTitle("");
       setVideoGameId("");
       setVideoGameTitle("");
+
+      if(videoPreviewUrl){
+        URL.revokeObjectURL(videoPreviewUrl);
+      }
+      setVideoPreviewUrl(null);
 
       if (videoInputRef.current) {
         videoInputRef.current.value = "";
@@ -223,6 +244,10 @@ function EditProfile() {
       setScreenshotFile(null);
       setScreenshotGameId("");
       setScreenshotGameTitle("");
+      if(screenshotPreviewUrl){
+        URL.revokeObjectURL(screenshotPreviewUrl);
+      }
+      setScreenshotPreviewUrl(null);
 
       if (screenshotInputRef.current) {
         screenshotInputRef.current.value = "";
@@ -465,6 +490,15 @@ function EditProfile() {
                 accept="video/*"
                 onChange={handleVideoChange}
               />
+              {videoPreviewUrl && (
+                <div className="edit-profile-media-preview">
+                  <video 
+                    src ={videoPreviewUrl}
+                    controls
+                    preload="metadata"
+                  />  
+                </div>
+              )}
 
               {videoFile && (
                 <span className="selected-file">
@@ -540,6 +574,14 @@ function EditProfile() {
                 accept="image/png,image/jpeg,image/webp"
                 onChange={handleScreenshotChange}
               />
+              {screenshotPreviewUrl &&(
+                <div className="edit-profile-media-preview">
+                    <img src = {screenshotPreviewUrl}
+                      alt = "Передсмотр скрішнота">
+
+                      </img>
+                </div>
+              )}
 
               {screenshotFile && (
                 <span className="selected-file">

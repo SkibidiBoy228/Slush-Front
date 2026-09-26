@@ -337,6 +337,31 @@
   line-height: 1.5;
 }
 
+.edit-profile-media-preview {
+  width: 100%;
+  margin-top: 12px;
+
+  border: 1px solid #30363d;
+  border-radius: 6px;
+
+  overflow: hidden;
+  background: #15191d;
+}
+
+.edit-profile-media-preview img {
+  display: block;
+  width: 100%;
+  max-height: 400px;
+  object-fit: contain;
+}
+
+.edit-profile-media-preview video {
+  display: block;
+  width: 100%;
+  max-height: 400px;
+  background: #000;
+}
+
 @media (max-width: 600px) {
   .edit-profile-page {
     padding: 20px 12px;
