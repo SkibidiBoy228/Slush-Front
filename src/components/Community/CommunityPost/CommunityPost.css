@@ -201,3 +201,33 @@
 .community-post-share {
   margin-left: auto;
 }
+
+.community-post-author-link {
+  padding: 0;
+  margin: 0;
+
+  border: none;
+  background: transparent;
+
+  cursor: pointer;
+}
+
+.community-post-author-name-button {
+  padding: 0;
+  margin: 0;
+
+  border: none;
+  background: transparent;
+
+  color: #ffffff;
+
+  font: inherit;
+  font-weight: 600;
+
+  cursor: pointer;
+  text-align: left;
+}
+
+.community-post-author-name-button:hover {
+  color: #39a9c4;
+}

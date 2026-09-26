@@ -57,18 +57,41 @@ function CommunityComments({
         return(
             <div key={comment.id}
             className={`community-comment ${isReply ? "community-comment-reply" : ""}`}>
-                <div className="community-comment-avatar">
-                    {comment.authorAvatarUrl ? (
-                        <img src = {comment.authorAvatarUrl} alt = {comment.authorUsername}/>
-                    ): (
-                        <span>{comment.authorUsername.charAt(0).toUpperCase()}</span>
-                    )}
-                </div>
+                <button
+                    type="button"
+                    className="community-comment-author-link"
+                    onClick={() => {
+                        window.location.href = `/profile/${encodeURIComponent(
+                            comment.authorUsername
+                        )}`;
+                    }}
+                >
+                    <div className="community-comment-avatar">
+                        {comment.authorAvatarUrl ? (
+                            <img
+                                src={comment.authorAvatarUrl}
+                                alt={comment.authorUsername}
+                            />
+                        ) : (
+                            <span>
+                                {comment.authorUsername.charAt(0).toUpperCase()}
+                            </span>
+                        )}
+                    </div>
+                </button>
                 <div className="community-comment-body">
                     <div className="community-comment-header">
-                        <span className="community-comment-author">
+                        <button
+                            type="button"
+                            className="community-comment-author community-comment-author-name"
+                            onClick={() => {
+                                window.location.href = `/profile/${encodeURIComponent(
+                                    comment.authorUsername
+                                )}`;
+                            }}
+                        >
                             {comment.authorUsername}
-                        </span>
+                        </button>
                         <span className="community-comment-date">
                             {comment.createdAt}
                         </span>

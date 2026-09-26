@@ -47,23 +47,41 @@ function CommunityPost({
   return (
     <article className="community-post">
       <div className="community-post-author">
-        <div className="community-post-avatar">
-          {post.authorAvatarUrl ? (
-            <img
-              src={post.authorAvatarUrl}
-              alt={post.authorUsername}
-            />
-          ) : (
-            <span>
-              {post.authorUsername.charAt(0).toUpperCase()}
-            </span>
-          )}
-        </div>
+        <button
+          type="button"
+          className="community-post-author-link"
+          onClick={() => {
+            window.location.href = `/profile/${encodeURIComponent(
+              post.authorUsername
+            )}`;
+          }}
+        >
+          <div className="community-post-avatar">
+            {post.authorAvatarUrl ? (
+              <img
+                src={post.authorAvatarUrl}
+                alt={post.authorUsername}
+              />
+            ) : (
+              <span>
+                {post.authorUsername.charAt(0).toUpperCase()}
+              </span>
+            )}
+          </div>
+        </button>
 
         <div className="community-post-author-info">
-          <span className="community-post-author-name">
+          <button
+            type="button"
+            className="community-post-author-name community-post-author-name-button"
+            onClick={() => {
+              window.location.href = `/profile/${encodeURIComponent(
+                post.authorUsername
+              )}`;
+            }}
+          >
             {post.authorUsername}
-          </span>
+          </button>
 
           <span className="community-post-date">
             {post.createdAt}

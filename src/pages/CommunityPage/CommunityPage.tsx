@@ -324,6 +324,7 @@ function CommunityPage({ gameId }: CommunityPageProps) {
       title: string;
       content: string;
       shortDescription: string;
+      mediaUrl: string | null;
     }
   ) => {
     try {
@@ -338,6 +339,7 @@ function CommunityPage({ gameId }: CommunityPageProps) {
           shortDescription:
             data.shortDescription ||
             undefined,
+          mediaUrl: data.mediaUrl || undefined,
         });
 
       setPosts((currentPosts) => [

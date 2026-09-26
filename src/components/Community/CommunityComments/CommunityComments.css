@@ -269,3 +269,33 @@
   font-size: 13px;
   text-align: center;
 }
+.community-comment-author-link {
+    padding: 0;
+    margin: 0;
+
+    border: none;
+    background: transparent;
+
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.community-comment-author-name {
+    padding: 0;
+    margin: 0;
+
+    border: none;
+    background: transparent;
+
+    color: #ffffff;
+
+    font: inherit;
+    font-weight: 600;
+
+    cursor: pointer;
+    text-align: left;
+}
+
+.community-comment-author-name:hover {
+    color: #39a9c4;
+}

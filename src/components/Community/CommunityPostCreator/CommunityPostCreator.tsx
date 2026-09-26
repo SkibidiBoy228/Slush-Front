@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { CommunityPostType } from "../../../types/community";
+import { uploadScreenshot, uploadVideo } from "../../../api/media";
 import "./CommunityPostCreator.css";
 
 interface CommunityPostCreatorProps {
@@ -8,6 +9,7 @@ interface CommunityPostCreatorProps {
     title: string;
     content: string;
     shortDescription: string;
+    mediaUrl: string | null;
   }) => void;
 }
 
@@ -21,8 +23,11 @@ function CommunityPostCreator({
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [shortDescription, setShortDescription] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  const handleSubmit = (
+  const handleSubmit = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
@@ -31,18 +36,44 @@ function CommunityPostCreator({
       return;
     }
 
-    onSubmit({
-      postType,
-      title: title.trim(),
-      content: content.trim(),
-      shortDescription: shortDescription.trim(),
-    });
+    try {
+      setUploading(true);
 
-    setTitle("");
-    setContent("");
-    setShortDescription("");
-    setPostType("Discussion");
-    setIsOpen(false);
+      let mediaUrl: string | null = null;
+
+      if (selectedFile) {
+        if (postType === "Screenshot") {
+          mediaUrl = await uploadScreenshot(selectedFile);
+        }
+
+        if (postType === "Video") {
+          mediaUrl = await uploadVideo(selectedFile);
+        }
+      }
+
+      await onSubmit({
+        postType,
+        title: title.trim(),
+        content: content.trim(),
+        shortDescription: shortDescription.trim(),
+        mediaUrl,
+      });
+
+      setTitle("");
+      setContent("");
+      setShortDescription("");
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+
+      setSelectedFile(null);
+      setPostType("Discussion");
+      setIsOpen(false);
+    } catch (error) {
+      console.error("Failed to upload media:", error);
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
@@ -81,11 +112,17 @@ function CommunityPostCreator({
             <select
               id="community-post-type"
               value={postType}
-              onChange={(event) =>
-                setPostType(
-                  event.target.value as CommunityPostType
-                )
-              }
+              onChange={(event)=>{
+                const newType = event.target.value as CommunityPostType;
+                setPostType(newType);
+                if(newType !== "Screenshot" && newType !== "Video"){
+                  if(previewUrl){
+                    URL.revokeObjectURL(previewUrl);
+                  }
+                  setSelectedFile(null);
+                  setPreviewUrl(null);
+                }
+              }}
             >
               <option value="Discussion">Обговорення</option>
               <option value="Screenshot">Скріншот</option>
@@ -94,6 +131,42 @@ function CommunityPostCreator({
               <option value="News">Новини</option>
             </select>
           </div>
+          {(postType === "Screenshot" || postType === "Video") &&(
+            <div className="community-post-field">
+              <label htmlFor="community-post-media">
+                {postType==="Screenshot" ? "Скріншот" : "Відео"}
+              </label>
+              <input id="community-post-media"
+                type="file"
+                accept={postType === "Screenshot" ? "image/*" : "video/*"}
+                onChange={(event)=>{
+                  const file = event.target.files?.[0] ?? null;
+                  setSelectedFile(file);
+                  if(previewUrl){
+                    URL.revokeObjectURL(previewUrl);
+                  }
+                  if(file){
+                    const url = URL.createObjectURL(file);
+                    setPreviewUrl(url);
+                  }else{
+                    setPreviewUrl(null);
+                  }
+                }}
+                />
+                {previewUrl && (
+                  <div className="community-media-preview">
+                    {postType==="Screenshot" ? (
+                      <img src ={previewUrl} alt="Попередній перегляд"/>
+                    ): (
+                      <video src = {previewUrl} controls/>
+                    )}
+                  </div>
+                )}
+                {selectedFile && (
+                  <span className="community-selected-file">{selectedFile.name}</span>
+                )}
+            </div>
+          )}
 
           <div className="community-post-field">
             <label htmlFor="community-post-title">
@@ -154,13 +227,15 @@ function CommunityPostCreator({
               Скасувати
             </button>
 
-            <button
-              type="submit"
-              className="community-post-submit"
-              disabled={!title.trim() && !content.trim()}
-            >
-              Опублікувати
-            </button>
+              <button 
+                type="submit"
+                className="community-post-submit"
+                disabled ={
+                  uploading || (!title.trim() && !content.trim()) || ((postType==="Screenshot" || postType==="Video") && !selectedFile)
+                }
+                >
+                  {uploading ? "Завантаження..." : "Опублікувати"}
+                </button>
           </div>
         </form>
       )}
