@@ -81,13 +81,23 @@ function LoginForm() {
 
       const normalizedRole = role?.toLowerCase();
 
-      if (
-        normalizedRole === "analyst" ||
-        normalizedRole === "moderator" ||
-        normalizedRole === "admin" ||
-        normalizedRole === "superadmin"
-      ) {
-        window.location.href = import.meta.env.VITE_ADMIN_URL;
+      // Админка живёт на другом домене: localStorage туда не shared,
+      // поэтому ключ едет во фрагменте (# — не уходит на сервер и в Referer).
+      // Админка сама заберёт его в свой ключ и стрёт из адреса.
+      const adminBase = (
+        (import.meta.env.VITE_ADMIN_URL as string | undefined) ?? ""
+      ).replace(/\/$/, "");
+      const adminDoors: Record<string, string> = {
+        superadmin: "/superadmin",
+        admin: "/admin",
+        moderator: "/moderator",
+        analyst: "/analyst",
+      };
+
+      const adminDoor = normalizedRole ? adminDoors[normalizedRole] : undefined;
+
+      if (adminDoor) {
+        window.location.href = `${adminBase}${adminDoor}#access_token=${response.accessToken}`;
       } else {
         window.location.href = "/mainPage";
       }

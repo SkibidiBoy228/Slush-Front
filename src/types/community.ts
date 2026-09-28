@@ -9,21 +9,16 @@ export type CommunitySortOption = "Newest" | "ByRating";
 
 export interface CommunityPost {
   id: string;
-
   authorUsername: string;
   authorAvatarUrl: string;
-
   postType: CommunityPostType;
   isLiked: boolean;
-
   title?: string | null;
   content?: string | null;
   shortDescription?: string | null;
   mediaUrl?: string | null;
-
   likesCount: number;
   commentsCount: number;
-
   createdAt: string;
 }
 
@@ -41,20 +36,16 @@ export interface CommunityTabCounts {
 
 export interface PostComment {
   id: string;
-
   authorUsername: string;
   authorAvatarUrl: string;
-
   content: string;
   createdAt: string;
-
   replies: PostComment[];
 }
 
 export interface CreateCommunityPostRequest {
   gameId: string;
   postType: CommunityPostType;
-
   title?: string;
   content?: string;
   shortDescription?: string;
