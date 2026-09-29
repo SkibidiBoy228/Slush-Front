@@ -6,8 +6,8 @@ import GeneralSettings from "../../components/Settings/GeneralSettings/GeneralSe
 import NotificationSettings from "../../components/Settings/NotificationSettings/NotificationSettings";
 import PasswordSettings from "../../components/Settings/PasswordSettings/PasswordSettings";
 import WalletSettings from "../../components/Settings/WalletSettings/WalletSettings";
-import DeleteAccount from "../../components/Settings/DeleteAccount/DeleteAccounts";
-
+import DeleteAccount from "../../components/Settings/DeleteAccount/DeleteAccount";
+ 
 import "./Settings.css";
 
 function Settings(){
