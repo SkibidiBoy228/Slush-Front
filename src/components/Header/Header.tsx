@@ -88,21 +88,64 @@ const Header = () => {
           </a>
         ) : (
           <div className="header-actions">
-            <button
-              type="button"
-              className="header-icon-button"
-              aria-label="Налаштування"
-            >
-              ⚙
-            </button>
+              <a
+                href="/settings"
+                className="header-icon-button"
+                aria-label="Налаштування"
+                title="Налаштування"
+              >
+                <svg
+                  className="header-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M12 15.5C13.933 15.5 15.5 13.933 15.5 12C15.5 10.067 13.933 8.5 12 8.5C10.067 8.5 8.5 10.067 8.5 12C8.5 13.933 10.067 15.5 12 15.5Z"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                  />
 
-            <button
-              type="button"
-              className="header-icon-button"
-              aria-label="Сповіщення"
-            >
-              ♧
-            </button>
+                  <path
+                    d="M19.4 15C19.55 14.67 19.67 14.33 19.75 14L21.1 12.95L19.9 10.85L18.25 11.3C17.77 10.83 17.2 10.45 16.58 10.2L16.35 8.5L13.95 8.1L13.2 9.65C12.8 9.6 12.4 9.6 12 9.65L10.8 8.3L8.6 9.35L9.05 11C8.58 11.47 8.2 12.04 7.95 12.65L6.25 12.9L5.85 15.3L7.4 16.5C7.35 16.9 7.35 17.3 7.4 17.7L6.05 18.9L7.1 21.1L8.75 20.65C9.22 21.12 9.79 21.5 10.4 21.75L10.65 23.45L13.05 23.85L14.25 22.3C14.65 22.35 15.05 22.35 15.45 22.3L16.65 23.65L18.85 22.6L18.4 20.95C18.87 20.48 19.25 19.91 19.5 19.3L21.2 19.05L21.6 16.65L20.05 15.45C20 15.3 19.7 15.1 19.4 15Z"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </a>
+
+              <button
+                type="button"
+                className="header-icon-button"
+                aria-label="Сповіщення"
+                title="Сповіщення"
+              >
+                <svg
+                  className="header-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M18 8C18 4.686 15.314 2 12 2C8.686 2 6 4.686 6 8C6 15 3 17 3 17H21C21 17 18 15 18 8Z"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+
+                  <path
+                    d="M10 21H14"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </button>
 
             <a
               href={profileUrl}

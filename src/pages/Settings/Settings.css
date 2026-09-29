@@ -1,0 +1,40 @@
+.settings-page {
+  min-height: 100vh;
+
+  padding: 40px 0 60px;
+
+  box-sizing: border-box;
+
+  background: #003b47;
+  color: #ffffff;
+}
+
+.settings-container {
+  display: flex;
+  align-items: flex-start;
+
+  width: min(1200px, calc(100% - 40px));
+
+  margin: 0 auto;
+
+  gap: 24px;
+}
+
+.settings-content {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 850px) {
+  .settings-container {
+    flex-direction: column;
+  }
+
+  .settings-sidebar {
+    width: 100%;
+  }
+
+  .settings-content {
+    width: 100%;
+  }
+}

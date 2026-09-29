@@ -22,7 +22,7 @@
   width: min(900px, calc(100% - 40px));
 }
 
-/* Логотип */
+
 
 .logo {
   justify-self: start;
@@ -33,7 +33,7 @@
   text-decoration: none;
 }
 
-/* Навигация */
+
 
 .navigation {
   display: flex;
@@ -53,7 +53,7 @@
   color: #1de0c4;
 }
 
-/* Кнопка входа */
+
 
 .header-login-button {
   justify-self: end;
@@ -72,12 +72,19 @@
     transform 0.2s ease;
 }
 
+.header-icon {
+  width: 17px;
+  height: 17px;
+  display: block;
+  flex-shrink: 0;
+}
+
 .header-login-button:hover {
   background: #0d849b;
   transform: translateY(-1px);
 }
 
-/* Действия авторизованного пользователя */
+
 
 .header-actions {
   justify-self: end;
@@ -86,7 +93,6 @@
   gap: 8px;
 }
 
-/* Круглые кнопки */
 
 .header-icon-button {
   width: 34px;
@@ -111,7 +117,7 @@
   transform: translateY(-1px);
 }
 
-/* Ссылка на профиль */
+
 
 .header-avatar-link {
   width: 34px;

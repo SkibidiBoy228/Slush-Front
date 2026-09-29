@@ -1,0 +1,173 @@
+.notification-settings {
+  width: 100%;
+}
+
+.notification-settings-header {
+  margin-bottom: 24px;
+}
+
+.notification-settings-header h1 {
+  margin: 0 0 8px;
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.notification-settings-header p {
+  margin: 0;
+  color: #8e969f;
+  font-size: 14px;
+}
+
+.notification-settings-card {
+  overflow: hidden;
+
+  margin-bottom: 20px;
+
+  background: #15191d;
+  border: 1px solid #252a2f;
+  border-radius: 6px;
+}
+
+.notification-settings-card h2 {
+  margin: 0;
+
+  padding: 20px 22px;
+
+  border-bottom: 1px solid #252a2f;
+
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.notification-settings-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  min-height: 56px;
+
+  padding: 0 22px;
+
+  border-bottom: 1px solid #252a2f;
+
+  color: #d7dce0;
+  font-size: 14px;
+}
+
+.notification-settings-item:last-child {
+  border-bottom: none;
+}
+
+.notification-switch {
+  position: relative;
+
+  width: 42px;
+  height: 22px;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 20px;
+
+  background: #3a4148;
+
+  cursor: pointer;
+
+  transition: background-color 0.2s ease;
+}
+
+.notification-switch-active {
+  background: #147a91;
+}
+
+.notification-switch-thumb {
+  position: absolute;
+
+  top: 3px;
+  left: 3px;
+
+  width: 16px;
+  height: 16px;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  transition: transform 0.2s ease;
+}
+
+.notification-switch-active
+  .notification-switch-thumb {
+  transform: translateX(20px);
+}
+
+.notification-settings-chat-header,
+.notification-settings-chat-row {
+  display: grid;
+  grid-template-columns: 1fr 90px 70px;
+  align-items: center;
+}
+
+.notification-settings-chat-header {
+  min-height: 44px;
+
+  padding: 0 22px;
+
+  border-bottom: 1px solid #252a2f;
+
+  color: #707980;
+  font-size: 12px;
+  text-align: center;
+}
+
+.notification-settings-chat-header span:first-child {
+  text-align: left;
+}
+
+.notification-settings-chat-row {
+  min-height: 60px;
+
+  padding: 0 22px;
+
+  color: #d7dce0;
+  font-size: 14px;
+}
+
+.notification-settings-chat-row
+  .notification-switch {
+  justify-self: center;
+}
+
+.notification-settings-message {
+  padding: 12px 14px;
+
+  border-radius: 4px;
+
+  font-size: 14px;
+}
+
+.notification-settings-message-success {
+  border: 1px solid #246b55;
+  background: #17372f;
+  color: #71d8b3;
+}
+
+.notification-settings-message-error {
+  border: 1px solid #7a3434;
+  background: #351b1b;
+  color: #ff8c8c;
+}
+
+.notification-settings-loading,
+.notification-settings-error {
+  padding: 60px 20px;
+
+  background: #15191d;
+  border: 1px solid #252a2f;
+  border-radius: 6px;
+
+  color: #8e969f;
+  text-align: center;
+}
