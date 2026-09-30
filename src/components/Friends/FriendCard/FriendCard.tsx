@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { FriendUser } from "../../../types/friends";
 import "./FriendCard.css";
 
@@ -14,6 +15,8 @@ function FriendCard({
   onRemove,
   showRemoveButton = false,
 }: FriendCardProps) {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const openProfile = () => {
     if (onClick) {
       onClick(friend);
@@ -23,6 +26,21 @@ function FriendCard({
     window.location.href = `/profile/${encodeURIComponent(
       friend.username
     )}`;
+  };
+
+  const handleMenuToggle = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.stopPropagation();
+    setMenuOpen((prev) => !prev);
+  };
+
+  const handleRemove = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.stopPropagation();
+    setMenuOpen(false);
+    onRemove?.(friend);
   };
 
   return (
@@ -73,15 +91,36 @@ function FriendCard({
       </button>
 
       {showRemoveButton && (
-        <button
-          type="button"
-          className="friend-card-remove"
-          onClick={() => onRemove?.(friend)}
-          aria-label={`Видалити ${friend.username} з друзів`}
-          title="Видалити з друзів"
-        >
-          ⋯
-        </button>
+        <div className="friend-card-menu-wrapper">
+          <button
+            type="button"
+            className="friend-card-remove"
+            onClick={handleMenuToggle}
+            aria-label="Меню друга"
+            title="Меню"
+          >
+            ⋯
+          </button>
+
+          {menuOpen && (
+            <div className="friend-card-menu">
+              <button
+                type="button"
+                onClick={openProfile}
+              >
+                Открыть профиль
+              </button>
+
+              <button
+                type="button"
+                className="friend-card-menu-danger"
+                onClick={handleRemove}
+              >
+                Удалить из друзей
+              </button>
+            </div>
+          )}
+        </div>
       )}
     </article>
   );

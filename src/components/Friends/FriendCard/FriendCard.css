@@ -111,3 +111,52 @@
   background: rgba(255, 255, 255, 0.05);
   color: #ffffff;
 }
+.friend-card-menu-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.friend-card-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 50;
+
+  min-width: 180px;
+  padding: 6px;
+
+  background: #1b1d23;
+  border: 1px solid #30343d;
+  border-radius: 8px;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.friend-card-menu button {
+  display: block;
+  width: 100%;
+  padding: 9px 10px;
+
+  border: none;
+  border-radius: 5px;
+
+  background: transparent;
+  color: #e5e7eb;
+
+  text-align: left;
+  font-size: 13px;
+
+  cursor: pointer;
+}
+
+.friend-card-menu button:hover {
+  background: #292d35;
+}
+
+.friend-card-menu .friend-card-menu-danger {
+  color: #ff6b6b;
+}
+
+.friend-card-menu .friend-card-menu-danger:hover {
+  background: rgba(255, 70, 70, 0.12);
+}
