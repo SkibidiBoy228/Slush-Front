@@ -810,8 +810,20 @@ const Profile = ({ username }: ProfileProps) => {
 
             <section className="sidebar-card">
               <div className="sidebar-title">
-                <h2>Друзі</h2>
-                <strong>{profile.counters.friends}</strong>
+                <div className="sidebar-title-left">
+                  <h2>Друзі</h2>
+                  <strong>{profile.counters.friends}</strong>
+                </div>
+
+                <button
+                  type="button"
+                  className="friends-see-all"
+                  onClick={() => {
+                    window.location.href = "/friends";
+                  }}
+                >
+                  Усі →
+                </button>
               </div>
 
               <div className="friends-list">

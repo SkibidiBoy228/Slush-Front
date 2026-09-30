@@ -4,6 +4,7 @@ import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword/ResetPassword";
 import VerifyEmail from "./pages/VerifyEmail/VerifyEmail";
 import Home from "./pages/Home/Home";
+import Friends from "./pages/Friends/Friend";
 
 import GamePage from "./pages/GamePage/GamePage";
 import CharacteristicsPage from "./pages/CharacteristicsPage/CharacteristicsPage";
@@ -62,6 +63,14 @@ function App() {
     const username = decodeURIComponent(pathParts[1]);
 
     return <Profile username={username} />;
+  }
+
+  if(pathParts[0] === "friends"){
+    if(!isAuthenticated()){
+      window.location.replace("/login");
+      return null;
+    }
+    return <Friends/>
   }
 
   if (pathParts[0] === "edit-profile") {

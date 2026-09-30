@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getFriends } from "../../api/friends";
-import type { FriendUser } from "../../types/friends";
+import { getFriends } from "../../../api/friends";
+import type { FriendUser } from "../../../types/friends";
 import "./FriendsPreview.css";
 interface FriendsPreviewProps {
     username: string;

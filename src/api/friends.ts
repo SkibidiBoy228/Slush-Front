@@ -14,7 +14,7 @@ export async function getFriends(page = 1, pageSize = 20): Promise<FriendsRespon
         }
     );
 }
-export async function getIncomingFriendRequest(page = 1, pageSize = 20) : Promise<FriendRequestsResponse> {
+export async function getIncomingFriendRequests(page = 1, pageSize = 20) : Promise<FriendRequestsResponse> {
     return apiRequest<FriendRequestsResponse>(
         `/api/Friends/requests/incoming?page=${page}&pageSize=${pageSize}`,{
             method: "GET",
