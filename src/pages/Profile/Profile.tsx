@@ -14,6 +14,15 @@ import {
   getUserProfile,
 } from "../../api/profile";
 
+import {
+    getFriendStatus,
+    sendFriendRequest,
+    acceptFriendRequest,
+    rejectFriendRequest,
+    cancelFriendRequest,
+    removeFriend,
+} from "../../api/friends"
+
 import type {
   UserProfile,
   ProfileComment,
@@ -55,6 +64,9 @@ const Profile = ({ username }: ProfileProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [isActionsMenuOpen, setIsActionsMenuOpen] = useState(false);
+  const [friendStatus, setFriendStatus] = useState<"None" | "PendingSent" | "PendingReceived" | "Friends">("None");
+  const [friendRequestId, setFriendRequestId] = useState<string | null>(null);
+  const [friendActionLoading, setFriendActionLoading] = useState(false);
 
   useEffect(() => {
     let isCancelled = false;
@@ -119,7 +131,6 @@ const Profile = ({ username }: ProfileProps) => {
       isCancelled = true;
     };
   }, [username]);
-
   const xpProgress = useMemo(() => {
     if (!profile || profile.maxXp <= 0) {
       return 0;
@@ -150,6 +161,119 @@ const Profile = ({ username }: ProfileProps) => {
 
   const isOwnProfile =
     currentUsername?.toLowerCase() === username.toLowerCase();
+
+    useEffect(()=>{
+    if(isOwnProfile){
+      return;
+    }
+    let cancelled = false;
+    async function loadFriendStatus() {
+        try{
+          const response = await getFriendStatus(profile?.id ?? "");
+          if(cancelled){
+            return;
+          }
+          setFriendStatus(response.status);
+          setFriendRequestId(response.requestId);
+        }catch(error){
+          console.error("Не вдалося отримати статус дружби:",error);
+        }
+    }
+    return ()=>{
+      cancelled = true;
+    };
+  }, [profile?.id, isOwnProfile]);
+
+  const handleSendFriendRequest = async () =>{
+    if(!profile || friendActionLoading){
+      return;
+    }
+    try{
+      setFriendActionLoading(true);
+      await sendFriendRequest(profile.id);
+      const status = await getFriendStatus(profile.id);
+      setFriendStatus(status.status);
+      setFriendRequestId(status.requestId);
+    }catch(error){
+      console.error("Не вдалося надіслати запит", error);
+    }finally{
+      setFriendActionLoading(false);
+    }
+  }
+  const handleCancelFriendRequest = async () => {
+    const requestId = friendRequestId;
+
+    if (!requestId || friendActionLoading) {
+      return;
+    }
+
+    try {
+      setFriendActionLoading(true);
+
+      await cancelFriendRequest(requestId);
+
+      setFriendStatus("None");
+      setFriendRequestId(null);
+    } catch (error) {
+      console.error("Не вдалося скасувати запит:", error);
+    } finally {
+      setFriendActionLoading(false);
+    }
+  };
+  const handleAcceptFriendRequest = async () =>{
+    const requestId = friendRequestId;
+    if(!requestId || friendActionLoading){
+      return;
+    }
+    try{
+      setFriendActionLoading(true);
+      await acceptFriendRequest(requestId);
+      setFriendStatus("Friends");
+      setFriendRequestId(null);
+    }catch(error){
+      console.error("Не вдалося прийняти запит:", error)
+    }finally{
+      setFriendActionLoading(false);
+    }
+  }
+  const handleRejectFriendRequest = async () => {
+    const requestId = friendRequestId;
+
+    if (!requestId || friendActionLoading) {
+      return;
+    }
+
+    try {
+      setFriendActionLoading(true);
+
+      await rejectFriendRequest(requestId);
+
+      setFriendStatus("None");
+      setFriendRequestId(null);
+    } catch (error) {
+      console.error("Не вдалося відхилити запит:", error);
+    } finally {
+      setFriendActionLoading(false);
+    }
+  };
+
+  const handleRemoveFriend = async () => {
+    if (!profile || friendActionLoading) {
+      return;
+    }
+
+    try {
+      setFriendActionLoading(true);
+
+      await removeFriend(profile.id);
+
+      setFriendStatus("None");
+    } catch (error) {
+      console.error("Не вдалося видалити друга:", error);
+    } finally {
+      setFriendActionLoading(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -279,9 +403,55 @@ const Profile = ({ username }: ProfileProps) => {
                       👥 Запросити до групи
                     </button>
 
-                    <button type="button">
-                      ❤️ Додати в друзі
-                    </button>
+                    {friendStatus === "None" && (
+                      <button
+                        type="button"
+                        onClick={handleSendFriendRequest}
+                        disabled={friendActionLoading}
+                      >
+                        ❤️ Додати в друзі
+                      </button>
+                    )}
+
+                    {friendStatus === "PendingSent" && (
+                      <button
+                        type="button"
+                        onClick={handleCancelFriendRequest}
+                        disabled={friendActionLoading}
+                      >
+                        ↩ Скасувати запит
+                      </button>
+                    )}
+
+                    {friendStatus === "PendingReceived" && (
+                      <>
+                        <button
+                          type="button"
+                          onClick={handleAcceptFriendRequest}
+                          disabled={friendActionLoading}
+                        >
+                          ✓ Прийняти запит
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={handleRejectFriendRequest}
+                          disabled={friendActionLoading}
+                        >
+                          ✕ Відхилити
+                        </button>
+                      </>
+                    )}
+
+                    {friendStatus === "Friends" && (
+                      <button
+                        type="button"
+                        onClick={handleRemoveFriend}
+                        disabled={friendActionLoading}
+                      >
+                        👥 Видалити з друзів
+                      </button>
+                    )}
 
                     <button type="button">
                       🚫 Заблокувати
