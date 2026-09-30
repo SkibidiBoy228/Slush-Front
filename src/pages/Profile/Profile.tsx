@@ -162,28 +162,30 @@ const Profile = ({ username }: ProfileProps) => {
   const isOwnProfile =
     currentUsername?.toLowerCase() === username.toLowerCase();
 
-    useEffect(()=>{
-    if(isOwnProfile){
+  useEffect(() => {
+    if (isOwnProfile || !profile) {
       return;
     }
-    let cancelled = false;
-    async function loadFriendStatus() {
-        try{
-          const response = await getFriendStatus(profile?.id ?? "");
-          if(cancelled){
-            return;
-          }
-          setFriendStatus(response.status);
-          setFriendRequestId(response.requestId);
-        }catch(error){
-          console.error("Не вдалося отримати статус дружби:",error);
-        }
-    }
-    return ()=>{
-      cancelled = true;
-    };
-  }, [profile?.id, isOwnProfile]);
 
+    let isCancelled = false;
+
+    getFriendStatus(profile.id)
+      .then((response) => {
+        if (isCancelled) {
+          return;
+        }
+
+        setFriendStatus(response.status);
+        setFriendRequestId(response.requestId);
+      })
+      .catch((error) => {
+        console.error("Не вдалося отримати статус дружби:", error);
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [profile, isOwnProfile]);
   const handleSendFriendRequest = async () =>{
     if(!profile || friendActionLoading){
       return;
