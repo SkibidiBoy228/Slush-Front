@@ -70,7 +70,7 @@ function Notifications(){
     return(
         <>
             <Header/>
-            <main className="notification-page">
+            <main className="notifications-page">
                 <div className="notifications-container">
                     <div className="notifications-header">
                         <div>
@@ -82,7 +82,7 @@ function Notifications(){
                             )}
                         </div>
                         <button type="button"
-                            className="notification-read-all"
+                            className="notifications-read-all"
                             onClick={handleMarkAllAsRead}
                             disabled={unreadCount === 0 || actionLoading}
                         >
@@ -104,7 +104,7 @@ function Notifications(){
                                 </button>
                             </div>
                         ): notifications.length === 0 ? (
-                            <div className="notification-state">
+                            <div className="notifications-state">
                                 Повідомлень поки немає
                             </div>
                         ) : (
