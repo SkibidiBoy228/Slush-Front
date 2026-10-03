@@ -182,10 +182,6 @@ function HeroSlider() {
           <GameSearch />
         </div>
 
-        <div className="hero-title-background">
-          {slide.title}
-        </div>
-
         <div className="hero-content">
           <div className="hero-sale">
             {slide.discount && (
