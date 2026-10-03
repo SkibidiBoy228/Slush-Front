@@ -15,6 +15,7 @@ import CommunityPostCreator from "../../components/Community/CommunityPostCreato
 import CommunityComments from "../../components/Community/CommunityComments/CommunityComments";
 
 import { getGameDetails } from "../../api/games";
+import { getCurrentUsername } from "../../api/client";
 
 import {
   getCommunityPosts,
@@ -24,6 +25,7 @@ import {
   getPostComments,
   addPostComment,
   createCommunityPost,
+  deleteComment,
 } from "../../api/community";
 
 import type {
@@ -392,6 +394,53 @@ function CommunityPage({ gameId }: CommunityPageProps) {
     });
   }, [posts, searchValue]);
 
+  const handleDeleteComment = async (
+  postId: string,
+  commentId: string
+) => {
+  try {
+    await deleteComment(commentId);
+
+    setComments((current) => {
+      const currentComments = current[postId] ?? [];
+
+      return {
+        ...current,
+        [postId]: currentComments
+          .filter((comment) => comment.id !== commentId)
+          .map((comment) => ({
+            ...comment,
+            replies:
+              comment.replies?.filter(
+                (reply) => reply.id !== commentId
+              ) ?? [],
+          })),
+      };
+    });
+
+    setPosts((currentPosts) =>
+      currentPosts.map((post) =>
+        post.id === postId
+          ? {
+              ...post,
+              commentsCount: Math.max(
+                0,
+                post.commentsCount - 1
+              ),
+            }
+          : post
+      )
+    );
+  } catch (error) {
+    console.error(
+      "Failed to delete comment:",
+      error
+    );
+
+    alert("Не вдалося видалити коментар");
+  }
+};
+
   if (gameLoading) {
     return (
       <div className="community-page-state">
@@ -478,25 +527,17 @@ function CommunityPage({ gameId }: CommunityPageProps) {
                       {openComments[
                         post.id
                       ] && (
-                        <CommunityComments
-                          postId={post.id}
-                          comments={
-                            comments[
-                              post.id
-                            ] ?? []
-                          }
-                          loading={
-                            commentsLoading[
-                              post.id
-                            ] ?? false
-                          }
-                          onLoad={
-                            handleLoadComments
-                          }
-                          onSubmit={
-                            handleSubmitComment
-                          }
-                        />
+                      <CommunityComments
+                        postId={post.id}
+                        comments={comments[post.id] ?? []}
+                        loading={commentsLoading[post.id] ?? false}
+                        onLoad={handleLoadComments}
+                        onSubmit={handleSubmitComment}
+                        onDelete={(commentId) =>
+                          handleDeleteComment(post.id, commentId)
+                        }
+                        currentUsername={getCurrentUsername()}
+                      />
                       )}
                     </div>
                   )

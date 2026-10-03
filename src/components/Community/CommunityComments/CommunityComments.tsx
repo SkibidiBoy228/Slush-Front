@@ -75,9 +75,6 @@ function CommunityComments({
 
         try {
             setDeletingCommentId(comment.id);
-
-            // Если удаляем комментарий, на который сейчас отвечаем —
-            // сбрасываем режим ответа.
             if (replyTo?.id === comment.id) {
                 setReplyTo(null);
             }
