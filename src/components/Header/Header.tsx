@@ -8,6 +8,8 @@ import {
 
 import { getUserProfile } from "../../api/profile";
 
+import NotificationBell from "../../components/Notifications/NotificationBell/NotificationBell";
+
 import "./Header.css";
 
 const AUTH_PAGES = [
@@ -117,35 +119,8 @@ const Header = () => {
                 </svg>
               </a>
 
-              <button
-                type="button"
-                className="header-icon-button"
-                aria-label="Сповіщення"
-                title="Сповіщення"
-              >
-                <svg
-                  className="header-icon"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M18 8C18 4.686 15.314 2 12 2C8.686 2 6 4.686 6 8C6 15 3 17 3 17H21C21 17 18 15 18 8Z"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
 
-                  <path
-                    d="M10 21H14"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </button>
+            <NotificationBell/>
 
             <a
               href={profileUrl}

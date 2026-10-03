@@ -17,6 +17,7 @@ import Catalog from "./pages/Catalog/Catalog";
 import WishlistPage from "./pages/Wishlist/WishlistPage";
 import CartPage from "./pages/CartPage/CartPage";
 import Settings from "./pages/Settings/Settings";
+import Notifications from "./pages/Notification/Notification";
 import { usePresence } from "./hooks/usePresence";
 import { isAuthenticated } from "./api/client";
 
@@ -52,6 +53,13 @@ function App() {
       return null;
     }
     return <Settings/>
+  }
+  if(pathParts[0] === "notifications"){
+    if(!isAuthenticated()){
+      window.location.replace("/login");
+      return null;
+    }
+    return <Notifications/>
   }
 
   if (pathParts[0] === "profile" && pathParts[1]) {
