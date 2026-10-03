@@ -1,9 +1,9 @@
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 
 import type { PostComment } from "../../../types/community";
-import "./CommunityComments.css"
+import "./CommunityComments.css";
 
-interface CommunityCommentsProps{
+interface CommunityCommentsProps {
     postId: string;
     comments: PostComment[];
     loading?: boolean;
@@ -13,6 +13,8 @@ interface CommunityCommentsProps{
         content: string,
         parentCommentId?: string | null,
     ) => Promise<void>;
+    onDelete: (commentId: string) => Promise<void>;
+    currentUsername?: string | null;
 }
 
 function CommunityComments({
@@ -21,42 +23,96 @@ function CommunityComments({
     loading = false,
     onLoad,
     onSubmit,
-}: CommunityCommentsProps){
+    onDelete,
+    currentUsername,
+}: CommunityCommentsProps) {
     const [content, setContent] = useState("");
     const [replyTo, setReplyTo] = useState<PostComment | null>(null);
     const [submitting, setSubmitting] = useState(false);
-    useEffect(()=>{
-        onLoad(postId);
-    }, [postId,onLoad]);
+    const [deletingCommentId, setDeletingCommentId] = useState<string | null>(
+        null
+    );
 
-    const handleSumbit = async(
+    useEffect(() => {
+        onLoad(postId);
+    }, [postId, onLoad]);
+
+    const handleSubmit = async (
         event: React.FormEvent<HTMLFormElement>
-    )=>{
+    ) => {
         event.preventDefault();
+
         const text = content.trim();
-        if(!text  || submitting){
+
+        if (!text || submitting) {
             return;
         }
-        try{
+
+        try {
             setSubmitting(true);
+
             await onSubmit(
                 postId,
                 text,
                 replyTo?.id ?? null
             );
+
             setContent("");
             setReplyTo(null);
-        }finally {
+        } finally {
             setSubmitting(false);
         }
     };
+
+    const handleDelete = async (comment: PostComment) => {
+        const confirmed = window.confirm(
+            "Ви дійсно хочете видалити цей коментар?"
+        );
+
+        if (!confirmed || deletingCommentId) {
+            return;
+        }
+
+        try {
+            setDeletingCommentId(comment.id);
+
+            // Если удаляем комментарий, на который сейчас отвечаем —
+            // сбрасываем режим ответа.
+            if (replyTo?.id === comment.id) {
+                setReplyTo(null);
+            }
+
+            await onDelete(comment.id);
+        } catch (error) {
+            console.error("Не вдалося видалити коментар:", error);
+            alert("Не вдалося видалити коментар.");
+        } finally {
+            setDeletingCommentId(null);
+        }
+    };
+
+    const canDeleteComment = (comment: PostComment) => {
+        return (
+            !!currentUsername &&
+            comment.authorUsername.toLowerCase() ===
+                currentUsername.toLowerCase()
+        );
+    };
+
     const renderComment = (
         comment: PostComment,
         isReply = false,
-    )=>{
-        return(
-            <div key={comment.id}
-            className={`community-comment ${isReply ? "community-comment-reply" : ""}`}>
+    ) => {
+        const canDelete = canDeleteComment(comment);
+        const isDeleting = deletingCommentId === comment.id;
+
+        return (
+            <div
+                key={comment.id}
+                className={`community-comment ${
+                    isReply ? "community-comment-reply" : ""
+                }`}
+            >
                 <button
                     type="button"
                     className="community-comment-author-link"
@@ -74,11 +130,14 @@ function CommunityComments({
                             />
                         ) : (
                             <span>
-                                {comment.authorUsername.charAt(0).toUpperCase()}
+                                {comment.authorUsername
+                                    .charAt(0)
+                                    .toUpperCase()}
                             </span>
                         )}
                     </div>
                 </button>
+
                 <div className="community-comment-body">
                     <div className="community-comment-header">
                         <button
@@ -92,75 +151,114 @@ function CommunityComments({
                         >
                             {comment.authorUsername}
                         </button>
+
                         <span className="community-comment-date">
                             {comment.createdAt}
                         </span>
+
+                        {canDelete && (
+                            <button
+                                type="button"
+                                className="community-comment-delete"
+                                onClick={() => handleDelete(comment)}
+                                disabled={isDeleting}
+                            >
+                                {isDeleting ? "Видалення..." : "Видалити"}
+                            </button>
+                        )}
                     </div>
+
                     <p className="community-comment-content">
                         {comment.content}
                     </p>
-                    <button type ="button"
-                        className="community-comment-reply-button"
-                        onClick={()=>setReplyTo(comment)}
-                        >
-                            Відповісти
-                        </button>
-                        {comment.replies?.length > 0 && (
-                            <div className="community-comment-replies">
-                                {comment.replies.map((reply)=>renderComment(reply,true
 
-                                ))}
-                            </div>
-                        )}
+                    <button
+                        type="button"
+                        className="community-comment-reply-button"
+                        onClick={() => setReplyTo(comment)}
+                    >
+                        Відповісти
+                    </button>
+
+                    {comment.replies?.length > 0 && (
+                        <div className="community-comment-replies">
+                            {comment.replies.map((reply) =>
+                                renderComment(reply, true)
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
         );
     };
-    return(
+
+    return (
         <section className="community-comments">
             <div className="community-comments-title">
                 <h3>Коментарі</h3>
             </div>
+
             {replyTo && (
                 <div className="community-reply-indicator">
                     <span>
-                        Відповідь для {""}
+                        Відповідь для{" "}
                         <strong>{replyTo.authorUsername}</strong>
                     </span>
-                    <button type="button" onClick={()=> setReplyTo(null)}>
+
+                    <button
+                        type="button"
+                        onClick={() => setReplyTo(null)}
+                    >
                         Скасувати
                     </button>
                 </div>
             )}
-            <form className="community-comment-form" onSubmit={handleSumbit}>
-                <textarea value = {content}
-                    onChange={(event)=>setContent(event.target.value)}
+
+            <form
+                className="community-comment-form"
+                onSubmit={handleSubmit}
+            >
+                <textarea
+                    value={content}
+                    onChange={(event) => setContent(event.target.value)}
                     placeholder={
-                        replyTo ? `Відповісти ${replyTo.authorUsername}...` : "Напишіть коментар..."
+                        replyTo
+                            ? `Відповісти ${replyTo.authorUsername}...`
+                            : "Напишіть коментар..."
                     }
-                    rows = {3}
-                    disabled = {submitting}/>
-                    <div className="community-comment-form-actions">
-                        <button type = "submit"
-                        disabled={!content.trim() || submitting}>
-                            {submitting ? "Надсилання..." : "Надіслати"}
-                        </button>
-                    </div>
+                    rows={3}
+                    disabled={submitting}
+                />
+
+                <div className="community-comment-form-actions">
+                    <button
+                        type="submit"
+                        disabled={!content.trim() || submitting}
+                    >
+                        {submitting
+                            ? "Надсилання..."
+                            : "Надіслати"}
+                    </button>
+                </div>
             </form>
+
             <div className="community-comments-list">
                 {loading ? (
                     <div className="community-comments-state">
                         Завантаження коментарів...
                     </div>
-                ):comments.length === 0 ? (
+                ) : comments.length === 0 ? (
                     <div className="community-comments-state">
                         Поки що немає коментарів.
                     </div>
-                ):(
-                    comments.map((comment) => renderComment(comment))
+                ) : (
+                    comments.map((comment) =>
+                        renderComment(comment)
+                    )
                 )}
             </div>
         </section>
-    )
+    );
 }
+
 export default CommunityComments;
