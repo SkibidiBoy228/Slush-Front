@@ -9,6 +9,8 @@ import WalletSettings from "../../components/Settings/WalletSettings/WalletSetti
 import DeleteAccount from "../../components/Settings/DeleteAccount/DeleteAccount";
  
 import "./Settings.css";
+import Header from "../../components/Header/Header";
+import Footer from "../../components/Footer/Footer";
 
 function Settings(){
     const [activeSection, setActiveSection] = useState<SettingsSection>("general");
@@ -29,17 +31,21 @@ function Settings(){
         }
     }
     return(
-        <main className="settings-page">
-            <div className="settings-container">
-                <SettingsSidebar
-                    activeSection={activeSection}
-                    onSectionChange={setActiveSection}
-                    />
-                <section className="settings-content">
-                    {renderSection()}
-                </section>
-            </div>
-        </main>
+        <>
+            <Header/>
+            <main className="settings-page">
+                <div className="settings-container">
+                    <SettingsSidebar
+                        activeSection={activeSection}
+                        onSectionChange={setActiveSection}
+                        />
+                    <section className="settings-content">
+                        {renderSection()}
+                    </section>
+                </div>
+            </main>
+            <Footer/>
+        </>
     )
 }
 export default Settings;
