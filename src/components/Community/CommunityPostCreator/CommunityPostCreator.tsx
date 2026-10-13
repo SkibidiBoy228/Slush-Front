@@ -13,6 +13,7 @@ interface CommunityPostCreatorProps {
     shortDescription: string;
     mediaUrl: string | null;
   }) => void | Promise<void>;
+  onOpenChange?: (isOpen: boolean) => void;
 }
 
 const POST_TYPES: {
@@ -25,7 +26,7 @@ const POST_TYPES: {
   { value: "Guide", label: "Гайд" },
 ];
 
-function CommunityPostCreator({ onSubmit }: CommunityPostCreatorProps) {
+function CommunityPostCreator({ onSubmit, onOpenChange }: CommunityPostCreatorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [postType, setPostType] =
     useState<CommunityPostType>("Discussion");
@@ -167,7 +168,7 @@ function CommunityPostCreator({ onSubmit }: CommunityPostCreatorProps) {
         <button
           type="button"
           className="community-create-button"
-          onClick={() => setIsOpen(true)}
+          onClick={() => {setIsOpen(true); onOpenChange?.(true)}}
         >
           <span className="community-create-icon">+</span>
           <span>Створити пост</span>
@@ -183,7 +184,7 @@ function CommunityPostCreator({ onSubmit }: CommunityPostCreatorProps) {
             <button
               type="button"
               className="community-post-creator-close"
-              onClick={() => setIsOpen(false)}
+              onClick={() => {setIsOpen(true); onOpenChange?.(true)}}
               aria-label="Закрити"
             >
               ×
@@ -413,6 +414,7 @@ function CommunityPostCreator({ onSubmit }: CommunityPostCreatorProps) {
               onClick={() => {
                 resetFile();
                 setIsOpen(false);
+                onOpenChange?.(false);
                 setError("");
               }}
               disabled={uploading}

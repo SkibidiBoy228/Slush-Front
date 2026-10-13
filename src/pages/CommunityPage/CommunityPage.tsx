@@ -44,6 +44,7 @@ interface CommunityPageProps {
 function CommunityPage({ gameId }: CommunityPageProps) {
   const [gameTitle, setGameTitle] = useState("");
   const [gameLoading, setGameLoading] = useState(true);
+  const [isCreatingPost, setIsCreatingPost] = useState(false);
 
   const [posts, setPosts] = useState<CommunityPostData[]>([]);
 
@@ -494,6 +495,7 @@ function CommunityPage({ gameId }: CommunityPageProps) {
           <section className="community-main">
             <CommunityPostCreator
               onSubmit={handleCreatePost}
+              onOpenChange = {setIsCreatingPost}
             />
 
             <div className="community-feed">
@@ -546,30 +548,39 @@ function CommunityPage({ gameId }: CommunityPageProps) {
             </div>
           </section>
 
-          <CommunitySidebar
-            activeFilter={
-              activeFilter
-            }
-            sort={sort}
-            counts={{
-              all: counts.all,
-              discussions:
-                counts.discussions,
-              screenshots:
-                counts.screenshots,
-              videos: counts.videos,
-              guides: counts.guides,
-              news: counts.news,
-            }}
-            onFilterChange={
-              setActiveFilter
-            }
-            onSortChange={setSort}
-            searchValue={searchValue}
-            onSearchChange={
-              setSearchValue
-            }
-          />
+          {isCreatingPost ? (
+            <aside className="community-rules">
+              <h3>Правила спільноти</h3>
+
+              <ul>
+                <li>Публікуйте тільки оригінальний контент.</li>
+                <li>
+                  Не допускайте образ та принижень на адресу інших
+                  гравців, розробників чи груп.
+                </li>
+                <li>
+                  Не включайте погрози або образливий контент.
+                </li>
+              </ul>
+            </aside>
+          ) : (
+            <CommunitySidebar
+              activeFilter={activeFilter}
+              sort={sort}
+              counts={{
+                all: counts.all,
+                discussions: counts.discussions,
+                screenshots: counts.screenshots,
+                videos: counts.videos,
+                guides: counts.guides,
+                news: counts.news,
+              }}
+              onFilterChange={setActiveFilter}
+              onSortChange={setSort}
+              searchValue={searchValue}
+              onSearchChange={setSearchValue}
+            />
+          )}
         </div>
       </main>
 
