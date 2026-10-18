@@ -1,12 +1,12 @@
 import type { CommunityPost } from "../../../types/library";
 import LibraryNewsCard from "./LibraryNewsCard";
-import "./LibraryNewsSections.css";
+import "./LibraryNewsSection.css";
 
-interface LibraryNewsSectionsProps{
+interface LibraryNewsSectionProps{
     news: CommunityPost[];
     onViewAll?: () => void;
 }
-function LibraryNewsSections({news, onViewAll}: LibraryNewsSectionsProps){
+function LibraryNewsSection({news, onViewAll}: LibraryNewsSectionProps){
     return(
         <section className="library-home-section">
             <div className="library-home-section__header">
@@ -35,4 +35,4 @@ function LibraryNewsSections({news, onViewAll}: LibraryNewsSectionsProps){
         </section>
     );
 }
-export default LibraryNewsSections
+export default LibraryNewsSection
