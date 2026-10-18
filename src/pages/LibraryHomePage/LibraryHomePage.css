@@ -1,0 +1,47 @@
+
+.library-home {
+  width: 100%;
+  color: #e5f3f5;
+}
+
+.library-home h1 {
+  margin: 0 0 24px;
+  font-size: 25px;
+  font-weight: 700;
+}
+
+.library-home__section {
+  margin-bottom: 28px;
+}
+
+.library-home__section h2 {
+  margin: 0 0 14px;
+  font-size: 18px;
+}
+
+.library-home__games {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 14px;
+}
+
+.library-home__game {
+  overflow: hidden;
+  border-radius: 10px;
+  background: #00313d;
+  color: #e5f3f5;
+  text-decoration: none;
+}
+
+.library-home__game img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 5 / 6;
+  object-fit: cover;
+}
+
+.library-home__game span {
+  display: block;
+  padding: 10px;
+  font-size: 12px;
+}

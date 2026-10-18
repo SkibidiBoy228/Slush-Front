@@ -1,0 +1,106 @@
+
+.library-feed {
+  width: 100%;
+  min-width: 0;
+}
+
+.library-feed__top {
+  margin-bottom: 17px;
+}
+
+.library-feed__tabs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 0 4px;
+}
+
+.library-feed__tab {
+  position: relative;
+  padding: 0 0 9px;
+  border: 0;
+  background: transparent;
+  color: #8eafb6;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.library-feed__tab:hover {
+  color: #d9f4f5;
+}
+
+.library-feed__tab--active {
+  color: #20e0c7;
+}
+
+.library-feed__tab--active::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: #20e0c7;
+  content: "";
+}
+
+.library-feed__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 195px;
+  align-items: start;
+  gap: 15px;
+}
+
+.library-feed__posts {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.library-feed__message {
+  margin: 0;
+  padding: 24px 16px;
+  border-radius: 12px;
+  background: #00313d;
+  color: #b4cbd0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.library-feed__message--error {
+  color: #ffb4b4;
+}
+
+.library-feed__message button {
+  margin-top: 8px;
+  padding: 7px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: #126b80;
+  color: white;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .library-feed__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .library-feed__grid > :last-child {
+    grid-row: 1;
+  }
+}
+
+@media (max-width: 600px) {
+  .library-feed__tabs {
+    gap: 16px;
+  }
+
+  .library-feed__tab {
+    font-size: 12px;
+  }
+}

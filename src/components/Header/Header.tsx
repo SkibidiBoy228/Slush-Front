@@ -78,11 +78,13 @@ const Header = () => {
           SLUSH
         </a>
 
-        <nav className="navigation">
-          <a href="/mainPage">Крамниця</a>
-          <a href="/news">Новини</a>
-          <a href="/about">Про нас</a>
-        </nav>
+
+      <nav className="navigation">
+        <a href="/mainPage">Крамниця</a>
+        <a href="/library">Бібліотека</a>
+        <a href="/chat">Чат</a>
+      </nav>
+
 
         {!isAuthorized ? (
           <a href="/login" className="header-login-button">

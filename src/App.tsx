@@ -18,6 +18,9 @@ import WishlistPage from "./pages/Wishlist/WishlistPage";
 import CartPage from "./pages/CartPage/CartPage";
 import Settings from "./pages/Settings/Settings";
 import Notifications from "./pages/Notification/Notification";
+
+import LibraryHomePage from "./pages/LibraryHomePage/LibraryHomePage";
+import LibraryFeedPage from "./pages/LibraryFeedPage/LibraryFeedPage";
 import { usePresence } from "./hooks/usePresence";
 import { isAuthenticated } from "./api/client";
 
@@ -46,6 +49,20 @@ function App() {
 
     return <GamePage appId={appId} />;
   }
+
+
+    if (pathParts[0] === "library") {
+      if (!isAuthenticated()) {
+        window.location.replace("/login");
+        return null;
+      }
+
+      if (pathParts[1] === "feed") {
+        return <LibraryFeedPage />;
+      }
+
+      return <LibraryHomePage />;
+    }
 
   if(pathParts[0] === "settings"){
     if(!isAuthenticated()){

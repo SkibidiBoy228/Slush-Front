@@ -1,0 +1,164 @@
+
+.feed-post {
+  overflow: hidden;
+  border-radius: 13px;
+  background: #00313d;
+  color: #e5f3f5;
+}
+
+.feed-post__banner {
+  width: 100%;
+  aspect-ratio: 16 / 7.2;
+  overflow: hidden;
+  background: #002630;
+}
+
+.feed-post__banner img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.feed-post__content {
+  padding: 13px;
+}
+
+.feed-post__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.feed-post__author {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+
+.feed-post__avatar {
+  width: 21px;
+  height: 21px;
+  flex: 0 0 21px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #07576a;
+}
+
+.feed-post__avatar--fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #38e0cf;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.feed-post__username {
+  max-width: 160px;
+  overflow: hidden;
+  padding: 4px 9px;
+  border-radius: 20px;
+  background: #004958;
+  color: #c9e4e8;
+  font-size: 10px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.feed-post__date {
+  color: #759ba4;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.feed-post__more {
+  padding: 0 3px;
+  border: 0;
+  background: transparent;
+  color: #d7e9ec;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.feed-post__title {
+  margin: 0 0 7px;
+  color: #e8f6f7;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.feed-post__description {
+  margin: 0 0 10px;
+  color: #b4cbd0;
+  font-size: 11px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.feed-post__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.feed-post__action {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 23px;
+  padding: 3px 7px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: #064858;
+  color: #b8d6dc;
+  font-size: 10px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.feed-post__action:hover {
+  background: #086174;
+  color: #ffffff;
+}
+
+.feed-post__heart {
+  color: #ff6383;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.feed-post__action--liked .feed-post__heart {
+  color: #ff6383;
+}
+
+.feed-post__comment {
+  font-size: 15px;
+  line-height: 1;
+}
+
+@media (max-width: 600px) {
+  .feed-post__content {
+    padding: 10px;
+  }
+
+  .feed-post__date {
+    font-size: 9px;
+  }
+
+  .feed-post__title {
+    font-size: 13px;
+  }
+
+  .feed-post__description {
+    font-size: 11px;
+  }
+}
