@@ -12,6 +12,8 @@ import {
     removeFromWishlist,
 } from "../../api/store";
 
+import { useNavigate } from "react-router-dom";
+
 interface GameSidebarProps {
     game: GameDetails;
 }
@@ -22,6 +24,7 @@ function GameSideBar({ game }: GameSidebarProps) {
         game.isInWishlist
     );
     const [isProcessing, setIsProcessing] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         setIsInCart(game.isInCart);
@@ -102,6 +105,22 @@ function GameSideBar({ game }: GameSidebarProps) {
             setIsProcessing(false);
         }
     };
+    const handleBuyClick = async() => {
+        if(isProcessing) return;
+        setIsProcessing(true);
+        try{
+            if(!isInCart){
+                await addToCart(gamePayload);
+                setIsInCart(true);
+            }
+            navigate("/cart");
+        }catch(error){
+            console.error("Помилка переходу до покупки:", error);
+            alert("Не вдалося додати гру до кошика. Спробуйте ще раз.")
+        }finally{
+            setIsProcessing(false);
+        }
+    }
 
     return (
         <aside className="game-sidebar">
@@ -159,8 +178,12 @@ function GameSideBar({ game }: GameSidebarProps) {
                 )}
             </div>
 
-            <button className="buy-button">
-                Купити
+            <button
+                className="buy-button"
+                onClick={handleBuyClick}
+                disabled={isProcessing}
+            >
+                {isProcessing ? "Зачекайте..." : "Купити"}
             </button>
 
             <div className="sidebar-actions">
