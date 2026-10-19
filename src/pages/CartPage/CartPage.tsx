@@ -11,12 +11,16 @@ import {
     removeFromCart,
     type StoreItem,
 } from "../../api/store";
+import { checkoutCart } from "../../api/purchases";
 
 import "./CartPage.css";
 
 export default function CartPage() {
     const [cart, setCart] = useState<StoreItem[]>([]);
     const [loading, setLoading] = useState(true);
+
+    const [checkoutLoading, setCheckoutLoading] = useState(false);
+    const [checkoutMessage, setCheckoutMessage] = useState("");
 
     useEffect(() => {
         loadCart();
@@ -95,6 +99,23 @@ export default function CartPage() {
                 "Помилка очищення кошика:",
                 error
             );
+        }
+    }
+    async function handleCheckout() {
+        if(cart.length === 0 || checkoutLoading) return;
+        try{
+            setCheckoutLoading(true);
+            setCheckoutMessage("");
+            const result = await checkoutCart();
+            await loadCart;
+            setCheckoutMessage(result.message || "Покупка успішно завершена!")
+            window.dispatchEvent(new Event("wallet-updated"));
+            window.dispatchEvent(new Event("library-updated"));
+            window.dispatchEvent(new Event("wishlist-updated"));
+        }catch(error){
+            setCheckoutMessage(error instanceof Error ? error.message : "Не вдалося зробити покупку.");
+        }finally{
+            setCheckoutLoading(false);
         }
     }
 
@@ -275,14 +296,21 @@ export default function CartPage() {
                         </p>
 
                         <button
-                            className="checkout-button"
-                            type="button"
-                            disabled={
-                                cart.length === 0
-                            }
+                        className="checkout-button"
+                        type="button"
+                        disabled={cart.length === 0 || checkoutLoading}
+                        onClick={handleCheckout}
                         >
-                            Перейти до оплати
+                        {checkoutLoading
+                            ? "Обработка покупки..."
+                            : "Перейти до оплати"}
                         </button>
+
+                        {checkoutMessage && (
+                        <p role="status" aria-live="polite">
+                            {checkoutMessage}
+                        </p>
+                        )}
 
                         <button
                             className="continue-button"
