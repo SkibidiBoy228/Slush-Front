@@ -12,7 +12,7 @@ import {
     removeFromWishlist,
 } from "../../api/store";
 
-import { useNavigate } from "react-router-dom";
+
 
 interface GameSidebarProps {
     game: GameDetails;
@@ -24,7 +24,7 @@ function GameSideBar({ game }: GameSidebarProps) {
         game.isInWishlist
     );
     const [isProcessing, setIsProcessing] = useState(false);
-    const navigate = useNavigate();
+
 
     useEffect(() => {
         setIsInCart(game.isInCart);
@@ -113,7 +113,7 @@ function GameSideBar({ game }: GameSidebarProps) {
                 await addToCart(gamePayload);
                 setIsInCart(true);
             }
-            navigate("/cart");
+            window.location.href = "/cart";
         }catch(error){
             console.error("Помилка переходу до покупки:", error);
             alert("Не вдалося додати гру до кошика. Спробуйте ще раз.")
