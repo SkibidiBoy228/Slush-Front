@@ -21,6 +21,7 @@ import Notifications from "./pages/Notification/Notification";
 
 import LibraryHomePage from "./pages/LibraryHomePage/LibraryHomePage";
 import LibraryFeedPage from "./pages/LibraryFeedPage/LibraryFeedPage";
+import ChatPage from "./pages/Chat/ChatPage";
 import { usePresence } from "./hooks/usePresence";
 import { isAuthenticated } from "./api/client";
 
@@ -96,6 +97,14 @@ function App() {
       return null;
     }
     return <Friends/>
+  }
+  if (pathParts[0] === "chat") {
+    if (!isAuthenticated()) {
+      window.location.replace("/login");
+      return null;
+    }
+
+    return <ChatPage />;
   }
 
   if (pathParts[0] === "edit-profile") {
