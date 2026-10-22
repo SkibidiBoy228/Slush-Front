@@ -184,3 +184,33 @@
   max-width: 100%;
   width: 260px;
 }
+.chat-message__video {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 100%;
+}
+
+.chat-message__video video {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  max-height: 280px;
+  border-radius: 10px;
+  background: #000;
+}
+
+.chat-message__video p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.chat-message__video a {
+  color: #1de0c4;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.chat-message__video a:hover {
+  text-decoration: underline;
+}

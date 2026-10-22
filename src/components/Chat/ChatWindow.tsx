@@ -133,6 +133,45 @@ export default function ChatWindow({
                     </audio>
                   )}
 
+                    {message.messageType === "File" && message.mediaUrl && (
+                    /\.(mp4|webm|ogg|mov|m4v)$/i.test(message.fileName ?? "") ? (
+                        <div className="chat-message__video">
+                        <video
+                            src={message.mediaUrl}
+                            controls
+                            preload="metadata"
+                            playsInline
+                        >
+                            Ваш браузер не підтримує відтворення відео.
+                        </video>
+
+                        {message.content && <p>{message.content}</p>}
+
+                        <a
+                            href={message.mediaUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            download={message.fileName || undefined}
+                        >
+                            Завантажити відео
+                        </a>
+                        </div>
+                    ) : (
+                        <a
+                        className="chat-message__file"
+                        href={message.mediaUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        >
+                        <span>📎</span>
+                        <span>
+                            <strong>{message.fileName || "Файл"}</strong>
+                            <small>{message.formattedFileSize}</small>
+                        </span>
+                        </a>
+                    )
+                    )}
+
                   <div className="chat-message__meta">
                     <time>{message.timeFormatted}</time>
 
