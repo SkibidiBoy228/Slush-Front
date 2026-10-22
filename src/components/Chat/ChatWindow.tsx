@@ -1,11 +1,10 @@
-
 import type {
   ChatConversation,
   ChatMessage,
+  SendChatMessageRequest,
 } from "../../types/chat";
 
 import ChatInput from "./ChatInput";
-
 import "./ChatWindow.css";
 
 interface ChatWindowProps {
@@ -13,8 +12,9 @@ interface ChatWindowProps {
   messages: ChatMessage[];
   isLoading: boolean;
   isSending: boolean;
-  onSendMessage: (text: string) => Promise<void>;
+  onSendMessage: (message: SendChatMessageRequest) => Promise<void>;
 }
+
 
 export default function ChatWindow({
   conversation,

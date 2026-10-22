@@ -14,6 +14,7 @@ import type {
   ChatConversation,
   ChatMessage,
   ReceiveChatMessagePayload,
+  SendChatMessageRequest,
 } from "../../types/chat";
 
 import "./ChatPage.css";
@@ -109,19 +110,18 @@ export default function ChatPage() {
     onMessage: handleIncomingMessage,
   });
 
-  const handleSendMessage = useCallback(
-    async (text: string) => {
-      const sentMessage = await sendMessage({
-        messageType: "Text",
-        content: text,
-      });
 
-      if (!sentMessage) {
+    const handleSendMessage = useCallback(
+    async (request: SendChatMessageRequest) => {
+        const sentMessage = await sendMessage(request);
+
+        if (!sentMessage) {
         throw new Error("Не вдалося надіслати повідомлення.");
-      }
+        }
     },
     [sendMessage],
-  );
+    );
+
 
   const handleSelectConversation = useCallback(
     (conversation: ChatConversation) => {
