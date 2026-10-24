@@ -1,11 +1,17 @@
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import Header from "../../components/Header/Header";
 import ChatSidebar from "../../components/Chat/ChatSidebar";
 import ChatWindow from "../../components/Chat/ChatWindow";
 
 import { removeFriend } from "../../api/friends";
+import {
+  clearChatHistory,
+  setChatBlock,
+  reportChatUser,
+} from "../../api/chat";
+
 import { useChatMessages } from "../../hooks/useChatMessages";
 import { useChatConnection } from "../../hooks/useChatConnection";
 import { useChatAttachments } from "../../hooks/useChatAttacments";
@@ -19,17 +25,19 @@ import type {
 
 import "./ChatPage.css";
 
+type ConversationWithBlockStatus = ChatConversation & {
+  isBlockedByMe?: boolean;
+  hasBlockedMe?: boolean;
+};
+
 function getMessagePreview(message: ChatMessage): string {
   switch (message.messageType) {
     case "Image":
       return "📷 Зображення";
-
     case "File":
       return `📎 ${message.fileName || "Файл"}`;
-
     case "Voice":
       return "🎤 Голосове повідомлення";
-
     default:
       return message.content || "";
   }
@@ -39,12 +47,16 @@ export default function ChatPage() {
   const [selectedConversation, setSelectedConversation] =
     useState<ChatConversation | null>(null);
 
+  const [isBlocked, setIsBlocked] = useState(false);
+  const [isActionLoading, setIsActionLoading] = useState(false);
+
   const {
     messages,
     isLoading,
     isSending,
     sendMessage,
     addIncomingMessage,
+    setMessages,
   } = useChatMessages(selectedConversation?.friendId ?? null);
 
   const friendId = selectedConversation?.friendId ?? null;
@@ -82,6 +94,13 @@ export default function ChatPage() {
   const attachmentsLoading =
     photosLoading || filesLoading || voicesLoading;
 
+  useEffect(() => {
+    const conversation =
+      selectedConversation as ConversationWithBlockStatus | null;
+
+    setIsBlocked(Boolean(conversation?.isBlockedByMe));
+  }, [selectedConversation]);
+
   const handleIncomingMessage = useCallback(
     (payload: ReceiveChatMessagePayload) => {
       const message = payload.message;
@@ -110,18 +129,16 @@ export default function ChatPage() {
     onMessage: handleIncomingMessage,
   });
 
-
-    const handleSendMessage = useCallback(
+  const handleSendMessage = useCallback(
     async (request: SendChatMessageRequest) => {
-        const sentMessage = await sendMessage(request);
+      const sentMessage = await sendMessage(request);
 
-        if (!sentMessage) {
+      if (!sentMessage) {
         throw new Error("Не вдалося надіслати повідомлення.");
-        }
+      }
     },
     [sendMessage],
-    );
-
+  );
 
   const handleSelectConversation = useCallback(
     (conversation: ChatConversation) => {
@@ -131,7 +148,7 @@ export default function ChatPage() {
   );
 
   const handleRemoveFriend = useCallback(async () => {
-    if (!selectedConversation) {
+    if (!selectedConversation || isActionLoading) {
       return;
     }
 
@@ -143,21 +160,153 @@ export default function ChatPage() {
       return;
     }
 
+    setIsActionLoading(true);
+
     try {
       await removeFriend(selectedConversation.friendId);
       setSelectedConversation(null);
 
-      window.dispatchEvent(
-        new CustomEvent("slush:friends-updated"),
-      );
+      window.dispatchEvent(new CustomEvent("slush:friends-updated"));
     } catch (error) {
       console.error("Не вдалося видалити друга:", error);
+      window.alert("Не вдалося видалити друга. Спробуйте ще раз.");
+    } finally {
+      setIsActionLoading(false);
+    }
+  }, [selectedConversation, isActionLoading]);
+
+  const handleClearHistory = useCallback(async () => {
+    if (!selectedConversation || isActionLoading) {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Очистити історію чату з ${selectedConversation.username}? Ця дія приховає історію для вас.`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setIsActionLoading(true);
+
+    try {
+      await clearChatHistory(selectedConversation.friendId);
+      setMessages([]);
+
+      window.alert("Історію чату очищено.");
+    } catch (error) {
+      console.error("Не вдалося очистити історію чату:", error);
+      window.alert("Не вдалося очистити історію чату. Спробуйте ще раз.");
+    } finally {
+      setIsActionLoading(false);
+    }
+  }, [selectedConversation, isActionLoading, setMessages]);
+
+  const handleToggleBlock = useCallback(async () => {
+    if (!selectedConversation || isActionLoading) {
+      return;
+    }
+
+    const nextBlockedState = !isBlocked;
+
+    const confirmed = window.confirm(
+      nextBlockedState
+        ? `Заблокувати ${selectedConversation.username}?`
+        : `Розблокувати ${selectedConversation.username}?`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setIsActionLoading(true);
+
+    try {
+      const result = await setChatBlock(
+        selectedConversation.friendId,
+        nextBlockedState,
+      );
+
+      setIsBlocked(result.isBlocked);
+
+      setSelectedConversation((current) =>
+        current
+          ? ({
+              ...current,
+              isBlockedByMe: result.isBlocked,
+            } as ConversationWithBlockStatus)
+          : current,
+      );
 
       window.alert(
-        "Не вдалося видалити друга. Спробуйте ще раз.",
+        result.isBlocked
+          ? "Користувача заблоковано."
+          : "Користувача розблоковано.",
       );
+
+      window.dispatchEvent(new CustomEvent("slush:chat-block-updated"));
+    } catch (error) {
+      console.error("Не вдалося змінити блокування:", error);
+      window.alert("Не вдалося змінити блокування. Спробуйте ще раз.");
+    } finally {
+      setIsActionLoading(false);
     }
-  }, [selectedConversation]);
+  }, [selectedConversation, isBlocked, isActionLoading]);
+
+  const handleReportUser = useCallback(async () => {
+    if (!selectedConversation || isActionLoading) {
+      return;
+    }
+
+    const reason = window.prompt(
+      "Вкажіть причину скарги:\n\n1 — Спам\n2 — Образи або переслідування\n3 — Неприйнятний контент\n4 — Шахрайство\n5 — Інше",
+    );
+
+    if (reason === null) {
+      return;
+    }
+
+    const reasonOptions: Record<string, string> = {
+      "1": "Спам",
+      "2": "Образи або переслідування",
+      "3": "Неприйнятний контент",
+      "4": "Шахрайство",
+      "5": "Інше",
+    };
+
+    const normalizedReason = reasonOptions[reason.trim()];
+
+    if (!normalizedReason) {
+      window.alert("Оберіть причину від 1 до 5.");
+      return;
+    }
+
+    const details = window.prompt(
+      "Додайте коментар до скарги (необов'язково):",
+    );
+
+    if (details === null) {
+      return;
+    }
+
+    setIsActionLoading(true);
+
+    try {
+      await reportChatUser(
+        selectedConversation.friendId,
+        normalizedReason,
+        details.trim() || undefined,
+      );
+
+      window.alert("Скаргу надіслано. Дякуємо за повідомлення.");
+    } catch (error) {
+      console.error("Не вдалося надіслати скаргу:", error);
+      window.alert("Не вдалося надіслати скаргу. Спробуйте ще раз.");
+    } finally {
+      setIsActionLoading(false);
+    }
+  }, [selectedConversation, isActionLoading]);
 
   return (
     <div className="chat-page">
@@ -200,7 +349,12 @@ export default function ChatPage() {
           fileCount={fileCount}
           voiceCount={voiceCount}
           attachmentsLoading={attachmentsLoading}
+          isBlocked={isBlocked}
+          isActionLoading={isActionLoading}
           onRemoveFriend={handleRemoveFriend}
+          onClearHistory={handleClearHistory}
+          onToggleBlock={handleToggleBlock}
+          onReportUser={handleReportUser}
         />
       </main>
     </div>
@@ -213,7 +367,12 @@ interface ChatProfilePanelProps {
   fileCount: number;
   voiceCount: number;
   attachmentsLoading: boolean;
+  isBlocked: boolean;
+  isActionLoading: boolean;
   onRemoveFriend: () => void;
+  onClearHistory: () => void;
+  onToggleBlock: () => void;
+  onReportUser: () => void;
 }
 
 function ChatProfilePanel({
@@ -222,7 +381,12 @@ function ChatProfilePanel({
   fileCount,
   voiceCount,
   attachmentsLoading,
+  isBlocked,
+  isActionLoading,
   onRemoveFriend,
+  onClearHistory,
+  onToggleBlock,
+  onReportUser,
 }: ChatProfilePanelProps) {
   if (!conversation) {
     return (
@@ -236,6 +400,10 @@ function ChatProfilePanel({
     conversation.username,
   )}`;
 
+  const otherUserBlockedMe = Boolean(
+    (conversation as ConversationWithBlockStatus).hasBlockedMe,
+  );
+
   return (
     <aside className="chat-profile">
       <div className="chat-profile__identity">
@@ -247,16 +415,11 @@ function ChatProfilePanel({
           {conversation.avatarUrl ? (
             <img src={conversation.avatarUrl} alt="" />
           ) : (
-            <span>
-              {conversation.username.charAt(0).toUpperCase()}
-            </span>
+            <span>{conversation.username.charAt(0).toUpperCase()}</span>
           )}
         </a>
 
-        <a
-          href={profileUrl}
-          className="chat-profile__username"
-        >
+        <a href={profileUrl} className="chat-profile__username">
           {conversation.username}
         </a>
 
@@ -304,31 +467,37 @@ function ChatProfilePanel({
       <div className="chat-profile__section chat-profile__actions">
         <button
           type="button"
-          onClick={onRemoveFriend}
+          onClick={() => void onRemoveFriend()}
+          disabled={isActionLoading}
         >
           Видалити з друзів
         </button>
 
         <button
           type="button"
-          disabled
-          title="Функцію ще не підключено"
+          onClick={() => void onClearHistory()}
+          disabled={isActionLoading}
         >
           Очистити історію
         </button>
 
         <button
           type="button"
-          disabled
-          title="Функцію ще не підключено"
+          onClick={() => void onToggleBlock()}
+          disabled={isActionLoading || otherUserBlockedMe}
+          title={
+            otherUserBlockedMe
+              ? "Цей користувач заблокував вас"
+              : undefined
+          }
         >
-          Заблокувати
+          {isBlocked ? "Розблокувати" : "Заблокувати"}
         </button>
 
         <button
           type="button"
-          disabled
-          title="Функцію ще не підключено"
+          onClick={() => void onReportUser()}
+          disabled={isActionLoading}
         >
           Поскаржитися
         </button>

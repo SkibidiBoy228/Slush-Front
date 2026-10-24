@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import {
   getChatMessages,
   sendChatMessage,
+  markChatAsRead,
 } from "../api/chat";
 import type {
   ChatMessage,
@@ -32,6 +33,12 @@ export function useChatMessages(friendId: string | null) {
       setMessages(result.items);
       setPage(result.page);
       setTotalCount(result.totalCount);
+      await markChatAsRead(friendId);
+      window.dispatchEvent(
+        new CustomEvent("slush: chat-read", {
+          detail: {friendId},
+        })
+      );
     } catch (err) {
       console.error("Failed to load chat messages:", err);
       setError("Не удалось загрузить сообщения.");

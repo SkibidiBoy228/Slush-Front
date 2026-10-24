@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 
 import {
@@ -34,26 +35,35 @@ function NotificationBell() {
       setLoading(true);
 
       const response = await getNotifications(1, 5);
-
       setNotifications(response.items);
 
-      // На всякий случай синхронизируем счётчик
-      // с актуальным API.
       await loadUnreadCount();
     } catch (error) {
-      console.error(
-        "Не удалось получить уведомления:",
-        error
-      );
+      console.error("Не удалось получить уведомления:", error);
     } finally {
       setLoading(false);
     }
   };
 
+  // Первоначальная загрузка счётчика уведомлений
   useEffect(() => {
     void loadUnreadCount();
   }, []);
 
+  // Обновление счётчика после прочтения сообщений в чате
+  useEffect(() => {
+    const handleChatRead = () => {
+      void loadUnreadCount();
+    };
+
+    window.addEventListener("slush:chat-read", handleChatRead);
+
+    return () => {
+      window.removeEventListener("slush:chat-read", handleChatRead);
+    };
+  }, []);
+
+  // Загрузка уведомлений при открытии списка
   useEffect(() => {
     if (!isOpen) {
       return;
@@ -84,9 +94,7 @@ function NotificationBell() {
         )
       );
 
-      setUnreadCount((previous) =>
-        Math.max(0, previous - 1)
-      );
+      setUnreadCount((previous) => Math.max(0, previous - 1));
     } catch (error) {
       console.error(
         "Не удалось отметить уведомление как прочитанное:",
@@ -127,25 +135,18 @@ function NotificationBell() {
     switch (type) {
       case "FriendRequest":
         return "👥";
-
       case "FriendRequestAccepted":
         return "✓";
-
       case "FriendRequestRejected":
         return "✕";
-
       case "ProfileComment":
         return "💬";
-
       case "BigSale":
         return "🏷️";
-
       case "WishlistDiscount":
         return "❤️";
-
       case "ChatMessage":
         return "✉️";
-
       default:
         return "🔔";
     }
@@ -175,7 +176,6 @@ function NotificationBell() {
             strokeLinecap="round"
             strokeLinejoin="round"
           />
-
           <path
             d="M10 21H14"
             stroke="currentColor"
@@ -221,9 +221,7 @@ function NotificationBell() {
                   key={notification.id}
                   type="button"
                   className={`notification-dropdown-item ${
-                    notification.isRead
-                      ? "is-read"
-                      : "is-unread"
+                    notification.isRead ? "is-read" : "is-unread"
                   }`}
                   onClick={() =>
                     void handleNotificationClick(notification)
@@ -239,14 +237,15 @@ function NotificationBell() {
                     </span>
 
                     <span className="notification-dropdown-date">
-                      {new Date(
-                        notification.createdAt
-                      ).toLocaleString("uk-UA", {
-                        day: "numeric",
-                        month: "short",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
+                      {new Date(notification.createdAt).toLocaleString(
+                        "uk-UA",
+                        {
+                          day: "numeric",
+                          month: "short",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        }
+                      )}
                     </span>
                   </span>
 
@@ -270,5 +269,4 @@ function NotificationBell() {
     </div>
   );
 }
-
 export default NotificationBell;
