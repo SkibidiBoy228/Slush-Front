@@ -82,3 +82,27 @@ export async function setChatNotifications(
     },
   );
 }
+export async function deleteChatMessage(messageId:string):Promise<void> {
+  await apiRequest<void>(`/api/Chat/messages/${encodeURIComponent(messageId)}`, {method:"DELETE"});
+}
+export async function setChatBlock(friendId:string, isBlocked: boolean) : Promise<{friendId: string; isBlocked: boolean; message: string}> {
+  return apiRequest(`/api/Chat/${encodeURIComponent(friendId)}/block`,{
+    method: "PUT",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({isBlocked}),
+  })
+}
+export async function reportChatUser(friendId:string, reason: string, details?:string, messageId?: string) : Promise<{message: string}> {
+    return apiRequest(`/api/Chat/${encodeURIComponent(friendId)}/report`, {
+      method: "POST",
+      headers: {"Content-type" : "application/json"},
+      body: JSON.stringify({
+        reason,
+        details: details || null,
+        messageId: messageId || null,
+      })
+    })
+}
+export async function clearChatHistory(friendId: string) : Promise<{message: string}>{
+  return apiRequest(`/api/Chat/${encodeURIComponent(friendId)}/history`, {method: "DELETE"})
+}
