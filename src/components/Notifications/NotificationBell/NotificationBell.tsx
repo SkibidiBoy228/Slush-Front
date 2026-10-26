@@ -45,12 +45,11 @@ function NotificationBell() {
     }
   };
 
-  // Первоначальная загрузка счётчика уведомлений
+
   useEffect(() => {
     void loadUnreadCount();
   }, []);
 
-  // Обновление счётчика после прочтения сообщений в чате
   useEffect(() => {
     const handleChatRead = () => {
       void loadUnreadCount();
@@ -63,7 +62,23 @@ function NotificationBell() {
     };
   }, []);
 
-  // Загрузка уведомлений при открытии списка
+
+  useEffect(()=>{
+    const handleNewChatMessage = () =>{
+      void loadUnreadCount();
+      if(isOpen){
+        void loadNotifications();
+      }
+    };
+    window.addEventListener("slush:chat-message", handleNewChatMessage);
+    return ()=>{
+      window.removeEventListener(
+        "slush:chat-message",
+        handleNewChatMessage
+      );
+    };
+  }, [isOpen]);
+
   useEffect(() => {
     if (!isOpen) {
       return;

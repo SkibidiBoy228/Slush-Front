@@ -35,7 +35,7 @@ export function useChatMessages(friendId: string | null) {
       setTotalCount(result.totalCount);
       await markChatAsRead(friendId);
       window.dispatchEvent(
-        new CustomEvent("slush: chat-read", {
+        new CustomEvent("slush:chat-read", {
           detail: {friendId},
         })
       );

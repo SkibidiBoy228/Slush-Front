@@ -23,6 +23,8 @@ import type {
   SendChatMessageRequest,
 } from "../../types/chat";
 
+import { markChatAsRead } from "../../api/chat";
+
 import "./ChatPage.css";
 
 type ConversationWithBlockStatus = ChatConversation & {
@@ -104,12 +106,27 @@ export default function ChatPage() {
   const handleIncomingMessage = useCallback(
     (payload: ReceiveChatMessagePayload) => {
       const message = payload.message;
-
-      if (
+      const isCurrentConversation =
         selectedConversation?.friendId === message.senderId &&
-        !message.isMine
-      ) {
+        !message.isMine;
+
+      if (isCurrentConversation) {
         addIncomingMessage(message);
+
+        void markChatAsRead(message.senderId)
+          .then(() => {
+            window.dispatchEvent(
+              new CustomEvent("slush:chat-read", {
+                detail: { friendId: message.senderId },
+              })
+            );
+          })
+          .catch((error) => {
+            console.error(
+              "Не вдалося позначити повідомлення прочитаними:",
+              error
+            );
+          });
       }
 
       window.dispatchEvent(
@@ -119,10 +136,10 @@ export default function ChatPage() {
             shouldNotify: payload.shouldNotify,
             preview: getMessagePreview(message),
           },
-        }),
+        })
       );
     },
-    [selectedConversation?.friendId, addIncomingMessage],
+    [selectedConversation?.friendId, addIncomingMessage]
   );
 
   const { isConnected, connectionError } = useChatConnection({
