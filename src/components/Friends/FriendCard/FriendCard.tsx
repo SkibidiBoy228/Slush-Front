@@ -73,20 +73,20 @@ function FriendCard({
         <div className="friend-card-info">
           <strong>{friend.username}</strong>
 
-          <span>
-            {friend.isOnline
+        <span>
+          {friend.isOnline && friend.currentGameTitle
+            ? `Грає в ${friend.currentGameTitle}`
+            : friend.isOnline
               ? "В мережі"
               : friend.lastSeenAt
-                ? `Був у мережі ${new Date(
-                    friend.lastSeenAt
-                  ).toLocaleString("uk-UA", {
+                ? `Був у мережі ${new Date(friend.lastSeenAt).toLocaleString("uk-UA", {
                     day: "numeric",
                     month: "short",
                     hour: "2-digit",
                     minute: "2-digit",
                   })}`
                 : "Не в мережі"}
-          </span>
+        </span>
         </div>
       </button>
 

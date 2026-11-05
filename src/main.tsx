@@ -1,11 +1,13 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-
 import App from "./App";
+import { SignalRProvider } from "./context/SignalRContext";
 import "./index.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <App />
+    <SignalRProvider>
+      <App />
+    </SignalRProvider>
   </StrictMode>
 );

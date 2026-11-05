@@ -5,11 +5,13 @@ export type FriendStatus =
     | "Friends";
 
 export interface FriendUser {
-    userId: string;
-    username: string;
-    avatarUrl: string;
-    lastSeenAt: string | null;
-    isOnline: boolean;
+  userId: string;
+  username: string;
+  avatarUrl: string;
+  lastSeenAt: string | null;
+  isOnline: boolean;
+  currentGameId?: string | null;
+  currentGameTitle?: string | null;
 }
 
 export interface FriendRequest {

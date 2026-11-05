@@ -23,8 +23,10 @@ import Notifications from "./pages/Notification/Notification";
 import LibraryHomePage from "./pages/LibraryHomePage/LibraryHomePage";
 import LibraryFeedPage from "./pages/LibraryFeedPage/LibraryFeedPage";
 import ChatPage from "./pages/Chat/ChatPage";
+
 import { usePresence } from "./hooks/usePresence";
 import { isAuthenticated } from "./api/client";
+import AppLayout from "./components/layout/AppLayout";
 
 function App() {
   usePresence();
@@ -33,149 +35,117 @@ function App() {
     .split("/")
     .filter(Boolean);
 
+  let page;
+
   if (pathParts[0] === "game" && pathParts[1]) {
     const appId = pathParts[1];
 
     if (pathParts[2] === "characteristics") {
-      return <CharacteristicsPage appId={appId} />;
-    }
-
-    if (pathParts[2] === "dlc") {
+      page = <CharacteristicsPage appId={appId} />;
+    } else if (pathParts[2] === "dlc") {
       const dlcId = pathParts[3];
-
-      return <DlcPage appId={appId} dlcId={dlcId} />;
+      page = <DlcPage appId={appId} dlcId={dlcId} />;
+    } else if (pathParts[2] === "community") {
+      page = <CommunityPage gameId={appId} />;
+    } else {
+      page = <GamePage appId={appId} />;
     }
-    if (pathParts[2] === "community") {
-    return <CommunityPage gameId={appId} />;
-  }
-
-    return <GamePage appId={appId} />;
-  }
-
-
-    if (pathParts[0] === "library") {
-      if (!isAuthenticated()) {
-        window.location.replace("/login");
-        return null;
-      }
-
-          if (pathParts[1] === "game" && pathParts[2]) {
-        return (
-            <LibraryGamePage
-                gameId={decodeURIComponent(pathParts[2])}
-            />
-        );
-    }
-
-      if (pathParts[1] === "feed") {
-        return <LibraryFeedPage />;
-      }
-
-      return <LibraryHomePage />;
-    }
-
-  if(pathParts[0] === "settings"){
-    if(!isAuthenticated()){
+  } else if (pathParts[0] === "library") {
+    if (!isAuthenticated()) {
       window.location.replace("/login");
       return null;
     }
-    return <Settings/>
-  }
-  if(pathParts[0] === "notifications"){
-    if(!isAuthenticated()){
+
+    if (pathParts[1] === "game" && pathParts[2]) {
+      page = (
+        <LibraryGamePage
+          gameId={decodeURIComponent(pathParts[2])}
+        />
+      );
+    } else if (pathParts[1] === "feed") {
+      page = <LibraryFeedPage />;
+    } else {
+      page = <LibraryHomePage />;
+    }
+  } else if (pathParts[0] === "settings") {
+    if (!isAuthenticated()) {
       window.location.replace("/login");
       return null;
     }
-    return <Notifications/>
-  }
 
-  if (pathParts[0] === "profile" && pathParts[1]) {
+    page = <Settings />;
+  } else if (pathParts[0] === "notifications") {
+    if (!isAuthenticated()) {
+      window.location.replace("/login");
+      return null;
+    }
+
+    page = <Notifications />;
+  } else if (pathParts[0] === "profile" && pathParts[1]) {
     if (!isAuthenticated()) {
       window.location.replace("/login");
       return null;
     }
 
     const username = decodeURIComponent(pathParts[1]);
-
-    return <Profile username={username} />;
-  }
-
-  if(pathParts[0] === "friends"){
-    if(!isAuthenticated()){
-      window.location.replace("/login");
-      return null;
-    }
-    return <Friends/>
-  }
-  if (pathParts[0] === "chat") {
+    page = <Profile username={username} />;
+  } else if (pathParts[0] === "friends") {
     if (!isAuthenticated()) {
       window.location.replace("/login");
       return null;
     }
 
-    return <ChatPage />;
-  }
-
-  if (pathParts[0] === "edit-profile") {
+    page = <Friends />;
+  } else if (pathParts[0] === "chat") {
     if (!isAuthenticated()) {
       window.location.replace("/login");
       return null;
     }
 
-    return <EditProfile />;
-  }
-  
-
-  if (pathParts[0] === "wishlist") {
+    page = <ChatPage />;
+  } else if (pathParts[0] === "edit-profile") {
     if (!isAuthenticated()) {
       window.location.replace("/login");
       return null;
     }
 
-    return <WishlistPage />;
-  }
-
-  if (pathParts[0] === "cart") {
+    page = <EditProfile />;
+  } else if (pathParts[0] === "wishlist") {
     if (!isAuthenticated()) {
       window.location.replace("/login");
       return null;
     }
 
-    return <CartPage />;
-  }
+    page = <WishlistPage />;
+  } else if (pathParts[0] === "cart") {
+    if (!isAuthenticated()) {
+      window.location.replace("/login");
+      return null;
+    }
 
-  if (pathParts[0] === "catalog") {
-    return <Catalog />;
-  }
-
-  if (pathParts[0] === "login") {
-    return <LoginPage />;
-  }
-
-  if (pathParts[0] === "register") {
-    return <Register />;
-  }
-
-  if (pathParts[0] === "forgot-password") {
-    return <ForgotPassword />;
-  }
-
-  if (pathParts[0] === "reset-password") {
-    return <ResetPassword />;
-  }
-
-  if (pathParts[0] === "verify-email") {
-    return <VerifyEmail />;
-  }
-
-  if (
+    page = <CartPage />;
+  } else if (pathParts[0] === "catalog") {
+    page = <Catalog />;
+  } else if (pathParts[0] === "login") {
+    page = <LoginPage />;
+  } else if (pathParts[0] === "register") {
+    page = <Register />;
+  } else if (pathParts[0] === "forgot-password") {
+    page = <ForgotPassword />;
+  } else if (pathParts[0] === "reset-password") {
+    page = <ResetPassword />;
+  } else if (pathParts[0] === "verify-email") {
+    page = <VerifyEmail />;
+  } else if (
     window.location.pathname === "/" ||
     window.location.pathname === "/mainPage"
   ) {
-    return <Home />;
+    page = <Home />;
+  } else {
+    page = <Home />;
   }
 
-  return <Home />;
+  return <AppLayout>{page}</AppLayout>;
 }
 
 export default App;

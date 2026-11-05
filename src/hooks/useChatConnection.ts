@@ -1,88 +1,33 @@
-
-import { useEffect, useState } from "react";
-import {
-  HubConnection,
-  HubConnectionBuilder,
-} from "@microsoft/signalr";
-import { getAccessToken } from "../api/client";
+import { useEffect, useRef } from "react";
+import { useSignalR } from "../context/SignalRContext";
 import type { ReceiveChatMessagePayload } from "../types/chat";
 
 interface UseChatConnectionOptions {
   onMessage: (payload: ReceiveChatMessagePayload) => void;
 }
 
-export function useChatConnection({
-  onMessage,
-}: UseChatConnectionOptions) {
-  const [isConnected, setIsConnected] = useState(false);
-  const [connectionError, setConnectionError] = useState<string | null>(null);
+export function useChatConnection({ onMessage }: UseChatConnectionOptions) {
+  const { connection, isConnected, connectionError } = useSignalR();
+
+  const onMessageRef = useRef(onMessage);
 
   useEffect(() => {
-    let active = true;
+    onMessageRef.current = onMessage;
+  }, [onMessage]);
 
-    const baseUrl = String(import.meta.env.VITE_API_URL).replace(/\/+$/, "");
-    const hubUrl = `${baseUrl}/hubs/chat`;
+  useEffect(() => {
+    if (!connection) return;
 
-    const connection: HubConnection = new HubConnectionBuilder()
-      .withUrl(hubUrl, {
-        accessTokenFactory: () => getAccessToken() ?? "",
-      })
-      .withAutomaticReconnect()
-      .build();
+    const handler = (payload: ReceiveChatMessagePayload) => {
+      onMessageRef.current(payload);
+    };
 
-    connection.on(
-      "ReceiveChatMessage",
-      (payload: ReceiveChatMessagePayload) => {
-        if (active) {
-          onMessage(payload);
-        }
-      },
-    );
-
-    connection.onreconnecting(() => {
-      if (active) setIsConnected(false);
-    });
-
-    connection.onreconnected(() => {
-      if (active) {
-        setIsConnected(true);
-        setConnectionError(null);
-      }
-    });
-
-    connection.onclose((error) => {
-      if (!active) return;
-
-      setIsConnected(false);
-
-      if (error) {
-        setConnectionError("Соединение чата потеряно.");
-      }
-    });
-
-    void connection
-      .start()
-      .then(() => {
-        if (active) {
-          setIsConnected(true);
-          setConnectionError(null);
-        }
-      })
-      .catch((error: unknown) => {
-        console.error("SignalR connection failed:", error);
-
-        if (active) {
-          setIsConnected(false);
-          setConnectionError("Не удалось подключиться к чату.");
-        }
-      });
+    connection.on("ReceiveChatMessage", handler);
 
     return () => {
-      active = false;
-      connection.off("ReceiveChatMessage");
-      void connection.stop();
+      connection.off("ReceiveChatMessage", handler);
     };
-  }, [onMessage]);
+  }, [connection]);
 
   return {
     isConnected,
