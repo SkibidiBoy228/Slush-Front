@@ -34,6 +34,8 @@ import type {
   ProfileVideo,
 } from "../../types/profile";
 
+import { useFriendPresence } from "../../hooks/useFriendPresence";
+
 import { getCurrentUsername } from "../../api/client";
 
 import "./Profile.css";
@@ -67,6 +69,36 @@ const Profile = ({ username }: ProfileProps) => {
   const [friendStatus, setFriendStatus] = useState<"None" | "PendingSent" | "PendingReceived" | "Friends">("None");
   const [friendRequestId, setFriendRequestId] = useState<string | null>(null);
   const [friendActionLoading, setFriendActionLoading] = useState(false);
+  const { events } = useFriendPresence();
+
+  useEffect(() => {
+      if (events.length === 0) return;
+
+      setProfile((currentProfile) => {
+          if (!currentProfile) return currentProfile;
+
+          return {
+              ...currentProfile,
+              friends: currentProfile.friends.map((friend) => {
+                  const friendEvents = events.filter(
+                      (event) => event.userId === friend.id
+                  );
+
+                  if (friendEvents.length === 0) return friend;
+
+                  const latestEvent = friendEvents[friendEvents.length - 1];
+                  const isPlaying = latestEvent.eventType === "InGame";
+
+                  return {
+                      ...friend,
+                      isOnline: true,
+                      currentGameId: isPlaying ? latestEvent.gameId : null,
+                      currentGameTitle: isPlaying ? latestEvent.gameTitle : null,
+                  };
+              }),
+          };
+      });
+  }, [events]);
 
   useEffect(() => {
     let isCancelled = false;
@@ -827,25 +859,41 @@ const Profile = ({ username }: ProfileProps) => {
               </div>
 
               <div className="friends-list">
-                {profile.friends.map((friend) => (
-                  <a
-                    href={`/profile/${encodeURIComponent(
-                      friend.username
-                    )}`}
-                    className="friend-item"
-                    key={friend.id}
-                  >
-                    <img
-                      src={friend.avatarUrl}
-                      alt={friend.username}
-                    />
+                  {profile.friends.map((friend) => (
+                      <a
+                          href={`/profile/${encodeURIComponent(friend.username)}`}
+                          className="friend-item"
+                          key={friend.id}
+                      >
+                          <div className="friend-item-avatar-wrapper">
+                              <img
+                                  src={friend.avatarUrl}
+                                  alt={friend.username}
+                                  className="friend-item-avatar"
+                              />
 
-                    <div>
-                      <strong>{friend.username}</strong>
-                      <span>Рівень {friend.level}</span>
-                    </div>
-                  </a>
-                ))}
+                              <span
+                                  className={`friend-item-status ${
+                                      friend.isOnline ? "online" : "offline"
+                                  }`}
+                              />
+                          </div>
+
+                          <div className="friend-item-info">
+                              <strong>{friend.username}</strong>
+
+                              <span className="friend-item-details">
+                                  {friend.isOnline && friend.currentGameTitle
+                                      ? `Грає в ${friend.currentGameTitle}`
+                                      : friend.isOnline
+                                          ? "В мережі"
+                                          : "Не в мережі"}
+                                  {" · "}
+                                  Рівень {friend.level}
+                              </span>
+                          </div>
+                      </a>
+                  ))}
               </div>
 
               {!profile.friends.length && (

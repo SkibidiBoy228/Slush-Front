@@ -600,6 +600,53 @@
   color: #555b62;
   cursor: not-allowed;
 }
+.friend-item-avatar-wrapper {
+    position: relative;
+    flex: 0 0 auto;
+    width: 31px;
+    height: 31px;
+}
+
+.friend-item .friend-item-avatar {
+    display: block;
+    width: 31px;
+    height: 31px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.friend-item-status {
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    width: 9px;
+    height: 9px;
+    border: 2px solid #004653;
+    border-radius: 50%;
+}
+
+.friend-item-status.online {
+    background: #35c759;
+    box-shadow: 0 0 6px rgba(53, 199, 89, 0.6);
+}
+
+.friend-item-status.offline {
+    background: #777;
+}
+
+.friend-item-info {
+    min-width: 0;
+}
+
+.friend-item-details {
+    display: block;
+    margin-top: 3px;
+    overflow: hidden;
+    color: #7fb6c0;
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 
 @media (max-width: 900px) {
   .profile-layout {

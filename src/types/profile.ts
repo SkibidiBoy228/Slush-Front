@@ -24,6 +24,9 @@ export interface ProfileFriend{
     username: string;
     avatarUrl: string;
     level: number;
+    isOnline?: boolean;
+    currentGameId?: string | null;
+    currentGameTitle?: string | null;
 }
 
 export interface UserProfile{
