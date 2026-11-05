@@ -103,7 +103,7 @@ export interface GameSession{
     coverImage: string;
     isPlaying: boolean;
     playUrl: string;
-    canEmbedInframe: boolean;
+    canEmbedInIframe: boolean;
     sessionStartedAt: string | null;
     totalPlaytimeMinutes: number;
     totalPlaytimeHours: number;

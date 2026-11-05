@@ -104,7 +104,7 @@ function GamePlayer({ session, onExit }: GamePlayerProps) {
                 </div>
             )}
             <main className="game-player__content">
-                {session.canEmbedInframe? (
+                {session.canEmbedInIframe? (
                     <iframe className="game-player__iframe"
                     src={session.playUrl}
                     title={session.gameTitle}

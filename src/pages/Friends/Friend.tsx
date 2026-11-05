@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-
+import { useFriendPresence } from "../../hooks/useFriendPresence";
+import { applyFriendPresence } from "../../utils/applyFriendPresence";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 
@@ -46,9 +47,25 @@ function Friends() {
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
   const [error, setError] = useState("");
 
+  const { events } = useFriendPresence();
+
+  useEffect(() => {
+    if (events.length === 0) return;
+
+    setFriends((currentFriends) =>
+      events.reduce(
+        (updatedFriends, event) =>
+          applyFriendPresence(updatedFriends, event),
+        currentFriends
+      )
+    );
+  }, [events]);
+
   useEffect(() => {
     loadFriends();
   }, []);
+
+  
 
   useEffect(() => {
     const query = searchQuery.trim();

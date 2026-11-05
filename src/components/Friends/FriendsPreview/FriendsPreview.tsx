@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { getFriends } from "../../../api/friends";
 import type { FriendUser } from "../../../types/friends";
+import { useFriendPresence } from "../../../hooks/useFriendPresence";
+import { applyFriendPresence } from "../../../utils/applyFriendPresence";
 import "./FriendsPreview.css";
 interface FriendsPreviewProps {
     username: string;
@@ -9,6 +11,20 @@ interface FriendsPreviewProps {
 function FriendsPreview({username} : FriendsPreviewProps){
     const [friends, setFriends] = useState<FriendUser[]>([]);
     const [loading, setLoading] = useState(true);
+
+    const { events } = useFriendPresence();
+
+    useEffect(() => {
+    if (events.length === 0) return;
+
+    setFriends((currentFriends) =>
+        events.reduce(
+        (updatedFriends, event) =>
+            applyFriendPresence(updatedFriends, event),
+        currentFriends
+        )
+    );
+    }, [events]);
 
     useEffect(()=>{
         let cancelled = false;
