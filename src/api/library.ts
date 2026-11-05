@@ -13,6 +13,7 @@ import type {
     SaveGameReviewRequest,
     UpdateLibraryCollectionRequest,
     UserGameReview,
+    GameSession,
 } from "../types/library";
 
 const BASE_URL = "/api/Library";
@@ -118,4 +119,28 @@ export function checkoutLibraryGame(
     method: "POST",
     body: JSON.stringify({ gameId }),
   });
+}
+export function startGameSession(gameId: string):Promise<GameSession>{
+    return apiRequest<GameSession>(
+        `${BASE_URL}/${encodeURIComponent(gameId)}/play/start`,
+        {
+            method: "POST"
+        }
+    );
+}
+export function heartbeatGameSession(gameId: string):Promise<GameSession>{
+    return apiRequest<GameSession>(
+        `${BASE_URL}/${encodeURIComponent(gameId)}/play/heartbeat`,
+        {
+            method:"POST"
+        }
+    )
+}
+export function stopGameSession(gameId: string):Promise<GameSession>{
+    return apiRequest<GameSession>(
+        `${BASE_URL}/${encodeURIComponent(gameId)}/play/stop`,
+        {
+            method: "POST"
+        }
+    )
 }

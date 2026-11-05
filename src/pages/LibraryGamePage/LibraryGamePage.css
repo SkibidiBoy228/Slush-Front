@@ -1,0 +1,157 @@
+.library-game {
+    width: 100%;
+    min-width: 0;
+    color: #e5f3f5;
+}
+
+.library-game__back {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    background: #064451;
+    color: #e5f3f5;
+    text-decoration: none;
+}
+
+.library-game__banner {
+    width: 100%;
+    height: 240px;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #00313d;
+}
+
+.library-game__banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.library-game__content {
+    display: flex;
+    align-items: flex-start;
+    gap: 28px;
+    margin-top: -55px;
+    padding: 0 24px;
+    position: relative;
+}
+
+.library-game__cover {
+    flex: 0 0 200px;
+}
+
+.library-game__cover img {
+    display: block;
+    width: 100%;
+    border-radius: 10px;
+    border: 3px solid #00313d;
+}
+
+.library-game__info {
+    flex: 1;
+    min-width: 0;
+    padding-top: 65px;
+}
+
+.library-game__info h1 {
+    margin: 0 0 8px;
+    font-size: 28px;
+}
+
+.library-game__developer {
+    color: #9bbbc2;
+    margin-bottom: 22px;
+}
+
+.library-game__play {
+    display: block;
+    padding: 12px 32px;
+    border: none;
+    border-radius: 8px;
+    background: #087b8d;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.library-game__play:hover:not(:disabled) {
+    background: #0a9aad;
+}
+
+.library-game__play:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.library-game__playing {
+    display: inline-block;
+    margin-bottom: 12px;
+    color: #36d98a;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.library-game__play-error {
+    margin-top: 10px;
+    color: #ff8585;
+    font-size: 13px;
+}
+
+.library-game__stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    margin-top: 30px;
+}
+
+.library-game__stats div {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.library-game__stats span {
+    color: #9bbbc2;
+    font-size: 13px;
+}
+
+.library-game__stats strong {
+    font-size: 15px;
+}
+
+.library-game__error {
+    padding: 24px;
+    color: #ff8585;
+}
+
+.library-game__error a {
+    color: #55c9db;
+}
+
+@media (max-width: 650px) {
+    .library-game__banner {
+        height: 160px;
+    }
+
+    .library-game__content {
+        flex-direction: column;
+        gap: 12px;
+        padding: 0 10px;
+    }
+
+    .library-game__cover {
+        flex-basis: auto;
+        width: 140px;
+    }
+
+    .library-game__info {
+        padding-top: 0;
+    }
+
+    .library-game__info h1 {
+        font-size: 22px;
+    }
+}

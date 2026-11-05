@@ -10,6 +10,11 @@ export interface LibraryGame{
     collectionId: string | null;
     isInstalled: boolean | null;
     acquiredAt: string;
+    playtimeFormatted: string;
+    lastPlayedAt: string | null;
+    playtimeMunites: number;
+    playTimeHours: number;
+    isCurrentlyPlaying: boolean;
 }
 export interface LibraryCollection{
     id: string;
@@ -91,4 +96,16 @@ export interface LibraryFeedParams{
     sort?: "newest" | "popular";
     page?: number;
     pageSize?: number;
+}
+export interface GameSession{
+    gameId: string;
+    gameTitle: string;
+    coverImage: string;
+    isPlaying: boolean;
+    playUrl: string;
+    canEmbedInframe: boolean;
+    sessionStartedAt: string | null;
+    totalPlaytimeMinutes: number;
+    totalPlaytimeHours: number;
+    playtimeFormatted: string;
 }

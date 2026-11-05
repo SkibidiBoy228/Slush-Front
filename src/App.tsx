@@ -5,6 +5,7 @@ import ResetPassword from "./pages/ResetPassword/ResetPassword";
 import VerifyEmail from "./pages/VerifyEmail/VerifyEmail";
 import Home from "./pages/Home/Home";
 import Friends from "./pages/Friends/Friend";
+import LibraryGamePage from "./pages/LibraryGamePage/LibraryGamePage";
 
 import GamePage from "./pages/GamePage/GamePage";
 import CharacteristicsPage from "./pages/CharacteristicsPage/CharacteristicsPage";
@@ -57,6 +58,14 @@ function App() {
         window.location.replace("/login");
         return null;
       }
+
+          if (pathParts[1] === "game" && pathParts[2]) {
+        return (
+            <LibraryGamePage
+                gameId={decodeURIComponent(pathParts[2])}
+            />
+        );
+    }
 
       if (pathParts[1] === "feed") {
         return <LibraryFeedPage />;
@@ -115,6 +124,7 @@ function App() {
 
     return <EditProfile />;
   }
+  
 
   if (pathParts[0] === "wishlist") {
     if (!isAuthenticated()) {
