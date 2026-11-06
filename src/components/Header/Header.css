@@ -112,6 +112,7 @@
 /* Notification */
 
 .header-notification {
+  position: relative;
   width: 44px;
   height: 44px;
   display: flex;
@@ -119,7 +120,8 @@
   justify-content: center;
   border-radius: 16px;
   background: #064c60;
-  overflow: hidden;
+  overflow: visible;
+  z-index: 1000;
 }
 
 /* Avatar */
@@ -177,7 +179,14 @@
   color: #20d9c0;
 }
 
-/* Responsive */
+.header-actions {
+  position: relative;
+  z-index: 1000;
+}
+
+.header-notification {
+  overflow: visible;
+}
 
 @media (max-width: 1320px) {
   .header-container {
