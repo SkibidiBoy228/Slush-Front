@@ -1,9 +1,8 @@
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   getChatMessages,
   sendChatMessage,
-  markChatAsRead,
 } from "../api/chat";
 import type {
   ChatMessage,
@@ -19,82 +18,200 @@ export function useChatMessages(friendId: string | null) {
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
+
+  const requestIdRef = useRef(0);
+  const friendIdRef = useRef(friendId);
+  const messagesRef = useRef<ChatMessage[]>([]);
+
+  friendIdRef.current = friendId;
+
+  const updateMessages = useCallback(
+    (updater: (current: ChatMessage[]) => ChatMessage[]) => {
+      setMessages((current) => {
+        const updated = updater(current);
+        messagesRef.current = updated;
+        return updated;
+      });
+    },
+    [],
+  );
+
   const loadMessages = useCallback(async () => {
-    if (!friendId) {
-      setMessages([]);
+    const currentFriendId = friendId;
+
+    const requestId = ++requestIdRef.current;
+
+    if (!currentFriendId) {
+      updateMessages(() => []);
       setPage(1);
       setTotalCount(0);
+      setError(null);
+      setIsLoading(false);
       return;
     }
+
     setIsLoading(true);
     setError(null);
+
     try {
-      const result = await getChatMessages(friendId, 1, PAGE_SIZE);
-      setMessages(result.items);
+      const result = await getChatMessages(
+        currentFriendId,
+        1,
+        PAGE_SIZE,
+      );
+
+      if (
+        requestId !== requestIdRef.current ||
+        friendIdRef.current !== currentFriendId
+      ) {
+        return;
+      }
+
+      updateMessages(() => result.items);
       setPage(result.page);
       setTotalCount(result.totalCount);
-      await markChatAsRead(friendId);
+
       window.dispatchEvent(
         new CustomEvent("slush:chat-read", {
-          detail: {friendId},
-        })
+          detail: { friendId: currentFriendId },
+        }),
       );
     } catch (err) {
+      if (
+        requestId !== requestIdRef.current ||
+        friendIdRef.current !== currentFriendId
+      ) {
+        return;
+      }
+
       console.error("Failed to load chat messages:", err);
-      setError("Не удалось загрузить сообщения.");
+      setError("Не вдалося завантажити повідомлення.");
     } finally {
-      setIsLoading(false);
+      if (requestId === requestIdRef.current) {
+        setIsLoading(false);
+      }
     }
-  }, [friendId]);
+  }, [friendId, updateMessages]);
 
   useEffect(() => {
+    updateMessages(() => []);
+    setPage(1);
+    setTotalCount(0);
+
     void loadMessages();
-  }, [loadMessages]);
+
+    return () => {
+      requestIdRef.current += 1;
+    };
+  }, [friendId, loadMessages, updateMessages]);
+
   const sendMessage = useCallback(
     async (request: SendChatMessageRequest) => {
       if (!friendId || isSending) return null;
+
+      const currentFriendId = friendId;
+
       setIsSending(true);
       setError(null);
+
       try {
-        const sentMessage = await sendChatMessage(friendId, request);
-        setMessages((current) => {
+        const sentMessage = await sendChatMessage(
+          currentFriendId,
+          request,
+        );
+
+        if (friendIdRef.current !== currentFriendId) {
+          return sentMessage;
+        }
+
+        updateMessages((current) => {
           if (current.some((message) => message.id === sentMessage.id)) {
             return current;
           }
+
           return [...current, sentMessage];
         });
-        setTotalCount((count) => count + 1);
+
+        setTotalCount((count) =>
+          messagesRef.current.some(
+            (message) => message.id === sentMessage.id,
+          )
+            ? count
+            : count + 1,
+        );
+
         return sentMessage;
       } catch (err) {
         console.error("Failed to send chat message:", err);
-        setError("Не удалось отправить сообщение.");
+        setError("Не вдалося надіслати повідомлення.");
         return null;
       } finally {
-        setIsSending(false);
+        if (friendIdRef.current === currentFriendId) {
+          setIsSending(false);
+        }
       }
     },
-    [friendId, isSending],
+    [friendId, isSending, updateMessages],
   );
-  const addIncomingMessage = useCallback((message: ChatMessage) => {
-    setMessages((current) => {
-      if (current.some((item) => item.id === message.id)) {
-        return current;
+
+  const addIncomingMessage = useCallback(
+    (message: ChatMessage) => {
+      if (message.senderId !== friendIdRef.current) return;
+
+      let wasAdded = false;
+
+      updateMessages((current) => {
+        if (current.some((item) => item.id === message.id)) {
+          return current;
+        }
+
+        wasAdded = true;
+        return [...current, message];
+      });
+
+      if (wasAdded) {
+        setTotalCount((count) => count + 1);
+      }
+    },
+    [updateMessages],
+  );
+
+  const loadOlderMessages = useCallback(async () => {
+    const currentFriendId = friendId;
+
+    if (
+      !currentFriendId ||
+      isLoading ||
+      messages.length >= totalCount
+    ) {
+      return;
+    }
+
+    const requestId = requestIdRef.current;
+    const nextPage = page + 1;
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const result = await getChatMessages(
+        currentFriendId,
+        nextPage,
+        PAGE_SIZE,
+      );
+
+      if (
+        requestId !== requestIdRef.current ||
+        friendIdRef.current !== currentFriendId
+      ) {
+        return;
       }
 
-      return [...current, message];
-    });
+      updateMessages((current) => {
+        const existingIds = new Set(
+          current.map((message) => message.id),
+        );
 
-    setTotalCount((count) => count + 1);
-  }, []);
-  const loadOlderMessages = useCallback(async () => {
-    if (!friendId || isLoading || messages.length >= totalCount) return;
-    setIsLoading(true);
-    try {
-      const nextPage = page + 1;
-      const result = await getChatMessages(friendId, nextPage, PAGE_SIZE);
-
-      setMessages((current) => {
-        const existingIds = new Set(current.map((message) => message.id));
         const olderMessages = result.items.filter(
           (message) => !existingIds.has(message.id),
         );
@@ -103,13 +220,31 @@ export function useChatMessages(friendId: string | null) {
       });
 
       setPage(result.page);
+      setTotalCount(result.totalCount);
     } catch (err) {
+      if (
+        requestId !== requestIdRef.current ||
+        friendIdRef.current !== currentFriendId
+      ) {
+        return;
+      }
+
       console.error("Failed to load older messages:", err);
-      setError("Не удалось загрузить предыдущие сообщения.");
+      setError("Не вдалося завантажити старі повідомлення.");
     } finally {
-      setIsLoading(false);
+      if (requestId === requestIdRef.current) {
+        setIsLoading(false);
+      }
     }
-  }, [friendId, isLoading, messages.length, page, totalCount]);
+  }, [
+    friendId,
+    isLoading,
+    messages.length,
+    page,
+    totalCount,
+    updateMessages,
+  ]);
+
   return {
     messages,
     setMessages,

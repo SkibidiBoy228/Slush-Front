@@ -1,17 +1,18 @@
-
 .chat-page {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  min-height: 500px;
+  width: 100%;
+  height: calc(100dvh - 78px);
+  min-height: 0;
   overflow: hidden;
-  background: #002f3d;
-  color: #fff;
+  background: #001b26;
+  color: #eaf8fa;
 }
 
 .chat-page__layout {
   display: flex;
   flex: 1;
+  min-width: 0;
   min-height: 0;
   overflow: hidden;
 }
@@ -22,6 +23,8 @@
   flex-direction: column;
   min-width: 0;
   min-height: 0;
+  overflow: hidden;
+  background: #001b26;
 }
 
 .chat-page__connection {
@@ -29,38 +32,46 @@
   flex-shrink: 0;
   align-items: center;
   gap: 7px;
-  padding: 5px 20px;
-  background: #002f3d;
-  color: #91a9b0;
-  font-size: 11px;
+  min-height: 22px;
+  padding: 3px 16px;
+  background: #00313c;
+  color: #91aeb4;
+  font-size: 10px;
 }
 
 .chat-page__connection-dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #91a9b0;
+  background: #ffba62;
 }
 
 .chat-page__connection-dot.is-connected {
   background: #1de0a0;
+  box-shadow: 0 0 7px rgba(29, 224, 160, 0.45);
 }
+
+/* Правая панель */
 
 .chat-profile {
   display: flex;
+  flex: 0 0 300px;
   flex-direction: column;
-  flex-shrink: 0;
-  width: 240px;
-  min-width: 210px;
-  margin: 20px 16px 20px 0;
-  padding: 12px;
+  width: 300px;
+  min-width: 0;
+  max-height: calc(100% - 64px);
+  margin: 32px 55px 32px 20px;
+  padding: 16px;
   align-self: flex-start;
-  max-height: calc(100% - 40px);
+  overflow-x: hidden;
   overflow-y: auto;
   box-sizing: border-box;
-  border: 1px solid rgba(29, 224, 196, 0.5);
-  border-radius: 8px;
+  border: 1px solid rgba(29, 224, 196, 0.08);
+  border-radius: 17px;
   background: #004451;
+  color: #eaf8fa;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(29, 224, 196, 0.25) transparent;
 }
 
 .chat-profile--empty {
@@ -73,8 +84,8 @@
 .chat-profile__identity {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding-bottom: 16px;
+  align-items: stretch;
+  padding-bottom: 12px;
 }
 
 .chat-profile__avatar {
@@ -82,9 +93,9 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 150px;
+  height: 264px;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 12px;
   background: #075365;
   color: #1de0c4;
   font-size: 40px;
@@ -93,6 +104,7 @@
 }
 
 .chat-profile__avatar img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -100,10 +112,10 @@
 
 .chat-profile__username {
   align-self: flex-start;
-  margin-top: 12px;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 600;
+  margin-top: 10px;
+  color: #f1fbfc;
+  font-size: 16px;
+  font-weight: 650;
   text-decoration: none;
   overflow-wrap: anywhere;
 }
@@ -111,23 +123,30 @@
 .chat-profile__online {
   align-self: flex-start;
   margin-top: 4px;
-  color: #91a9b0;
+  color: #ff5c9a;
   font-size: 12px;
 }
 
 .chat-profile__online.is-online {
-  color: #1de0a0;
+  color: #ff5c9a;
 }
 
 .chat-profile__setting {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 6px;
-  padding: 12px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  font-size: 12px;
+  gap: 10px;
+  min-height: 48px;
+  padding: 8px 2px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  color: #e0eff1;
+  font-size: 13px;
+}
+
+.chat-profile__setting input,
+.chat-profile__setting button {
+  accent-color: #1de0c4;
 }
 
 .chat-profile__section {
@@ -135,38 +154,112 @@
   flex-direction: column;
   gap: 2px;
   padding: 10px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .chat-profile__section a,
 .chat-profile__actions button {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 9px 2px;
+  gap: 11px;
+  min-height: 36px;
+  padding: 7px 2px;
   border: 0;
+  border-radius: 7px;
   background: transparent;
-  color: #e4f0f2;
+  color: #e5f2f4;
   font: inherit;
-  font-size: 12px;
+  font-size: 13px;
   text-align: left;
   text-decoration: none;
+  cursor: pointer;
+  transition: color 0.18s ease, background 0.18s ease;
+}
+
+.chat-profile__section a:hover,
+.chat-profile__actions button:hover:not(:disabled) {
+  background: rgba(29, 224, 196, 0.08);
+  color: #1de0c4;
+}
+
+.chat-profile__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 7px;
 }
 
 .chat-profile__actions button:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
-@media (max-width: 1050px) {
+/* Опасные действия */
+.chat-profile__actions button:last-child {
+  color: #ff7e91;
+}
+
+@media (max-width: 1250px) {
   .chat-profile {
-    width: 200px;
-    min-width: 180px;
+    flex-basis: 260px;
+    width: 260px;
+    margin-right: 18px;
+    margin-left: 12px;
+  }
+
+  .chat-profile__avatar {
+    height: 220px;
   }
 }
 
-@media (max-width: 800px) {
+@media (max-width: 900px) {
+  .chat-page {
+    height: calc(100dvh - 70px);
+  }
+
+  .chat-profile {
+    flex-basis: 220px;
+    width: 220px;
+    margin: 18px 10px 18px 8px;
+    padding: 12px;
+  }
+
+  .chat-profile__avatar {
+    height: 180px;
+  }
+
+  .chat-profile__username {
+    font-size: 14px;
+  }
+
+  .chat-profile__section a,
+  .chat-profile__actions button {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 650px) {
+  .chat-page {
+    height: calc(100dvh - 60px);
+    min-height: 0;
+  }
+
+  .chat-page__layout {
+    position: relative;
+    flex-direction: column;
+  }
+
+  .chat-page__center {
+    flex: 1;
+    width: 100%;
+  }
+
   .chat-profile {
     display: none;
+  }
+
+  .chat-page__connection {
+    padding-right: 10px;
+    padding-left: 10px;
   }
 }
