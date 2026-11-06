@@ -166,25 +166,17 @@
 }
 
 .hero-content p {
-  position: absolute;
-  left: calc(100% + 30px);
-  top: 50%;
-
-  width: calc(100% - 20px);
-  max-width: 440px;
-
-  margin: 25px 0 0;
-
-  color: #d0e0e3;
-
+  max-width: 420px;
+  margin: 0;
+  color: #b6ced2;
   font-size: 13px;
-  line-height: 1.7;
-
-  overflow: hidden;
+  line-height: 1.65;
 
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 5;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
 }
 
 
