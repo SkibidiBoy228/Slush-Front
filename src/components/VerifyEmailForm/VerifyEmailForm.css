@@ -1,95 +1,114 @@
 .verify-email-card {
   width: 100%;
-  max-width: 500px;
+  max-width: 368px;
   box-sizing: border-box;
+
   margin: 0 auto;
-  padding: 42px 45px;
-  background: #ffffff;
-  border-radius: 8px;
+  padding: 30px 31px;
+
+  border-radius: 16px;
+
+  background: #00313d;
+  color: #ffffff;
+
+  text-align: center;
 }
 
 .verify-email-card h1 {
   margin: 0 0 12px;
-  color: #003b49;
-  font-size: 24px;
+
+  color: #ffffff;
+
+  font-size: 19px;
   font-weight: 600;
-  text-align: center;
 }
 
 .verify-email-description {
-  margin: 0 auto 30px;
-  max-width: 390px;
-  color: #6f9097;
+  margin: 0 0 25px;
+
+  color: #b5cbd0;
+
   font-size: 12px;
-  line-height: 1.6;
-  text-align: center;
+  line-height: 1.5;
 }
 
 .verify-email-card form {
   width: 100%;
 }
 
-.verify-email-card .form-group {
-  margin-bottom: 18px;
+.verify-email-code {
+  display: flex;
+  justify-content: center;
+  gap: 9px;
+
+  margin-bottom: 48px;
 }
 
-.verify-email-card .form-group label {
-  display: block;
-  margin-bottom: 7px;
-  color: #003b49;
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.verify-email-card .form-group input {
-  width: 100%;
-  height: 42px;
-  padding: 0 13px;
+.verify-email-code-input {
+  width: 54px;
+  height: 60px;
   box-sizing: border-box;
 
-  border: 1px solid #d4e0e3;
-  border-radius: 5px;
+  padding: 0;
 
+  border: 1px solid #07586a;
+  border-radius: 10px;
   outline: none;
 
-  color: #003b49;
-  background: #ffffff;
+  background: #002b38;
+  color: #ffffff;
 
-  font-size: 12px;
+  font-family: inherit;
+  font-size: 27px;
+  font-weight: 500;
+  text-align: center;
 
-  transition: border-color 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
 }
 
-.verify-email-card .form-group input:focus {
+.verify-email-code-input:focus {
   border-color: #1de0c4;
+  background: #003744;
+
+  box-shadow: 0 0 0 2px rgba(29, 224, 196, 0.1);
 }
 
-.verify-email-card .form-group input::placeholder {
-  color: #a5b8bc;
+.verify-email-code-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .verify-email-button {
-  width: 100%;
-  height: 42px;
+  display: block;
 
-  margin-top: 8px;
+  width: 157px;
+  height: 38px;
+
+  margin: 0 auto;
 
   border: none;
-  border-radius: 5px;
+  border-radius: 15px;
 
-  background: #0b7085;
-  color: #ffffff;
+  background: #1de0c4;
+  color: #002f3d;
 
-  font-size: 12px;
+  font-family: inherit;
+  font-size: 14px;
   font-weight: 500;
 
   cursor: pointer;
 
-  transition: background 0.2s ease;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
 }
 
-.verify-email-button:hover {
-  background: #0d849b;
+.verify-email-button:hover:not(:disabled) {
+  background: #39f0d5;
+  transform: translateY(-1px);
 }
 
 .verify-email-button:disabled {
@@ -97,36 +116,55 @@
   cursor: not-allowed;
 }
 
-.verify-email-card .form-message {
-  margin: 12px 0;
-  padding: 10px;
-  border-radius: 4px;
+.verify-email-resend {
+  display: block;
+
+  margin: 13px auto 0;
+  padding: 2px 5px;
+
+  border: none;
+  background: transparent;
+
+  color: #d0e1e4;
+
+  font-family: inherit;
   font-size: 11px;
-  text-align: center;
+
+  cursor: default;
 }
 
-.verify-email-card .form-error {
-  background: #ffe8e8;
-  color: #c0392b;
-}
+.verify-email-message {
+  margin: -32px 0 15px;
+  padding: 9px 10px;
 
-.verify-email-card .form-success {
-  background: #e5f8f4;
-  color: #087c6b;
-}
+  border-radius: 6px;
 
-.verify-email-login {
-  margin-top: 22px;
-  color: #6f9097;
   font-size: 11px;
-  text-align: center;
+  line-height: 1.4;
 }
 
-.verify-email-login a {
-  color: #0b7085;
-  text-decoration: none;
+.verify-email-error {
+  background: rgba(255, 90, 110, 0.12);
+  color: #ff9aaa;
 }
 
-.verify-email-login a:hover {
+.verify-email-success {
+  background: rgba(29, 224, 196, 0.12);
   color: #1de0c4;
+}
+
+@media (max-width: 420px) {
+  .verify-email-card {
+    max-width: 100%;
+    padding: 28px 18px;
+  }
+
+  .verify-email-code {
+    gap: 7px;
+  }
+
+  .verify-email-code-input {
+    width: 50px;
+    height: 56px;
+  }
 }

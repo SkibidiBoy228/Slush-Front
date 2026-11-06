@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState, type FormEvent, type ClipboardEvent, type KeyboardEvent } from "react";
 
 import { verifyEmail } from "../../api/auth";
 
@@ -6,30 +6,90 @@ import "./VerifyEmailForm.css";
 
 function VerifyEmailForm() {
   const params = new URLSearchParams(window.location.search);
-  const initialEmail = params.get("email") || "";
+  const email = params.get("email") || "";
 
-  const [email, setEmail] = useState(initialEmail);
-  const [code, setCode] = useState("");
-
+  const [digits, setDigits] = useState(["", "", "", "", ""]);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit: React.SubmitEventHandler<HTMLFormElement> = async (
-    event
+  const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
+
+  const code = digits.join("");
+
+  const updateDigit = (index: number, value: string) => {
+    const digit = value.replace(/\D/g, "").slice(-1);
+
+    setDigits((current) => {
+      const updated = [...current];
+      updated[index] = digit;
+      return updated;
+    });
+
+    setError("");
+
+    if (digit && index < 4) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleKeyDown = (
+    event: KeyboardEvent<HTMLInputElement>,
+    index: number
   ) => {
+    if (
+      event.key === "Backspace" &&
+      !digits[index] &&
+      index > 0
+    ) {
+      inputRefs.current[index - 1]?.focus();
+    }
+
+    if (event.key === "ArrowLeft" && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+
+    if (event.key === "ArrowRight" && index < 4) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handlePaste = (event: ClipboardEvent<HTMLInputElement>) => {
+    event.preventDefault();
+
+    const pastedCode = event.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, 5);
+
+    if (!pastedCode) return;
+
+    const updated = ["", "", "", "", ""];
+
+    pastedCode.split("").forEach((digit, index) => {
+      updated[index] = digit;
+    });
+
+    setDigits(updated);
+    setError("");
+
+    const nextIndex = Math.min(pastedCode.length, 4);
+    inputRefs.current[nextIndex]?.focus();
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     setError("");
     setSuccess("");
 
     if (!email.trim()) {
-      setError("Введіть e-mail");
+      setError("Не знайдено e-mail. Спробуйте пройти реєстрацію ще раз.");
       return;
     }
 
-    if (!code.trim()) {
-      setError("Введіть код з листа");
+    if (code.length !== 5) {
+      setError("Введіть усі 5 цифр коду");
       return;
     }
 
@@ -38,14 +98,12 @@ function VerifyEmailForm() {
 
       const response = await verifyEmail({
         email: email.trim(),
-        code: code.trim(),
+        code,
       });
 
-      setSuccess(
-        response.message || "E-mail успішно підтверджено."
-      );
+      setSuccess(response.message || "E-mail успішно підтверджено.");
 
-      setTimeout(() => {
+      window.setTimeout(() => {
         window.location.href = "/login";
       }, 1500);
     } catch (error) {
@@ -61,55 +119,44 @@ function VerifyEmailForm() {
 
   return (
     <section className="verify-email-card">
-      <h1>Підтвердіть e-mail</h1>
+      <h1>Введіть код</h1>
 
       <p className="verify-email-description">
-        Ми надіслали код підтвердження на вашу електронну пошту.
-        Введіть його нижче, щоб завершити реєстрацію.
+        На ваше e-mail був надісланий 5-значний код
       </p>
 
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="email">
-            E-mail
-          </label>
-
-          <input
-            id="email"
-            type="email"
-            placeholder="Введіть ваш e-mail..."
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            disabled={loading}
-            autoComplete="email"
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="code">
-            Код підтвердження
-          </label>
-
-          <input
-            id="code"
-            type="text"
-            placeholder="Введіть код з листа..."
-            value={code}
-            onChange={(event) => setCode(event.target.value)}
-            disabled={loading}
-            autoComplete="one-time-code"
-            maxLength={10}
-          />
+        <div className="verify-email-code">
+          {digits.map((digit, index) => (
+            <input
+              key={index}
+              ref={(element) => {
+                inputRefs.current[index] = element;
+              }}
+              className="verify-email-code-input"
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              maxLength={1}
+              value={digit}
+              disabled={loading}
+              autoComplete={index === 0 ? "one-time-code" : "off"}
+              aria-label={`Цифра ${index + 1} коду`}
+              onChange={(event) => updateDigit(index, event.target.value)}
+              onKeyDown={(event) => handleKeyDown(event, index)}
+              onPaste={handlePaste}
+            />
+          ))}
         </div>
 
         {error && (
-          <div className="form-message form-error">
+          <div className="verify-email-message verify-email-error">
             {error}
           </div>
         )}
 
         {success && (
-          <div className="form-message form-success">
+          <div className="verify-email-message verify-email-success">
             {success}
           </div>
         )}
@@ -119,16 +166,18 @@ function VerifyEmailForm() {
           type="submit"
           disabled={loading}
         >
-          {loading ? "Перевірка..." : "Підтвердити"}
+          {loading ? "Перевірка..." : "Продовжити"}
         </button>
       </form>
 
-      <div className="verify-email-login">
-        Вже маєте підтверджений e-mail?{" "}
-        <a href="/login">
-          Авторизуйтесь
-        </a>
-      </div>
+      <button
+        className="verify-email-resend"
+        type="button"
+        disabled
+        title="Для повторного надсилання потрібен відповідний метод API"
+      >
+        Надіслати код ще раз
+      </button>
     </section>
   );
 }
