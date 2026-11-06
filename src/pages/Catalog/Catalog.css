@@ -28,7 +28,7 @@
 }
 
 .catalog-container {
-  width: min(1450px, calc(100% - 40px));
+  width: min(1250px, calc(100% - 40px));
   margin: 0 auto;
 }
 
@@ -452,8 +452,8 @@
 /* Поиск — та же ширина, что и основная область каталога */
 
 .search-section .store-panel {
-  width: min(1450px, calc(100% - 40px));
-  max-width: 1450px;
+  width: min(1250px, calc(100% - 40px));
+  max-width: 1250px;
 }
 
 /* Адаптивность */
