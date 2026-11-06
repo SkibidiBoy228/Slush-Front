@@ -1,43 +1,96 @@
+
+
 .game-gallery {
   width: 100%;
+  min-width: 0;
 }
 
 .game-main-image-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   width: 100%;
-  height: 390px;
+  height: 490px;
+
   overflow: hidden;
   border-radius: 10px;
+
   background: #073b47;
 }
 
-.game-main-image {
+.game-main-image,
+.game-main-video {
+  display: block;
+
   width: 100%;
   height: 100%;
-  display: block;
+
+  object-fit: contain;
+}
+
+.game-main-image {
   object-fit: cover;
+}
+
+.game-main-video {
+  background: #000;
 }
 
 .gallery-controls {
   display: flex;
   align-items: center;
   gap: 12px;
+
+  min-width: 0;
   margin-top: 12px;
 }
 
 .gallery-thumbnails {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 8px;
+  display: flex;
   flex: 1;
+  gap: 6px;
+
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  scrollbar-width: thin;
+  scrollbar-color: #1de0c4 #073b47;
+}
+
+.gallery-thumbnails::-webkit-scrollbar {
+  height: 5px;
+}
+
+.gallery-thumbnails::-webkit-scrollbar-track {
+  background: #073b47;
+  border-radius: 5px;
+}
+
+.gallery-thumbnails::-webkit-scrollbar-thumb {
+  background: #1de0c4;
+  border-radius: 5px;
 }
 
 .gallery-thumbnail {
+  position: relative;
+
+  display: block;
+  flex: 0 0 132px;
+
+  width: 132px;
   height: 76px;
+
   padding: 0;
+
+  overflow: hidden;
+
   border: 2px solid transparent;
   border-radius: 6px;
-  overflow: hidden;
+
   background: #073b47;
+
   cursor: pointer;
 }
 
@@ -46,40 +99,86 @@
 }
 
 .gallery-thumbnail img {
+  display: block;
+
   width: 100%;
   height: 100%;
-  display: block;
+
   object-fit: cover;
 }
 
+.gallery-thumbnail:hover {
+  border-color: rgba(29, 224, 196, 0.65);
+}
+
+.gallery-video-badge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 29px;
+  height: 29px;
+
+  transform: translate(-50%, -50%);
+
+  border-radius: 50%;
+
+  background: rgba(0, 0, 0, 0.75);
+  color: #1de0c4;
+
+  font-size: 13px;
+}
+
 .gallery-arrow {
+  display: flex;
+  flex: 0 0 32px;
+  align-items: center;
+  justify-content: center;
+
   width: 32px;
   height: 76px;
+
+  padding: 0;
+
   border: none;
   border-radius: 6px;
+
   background: #073b47;
   color: #fff;
+
   font-size: 28px;
+
   cursor: pointer;
 }
 
 .gallery-arrow:hover {
+  background: #0a5260;
   color: #1de0c4;
 }
 
 .gallery-progress {
   width: 100%;
   height: 3px;
+
   margin-top: 12px;
+
   overflow: hidden;
   border-radius: 3px;
+
   background: #174b56;
 }
 
 .gallery-progress span {
   display: block;
+
   height: 100%;
+
   background: #1de0c4;
+
   transition: width 0.2s ease;
 }
 
@@ -692,9 +791,18 @@
     height: 280px;
   }
 
-  .gallery-thumbnails {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .gallery-thumbnail {
+    flex-basis: 105px;
+    width: 105px;
+    height: 64px;
   }
+
+  .gallery-arrow {
+    flex-basis: 28px;
+    width: 28px;
+    height: 64px;
+  }
+
 
   .gallery-thumbnail:nth-child(n + 4) {
     display: none;

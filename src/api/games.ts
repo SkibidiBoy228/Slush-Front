@@ -69,6 +69,8 @@ export async function getGameDetails(
     );
   }
 
+  const rawVideos = data.videos ?? data.Videos ?? [];
+
   return {
     ...data,
 
@@ -93,6 +95,23 @@ export async function getGameDetails(
       data.screenshots ??
       data.Screenshots ??
       [],
+
+    videos: rawVideos.map((video: any) => ({
+      id: video.id ?? video.Id,
+      name: video.name ?? video.Name ?? "",
+      thumbnailUrl:
+        video.thumbnailUrl ??
+        video.ThumbnailUrl ??
+        "",
+      videoUrlWebm:
+        video.videoUrlWebm ??
+        video.VideoUrlWebm ??
+        "",
+      videoUrlMp4:
+        video.videoUrlMp4 ??
+        video.VideoUrlMp4 ??
+        "",
+    })),
 
     reviews:
       data.reviews ??
