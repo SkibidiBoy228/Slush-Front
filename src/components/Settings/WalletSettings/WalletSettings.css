@@ -1,215 +1,275 @@
 .wallet-settings {
   width: 100%;
+  color: #eaf7fa;
 }
 
 .wallet-settings-header {
-  margin-bottom: 24px;
+  margin-bottom: 18px;
 }
 
 .wallet-settings-header h1 {
   margin: 0;
-
-  color: #ffffff;
-  font-size: 24px;
+  color: #f2fbfd;
+  font-size: 22px;
   font-weight: 600;
 }
 
+/* Баланс */
+
 .wallet-settings-balance {
+  position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 9px;
 
-  margin-bottom: 20px;
-  padding: 24px;
+  width: 100%;
+  max-width: 512px;
+  min-height: 265px;
+  box-sizing: border-box;
+  margin: 0 auto 20px;
+  padding: 30px;
 
-  background: #15191d;
-  border: 1px solid #252a2f;
-  border-radius: 6px;
+  border-radius: 18px;
+  background: #004554;
+  text-align: center;
+}
+
+/* Декоративная иконка кошелька */
+.wallet-settings-balance::before {
+  content: "";
+  display: block;
+  width: 48px;
+  height: 34px;
+  border: 4px solid #e9fbff;
+  border-radius: 8px;
+  box-sizing: border-box;
+  background:
+    radial-gradient(circle at 75% 50%, #e9fbff 0 3px, transparent 4px);
 }
 
 .wallet-settings-balance span {
-  color: #8e969f;
-  font-size: 14px;
-}
-
-.wallet-settings-balance strong {
-  color: #ffffff;
-  font-size: 28px;
+  color: #91b9c3;
+  font-size: 16px;
   font-weight: 600;
 }
 
-.wallet-settings-card {
-  margin-bottom: 20px;
-  overflow: hidden;
+.wallet-settings-balance strong {
+  color: #f4fcff;
+  font-size: 31px;
+  font-weight: 700;
+}
 
-  background: #15191d;
-  border: 1px solid #252a2f;
-  border-radius: 6px;
+/* Карточки */
+
+.wallet-settings-card {
+  width: 100%;
+  margin-bottom: 22px;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #003b49;
 }
 
 .wallet-settings-card h2 {
   margin: 0;
-
-  padding: 20px 22px;
-
-  border-bottom: 1px solid #252a2f;
-
-  color: #ffffff;
+  padding: 17px 20px;
+  color: #f0fbfd;
   font-size: 17px;
   font-weight: 600;
 }
 
+/* Пополнение */
+
 .wallet-settings-deposit {
   display: flex;
+  align-items: center;
   gap: 10px;
-
-  padding: 22px;
+  padding: 0 18px 19px;
 }
 
 .wallet-settings-deposit input {
   flex: 1;
-
   min-width: 0;
-
-  padding: 11px 12px;
-
-  border: 1px solid #30363d;
-  border-radius: 4px;
-
+  min-height: 36px;
+  box-sizing: border-box;
+  padding: 8px 14px;
+  border: 1px solid #08758a;
+  border-radius: 22px;
   outline: none;
-
-  background: #20252b;
-  color: #ffffff;
-
+  background: #002d39;
+  color: #f2fbfd;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 13px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.wallet-settings-deposit input::placeholder {
+  color: #789da7;
 }
 
 .wallet-settings-deposit input:focus {
-  border-color: #39a9c4;
+  border-color: #20d9c0;
+  box-shadow: 0 0 0 2px rgb(32 217 192 / 12%);
 }
 
 .wallet-settings-deposit button {
-  padding: 0 22px;
-
+  min-height: 36px;
+  padding: 8px 20px;
   border: none;
-  border-radius: 4px;
-
-  background: #147a91;
-  color: #ffffff;
-
+  border-radius: 22px;
+  background: #20d9bd;
+  color: #002c37;
   font-family: inherit;
-  font-size: 14px;
-
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, transform 0.2s;
 }
 
 .wallet-settings-deposit button:hover {
-  background: #198da7;
+  background: #43ead0;
+  transform: translateY(-1px);
 }
 
 .wallet-settings-deposit button:disabled {
-  opacity: 0.5;
+  opacity: 0.55;
   cursor: not-allowed;
+  transform: none;
 }
+
+/* История транзакций */
 
 .wallet-settings-transactions {
   width: 100%;
+  box-sizing: border-box;
+  padding: 0 14px 12px;
 }
 
 .wallet-settings-transaction-header,
 .wallet-settings-transaction {
   display: grid;
-  grid-template-columns: 130px 1fr 150px;
+  grid-template-columns: 90px minmax(0, 1fr) 110px;
   align-items: center;
-  gap: 20px;
-
-  padding: 16px 22px;
+  gap: 12px;
 }
 
 .wallet-settings-transaction-header {
-  border-bottom: 1px solid #252a2f;
-
-  color: #707980;
+  padding: 0 16px 12px;
+  color: #82aeb9;
   font-size: 12px;
 }
 
 .wallet-settings-transaction {
-  border-bottom: 1px solid #252a2f;
-
-  color: #d7dce0;
+  min-height: 45px;
+  margin-bottom: 7px;
+  padding: 8px 16px;
+  box-sizing: border-box;
+  border-radius: 14px;
+  background: #002f3c;
+  color: #e5f3f6;
   font-size: 13px;
 }
 
-.wallet-settings-transaction:last-child {
-  border-bottom: none;
+.wallet-settings-transaction span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.wallet-settings-transaction span:last-child,
+.wallet-settings-transaction-header span:last-child {
+  text-align: right;
 }
 
 .wallet-transaction-positive {
-  color: #62d6aa;
+  color: #20d9bd;
 }
 
 .wallet-transaction-negative {
-  color: #ff7777;
+  color: #ff8d91;
 }
 
 .wallet-settings-empty {
-  padding: 40px 20px;
-
-  color: #707980;
+  padding: 28px 20px;
+  color: #91b9c3;
   font-size: 14px;
   text-align: center;
 }
 
+/* Повідомлення та завантаження */
+
 .wallet-settings-message {
-  margin-bottom: 16px;
-
-  padding: 12px 14px;
-
-  border-radius: 4px;
-
-  font-size: 14px;
+  margin-bottom: 14px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  font-size: 13px;
 }
 
 .wallet-settings-message-success {
-  border: 1px solid #246b55;
-  background: #17372f;
-  color: #71d8b3;
+  border: 1px solid #168c70;
+  background: #064b43;
+  color: #69e6c1;
 }
 
 .wallet-settings-message-error {
-  border: 1px solid #7a3434;
-  background: #351b1b;
-  color: #ff8c8c;
+  border: 1px solid #b85c61;
+  background: #59343d;
+  color: #ffaaa5;
 }
 
 .wallet-settings-loading {
-  padding: 60px 20px;
-
-  background: #15191d;
-  border: 1px solid #252a2f;
-  border-radius: 6px;
-
-  color: #8e969f;
+  padding: 50px 20px;
+  border-radius: 16px;
+  background: #003b49;
+  color: #91b9c3;
   text-align: center;
 }
 
+/* Адаптивність */
+
 @media (max-width: 700px) {
+  .wallet-settings-balance {
+    min-height: 210px;
+  }
+
   .wallet-settings-transaction-header,
   .wallet-settings-transaction {
-    grid-template-columns: 100px 1fr;
+    grid-template-columns: 75px minmax(0, 1fr);
+    gap: 8px;
   }
 
   .wallet-settings-transaction-header span:last-child,
   .wallet-settings-transaction span:last-child {
     grid-column: 2;
+    text-align: left;
+  }
+
+  .wallet-settings-transaction {
+    padding: 10px 12px;
   }
 
   .wallet-settings-deposit {
     flex-direction: column;
+    align-items: stretch;
   }
 
   .wallet-settings-deposit button {
-    min-height: 42px;
+    width: 100%;
+  }
+}
+
+@media (max-width: 420px) {
+  .wallet-settings-balance strong {
+    font-size: 26px;
+  }
+
+  .wallet-settings-card h2 {
+    padding: 15px;
+  }
+
+  .wallet-settings-transactions {
+    padding-right: 8px;
+    padding-left: 8px;
   }
 }
