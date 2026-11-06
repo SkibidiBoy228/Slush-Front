@@ -360,19 +360,21 @@ export default function ChatPage() {
           />
         </section>
 
-        <ChatProfilePanel
-          conversation={selectedConversation}
-          photoCount={photoCount}
-          fileCount={fileCount}
-          voiceCount={voiceCount}
-          attachmentsLoading={attachmentsLoading}
-          isBlocked={isBlocked}
-          isActionLoading={isActionLoading}
-          onRemoveFriend={handleRemoveFriend}
-          onClearHistory={handleClearHistory}
-          onToggleBlock={handleToggleBlock}
-          onReportUser={handleReportUser}
-        />
+        {selectedConversation && (
+          <ChatProfilePanel
+            conversation={selectedConversation}
+            photoCount={photoCount}
+            fileCount={fileCount}
+            voiceCount={voiceCount}
+            attachmentsLoading={attachmentsLoading}
+            isBlocked={isBlocked}
+            isActionLoading={isActionLoading}
+            onRemoveFriend={handleRemoveFriend}
+            onClearHistory={handleClearHistory}
+            onToggleBlock={handleToggleBlock}
+            onReportUser={handleReportUser}
+          />
+        )}
       </main>
     </div>
   );
