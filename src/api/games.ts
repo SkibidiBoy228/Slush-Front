@@ -1,3 +1,4 @@
+
 import type { GameDetails } from "../types/game";
 import type { CatalogResponse } from "../types/catalog";
 
@@ -69,15 +70,52 @@ export async function getGameDetails(
     );
   }
 
-  const rawVideos = data.videos ?? data.Videos ?? [];
+  const rawScreenshots =
+    data.screenshots ??
+    data.Screenshots ??
+    [];
+
+  const rawVideos =
+    data.videos ??
+    data.Videos ??
+    [];
+
+  const screenshots = rawScreenshots.map((screenshot: any) => ({
+    id: screenshot.id ?? screenshot.Id ?? 0,
+    image: screenshot.image ?? screenshot.Image ?? "",
+  })).filter((screenshot: any) => screenshot.image);
+
+  const videos = rawVideos.map((video: any) => ({
+    id: video.id ?? video.Id ?? 0,
+    name: video.name ?? video.Name ?? "",
+    thumbnailUrl:
+      video.thumbnailUrl ??
+      video.ThumbnailUrl ??
+      "",
+    videoUrlWebm:
+      video.videoUrlWebm ??
+      video.VideoUrlWebm ??
+      "",
+    videoUrlMp4:
+      video.videoUrlMp4 ??
+      video.VideoUrlMp4 ??
+      "",
+  })).filter(
+    (video: any) => video.videoUrlMp4 || video.videoUrlWebm
+  );
 
   return {
     ...data,
 
+    id: data.id ?? data.Id,
+    title: data.title ?? data.Title ?? "",
+    description: data.description ?? data.Description ?? "",
+    thumbnail: data.thumbnail ?? data.Thumbnail ?? "",
+
     pcRequirements:
       data.pcRequirements ??
       data.PcRequirements ??
-      undefined,
+      { minimum: "", recommended: "" },
 
     dLcs:
       data.dLcs ??
@@ -91,27 +129,8 @@ export async function getGameDetails(
       data.Bundles ??
       [],
 
-    screenshots:
-      data.screenshots ??
-      data.Screenshots ??
-      [],
-
-    videos: rawVideos.map((video: any) => ({
-      id: video.id ?? video.Id,
-      name: video.name ?? video.Name ?? "",
-      thumbnailUrl:
-        video.thumbnailUrl ??
-        video.ThumbnailUrl ??
-        "",
-      videoUrlWebm:
-        video.videoUrlWebm ??
-        video.VideoUrlWebm ??
-        "",
-      videoUrlMp4:
-        video.videoUrlMp4 ??
-        video.VideoUrlMp4 ??
-        "",
-    })),
+    screenshots,
+    videos,
 
     reviews:
       data.reviews ??
