@@ -79,6 +79,8 @@ function Catalog() {
     useState<PriceFilter>("all");
   const [onlyDiscounts, setOnlyDiscounts] =
     useState(false);
+  const [viewMode, setViewMode] =
+    useState<"grid" | "list">("grid");
 
   useEffect(() => {
     const params = new URLSearchParams(
@@ -262,17 +264,24 @@ function Catalog() {
             <div className="catalog-view-switcher">
               <button
                 type="button"
-                className="view-button active"
+                className={`view-button ${
+                  viewMode === "grid" ? "active" : ""
+                }`}
                 aria-label="Сітка"
+                aria-pressed={viewMode === "grid"}
+                onClick={() => setViewMode("grid")}
               >
                 ▦
               </button>
 
               <button
                 type="button"
-                className="view-button"
+                className={`view-button ${
+                  viewMode === "list" ? "active" : ""
+                }`}
                 aria-label="Список"
-                disabled
+                aria-pressed={viewMode === "list"}
+                onClick={() => setViewMode("list")}
               >
                 ☷
               </button>
@@ -395,12 +404,16 @@ function Catalog() {
                 )}
 
               {!loading && !error && (
-                <div className="catalog-grid">
+                <div
+                  className={`catalog-grid ${
+                    viewMode === "list" ? "catalog-grid--list" : ""
+                  }`}
+                >
                   {filteredGames.map((game) => (
                     <GameCard
                       key={`${game.source}-${game.id}`}
                       game={convertGame(game)}
-                      variant="vertical"
+                      variant={viewMode === "list" ? "small" : "vertical"}
                     />
                   ))}
                 </div>
