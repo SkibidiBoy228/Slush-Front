@@ -1,15 +1,17 @@
+
 .home-page {
   min-height: 100vh;
-
+  width: 100%;
   color: #fff;
   font-family: Arial, sans-serif;
-
-  overflow-x: hidden;
+  overflow-x: clip;
 
   background:
     linear-gradient(
-      rgba(0, 31, 41, 0.82),
-      rgba(0, 31, 41, 0.92)
+      180deg,
+      rgba(0, 31, 41, 0.78) 0%,
+      rgba(0, 31, 41, 0.92) 45%,
+      rgba(0, 31, 41, 0.97) 100%
     ),
     url("/background.png");
 
@@ -19,29 +21,43 @@
   background-attachment: fixed;
 }
 
-
+.home-page main {
+  width: 100%;
+  min-width: 0;
+}
 
 .content-container {
-  width: min(1200px, calc(100% - 40px));
-
+  width: min(1200px, calc(100% - 48px));
   margin: 0 auto;
+  box-sizing: border-box;
+  padding-bottom: 55px;
+}
 
+/* Сообщения загрузки и ошибок */
+
+.catalog-message {
+  width: 100%;
+  padding: 35px 20px;
+  text-align: center;
+  color: #b9dce0;
+  font-size: 16px;
   box-sizing: border-box;
 }
 
+.catalog-message.error {
+  color: #ff668d;
+}
 
+/* Нижние три колонки */
 
 .three-columns {
   display: grid;
-
   grid-template-columns: repeat(3, minmax(0, 1fr));
-
-  gap: 18px;
+  gap: 20px;
 
   width: 100%;
-
-  margin-top: 45px;
-  padding-bottom: 50px;
+  margin-top: 42px;
+  padding-bottom: 30px;
 
   box-sizing: border-box;
 }
@@ -55,34 +71,39 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
 
   margin-bottom: 14px;
+  min-height: 25px;
 }
 
 .column-heading h2 {
   margin: 0;
-
   color: #fff;
-
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .column-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 26px;
+  height: 26px;
   padding: 0;
 
   border: none;
   background: transparent;
-
   color: #1de0c4;
 
-  font-size: 22px;
-
+  font-size: 24px;
   cursor: pointer;
+  transition: color 0.2s ease;
 }
 
 .column-arrow:hover {
-  opacity: 0.8;
+  color: #fff;
 }
 
 .column-games {
@@ -97,16 +118,24 @@
   border-radius: 8px;
 }
 
+/* Планшеты */
 
 @media (max-width: 1000px) {
   .content-container {
-    width: calc(100% - 30px);
+    width: calc(100% - 32px);
   }
 
   .three-columns {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px 16px;
+  }
+
+  .game-column:last-child {
+    grid-column: 1 / -1;
   }
 }
+
+/* Телефоны */
 
 @media (max-width: 600px) {
   .content-container {
@@ -114,10 +143,20 @@
   }
 
   .three-columns {
+    grid-template-columns: 1fr;
+    gap: 28px;
     margin-top: 30px;
+  }
+
+  .game-column:last-child {
+    grid-column: auto;
   }
 
   .column-heading h2 {
     font-size: 17px;
+  }
+
+  .column-games {
+    gap: 8px;
   }
 }

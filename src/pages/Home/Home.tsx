@@ -126,7 +126,7 @@ function Home() {
     .map(convertGame);
 
   const recommendedGames = paidGames
-    .slice(0, 8)
+    .slice(0, 4)
     .map(convertGame);
 
   const budgetGames = paidGames
@@ -135,7 +135,7 @@ function Home() {
         game.details.price > 0 &&
         game.details.price <= 100 / USD_TO_UAH
     )
-    .slice(0, 8)
+    .slice(0, 4)
     .map(convertGame);
 
   const popularGames = paidGames

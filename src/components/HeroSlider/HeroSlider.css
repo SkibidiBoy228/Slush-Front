@@ -1,82 +1,110 @@
+
+
+
 .hero-slider-container {
   position: relative;
   z-index: 10;
-
+  width: 100%;
   overflow: visible;
 }
 
 .hero-section {
   position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
 
   width: 100%;
-  height: 500px;
+  height: 480px;
 
   overflow: hidden;
-
   background: #073b47;
 }
+
+
 
 .hero-background {
   position: absolute;
   inset: 0;
 
+  display: block;
   width: 100%;
   height: 100%;
 
-  display: block;
+  object-fit: cover;
+  object-position: center;
 
   overflow: hidden;
-
-  object-fit: cover;
 }
+
+
 
 .hero-dark-overlay {
   position: absolute;
   inset: 0;
+  z-index: 1;
 
   background:
     linear-gradient(
       90deg,
-      rgba(0, 20, 28, 0.96) 0%,
-      rgba(0, 20, 28, 0.78) 32%,
-      rgba(0, 20, 28, 0.38) 68%,
-      rgba(0, 20, 28, 0.18) 100%
+      rgba(0, 20, 28, 0.55) 0%,
+      rgba(0, 20, 28, 0.35) 50%,
+      rgba(0, 20, 28, 0.72) 100%
+    ),
+    linear-gradient(
+      0deg,
+      rgba(0, 20, 28, 0.45),
+      transparent 50%
     );
 }
 
+/* Большое название на фоне */
+
 .hero-title-background {
   position: absolute;
+  z-index: 1;
 
   right: 35px;
-  bottom: 48px;
+  bottom: 35px;
 
   max-width: 70%;
 
-  color: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.06);
 
   font-size: clamp(40px, 6vw, 88px);
   font-weight: 900;
 
   white-space: nowrap;
-
   pointer-events: none;
 }
+
 
 .hero-content {
   position: relative;
   z-index: 2;
 
-  width: 430px;
-  max-width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 
-  padding-top: 170px;
-  margin-left: max(55px, calc((100vw - 1180px) / 2 + 20px));
+  width: auto;
+  max-width: none;
+
+  min-width: 0;
+
+  padding: 30px 35px 30px  max(55px, calc((100vw - 1180px) / 2 + 20px));
+  margin: 0;
 }
+
+/* Цена и скидка — слева */
 
 .hero-sale {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 13px;
+
+  margin-bottom: 0;
 }
 
 .hero-discount {
@@ -95,62 +123,86 @@
 .hero-price {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 9px;
 }
 
 .hero-price strong {
   color: #fff;
   font-size: 21px;
+  font-weight: 700;
 }
 
 .hero-price del {
-  color: #829da2;
+  color: #b0c3c7;
   font-size: 13px;
 }
 
 .hero-date {
   display: block;
 
-  margin-top: 8px;
+  margin-top: 10px;
 
-  color: #86a9af;
+  color: #b1cbd0;
   font-size: 11px;
 }
 
+
+
 .hero-content h1 {
-  margin: 18px 0 12px;
+  position: absolute;
+  left: calc(100% + 30px);
+  top: 50%;
+
+  width: calc(100% - 20px);
+
+  margin: -65px 0 0;
 
   color: #fff;
 
   font-size: 32px;
-  line-height: 1.15;
+  line-height: 1.2;
+  font-weight: 700;
 }
 
 .hero-content p {
-  max-width: 420px;
+  position: absolute;
+  left: calc(100% + 30px);
+  top: 50%;
 
-  margin: 0;
+  width: calc(100% - 20px);
+  max-width: 440px;
 
-  color: #b6ced2;
+  margin: 25px 0 0;
+
+  color: #d0e0e3;
 
   font-size: 13px;
-  line-height: 1.65;
+  line-height: 1.7;
 
   overflow: hidden;
 
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
+  -webkit-line-clamp: 5;
 }
+
+
 
 .hero-arrow {
   position: absolute;
 
-  top: 58%;
+  top: 50%;
   z-index: 4;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   width: 38px;
   height: 60px;
+
+  padding: 0;
 
   transform: translateY(-50%);
 
@@ -164,6 +216,10 @@
   font-size: 32px;
 
   cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
 .hero-arrow:hover {
@@ -179,34 +235,37 @@
   right: 18px;
 }
 
+
+
 .thumbnail-section {
   width: min(1180px, calc(100% - 70px));
 
   margin: 0 auto;
-  padding: 12px 0 4px;
+  padding: 14px 0 6px;
 }
 
 .thumbnail-list {
   display: grid;
-
-  grid-template-columns: repeat(10, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 9px;
 }
 
 .thumbnail {
   width: 100%;
-  height: 54px;
+  height: 58px;
 
   padding: 0;
 
   overflow: hidden;
 
   border: 2px solid transparent;
-  border-radius: 4px;
+  border-radius: 5px;
 
   background: #073b47;
 
   cursor: pointer;
+
+  transition: border-color 0.2s ease;
 }
 
 .thumbnail img {
@@ -219,7 +278,7 @@
 
   opacity: 0.55;
 
-  transition: opacity 0.2s;
+  transition: opacity 0.2s ease;
 }
 
 .thumbnail:hover img,
@@ -231,7 +290,6 @@
   border-color: #1de0c4;
 }
 
-/* Поиск поверх баннера */
 
 .hero-search-container {
   position: absolute;
@@ -250,8 +308,6 @@
   pointer-events: auto;
 }
 
-/* Прокрутка длинного списка поиска */
-
 .hero-search-container .search-results {
   max-height: min(520px, calc(100vh - 140px));
 
@@ -259,16 +315,25 @@
   overflow-y: auto;
 }
 
-/* АДАПТИВНОСТЬ */
+
 
 @media (max-width: 1000px) {
   .hero-section {
-    height: 470px;
+    height: 440px;
   }
 
   .hero-content {
-    margin-left: 40px;
-    padding-top: 160px;
+    padding-left: 40px;
+    padding-right: 20px;
+  }
+
+  .hero-content h1,
+  .hero-content p {
+    width: calc(100% - 15px);
+  }
+
+  .hero-content h1 {
+    font-size: 27px;
   }
 
   .thumbnail-section {
@@ -276,25 +341,68 @@
   }
 
   .thumbnail-list {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 }
 
+
+
 @media (max-width: 700px) {
   .hero-section {
+    display: block;
     height: 500px;
   }
 
-  .hero-content {
-    width: 75%;
-    max-width: none;
+  .hero-dark-overlay {
+    background:
+      linear-gradient(
+        90deg,
+        rgba(0, 20, 28, 0.78),
+        rgba(0, 20, 28, 0.48)
+      ),
+      linear-gradient(
+        0deg,
+        rgba(0, 20, 28, 0.8),
+        transparent
+      );
+  }
 
-    margin-left: 25px;
-    padding-top: 180px;
+  .hero-content {
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    justify-content: center;
+
+    width: auto;
+    padding: 0 45px;
+  }
+
+  .hero-sale {
+    margin-top: 0;
   }
 
   .hero-content h1 {
+    position: static;
+
+    width: 100%;
+    margin: 20px 0 12px;
+
     font-size: 25px;
+  }
+
+  .hero-content p {
+    position: static;
+
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+
+    font-size: 12px;
+  }
+
+  .hero-title-background {
+    display: none;
   }
 
   .thumbnail-section {
@@ -302,17 +410,44 @@
   }
 
   .thumbnail-list {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
   .thumbnail {
     height: 45px;
   }
+
+  .hero-arrow {
+    width: 30px;
+    height: 48px;
+    font-size: 25px;
+  }
+
+  .hero-arrow-left {
+    left: 5px;
+  }
+
+  .hero-arrow-right {
+    right: 5px;
+  }
 }
 
+
+
 @media (max-width: 480px) {
+  .hero-section {
+    height: 460px;
+  }
+
   .hero-content {
-    width: calc(100% - 50px);
-    max-width: none;
+    padding: 0 38px;
+  }
+
+  .hero-content h1 {
+    font-size: 22px;
+  }
+
+  .hero-price strong {
+    font-size: 19px;
   }
 }
