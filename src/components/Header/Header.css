@@ -1,50 +1,52 @@
+
 .header {
-  height: 60px;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex: 0 0 78px;
+  width: 100%;
+  height: 78px;
   background: #003b49;
-  flex-shrink: 0;
+  border-bottom: 1px solid rgba(29, 224, 196, 0.08);
 }
 
 .header-container {
-  width: min(1200px, calc(100% - 40px));
-  height: 100%;
-  margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 0 38px;
+  margin: 0;
   box-sizing: border-box;
 }
 
-.header-wide .header-container {
-  width: min(1200px, calc(100% - 40px));
-}
-
+.header-wide .header-container,
 .header-auth .header-container {
-  width: min(900px, calc(100% - 40px));
+  width: 100%;
+  max-width: none;
 }
-
-
 
 .logo {
   justify-self: start;
   color: #1de0c4;
-  font-size: 18px;
-  font-weight: 600;
-  letter-spacing: 2px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 3px;
   text-decoration: none;
 }
-
-
 
 .navigation {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 30px;
+  gap: 38px;
 }
 
 .navigation a {
-  color: #ffffff;
-  font-size: 12px;
+  color: #eaf8fa;
+  font-size: 14px;
+  font-weight: 500;
   text-decoration: none;
   transition: color 0.2s ease;
 }
@@ -53,63 +55,26 @@
   color: #1de0c4;
 }
 
-
-
-.header-login-button {
-  justify-self: end;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 60px;
-  height: 27px;
-  border-radius: 14px;
-  background: #0b7085;
-  color: #ffffff;
-  font-size: 9px;
-  text-decoration: none;
-  transition:
-    background 0.2s ease,
-    transform 0.2s ease;
-}
-
-.header-icon {
-  width: 17px;
-  height: 17px;
-  display: block;
-  flex-shrink: 0;
-}
-
-.header-login-button:hover {
-  background: #0d849b;
-  transform: translateY(-1px);
-}
-
-
-
 .header-actions {
   justify-self: end;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 13px;
 }
 
-
 .header-icon-button {
-  width: 34px;
-  height: 34px;
-  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: none;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid rgba(29, 224, 196, 0.12);
   border-radius: 50%;
   background: #075267;
   color: #ffffff;
-  font-size: 15px;
   cursor: pointer;
-  transition:
-    background 0.2s ease,
-    transform 0.2s ease;
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .header-icon-button:hover {
@@ -117,54 +82,51 @@
   transform: translateY(-1px);
 }
 
-
+.header-icon {
+  display: block;
+  width: 19px;
+  height: 19px;
+  flex-shrink: 0;
+}
 
 .header-avatar-link {
-  width: 34px;
-  height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 38px;
+  height: 38px;
   overflow: hidden;
   border-radius: 50%;
   background: #075267;
   text-decoration: none;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
 }
 
 .header-avatar-link:hover {
-  transform: translateY(-1px);
   box-shadow: 0 0 0 2px #1de0c4;
 }
 
 .header-avatar-image {
+  display: block;
   width: 100%;
   height: 100%;
-  display: block;
   object-fit: cover;
 }
 
 .header-avatar-fallback {
   color: #ffffff;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
 }
 
-/* Выход */
-
 .header-logout-button {
-  padding: 6px 10px;
+  padding: 8px 12px;
   border: none;
   border-radius: 12px;
   background: transparent;
   color: #a8c2c8;
-  font-size: 10px;
+  font-size: 12px;
   cursor: pointer;
-  transition:
-    color 0.2s ease,
-    background 0.2s ease;
+  transition: color 0.2s ease, background 0.2s ease;
 }
 
 .header-logout-button:hover {
@@ -172,26 +134,41 @@
   background: #075267;
 }
 
-/* Мобильная версия */
+.header-login-button {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 78px;
+  height: 34px;
+  border-radius: 18px;
+  background: #0b7085;
+  color: #ffffff;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.header-login-button:hover {
+  background: #0d849b;
+}
 
 @media (max-width: 700px) {
   .header {
+    flex-basis: 55px;
     height: 55px;
   }
 
-  .header-container,
-  .header-auth .header-container,
-  .header-wide .header-container {
-    width: calc(100% - 24px);
-    max-width: none;
+  .header-container {
+    padding: 0 12px;
   }
 
   .logo {
     font-size: 16px;
+    letter-spacing: 2px;
   }
 
   .navigation {
-    gap: 15px;
+    gap: 12px;
   }
 
   .navigation a {
@@ -208,15 +185,17 @@
     height: 29px;
   }
 
-  .header-icon-button {
-    font-size: 12px;
-  }
-
-  .header-avatar-fallback {
-    font-size: 12px;
-  }
-
   .header-logout-button {
     display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .navigation {
+    gap: 7px;
+  }
+
+  .navigation a {
+    font-size: 9px;
   }
 }
