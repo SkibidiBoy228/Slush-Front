@@ -2,39 +2,39 @@
 .register-card {
   width: 100%;
   max-width: 552px;
-  padding: 30px 30px 28px;
+  padding: 34px 30px 30px;
   background: #003847;
   border-radius: 16px;
   box-sizing: border-box;
 }
 
 .register-card h1 {
-  margin: 0 0 24px;
+  margin: 0 0 26px;
   text-align: center;
   color: #ffffff;
-  font-size: 19px;
+  font-size: 21px;
   font-weight: 600;
 }
 
 .register-card .form-group {
-  margin-bottom: 14px;
+  margin-bottom: 17px;
 }
 
 .register-card .form-group label {
   display: block;
   margin-bottom: 7px;
   color: #ffffff;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
 }
 
 .register-card .form-group input {
   width: 100%;
-  height: 35px;
-  padding: 0 13px;
+  height: 39px;
+  padding: 0 14px;
   box-sizing: border-box;
   border: 1px solid #08768a;
-  border-radius: 18px;
+  border-radius: 20px;
   outline: none;
   background: transparent;
   color: #ffffff;
@@ -49,7 +49,7 @@
 
 .register-card .form-group input:focus {
   border-color: #19d8c5;
-  box-shadow: 0 0 0 2px rgba(25, 216, 197, 0.15);
+  box-shadow: 0 0 0 1px rgba(25, 216, 197, 0.2);
 }
 
 .register-card .form-group input:disabled {
@@ -57,14 +57,14 @@
   cursor: not-allowed;
 }
 
-.register-card .input-error {
+.input-error {
   display: block;
   margin-top: 5px;
   color: #bd7777;
   font-size: 11px;
 }
 
-.register-card .terms {
+.terms {
   display: flex;
   align-items: center;
   gap: 9px;
@@ -74,39 +74,39 @@
   cursor: pointer;
 }
 
-.register-card .terms input {
+.terms input {
   appearance: none;
   width: 18px;
   height: 18px;
-  flex-shrink: 0;
   margin: 0;
+  flex-shrink: 0;
   border: 1px solid #10cfc1;
-  border-radius: 5px;
+  border-radius: 4px;
   background: transparent;
   cursor: pointer;
   position: relative;
 }
 
-.register-card .terms input:checked {
+.terms input:checked {
   background: #10d8c5;
 }
 
-.register-card .terms input:checked::after {
+.terms input:checked::after {
   content: "✓";
   position: absolute;
   left: 3px;
-  top: -1px;
+  top: 0;
   color: #003847;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: bold;
 }
 
-.register-card .terms input:disabled {
+.terms input:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-.register-card .terms a {
+.terms a {
   color: #18d8c5;
   text-decoration: underline;
 }
@@ -114,10 +114,10 @@
 .register-button {
   display: block;
   width: 155px;
-  height: 38px;
-  margin: 46px auto 0;
+  height: 42px;
+  margin: 44px auto 0;
   border: none;
-  border-radius: 14px;
+  border-radius: 15px;
   background: #1de0c4;
   color: #003847;
   font-family: inherit;
@@ -142,37 +142,37 @@
   transform: none;
 }
 
-.register-card .login-link {
-  margin-top: 9px;
+.login-link {
+  margin-top: 10px;
   text-align: center;
   color: #66888f;
   font-size: 11px;
 }
 
-.register-card .login-link a {
+.login-link a {
   color: #18d8c5;
   text-decoration: none;
 }
 
-.register-card .login-link a:hover {
+.login-link a:hover {
   text-decoration: underline;
 }
 
 .register-card .form-message {
-  margin-top: 14px;
+  margin-top: 12px;
   padding: 10px 12px;
   border-radius: 8px;
   font-size: 12px;
   line-height: 1.4;
 }
 
-.register-card .form-error {
+.form-error {
   color: #ffaaaa;
   background: rgba(180, 60, 60, 0.15);
   border: 1px solid rgba(220, 100, 100, 0.25);
 }
 
-.register-card .form-success {
+.form-success {
   color: #1de0c4;
   background: rgba(29, 224, 196, 0.08);
   border: 1px solid rgba(29, 224, 196, 0.2);
@@ -181,11 +181,11 @@
 @media (max-width: 600px) {
   .register-card {
     max-width: 100%;
-    padding: 28px 22px 24px;
+    padding: 28px 22px 25px;
   }
 
   .register-card h1 {
-    font-size: 18px;
+    font-size: 19px;
   }
 
   .register-button {
