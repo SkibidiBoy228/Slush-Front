@@ -230,7 +230,7 @@ export function useChatMessages(friendId: string | null) {
       }
 
       console.error("Failed to load older messages:", err);
-      setError("Не вдалося завантажити старі повідомлення.");
+      setError("Не вдалося завантажити старі повідомленняво пе.");
     } finally {
       if (requestId === requestIdRef.current) {
         setIsLoading(false);

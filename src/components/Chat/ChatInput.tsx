@@ -1,9 +1,9 @@
-
 import {
   useRef,
   useState,
   type FormEvent,
   type KeyboardEvent,
+  type PointerEvent,
 } from "react";
 
 import {
@@ -28,6 +28,7 @@ export default function ChatInput({
   const [text, setText] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  const [isVoiceMode, setIsVoiceMode] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -36,8 +37,41 @@ export default function ChatInput({
   const streamRef = useRef<MediaStream | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const startedAtRef = useRef(0);
+  const swipeStartYRef = useRef<number | null>(null);
 
   const busy = disabled || isSending;
+
+  function handleModeSwipeStart(event: PointerEvent<HTMLDivElement>) {
+    if (busy || isRecording) return;
+
+    swipeStartYRef.current = event.clientY;
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+
+  function handleModeSwipeEnd(event: PointerEvent<HTMLDivElement>) {
+    const startY = swipeStartYRef.current;
+    swipeStartYRef.current = null;
+
+    if (startY === null || busy || isRecording) return;
+
+    if (event.clientY - startY < -35) {
+      setIsVoiceMode((current) => !current);
+    }
+  }
+
+  function handleModeSwipeCancel() {
+    swipeStartYRef.current = null;
+  }
+
+  function handleModeHandleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+
+      if (!busy && !isRecording) {
+        setIsVoiceMode((current) => !current);
+      }
+    }
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -193,6 +227,7 @@ export default function ChatInput({
           if (!blob.size) return;
 
           const extension = blob.type.includes("ogg") ? "ogg" : "webm";
+
           const file = new File(
             [blob],
             `voice-${Date.now()}.${extension}`,
@@ -225,9 +260,11 @@ export default function ChatInput({
       setIsRecording(true);
     } catch (err) {
       console.error("Microphone unavailable:", err);
+
       streamRef.current?.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
       setIsRecording(false);
+
       setError("Не вдалося отримати доступ до мікрофона.");
     }
   }
@@ -241,53 +278,27 @@ export default function ChatInput({
   }
 
   return (
-    <div className="chat-input-wrapper">
-      <div className="chat-input__attachments">
-        <button
-          type="button"
-          title="Надіслати зображення"
-          aria-label="Надіслати зображення"
-          disabled={busy}
-          onClick={() => imageInputRef.current?.click()}
-        >
-          ▧
-        </button>
-
-        <button
-          type="button"
-          title="Зробити скриншот"
-          aria-label="Зробити скриншот"
-          disabled={busy}
-          onClick={() => void handleScreenshot()}
-        >
-          ⌗
-        </button>
-
-        <button
-          type="button"
-          title="Прикріпити файл"
-          aria-label="Прикріпити файл"
-          disabled={busy}
-          onClick={() => fileInputRef.current?.click()}
-        >
-          📎
-        </button>
-
-        <button
-          type="button"
-          title={isRecording ? "Зупинити запис" : "Записати голосове повідомлення"}
-          aria-label={isRecording ? "Зупинити запис" : "Записати голосове повідомлення"}
-          disabled={busy && !isRecording}
-          onClick={isRecording ? stopRecording : () => void startRecording()}
-        >
-          {isRecording ? "■" : "🎤"}
-        </button>
-
-        {isRecording && (
-          <span className="chat-input__recording">
-            Запис триває…
-          </span>
-        )}
+    <div className={`chat-input-wrapper ${isVoiceMode ? "is-voice-mode" : ""}`}>
+      <div
+        className={`chat-input__mode-swipe ${isVoiceMode ? "is-voice-mode" : ""}`}
+        role="button"
+        tabIndex={busy || isRecording ? -1 : 0}
+        aria-label={
+          isVoiceMode
+            ? "Повернутися до текстового режиму"
+            : "Увімкнути голосовий режим"
+        }
+        onPointerDown={handleModeSwipeStart}
+        onPointerUp={handleModeSwipeEnd}
+        onPointerCancel={handleModeSwipeCancel}
+        onKeyDown={handleModeHandleKeyDown}
+      >
+        <span className="chat-input__mode-swipe-line" />
+        <span>
+          {isVoiceMode
+            ? "Голосовий режим · проведіть вгору для тексту"
+            : "Проведіть вгору для голосового режиму"}
+        </span>
       </div>
 
       <input
@@ -313,7 +324,90 @@ export default function ChatInput({
         }}
       />
 
-      <form className="chat-input" onSubmit={handleSubmit}>
+      <form
+        className={`chat-input ${isVoiceMode ? "is-voice-mode" : ""}`}
+        onSubmit={handleSubmit}
+      >
+        <div className="chat-input__attachments">
+          <button
+            type="button"
+            title="Надіслати зображення"
+            aria-label="Надіслати зображення"
+            disabled={busy}
+            onClick={() => imageInputRef.current?.click()}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="3" width="18" height="18" rx="4" />
+              <circle cx="8.5" cy="8.5" r="1.5" />
+              <path d="m21 15-5-5L5 21" />
+            </svg>
+          </button>
+
+          <button
+            type="button"
+            title="Зробити скриншот"
+            aria-label="Зробити скриншот"
+            disabled={busy}
+            onClick={() => void handleScreenshot()}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3" />
+              <path d="M16 3h3a2 2 0 0 1 2 2v3" />
+              <path d="M21 16v3a2 2 0 0 1-2 2h-3" />
+              <path d="M3 16v3a2 2 0 0 0 2 2h3" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          </button>
+
+          <button
+            type="button"
+            title="Прикріпити файл"
+            aria-label="Прикріпити файл"
+            disabled={busy}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m21.4 11.1-8.5 8.5a6 6 0 0 1-8.5-8.5l9.2-9.2a4 4 0 0 1 5.7 5.7l-9.2 9.2a2 2 0 0 1-2.8-2.8l8.5-8.5" />
+            </svg>
+          </button>
+
+          <button
+            type="button"
+            title={
+              isRecording
+                ? "Зупинити запис"
+                : "Записати голосове повідомлення"
+            }
+            aria-label={
+              isRecording
+                ? "Зупинити запис"
+                : "Записати голосове повідомлення"
+            }
+            className={isRecording ? "is-recording" : ""}
+            disabled={busy && !isRecording}
+            onClick={isRecording ? stopRecording : () => void startRecording()}
+          >
+            {isRecording ? (
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="6" y="6" width="12" height="12" rx="2" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="9" y="2" width="6" height="12" rx="3" />
+                <path d="M5 10a7 7 0 0 0 14 0" />
+                <path d="M12 17v5" />
+                <path d="M8 22h8" />
+              </svg>
+            )}
+          </button>
+
+          {isRecording && (
+            <span className="chat-input__recording">
+              Запис триває…
+            </span>
+          )}
+        </div>
+
         <textarea
           className="chat-input__field"
           placeholder="Напишіть повідомлення..."
@@ -331,17 +425,7 @@ export default function ChatInput({
           aria-label="Надіслати повідомлення"
           title="Надіслати"
         >
-          <svg
-            viewBox="0 0 24 24"
-            width="21"
-            height="21"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M22 2 11 13" />
             <path d="m22 2-7 20-4-9-9-4Z" />
           </svg>
