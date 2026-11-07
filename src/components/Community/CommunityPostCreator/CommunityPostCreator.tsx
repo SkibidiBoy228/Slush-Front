@@ -1,4 +1,3 @@
-
 import { useRef, useState } from "react";
 import type { ChangeEvent, DragEvent, FormEvent } from "react";
 import type { CommunityPostType } from "../../../types/community";
@@ -24,9 +23,13 @@ const POST_TYPES: {
   { value: "Screenshot", label: "Скріншот" },
   { value: "Video", label: "Відео" },
   { value: "Guide", label: "Гайд" },
+  { value: "News", label: "Новина" },
 ];
 
-function CommunityPostCreator({ onSubmit, onOpenChange }: CommunityPostCreatorProps) {
+function CommunityPostCreator({
+  onSubmit,
+  onOpenChange,
+}: CommunityPostCreatorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [postType, setPostType] =
     useState<CommunityPostType>("Discussion");
@@ -154,6 +157,7 @@ function CommunityPostCreator({ onSubmit, onOpenChange }: CommunityPostCreatorPr
       setShortDescription("");
       setPostType("Discussion");
       setIsOpen(false);
+      onOpenChange?.(false);
     } catch (err) {
       console.error("Failed to create community post:", err);
       setError("Не вдалося створити публікацію. Спробуйте ще раз.");
@@ -168,7 +172,10 @@ function CommunityPostCreator({ onSubmit, onOpenChange }: CommunityPostCreatorPr
         <button
           type="button"
           className="community-create-button"
-          onClick={() => {setIsOpen(true); onOpenChange?.(true)}}
+          onClick={() => {
+            setIsOpen(true);
+            onOpenChange?.(true);
+          }}
         >
           <span className="community-create-icon">+</span>
           <span>Створити пост</span>
@@ -184,7 +191,10 @@ function CommunityPostCreator({ onSubmit, onOpenChange }: CommunityPostCreatorPr
             <button
               type="button"
               className="community-post-creator-close"
-              onClick={() => {setIsOpen(false); onOpenChange?.(false)}}
+              onClick={() => {
+                setIsOpen(false);
+                onOpenChange?.(false);
+              }}
               aria-label="Закрити"
             >
               ×
@@ -333,7 +343,8 @@ function CommunityPostCreator({ onSubmit, onOpenChange }: CommunityPostCreatorPr
             </div>
           )}
 
-          {postType === "Screenshot" && (
+          {(postType === "Screenshot" ||
+            postType === "Guide") && (
             <div className="community-post-field">
               <label htmlFor="community-post-description">
                 Опис
@@ -344,29 +355,11 @@ function CommunityPostCreator({ onSubmit, onOpenChange }: CommunityPostCreatorPr
                 onChange={(event) =>
                   setShortDescription(event.target.value)
                 }
-                placeholder="Додайте опис скріншота..."
-                rows={3}
-                maxLength={300}
-                disabled={uploading}
-              />
-              <span className="community-character-count">
-                {shortDescription.length}/300
-              </span>
-            </div>
-          )}
-
-          {postType === "Guide" && (
-            <div className="community-post-field">
-              <label htmlFor="community-post-description">
-                Опис
-              </label>
-              <textarea
-                id="community-post-description"
-                value={shortDescription}
-                onChange={(event) =>
-                  setShortDescription(event.target.value)
+                placeholder={
+                  postType === "Guide"
+                    ? "Опишіть тему детальніше..."
+                    : "Додайте опис скріншота..."
                 }
-                placeholder="Опишіть тему детальніше..."
                 rows={3}
                 maxLength={300}
                 disabled={uploading}

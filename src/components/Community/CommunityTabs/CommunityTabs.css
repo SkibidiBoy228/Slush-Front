@@ -2,46 +2,64 @@
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 0;
-  margin-top: 4px;
-  border-bottom: 1px solid rgba(117, 180, 188, 0.2);
+  gap: 7px;
+  margin-top: 18px;
+  padding: 5px;
+  border: 1px solid rgba(117, 180, 188, 0.12);
+  border-radius: 12px;
+  background: rgba(0, 39, 49, 0.58);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.community-tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .community-tabs button {
   position: relative;
-  padding: 13px 18px;
-  border: none;
+  flex: 0 0 auto;
+  min-height: 39px;
+  padding: 0 19px;
+  border: 1px solid transparent;
+  border-radius: 8px;
   background: transparent;
-  color: #8eafb7;
+  color: #91b3ba;
+  font-family: inherit;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
+  white-space: nowrap;
   cursor: pointer;
-  transition: color 0.2s ease;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s;
 }
 
 .community-tabs button:hover {
-  color: #ffffff;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .community-tabs button.active {
-  color: #1de0c4;
-  font-weight: 600;
+  color: #35e2cb;
+  background: rgba(32, 217, 192, 0.1);
+  border-color: rgba(32, 217, 192, 0.16);
 }
 
 .community-tabs button.active::after {
-  content: "";
-  position: absolute;
-  left: 12px;
-  right: 12px;
-  bottom: -1px;
-  height: 2px;
-  border-radius: 2px;
-  background: #1de0c4;
+  display: none;
 }
 
 @media (max-width: 480px) {
+  .community-tabs {
+    gap: 4px;
+    padding: 4px;
+  }
+
   .community-tabs button {
-    padding: 12px 11px;
-    font-size: 12px;
+    min-height: 36px;
+    padding: 0 12px;
+    font-size: 11px;
   }
 }

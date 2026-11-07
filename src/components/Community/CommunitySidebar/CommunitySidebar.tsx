@@ -1,4 +1,3 @@
-
 import "./CommunitySidebar.css";
 
 export type CommunityFilter =
@@ -39,8 +38,16 @@ function CommunitySidebar({
 }: CommunitySidebarProps) {
   const filters = [
     { id: "all" as const, label: "Усі", count: counts.all },
-    { id: "discussions" as const, label: "Форум", count: counts.discussions },
-    { id: "screenshots" as const, label: "Скріншоти", count: counts.screenshots },
+    {
+      id: "discussions" as const,
+      label: "Форум",
+      count: counts.discussions,
+    },
+    {
+      id: "screenshots" as const,
+      label: "Скріншоти",
+      count: counts.screenshots,
+    },
     { id: "videos" as const, label: "Відео", count: counts.videos },
     { id: "guides" as const, label: "Гайди", count: counts.guides },
     { id: "news" as const, label: "Новини", count: counts.news },
@@ -93,7 +100,6 @@ function CommunitySidebar({
               onClick={() => onFilterChange(filter.id)}
             >
               <span>{filter.label}</span>
-
               <span className="community-filter-count">
                 {filter.count}
               </span>

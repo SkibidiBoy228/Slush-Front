@@ -48,26 +48,22 @@ function CommunityPage({ gameId }: CommunityPageProps) {
 
   const [posts, setPosts] = useState<CommunityPostData[]>([]);
 
-  const [counts, setCounts] =
-    useState<CommunityTabCounts>({
-      all: 0,
-      discussions: 0,
-      screenshots: 0,
-      videos: 0,
-      guides: 0,
-      news: 0,
-      isSubscribed: false,
-      subscribersCount: 0,
-    });
+  const [counts, setCounts] = useState<CommunityTabCounts>({
+    all: 0,
+    discussions: 0,
+    screenshots: 0,
+    videos: 0,
+    guides: 0,
+    news: 0,
+    isSubscribed: false,
+    subscribersCount: 0,
+  });
 
   const [activeFilter, setActiveFilter] =
     useState<CommunityFilter>("all");
 
-  const [sort, setSort] =
-    useState<CommunitySort>("newest");
-
+  const [sort, setSort] = useState<CommunitySort>("newest");
   const [searchValue, setSearchValue] = useState("");
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -84,15 +80,10 @@ function CommunityPage({ gameId }: CommunityPageProps) {
   const loadGame = useCallback(async () => {
     try {
       setGameLoading(true);
-
       const game = await getGameDetails(gameId);
-
       setGameTitle(game.title);
     } catch (error) {
-      console.error(
-        "Failed to load game:",
-        error
-      );
+      console.error("Failed to load game:", error);
     } finally {
       setGameLoading(false);
     }
@@ -100,15 +91,10 @@ function CommunityPage({ gameId }: CommunityPageProps) {
 
   const loadCounts = useCallback(async () => {
     try {
-      const data =
-        await getCommunityTabCounts(gameId);
-
+      const data = await getCommunityTabCounts(gameId);
       setCounts(data);
     } catch (error) {
-      console.error(
-        "Failed to load community counts:",
-        error
-      );
+      console.error("Failed to load community counts:", error);
     }
   }, [gameId]);
 
@@ -118,61 +104,43 @@ function CommunityPage({ gameId }: CommunityPageProps) {
     switch (filter) {
       case "discussions":
         return "Discussion";
-
       case "screenshots":
         return "Screenshot";
-
       case "videos":
         return "Video";
-
       case "guides":
         return "Guide";
-
       case "news":
         return "News";
-
       default:
         return undefined;
     }
   };
 
-  const getBackendSort = (
-    value: CommunitySort
-  ) => {
-    return value === "popular"
-      ? "ByRating"
-      : "Newest";
-  };
+  const getBackendSort = (value: CommunitySort) =>
+    value === "popular" ? "ByRating" : "Newest";
 
   const loadPosts = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
 
-      const data = await getCommunityPosts(
-        gameId,
-        {
-          type: getBackendType(activeFilter),
-          sort: getBackendSort(sort),
-          page: 1,
-          pageSize: 10,
-        }
-      );
+      const data = await getCommunityPosts(gameId, {
+        type: getBackendType(activeFilter),
+        sort: getBackendSort(sort),
+        page: 1,
+        pageSize: 10,
+      });
 
       setPosts(data.items);
     } catch (error) {
-      console.error(
-        "Failed to load community posts:",
-        error
-      );
+      console.error("Failed to load community posts:", error);
 
-      if (error instanceof Error) {
-        setError(error.message);
-      } else {
-        setError(
-          "Не вдалося завантажити публікації"
-        );
-      }
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Не вдалося завантажити публікації"
+      );
     } finally {
       setLoading(false);
     }
@@ -193,27 +161,19 @@ function CommunityPage({ gameId }: CommunityPageProps) {
   const handleSubscribe = async () => {
     try {
       await toggleCommunitySubscription(gameId);
-
       await loadCounts();
     } catch (error) {
-      console.error(
-        "Failed to toggle subscription:",
-        error
-      );
+      console.error("Failed to toggle subscription:", error);
     }
   };
 
-  const handleLike = async (
-    postId: string
-  ) => {
+  const handleLike = async (postId: string) => {
     try {
       await togglePostLike(postId);
 
       setPosts((currentPosts) =>
         currentPosts.map((post) => {
-          if (post.id !== postId) {
-            return post;
-          }
+          if (post.id !== postId) return post;
 
           return {
             ...post,
@@ -225,62 +185,42 @@ function CommunityPage({ gameId }: CommunityPageProps) {
         })
       );
     } catch (error) {
-      console.error(
-        "Failed to toggle like:",
-        error
-      );
+      console.error("Failed to toggle like:", error);
     }
   };
 
-  const handleLoadComments = useCallback(
-    async (postId: string) => {
-      try {
-        setCommentsLoading((current) => ({
-          ...current,
-          [postId]: true,
-        }));
+  const handleLoadComments = useCallback(async (postId: string) => {
+    try {
+      setCommentsLoading((current) => ({
+        ...current,
+        [postId]: true,
+      }));
 
-        const result =
-          await getPostComments(
-            postId,
-            1,
-            20
-          );
+      const result = await getPostComments(postId, 1, 20);
 
-        setComments((current) => ({
-          ...current,
-          [postId]: result.items,
-        }));
-      } catch (error) {
-        console.error(
-          "Failed to load comments:",
-          error
-        );
-      } finally {
-        setCommentsLoading((current) => ({
-          ...current,
-          [postId]: false,
-        }));
-      }
-    },
-    []
-  );
+      setComments((current) => ({
+        ...current,
+        [postId]: result.items,
+      }));
+    } catch (error) {
+      console.error("Failed to load comments:", error);
+    } finally {
+      setCommentsLoading((current) => ({
+        ...current,
+        [postId]: false,
+      }));
+    }
+  }, []);
 
-  const handleToggleComments = (
-    postId: string
-  ) => {
-    const willOpen =
-      !openComments[postId];
+  const handleToggleComments = (postId: string) => {
+    const willOpen = !openComments[postId];
 
     setOpenComments((current) => ({
       ...current,
       [postId]: willOpen,
     }));
 
-    if (
-      willOpen &&
-      !comments[postId]
-    ) {
+    if (willOpen && !comments[postId]) {
       handleLoadComments(postId);
     }
   };
@@ -290,101 +230,59 @@ function CommunityPage({ gameId }: CommunityPageProps) {
     content: string,
     parentCommentId?: string | null
   ) => {
-    const comment =
-      await addPostComment(
-        postId,
-        {
-          content,
-          parentCommentId:
-            parentCommentId ?? null,
-        }
-      );
+    const comment = await addPostComment(postId, {
+      content,
+      parentCommentId: parentCommentId ?? null,
+    });
 
     setComments((current) => ({
       ...current,
-      [postId]: [
-        ...(current[postId] ?? []),
-        comment,
-      ],
+      [postId]: [...(current[postId] ?? []), comment],
     }));
 
     setPosts((currentPosts) =>
       currentPosts.map((post) =>
         post.id === postId
-          ? {
-              ...post,
-              commentsCount:
-                post.commentsCount + 1,
-            }
+          ? { ...post, commentsCount: post.commentsCount + 1 }
           : post
       )
     );
   };
 
-  const handleCreatePost = async (
-    data: {
-      postType: CommunityPostType;
-      title: string;
-      content: string;
-      shortDescription: string;
-      mediaUrl: string | null;
-    }
-  ) => {
+  const handleCreatePost = async (data: {
+    postType: CommunityPostType;
+    title: string;
+    content: string;
+    shortDescription: string;
+    mediaUrl: string | null;
+  }) => {
     try {
-      const createdPost =
-        await createCommunityPost({
-          gameId,
-          postType: data.postType,
-          title:
-            data.title || undefined,
-          content:
-            data.content || undefined,
-          shortDescription:
-            data.shortDescription ||
-            undefined,
-          mediaUrl: data.mediaUrl || undefined,
-        });
+      const createdPost = await createCommunityPost({
+        gameId,
+        postType: data.postType,
+        title: data.title || undefined,
+        content: data.content || undefined,
+        shortDescription: data.shortDescription || undefined,
+        mediaUrl: data.mediaUrl || undefined,
+      });
 
-      setPosts((currentPosts) => [
-        createdPost,
-        ...currentPosts,
-      ]);
-
+      setPosts((currentPosts) => [createdPost, ...currentPosts]);
       await loadCounts();
     } catch (error) {
-      console.error(
-        "Failed to create post:",
-        error
-      );
-
-      alert(
-        "Не вдалося створити публікацію"
-      );
+      console.error("Failed to create post:", error);
+      alert("Не вдалося створити публікацію");
     }
   };
 
   const filteredPosts = useMemo(() => {
-    const search =
-      searchValue.trim().toLowerCase();
-
-    if (!search) {
-      return posts;
-    }
+    const search = searchValue.trim().toLowerCase();
+    if (!search) return posts;
 
     return posts.filter((post) => {
-      const title =
-        post.title?.toLowerCase() ?? "";
-
-      const content =
-        post.content?.toLowerCase() ?? "";
-
-      const description =
-        post.shortDescription
-          ?.toLowerCase() ?? "";
-
-      const author =
-        post.authorUsername
-          ?.toLowerCase() ?? "";
+      const title = post.title?.toLowerCase() ?? "";
+      const content = post.content?.toLowerCase() ?? "";
+      const description = post.shortDescription?.toLowerCase() ?? "";
+      const author = post.authorUsername?.toLowerCase() ?? "";
 
       return (
         title.includes(search) ||
@@ -396,57 +294,49 @@ function CommunityPage({ gameId }: CommunityPageProps) {
   }, [posts, searchValue]);
 
   const handleDeleteComment = async (
-  postId: string,
-  commentId: string
-) => {
-  try {
-    await deleteComment(commentId);
+    postId: string,
+    commentId: string
+  ) => {
+    try {
+      await deleteComment(commentId);
 
-    setComments((current) => {
-      const currentComments = current[postId] ?? [];
+      setComments((current) => {
+        const currentComments = current[postId] ?? [];
 
-      return {
-        ...current,
-        [postId]: currentComments
-          .filter((comment) => comment.id !== commentId)
-          .map((comment) => ({
-            ...comment,
-            replies:
-              comment.replies?.filter(
-                (reply) => reply.id !== commentId
-              ) ?? [],
-          })),
-      };
-    });
+        return {
+          ...current,
+          [postId]: currentComments
+            .filter((comment) => comment.id !== commentId)
+            .map((comment) => ({
+              ...comment,
+              replies:
+                comment.replies?.filter(
+                  (reply) => reply.id !== commentId
+                ) ?? [],
+            })),
+        };
+      });
 
-    setPosts((currentPosts) =>
-      currentPosts.map((post) =>
-        post.id === postId
-          ? {
-              ...post,
-              commentsCount: Math.max(
-                0,
-                post.commentsCount - 1
-              ),
-            }
-          : post
-      )
-    );
-  } catch (error) {
-    console.error(
-      "Failed to delete comment:",
-      error
-    );
-
-    alert("Не вдалося видалити коментар");
-  }
-};
+      setPosts((currentPosts) =>
+        currentPosts.map((post) =>
+          post.id === postId
+            ? {
+                ...post,
+                commentsCount: Math.max(0, post.commentsCount - 1),
+              }
+            : post
+        )
+      );
+    } catch (error) {
+      console.error("Failed to delete comment:", error);
+      alert("Не вдалося видалити коментар");
+    }
+  };
 
   if (gameLoading) {
     return (
       <div className="community-page-state">
         <Header />
-
         <div className="community-state-content">
           Завантаження спільноти...
         </div>
@@ -465,12 +355,8 @@ function CommunityPage({ gameId }: CommunityPageProps) {
 
         <CommunityHeader
           gameTitle={gameTitle}
-          subscribersCount={
-            counts.subscribersCount
-          }
-          isSubscribed={
-            counts.isSubscribed
-          }
+          subscribersCount={counts.subscribersCount}
+          isSubscribed={counts.isSubscribed}
           onSubscribe={handleSubscribe}
         />
 
@@ -478,15 +364,11 @@ function CommunityPage({ gameId }: CommunityPageProps) {
           activeTab="community"
           onTabChange={(tab) => {
             if (tab === "about") {
-              window.location.href =
-                `/game/${gameId}`;
+              window.location.href = `/game/${gameId}`;
             }
 
-            if (
-              tab === "characteristics"
-            ) {
-              window.location.href =
-                `/game/${gameId}/characteristics`;
+            if (tab === "characteristics") {
+              window.location.href = `/game/${gameId}/characteristics`;
             }
           }}
         />
@@ -550,9 +432,7 @@ function CommunityPage({ gameId }: CommunityPageProps) {
                   Не допускайте образ та принижень на адресу інших
                   гравців, розробників чи груп.
                 </li>
-                <li>
-                  Не включайте погрози або образливий контент.
-                </li>
+                <li>Не включайте погрози або образливий контент.</li>
               </ul>
             </aside>
           ) : (
