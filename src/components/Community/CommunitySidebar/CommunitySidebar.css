@@ -4,41 +4,40 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 13px;
-  padding: 12px;
+  gap: 16px;
+  padding: 15px;
   box-sizing: border-box;
-  border: none;
-  border-radius: 13px;
+  border-radius: 14px;
   background: #00404c;
 }
 
 .community-sidebar-section {
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 8px;
 }
 
 .community-sidebar-section h3 {
   margin: 0;
-  padding: 0 2px;
-  color: #ffffff;
-  font-size: 13px;
+  padding: 0 3px;
+  color: #fff;
+  font-size: 14px;
   font-weight: 700;
 }
 
 .community-sidebar-search input {
   display: block;
   width: 100%;
-  height: 30px;
-  padding: 0 10px;
+  height: 35px;
+  padding: 0 11px;
   box-sizing: border-box;
   border: 1px solid rgba(112, 196, 201, 0.12);
-  border-radius: 7px;
+  border-radius: 8px;
   outline: none;
   background: #00313c;
-  color: #ffffff;
+  color: #fff;
   font-family: inherit;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .community-sidebar-search input::placeholder {
@@ -53,7 +52,7 @@
 .community-sort-list {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
 }
 
 .community-filter-item,
@@ -62,14 +61,14 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  min-height: 30px;
-  padding: 0 9px;
+  min-height: 34px;
+  padding: 0 11px;
   border: none;
-  border-radius: 7px;
+  border-radius: 8px;
   background: transparent;
   color: #c0dce0;
   font-family: inherit;
-  font-size: 11px;
+  font-size: 12px;
   text-align: left;
   cursor: pointer;
   transition: background 0.18s ease, color 0.18s ease;
@@ -78,22 +77,22 @@
 .community-filter-item:hover,
 .community-sort-list button:hover {
   background: rgba(14, 133, 150, 0.28);
-  color: #ffffff;
+  color: #fff;
 }
 
 .community-filter-item.active {
   background: #08758b;
-  color: #ffffff;
+  color: #fff;
   font-weight: 600;
 }
 
 .community-filter-count {
   color: #91c1c9;
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .community-filter-item.active .community-filter-count {
-  color: #ffffff;
+  color: #fff;
 }
 
 .community-sort-list button.active {

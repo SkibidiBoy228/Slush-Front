@@ -1,43 +1,43 @@
 .community-page {
   min-height: 100vh;
   background:
-    radial-gradient(ellipse at 50% 42%, rgba(0, 93, 88, 0.2), transparent 65%),
+    radial-gradient(ellipse at 50% 45%, rgba(0, 105, 96, 0.2), transparent 65%),
     #001820;
-  color: #ffffff;
+  color: #fff;
 }
 
 .community-page-content {
-  width: min(1280px, calc(100% - 48px));
+  width: min(1450px, calc(100% - 64px));
+  max-width: none;
   margin: 0 auto;
-  padding: 18px 0 70px;
+  padding: 18px 0 80px;
   box-sizing: border-box;
 }
 
 .community-page-search {
-  height: 90px;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 
 .community-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 235px;
-  align-items: start;
-  gap: 18px;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 22px;
   width: 100%;
-  margin-top: 20px;
+  margin-top: 18px;
+  align-items: start;
 }
 
 .community-main {
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  min-width: 0;
+  gap: 14px;
 }
 
 .community-feed {
   display: flex;
   flex-direction: column;
-  gap: 13px;
+  gap: 16px;
   min-width: 0;
 }
 
@@ -47,17 +47,17 @@
 }
 
 .community-feed-state {
-  min-height: 180px;
+  min-height: 220px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 30px;
+  padding: 35px;
   box-sizing: border-box;
   border: 1px solid rgba(48, 160, 169, 0.15);
-  border-radius: 12px;
+  border-radius: 13px;
   background: #003440;
   color: #91b9c0;
-  font-size: 14px;
+  font-size: 15px;
   text-align: center;
 }
 
@@ -68,7 +68,7 @@
 .community-page-state {
   min-height: 100vh;
   background: #001820;
-  color: #ffffff;
+  color: #fff;
 }
 
 .community-state-content {
@@ -77,79 +77,59 @@
   align-items: center;
   justify-content: center;
   color: #91b9c0;
-  font-size: 15px;
+  font-size: 16px;
 }
 
 .community-sidebar {
   width: 100%;
   min-width: 0;
-  box-sizing: border-box;
 }
 
 .community-rules {
-  padding: 18px;
+  padding: 22px;
   border: 1px solid rgba(48, 160, 169, 0.15);
-  border-radius: 12px;
-  background: #003440;
+  border-radius: 13px;
+  background: #003b47;
   color: #c5e0e3;
 }
 
 .community-rules h3 {
-  margin: 0 0 15px;
-  color: #ffffff;
-  font-size: 15px;
+  margin: 0 0 18px;
+  color: #fff;
+  font-size: 17px;
 }
 
 .community-rules ul {
   margin: 0;
-  padding-left: 18px;
+  padding-left: 20px;
 }
 
 .community-rules li {
-  margin-bottom: 12px;
-  font-size: 12px;
+  margin-bottom: 14px;
+  font-size: 13px;
   line-height: 1.6;
 }
 
-@media (min-width: 1500px) {
+@media (max-width: 1100px) {
   .community-page-content {
-    width: min(1280px, calc(100% - 80px));
+    width: calc(100% - 40px);
   }
 
   .community-layout {
-    grid-template-columns: minmax(0, 1fr) 235px;
-    gap: 22px;
+    grid-template-columns: minmax(0, 1fr) 250px;
+    gap: 16px;
   }
 }
 
-@media (max-width: 900px) {
-  .community-page-content {
-    width: calc(100% - 32px);
-  }
-
-  .community-layout {
-    grid-template-columns: minmax(0, 1fr) 220px;
-    gap: 14px;
-  }
-}
-
-@media (max-width: 700px) {
+@media (max-width: 750px) {
   .community-page-content {
     width: calc(100% - 24px);
     padding-top: 12px;
-    padding-bottom: 40px;
-  }
-
-  .community-page-search {
-    height: auto;
-    min-height: 65px;
-    margin-bottom: 16px;
   }
 
   .community-layout {
     grid-template-columns: 1fr;
     gap: 18px;
-    margin-top: 16px;
   }
 
   .community-sidebar {
