@@ -180,6 +180,101 @@
   color: #1de0c4;
 }
 
+
+.community-post {
+  position: relative;
+  padding: 18px;
+  border-radius: 12px;
+  background: #003440;
+  border: 1px solid rgba(69, 171, 179, 0.1);
+}
+
+.community-post-author {
+  gap: 10px;
+}
+
+.community-post-avatar {
+  width: 32px;
+  height: 32px;
+}
+
+.community-post-author-name {
+  font-size: 13px;
+}
+
+.community-post-date {
+  font-size: 10px;
+}
+
+.community-post-more {
+  position: absolute;
+  top: 17px;
+  right: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 27px;
+  height: 27px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #8db9c0;
+  cursor: pointer;
+}
+
+.community-post-more:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.community-post-content {
+  margin-top: 14px;
+}
+
+.community-post-title {
+  font-size: 16px;
+}
+
+.community-post-description,
+.community-post-text {
+  font-size: 12px;
+}
+
+.community-post-media {
+  margin-top: 13px;
+  border-radius: 9px;
+}
+
+.community-post-media img {
+  max-height: none;
+  width: 100%;
+  object-fit: cover;
+}
+
+.community-post-actions {
+  gap: 7px;
+  margin-top: 12px;
+}
+
+.community-post-action {
+  min-height: 27px;
+  gap: 6px;
+  padding: 0 9px;
+  border-radius: 6px;
+  font-size: 11px;
+}
+
+.community-post-action-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.community-post-action.liked {
+  color: #ff6f91;
+}
+
 @media (max-width: 600px) {
   .community-post {
     padding: 12px;

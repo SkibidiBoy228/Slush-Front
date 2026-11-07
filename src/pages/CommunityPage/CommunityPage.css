@@ -1,47 +1,49 @@
 .community-page {
   min-height: 100vh;
   background:
-    radial-gradient(ellipse at 0% 48%, rgba(12, 105, 91, 0.42), transparent 34%),
-    radial-gradient(ellipse at 100% 58%, rgba(12, 105, 91, 0.35), transparent 35%),
-    #001923;
-  color: #f1fbfc;
+    radial-gradient(ellipse at 50% 42%, rgba(0, 93, 88, 0.2), transparent 65%),
+    #001820;
+  color: #ffffff;
 }
 
 .community-page-content {
-  width: min(1180px, calc(100% - 48px));
+  width: min(1280px, calc(100% - 48px));
   margin: 0 auto;
-  padding: 24px 0 90px;
+  padding: 18px 0 70px;
   box-sizing: border-box;
 }
 
 .community-page-search {
-  margin-bottom: 22px;
+  height: 90px;
+  margin-bottom: 18px;
 }
 
 .community-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 260px;
+  grid-template-columns: minmax(0, 1fr) 235px;
+  align-items: start;
   gap: 18px;
   width: 100%;
-  margin-top: 24px;
-  align-items: start;
+  margin-top: 20px;
 }
 
 .community-main {
-  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  min-width: 0;
 }
 
 .community-feed {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 13px;
+  min-width: 0;
 }
 
 .community-post-wrapper {
   width: 100%;
+  min-width: 0;
 }
 
 .community-feed-state {
@@ -51,22 +53,22 @@
   justify-content: center;
   padding: 30px;
   box-sizing: border-box;
-  border: 1px solid rgba(65, 169, 175, 0.13);
-  border-radius: 13px;
-  background: #00313d;
-  color: #9bbbc1;
+  border: 1px solid rgba(48, 160, 169, 0.15);
+  border-radius: 12px;
+  background: #003440;
+  color: #91b9c0;
   font-size: 14px;
   text-align: center;
 }
 
 .community-feed-error {
-  color: #ff8e98;
+  color: #ff929c;
 }
 
 .community-page-state {
   min-height: 100vh;
-  background: #001923;
-  color: #f1fbfc;
+  background: #001820;
+  color: #ffffff;
 }
 
 .community-state-content {
@@ -74,27 +76,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #9bbbc1;
+  color: #91b9c0;
   font-size: 15px;
 }
 
 .community-sidebar {
-  width: 260px;
-  min-width: 260px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .community-rules {
-  padding: 20px;
-  border: 1px solid rgba(65, 169, 175, 0.13);
-  border-radius: 14px;
-  background: #003744;
-  color: #b8d5d9;
+  padding: 18px;
+  border: 1px solid rgba(48, 160, 169, 0.15);
+  border-radius: 12px;
+  background: #003440;
+  color: #c5e0e3;
 }
 
 .community-rules h3 {
-  margin: 0 0 18px;
+  margin: 0 0 15px;
   color: #ffffff;
-  font-size: 17px;
+  font-size: 15px;
 }
 
 .community-rules ul {
@@ -103,52 +106,57 @@
 }
 
 .community-rules li {
-  margin-bottom: 14px;
-  font-size: 13px;
+  margin-bottom: 12px;
+  font-size: 12px;
   line-height: 1.6;
 }
 
-@media (max-width: 1000px) {
+@media (min-width: 1500px) {
   .community-page-content {
-    width: min(100% - 32px, 900px);
+    width: min(1280px, calc(100% - 80px));
   }
 
   .community-layout {
-    grid-template-columns: minmax(0, 1fr) 230px;
+    grid-template-columns: minmax(0, 1fr) 235px;
+    gap: 22px;
+  }
+}
+
+@media (max-width: 900px) {
+  .community-page-content {
+    width: calc(100% - 32px);
+  }
+
+  .community-layout {
+    grid-template-columns: minmax(0, 1fr) 220px;
     gap: 14px;
   }
-
-  .community-sidebar {
-    width: 230px;
-    min-width: 230px;
-  }
 }
 
-@media (max-width: 760px) {
-  .community-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .community-sidebar {
-    width: 100%;
-    min-width: 0;
-  }
-}
-
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   .community-page-content {
-    width: calc(100% - 20px);
-    padding-top: 14px;
+    width: calc(100% - 24px);
+    padding-top: 12px;
     padding-bottom: 40px;
   }
 
-  .community-layout {
-    gap: 18px;
-    margin-top: 18px;
+  .community-page-search {
+    height: auto;
+    min-height: 65px;
+    margin-bottom: 16px;
   }
 
-  .community-feed,
+  .community-layout {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    margin-top: 16px;
+  }
+
+  .community-sidebar {
+    grid-row: 1;
+  }
+
   .community-main {
-    gap: 12px;
+    grid-row: 2;
   }
 }

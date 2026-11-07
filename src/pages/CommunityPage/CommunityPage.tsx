@@ -493,10 +493,12 @@ function CommunityPage({ gameId }: CommunityPageProps) {
 
         <div className="community-layout">
           <section className="community-main">
-            <CommunityPostCreator
-              onSubmit={handleCreatePost}
-              onOpenChange = {setIsCreatingPost}
-            />
+            <div className="community-feed-header">
+              <CommunityPostCreator
+                onSubmit={handleCreatePost}
+                onOpenChange={setIsCreatingPost}
+              />
+            </div>
 
             <div className="community-feed">
               {loading ? (
@@ -512,23 +514,15 @@ function CommunityPage({ gameId }: CommunityPageProps) {
                   Публікацій не знайдено.
                 </div>
               ) : (
-                filteredPosts.map(
-                  (post) => (
-                    <div
-                      className="community-post-wrapper"
-                      key={post.id}
-                    >
-                      <CommunityPost
-                        post={post}
-                        onLike={handleLike}
-                        onComments={
-                          handleToggleComments
-                        }
-                      />
+                filteredPosts.map((post) => (
+                  <div className="community-post-wrapper" key={post.id}>
+                    <CommunityPost
+                      post={post}
+                      onLike={handleLike}
+                      onComments={handleToggleComments}
+                    />
 
-                      {openComments[
-                        post.id
-                      ] && (
+                    {openComments[post.id] && (
                       <CommunityComments
                         postId={post.id}
                         comments={comments[post.id] ?? []}
@@ -540,10 +534,9 @@ function CommunityPage({ gameId }: CommunityPageProps) {
                         }
                         currentUsername={getCurrentUsername()}
                       />
-                      )}
-                    </div>
-                  )
-                )
+                    )}
+                  </div>
+                ))
               )}
             </div>
           </section>
@@ -551,7 +544,6 @@ function CommunityPage({ gameId }: CommunityPageProps) {
           {isCreatingPost ? (
             <aside className="community-rules">
               <h3>Правила спільноти</h3>
-
               <ul>
                 <li>Публікуйте тільки оригінальний контент.</li>
                 <li>

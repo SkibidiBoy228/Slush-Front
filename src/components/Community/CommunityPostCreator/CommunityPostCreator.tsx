@@ -184,7 +184,7 @@ function CommunityPostCreator({ onSubmit, onOpenChange }: CommunityPostCreatorPr
             <button
               type="button"
               className="community-post-creator-close"
-              onClick={() => {setIsOpen(true); onOpenChange?.(true)}}
+              onClick={() => {setIsOpen(false); onOpenChange?.(false)}}
               aria-label="Закрити"
             >
               ×
