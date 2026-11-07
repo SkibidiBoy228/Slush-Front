@@ -114,29 +114,26 @@ const Header = () => {
               aria-label="Налаштування"
               title="Налаштування"
             >
-            <svg
-              className="header-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <circle
-                cx="12"
-                cy="12"
-                r="3"
-                stroke="currentColor"
-                strokeWidth="1.7"
-              />
-              <path
-                d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06-1.5 2.6-.08-.03a1.7 1.7 0 0 0-1.84.34l-.07.06h-3l-.02-.09a1.7 1.7 0 0 0-1.33-1.33l-.09-.02-1.5-2.6.06-.07a1.7 1.7 0 0 0 0-2.36l-.06-.07 1.5-2.6.09-.02a1.7 1.7 0 0 0 1.33-1.33l.02-.09h3l.07.06a1.7 1.7 0 0 0 1.84.34l.08-.03 1.5 2.6-.06.06a1.7 1.7 0 0 0-.34 1.87Z"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                transform="translate(-1.4 -1.4)"
-              />
-            </svg>
+              <svg
+                className="header-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path
+                  d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                />
+                <path
+                  d="M19.4 13.5a7.8 7.8 0 0 0 0-3l-1.7-.4a6 6 0 0 0-.6-1.1l.9-1.5a8 8 0 0 0-2.1-2.1l-1.5.9a6 6 0 0 0-1.1-.6l-.4-1.7a7.8 7.8 0 0 0-3 0l-.4 1.7a6 6 0 0 0-1.1.6l-1.5-.9a8 8 0 0 0-2.1 2.1l.9 1.5a6 6 0 0 0-.6 1.1l-1.7.4a7.8 7.8 0 0 0 0 3l1.7.4a6 6 0 0 0 .6 1.1l-.9 1.5a8 8 0 0 0 2.1 2.1l1.5-.9a6 6 0 0 0 1.1.6l.4 1.7a7.8 7.8 0 0 0 3 0l.4-1.7a6 6 0 0 0 1.1-.6l1.5.9a8 8 0 0 0 2.1-2.1l-.9-1.5a6 6 0 0 0 .6-1.1l1.7-.4Z"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
             </a>
 
             <div className="header-notification">
