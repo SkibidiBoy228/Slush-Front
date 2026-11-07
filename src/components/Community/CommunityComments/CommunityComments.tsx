@@ -1,4 +1,6 @@
+
 import { useEffect, useState } from "react";
+import type { FormEvent } from "react";
 import type { PostComment } from "../../../types/community";
 import "./CommunityComments.css";
 
@@ -13,6 +15,10 @@ interface CommunityCommentsProps {
     parentCommentId?: string | null
   ) => Promise<void>;
   onDelete: (commentId: string) => Promise<void>;
+  onUpdate?: (
+    commentId: string,
+    content: string
+  ) => Promise<void>;
   currentUsername?: string | null;
 }
 
@@ -23,31 +29,50 @@ function CommunityComments({
   onLoad,
   onSubmit,
   onDelete,
+  onUpdate,
   currentUsername,
 }: CommunityCommentsProps) {
   const [content, setContent] = useState("");
   const [replyTo, setReplyTo] = useState<PostComment | null>(null);
+
+  const [editingComment, setEditingComment] =
+    useState<PostComment | null>(null);
+  const [editContent, setEditContent] = useState("");
+
   const [submitting, setSubmitting] = useState(false);
   const [deletingCommentId, setDeletingCommentId] =
+    useState<string | null>(null);
+  const [updatingCommentId, setUpdatingCommentId] =
     useState<string | null>(null);
 
   useEffect(() => {
     onLoad(postId);
   }, [postId, onLoad]);
 
+  const canManageComment = (comment: PostComment) =>
+    !!currentUsername &&
+    comment.authorUsername.toLowerCase() ===
+      currentUsername.toLowerCase();
+
   const handleSubmit = async (
-    event: React.FormEvent<HTMLFormElement>
+    event: FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
+
     const text = content.trim();
 
     if (!text || submitting) return;
 
     try {
       setSubmitting(true);
+
       await onSubmit(postId, text, replyTo?.id ?? null);
+
       setContent("");
       setReplyTo(null);
+    } catch (error) {
+      console.error("Не вдалося надіслати коментар:", error);
+      alert("Не вдалося надіслати коментар.");
     } finally {
       setSubmitting(false);
     }
@@ -67,6 +92,11 @@ function CommunityComments({
         setReplyTo(null);
       }
 
+      if (editingComment?.id === comment.id) {
+        setEditingComment(null);
+        setEditContent("");
+      }
+
       await onDelete(comment.id);
     } catch (error) {
       console.error("Не вдалося видалити коментар:", error);
@@ -76,17 +106,50 @@ function CommunityComments({
     }
   };
 
-  const canDeleteComment = (comment: PostComment) =>
-    !!currentUsername &&
-    comment.authorUsername.toLowerCase() ===
-      currentUsername.toLowerCase();
+  const startEditing = (comment: PostComment) => {
+    setEditingComment(comment);
+    setEditContent(comment.content);
+    setReplyTo(null);
+  };
+
+  const cancelEditing = () => {
+    setEditingComment(null);
+    setEditContent("");
+  };
+
+  const handleUpdate = async (
+    event: FormEvent<HTMLFormElement>
+  ) => {
+    event.preventDefault();
+
+    const text = editContent.trim();
+
+    if (!editingComment || !text || !onUpdate || updatingCommentId) {
+      return;
+    }
+
+    try {
+      setUpdatingCommentId(editingComment.id);
+
+      await onUpdate(editingComment.id, text);
+
+      cancelEditing();
+    } catch (error) {
+      console.error("Не вдалося оновити коментар:", error);
+      alert("Не вдалося оновити коментар.");
+    } finally {
+      setUpdatingCommentId(null);
+    }
+  };
 
   const renderComment = (
     comment: PostComment,
     isReply = false
   ) => {
-    const canDelete = canDeleteComment(comment);
+    const canManage = canManageComment(comment);
+    const isEditing = editingComment?.id === comment.id;
     const isDeleting = deletingCommentId === comment.id;
+    const isUpdating = updatingCommentId === comment.id;
 
     return (
       <div
@@ -97,12 +160,13 @@ function CommunityComments({
       >
         <button
           type="button"
-          className="community-comment-author-link"
+          className="community-comment-avatar-link"
           onClick={() => {
             window.location.href = `/profile/${encodeURIComponent(
               comment.authorUsername
             )}`;
           }}
+          aria-label={`Профіль ${comment.authorUsername}`}
         >
           <div className="community-comment-avatar">
             {comment.authorAvatarUrl ? (
@@ -122,7 +186,7 @@ function CommunityComments({
           <div className="community-comment-header">
             <button
               type="button"
-              className="community-comment-author community-comment-author-name"
+              className="community-comment-author"
               onClick={() => {
                 window.location.href = `/profile/${encodeURIComponent(
                   comment.authorUsername
@@ -135,30 +199,85 @@ function CommunityComments({
             <span className="community-comment-date">
               {comment.createdAt}
             </span>
-
-            {canDelete && (
-              <button
-                type="button"
-                className="community-comment-delete"
-                onClick={() => handleDelete(comment)}
-                disabled={isDeleting}
-              >
-                {isDeleting ? "Видалення..." : "Видалити"}
-              </button>
-            )}
           </div>
 
-          <p className="community-comment-content">
-            {comment.content}
-          </p>
+          {isEditing ? (
+            <form
+              className="community-comment-edit-form"
+              onSubmit={handleUpdate}
+            >
+              <textarea
+                value={editContent}
+                onChange={(event) =>
+                  setEditContent(event.target.value)
+                }
+                rows={3}
+                maxLength={2000}
+                autoFocus
+                disabled={isUpdating}
+              />
 
-          <button
-            type="button"
-            className="community-comment-reply-button"
-            onClick={() => setReplyTo(comment)}
-          >
-            Відповісти
-          </button>
+              <div className="community-comment-edit-actions">
+                <button
+                  type="button"
+                  className="community-comment-cancel"
+                  onClick={cancelEditing}
+                  disabled={isUpdating}
+                >
+                  Скасувати
+                </button>
+
+                <button
+                  type="submit"
+                  className="community-comment-save"
+                  disabled={!editContent.trim() || isUpdating}
+                >
+                  {isUpdating ? "Збереження..." : "Зберегти"}
+                </button>
+              </div>
+            </form>
+          ) : (
+            <p className="community-comment-content">
+              {comment.content}
+            </p>
+          )}
+
+          {!isEditing && (
+            <div className="community-comment-actions">
+              <button
+                type="button"
+                className="community-comment-reply-button"
+                onClick={() => {
+                  setReplyTo(comment);
+                  setEditingComment(null);
+                  setEditContent("");
+                }}
+              >
+                Відповісти
+              </button>
+
+              {canManage && onUpdate && (
+                <button
+                  type="button"
+                  className="community-comment-edit-button"
+                  onClick={() => startEditing(comment)}
+                >
+                  Редагувати
+                </button>
+              )}
+
+              {canManage && (
+                <button
+                  type="button"
+                  className="community-comment-delete"
+                  onClick={() => handleDelete(comment)}
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? "Видалення..." : "Видалити"}
+                </button>
+              )}
+            </div>
+          )}
 
           {comment.replies?.length > 0 && (
             <div className="community-comment-replies">
@@ -176,22 +295,29 @@ function CommunityComments({
     <section className="community-comments">
       <div className="community-comments-title">
         <h3>Коментарі</h3>
+        <span>{comments.length}</span>
       </div>
 
       {replyTo && (
         <div className="community-reply-indicator">
-          <span>
-            Відповідь для{" "}
+          <div>
+            <span>Відповідь для </span>
             <strong>{replyTo.authorUsername}</strong>
-          </span>
+          </div>
 
-          <button type="button" onClick={() => setReplyTo(null)}>
+          <button
+            type="button"
+            onClick={() => setReplyTo(null)}
+          >
             Скасувати
           </button>
         </div>
       )}
 
-      <form className="community-comment-form" onSubmit={handleSubmit}>
+      <form
+        className="community-comment-form"
+        onSubmit={handleSubmit}
+      >
         <textarea
           value={content}
           onChange={(event) => setContent(event.target.value)}
@@ -201,10 +327,13 @@ function CommunityComments({
               : "Напишіть коментар..."
           }
           rows={3}
+          maxLength={2000}
           disabled={submitting}
         />
 
-        <div className="community-comment-form-actions">
+        <div className="community-comment-form-footer">
+          <span>{content.length}/2000</span>
+
           <button
             type="submit"
             disabled={!content.trim() || submitting}
@@ -221,7 +350,19 @@ function CommunityComments({
           </div>
         ) : comments.length === 0 ? (
           <div className="community-comments-state">
-            Поки що немає коментарів.
+            <span className="community-comments-empty-icon">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </span>
+            <p>Поки що немає коментарів.</p>
+            <span>Будьте першим, хто залишить коментар!</span>
           </div>
         ) : (
           comments.map((comment) => renderComment(comment))

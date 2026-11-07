@@ -1,7 +1,7 @@
-
 .library-feed {
   width: 100%;
   min-width: 0;
+  color: #e5f3f5;
 }
 
 .library-feed__top {
@@ -64,6 +64,7 @@
 .library-feed__message {
   margin: 0;
   padding: 24px 16px;
+  border: 1px solid rgba(67, 157, 171, 0.1);
   border-radius: 12px;
   background: #00313d;
   color: #b4cbd0;
@@ -83,6 +84,10 @@
   background: #126b80;
   color: white;
   cursor: pointer;
+}
+
+.library-feed__message button:hover {
+  background: #16869b;
 }
 
 @media (max-width: 900px) {

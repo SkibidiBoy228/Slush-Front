@@ -1,19 +1,20 @@
 import { apiRequest } from "./client";
 
 import type {
-    CommunityPost,
-    CreateLibraryCollectionRequest,
-    GameLibraryContext,
-    LibraryCollection,
-    LibraryFeedParams,
-    LibraryGame,
-    LibraryHome,
-    LibraryQueryParams,
-    PagedResult,
-    SaveGameReviewRequest,
-    UpdateLibraryCollectionRequest,
-    UserGameReview,
-    GameSession,
+  CheckoutLibraryResponse,
+  CommunityPost,
+  CreateLibraryCollectionRequest,
+  GameLibraryContext,
+  LibraryCollection,
+  LibraryFeedParams,
+  LibraryGame,
+  LibraryHome,
+  LibraryQueryParams,
+  PagedResult,
+  SaveGameReviewRequest,
+  UpdateLibraryCollectionRequest,
+  UserGameReview,
+  GameSession,
 } from "../types/library";
 
 const BASE_URL = "/api/Library";
@@ -112,12 +113,9 @@ export function deleteGameReview(gameId: string): Promise<void> {
     { method: "DELETE" },
   );
 }
-export function checkoutLibraryGame(
-  gameId: string,
-): Promise<void> {
-  return apiRequest<void>(`${BASE_URL}/checkout`, {
+export function checkoutLibraryGame(): Promise<CheckoutLibraryResponse> {
+  return apiRequest<CheckoutLibraryResponse>(`${BASE_URL}/checkout`, {
     method: "POST",
-    body: JSON.stringify({ gameId }),
   });
 }
 export function startGameSession(gameId: string):Promise<GameSession>{

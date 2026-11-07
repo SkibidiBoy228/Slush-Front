@@ -1,138 +1,151 @@
+
 .community-sidebar {
+  position: sticky;
+  top: 85px;
   width: 100%;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 21px;
-  padding: 19px;
+  padding: 13px;
   box-sizing: border-box;
-  border: 1px solid rgba(74, 178, 187, 0.14);
-  border-radius: 16px;
-  background: linear-gradient(155deg, #03404b 0%, #002d39 100%);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(0, 214, 193, 0.08);
+  border-radius: 13px;
+  background: #034451;
+  color: #e7f7f8;
 }
 
-.community-sidebar-section {
+.community-sidebar-top {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 11px;
+  margin-bottom: 12px;
 }
 
-.community-sidebar-section h3 {
-  margin: 0;
-  padding: 0 3px;
-  color: #f1fbfc;
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 0.25px;
+.community-sidebar-sort-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #78aeb6;
+  font-size: 11px;
+}
+
+.community-sidebar-sort-label select {
+  min-width: 0;
+  padding: 3px 18px 3px 3px;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #e6fafa;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.community-sidebar-sort-label select option {
+  background: #034451;
+  color: #fff;
+}
+
+.community-sidebar-search {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 10px;
+  border: 1px solid rgba(0, 214, 193, 0.13);
+  border-radius: 20px;
+  background: #002e39;
+}
+
+.community-sidebar-search svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: #6fabb3;
+  stroke-width: 1.8;
+  stroke-linecap: round;
 }
 
 .community-sidebar-search input {
-  display: block;
   width: 100%;
-  height: 42px;
-  padding: 0 13px;
-  box-sizing: border-box;
-  border: 1px solid rgba(112, 196, 201, 0.16);
-  border-radius: 10px;
+  min-width: 0;
+  border: none;
   outline: none;
-  background: #002b36;
-  color: #fff;
-  font-family: inherit;
-  font-size: 12px;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  background: transparent;
+  color: #e9fbfc;
+  font-size: 10px;
 }
 
 .community-sidebar-search input::placeholder {
-  color: #83aeb6;
+  color: #6799a2;
 }
 
-.community-sidebar-search input:focus {
-  border-color: #20d9c0;
-  box-shadow: 0 0 0 3px rgba(32, 217, 192, 0.09);
+.community-sidebar-section h3 {
+  margin: 0 0 8px;
+  padding: 7px 9px;
+  border-radius: 7px;
+  background: #11677b;
+  color: #efffff;
+  font-size: 12px;
+  font-weight: 700;
 }
 
-.community-filter-list,
-.community-sort-list {
+.community-filter-list {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 3px;
 }
 
-.community-filter-item,
-.community-sort-list button {
+.community-filter-item {
+  width: 100%;
+  min-height: 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
-  min-height: 39px;
-  padding: 0 12px;
-  border: 1px solid transparent;
-  border-radius: 9px;
+  gap: 8px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 7px;
   background: transparent;
-  color: #b9d5d9;
-  font-family: inherit;
-  font-size: 12px;
+  color: #c4e1e5;
   text-align: left;
+  font-size: 12px;
   cursor: pointer;
-  transition:
-    background 0.18s ease,
-    color 0.18s ease,
-    border-color 0.18s ease;
+  transition: background 0.18s ease, color 0.18s ease;
 }
 
-.community-filter-item:hover,
-.community-sort-list button:hover {
-  background: rgba(14, 133, 150, 0.2);
+.community-filter-item:hover {
+  background: rgba(0, 214, 193, 0.09);
   color: #fff;
 }
 
 .community-filter-item.active {
-  background: rgba(13, 143, 153, 0.28);
-  border-color: rgba(32, 217, 192, 0.2);
+  background: #11677b;
   color: #fff;
   font-weight: 700;
 }
 
 .community-filter-count {
-  min-width: 24px;
-  padding: 3px 6px;
-  box-sizing: border-box;
-  border-radius: 20px;
-  background: rgba(130, 190, 197, 0.1);
-  color: #91c1c9;
+  color: #76abb4;
   font-size: 10px;
-  text-align: center;
 }
 
 .community-filter-item.active .community-filter-count {
-  background: rgba(32, 217, 192, 0.17);
-  color: #65efda;
-}
-
-.community-sort-list button.active {
-  background: rgba(32, 217, 192, 0.1);
-  color: #43e5ce;
-  font-weight: 800;
+  color: #00e2cb;
 }
 
 @media (max-width: 750px) {
   .community-sidebar {
-    padding: 15px;
-    gap: 15px;
+    position: static;
   }
 
   .community-filter-list {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
 
-  .community-filter-item {
-    min-width: 0;
-  }
-
-  .community-sort-list {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+@media (max-width: 420px) {
+  .community-filter-list {
+    grid-template-columns: 1fr;
   }
 }

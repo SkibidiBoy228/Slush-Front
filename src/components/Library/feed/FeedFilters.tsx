@@ -1,4 +1,3 @@
-
 import "./FeedFilters.css";
 
 export type FeedType =
@@ -37,56 +36,35 @@ function FeedFilters({
     <aside className="feed-filters">
       <label className="feed-filters__sort">
         <span>Сортування:</span>
+
         <select
           value={sort}
           onChange={(event) =>
             onSortChange(event.target.value as FeedSort)
           }
         >
-          <option value="rating">Популярні</option>
+          <option value="popular">Популярні</option>
           <option value="newest">Нові</option>
         </select>
       </label>
 
-      <label className="feed-filters__search">
-        <span className="feed-filters__visually-hidden">
-          Пошук розділів
-        </span>
-        <input
-          type="search"
-          placeholder="Пошук: Усі розділи"
-          onChange={(event) => {
-            const query = event.target.value.trim().toLocaleLowerCase();
-
-            const matchingSection = sections.find((section) =>
-              section.label.toLocaleLowerCase().includes(query)
-            );
-
-            if (query && matchingSection) {
-              onTypeChange(matchingSection.value);
-            } else if (!query) {
-              onTypeChange("all");
-            }
-          }}
-        />
-      </label>
-
-      <nav className="feed-filters__sections" aria-label="Розділи ленти">
+      <div className="feed-filters__sections">
         {sections.map((section) => (
           <button
             key={section.value}
             type="button"
-            className={`feed-filters__section ${
+            className={
               type === section.value
-                ? "feed-filters__section--active"
-                : ""
-            }`}
+                ? "feed-filters__section feed-filters__section--active"
+                : "feed-filters__section"
+            }
             onClick={() => onTypeChange(section.value)}
+            aria-pressed={type === section.value}
           >
             {section.label}
           </button>
         ))}
-      </nav>
+      </div>
     </aside>
   );
 }

@@ -1,3 +1,4 @@
+
 import "./CommunitySidebar.css";
 
 export type CommunityFilter =
@@ -37,17 +38,9 @@ function CommunitySidebar({
   onSearchChange,
 }: CommunitySidebarProps) {
   const filters = [
-    { id: "all" as const, label: "Усі", count: counts.all },
-    {
-      id: "discussions" as const,
-      label: "Форум",
-      count: counts.discussions,
-    },
-    {
-      id: "screenshots" as const,
-      label: "Скріншоти",
-      count: counts.screenshots,
-    },
+    { id: "all" as const, label: "Усі розділи", count: counts.all },
+    { id: "discussions" as const, label: "Форум", count: counts.discussions },
+    { id: "screenshots" as const, label: "Скріншоти", count: counts.screenshots },
     { id: "videos" as const, label: "Відео", count: counts.videos },
     { id: "guides" as const, label: "Гайди", count: counts.guides },
     { id: "news" as const, label: "Новини", count: counts.news },
@@ -55,35 +48,34 @@ function CommunitySidebar({
 
   return (
     <aside className="community-sidebar">
-      <div className="community-sidebar-section">
-        <h3>Сортування</h3>
+      <div className="community-sidebar-top">
+        <label className="community-sidebar-sort-label">
+          <span>Сортування:</span>
 
-        <div className="community-sort-list">
-          <button
-            type="button"
-            className={sort === "newest" ? "active" : ""}
-            onClick={() => onSortChange("newest")}
+          <select
+            value={sort}
+            onChange={(event) =>
+              onSortChange(event.target.value as CommunitySort)
+            }
           >
-            Нові
-          </button>
+            <option value="popular">Популярні</option>
+            <option value="newest">Нові</option>
+          </select>
+        </label>
 
-          <button
-            type="button"
-            className={sort === "popular" ? "active" : ""}
-            onClick={() => onSortChange("popular")}
-          >
-            Популярні
-          </button>
+        <div className="community-sidebar-search">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" />
+            <path d="m16 16 4 4" />
+          </svg>
+
+          <input
+            type="search"
+            value={searchValue}
+            onChange={(event) => onSearchChange(event.target.value)}
+            placeholder="Пошук: Усі розділи"
+          />
         </div>
-      </div>
-
-      <div className="community-sidebar-search">
-        <input
-          type="text"
-          value={searchValue}
-          onChange={(event) => onSearchChange(event.target.value)}
-          placeholder="Пошук: Усі розділи"
-        />
       </div>
 
       <div className="community-sidebar-section">
@@ -100,8 +92,9 @@ function CommunitySidebar({
               onClick={() => onFilterChange(filter.id)}
             >
               <span>{filter.label}</span>
+
               <span className="community-filter-count">
-                {filter.count}
+                {filter.count.toLocaleString("uk-UA")}
               </span>
             </button>
           ))}
