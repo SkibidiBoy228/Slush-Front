@@ -1,18 +1,14 @@
 .game-search-container {
   position: relative;
-
   width: 100%;
   height: 90px;
-
   z-index: 1000;
 }
 
 .store-panel {
   position: relative;
-
   top: 18px;
   left: auto;
-
   z-index: 5;
 
   display: flex;
@@ -22,7 +18,6 @@
   height: 54px;
 
   margin: 0 auto;
-
   padding: 0 8px 0 9px;
   box-sizing: border-box;
 
@@ -51,6 +46,16 @@
   border-radius: 30px;
 
   background: #073b47;
+  border: 1px solid rgba(29, 224, 196, 0.12);
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.store-search:focus-within {
+  border-color: rgba(29, 224, 196, 0.55);
+  box-shadow: 0 0 0 2px rgba(29, 224, 196, 0.08);
 }
 
 .store-search input {
@@ -59,41 +64,53 @@
   min-width: 0;
   height: 100%;
 
-  padding: 0 13px;
+  padding: 0 15px;
 
   border: none;
   outline: none;
 
   background: transparent;
 
-  color: #fff;
+  color: #e5f5f5;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 12px;
+  font-weight: 400;
+
+  letter-spacing: 0.1px;
 }
 
 .store-search input::placeholder {
   color: #86a7ad;
+  opacity: 1;
 }
 
 .search-button {
-  width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
   height: 100%;
 
   flex-shrink: 0;
 
+  padding: 0;
+
   border: none;
-  background: #073b47;
+  background: transparent;
 
-  color: #b9d8dc;
-
-  font-size: 24px;
-  line-height: 1;
+  color: #9cc7cb;
 
   cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
 }
 
 .search-button:hover {
   color: #1de0c4;
+  background: rgba(29, 224, 196, 0.06);
 }
 
 .search-results {
@@ -108,7 +125,8 @@
   overflow-x: hidden;
   overflow-y: auto;
 
-  border-radius: 14px;
+  border: 1px solid rgba(29, 224, 196, 0.12);
+  border-radius: 12px;
 
   background: #073b47;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
@@ -125,7 +143,7 @@
 
 .search-results::-webkit-scrollbar-track {
   background: #073b47;
-  border-radius: 14px;
+  border-radius: 12px;
 }
 
 .search-results::-webkit-scrollbar-thumb {
@@ -155,6 +173,8 @@
   text-align: left;
 
   cursor: pointer;
+
+  transition: background 0.15s ease;
 }
 
 .search-result:last-child {
@@ -212,7 +232,6 @@
 
 .store-link {
   height: 100%;
-
   padding: 0 14px;
 
   border: none;

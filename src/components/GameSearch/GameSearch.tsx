@@ -57,16 +57,12 @@ function GameSearch() {
           pageSize: 7,
         });
 
-        if (requestId !== requestIdRef.current) {
-          return;
-        }
+        if (requestId !== requestIdRef.current) return;
 
         setResults(response.items.slice(0, 7));
         setIsOpen(true);
       } catch (error) {
-        if (requestId !== requestIdRef.current) {
-          return;
-        }
+        if (requestId !== requestIdRef.current) return;
 
         console.error("Не вдалося виконати пошук:", error);
         setResults([]);
@@ -100,7 +96,6 @@ function GameSearch() {
 
   function openGame(game: CatalogGame) {
     setIsOpen(false);
-
     window.location.href = `/game/${encodeURIComponent(game.id)}`;
   }
 
@@ -149,7 +144,27 @@ function GameSearch() {
               aria-label="Пошук"
               onClick={handleSearchSubmit}
             >
-              ⌕
+              <svg
+                viewBox="0 0 24 24"
+                width="17"
+                height="17"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle
+                  cx="10.8"
+                  cy="10.8"
+                  r="6.3"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                />
+                <path
+                  d="M15.5 15.5L20 20"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                />
+              </svg>
             </button>
           </div>
 
