@@ -26,12 +26,13 @@
   background: #002630;
 }
 
-.feed-post__banner img {
+.feed-post__banner img,
+.feed-post__banner video {
   display: block;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.35s ease;
+  height: auto;
+  max-height: 500px;
+  object-fit: contain;
 }
 
 .feed-post:hover .feed-post__banner img {

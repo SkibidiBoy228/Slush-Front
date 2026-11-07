@@ -28,6 +28,7 @@ function formatPostDate(value: string): string {
 
 function FeedPostCard({ post }: FeedPostCardProps) {
   const title = post.title?.trim() || "Без назви";
+
   const description =
     post.shortDescription?.trim() ||
     post.content?.trim() ||
@@ -87,11 +88,23 @@ function FeedPostCard({ post }: FeedPostCardProps) {
     <article className="feed-post">
       {post.mediaUrl && (
         <div className="feed-post__banner">
-          <img
-            src={post.mediaUrl}
-            alt={title}
-            loading="lazy"
-          />
+          {post.postType === "Video" ? (
+            <video
+              src={post.mediaUrl}
+              controls
+              playsInline
+              preload="metadata"
+              className="feed-post__video"
+            >
+              Твій браузер не підтримує відтворення відео.
+            </video>
+          ) : (
+            <img
+              src={post.mediaUrl}
+              alt={title}
+              loading="lazy"
+            />
+          )}
         </div>
       )}
 
@@ -175,7 +188,7 @@ function FeedPostCard({ post }: FeedPostCardProps) {
             title="Коментарі"
             aria-label={`Коментарі: ${post.commentsCount}`}
             onClick={() => {
-              // Підключимо відкриття коментарів після отримання DTO коментаря.
+              // Підключимо відкриття коментарів пізніше.
             }}
           >
             <span className="feed-post__comment">▢</span>
