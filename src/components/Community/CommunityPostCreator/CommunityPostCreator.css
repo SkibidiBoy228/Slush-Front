@@ -4,227 +4,173 @@
 
 .community-create-button {
   width: 100%;
-  min-height: 58px;
-
+  min-height: 48px;
   display: flex;
   align-items: center;
-
-  gap: 12px;
-
-  padding: 0 20px;
-
-  border: 1px solid #292d33;
-  border-radius: 5px;
-
-  background: #17191d;
-  color: #aeb3ba;
-
+  gap: 10px;
+  padding: 0 13px;
+  border: 1px solid rgba(69, 171, 179, 0.13);
+  border-radius: 10px;
+  background: #003440;
+  color: #c2e0e4;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
-
   text-align: left;
-
   cursor: pointer;
-
-  transition:
-    background 0.15s ease,
-    border-color 0.15s ease,
-    color 0.15s ease;
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .community-create-button:hover {
-  background: #1c1f24;
-  border-color: #3a3f47;
+  background: #004452;
+  border-color: rgba(29, 224, 196, 0.3);
   color: #ffffff;
 }
 
 .community-create-icon {
-  width: 30px;
-  height: 30px;
-
+  width: 27px;
+  height: 27px;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  border-radius: 4px;
-
-  background: #252a31;
-  color: #66c0f4;
-
-  font-size: 21px;
+  border-radius: 7px;
+  background: #07566a;
+  color: #1de0c4;
+  font-size: 19px;
   font-weight: 400;
 }
 
-/* Form */
-
 .community-post-creator-form {
   width: 100%;
-
   box-sizing: border-box;
-
-  padding: 22px 24px;
-
-  border: 1px solid #292d33;
-  border-radius: 5px;
-
-  background: #17191d;
+  padding: 18px;
+  border: 1px solid rgba(69, 171, 179, 0.15);
+  border-radius: 13px;
+  background: #003440;
 }
 
 .community-post-creator-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  margin-bottom: 22px;
+  margin-bottom: 18px;
 }
 
 .community-post-creator-header h2 {
   margin: 0;
-
   color: #ffffff;
-
-  font-size: 19px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 700;
 }
 
 .community-post-creator-close {
-  width: 32px;
-  height: 32px;
-
+  width: 30px;
+  height: 30px;
   border: none;
-  border-radius: 4px;
-
+  border-radius: 7px;
   background: transparent;
-  color: #777d86;
-
-  font-size: 24px;
+  color: #9bbbc1;
+  font-size: 23px;
   line-height: 1;
-
   cursor: pointer;
 }
 
 .community-post-creator-close:hover {
-  background: #24282e;
+  background: #075064;
   color: #ffffff;
 }
-
-/* Fields */
 
 .community-post-type,
 .community-post-field {
   display: flex;
   flex-direction: column;
-
   gap: 7px;
-
-  margin-bottom: 16px;
+  margin-bottom: 15px;
 }
 
 .community-post-type label,
 .community-post-field label {
-  color: #a8adb5;
-
-  font-size: 13px;
-  font-weight: 500;
+  color: #b8d7dc;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .community-post-type select,
 .community-post-field input,
 .community-post-field textarea {
   width: 100%;
-
   box-sizing: border-box;
-
-  border: 1px solid #30343b;
-  border-radius: 4px;
-
+  border: 1px solid rgba(112, 196, 201, 0.18);
+  border-radius: 8px;
   outline: none;
-
-  background: #101215;
+  background: #002833;
   color: #ffffff;
-
   font-family: inherit;
-  font-size: 14px;
-
-  transition: border-color 0.15s ease;
+  font-size: 13px;
+  transition: border-color 0.2s ease;
 }
 
 .community-post-type select,
 .community-post-field input {
-  height: 42px;
-
-  padding: 0 12px;
+  height: 39px;
+  padding: 0 11px;
 }
 
 .community-post-field textarea {
-  min-height: 130px;
-
-  padding: 11px 12px;
-
+  min-height: 120px;
+  padding: 11px;
   resize: vertical;
-
   line-height: 1.5;
 }
 
 .community-post-type select:focus,
 .community-post-field input:focus,
 .community-post-field textarea:focus {
-  border-color: #4b525c;
+  border-color: #16cbb5;
 }
 
 .community-post-field input::placeholder,
 .community-post-field textarea::placeholder {
-  color: #626872;
+  color: #7099a2;
 }
-
-/* Buttons */
 
 .community-post-creator-actions {
   display: flex;
   justify-content: flex-end;
-
-  gap: 10px;
-
-  margin-top: 22px;
+  gap: 9px;
+  margin-top: 18px;
 }
 
 .community-post-cancel,
 .community-post-submit {
-  height: 40px;
-
-  padding: 0 18px;
-
-  border-radius: 4px;
-
+  height: 37px;
+  padding: 0 16px;
+  border-radius: 8px;
   font-family: inherit;
-  font-size: 14px;
-  font-weight: 500;
-
+  font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
 }
 
 .community-post-cancel {
-  border: 1px solid #353a42;
-
+  border: 1px solid rgba(112, 196, 201, 0.2);
   background: transparent;
-  color: #a2a7ae;
+  color: #b8d7dc;
 }
 
 .community-post-cancel:hover {
-  background: #24282e;
+  background: #075064;
   color: #ffffff;
 }
 
 .community-post-submit {
   border: none;
-
-  background: #66c0f4;
-  color: #101214;
+  background: #16d9bd;
+  color: #00323a;
 }
 
 .community-post-submit:hover:not(:disabled) {
-  background: #7acbfa;
+  background: #54ecd4;
 }
 
 .community-post-submit:disabled {
@@ -234,115 +180,90 @@
 
 .community-post-field input[type="file"] {
   width: 100%;
-  padding: 10px 12px;
+  padding: 9px 11px;
   box-sizing: border-box;
-
-  border: 1px solid #30363d;
-  border-radius: 4px;
-
-  background: #20252b;
+  border: 1px solid rgba(112, 196, 201, 0.18);
+  border-radius: 8px;
+  background: #002833;
   color: #ffffff;
-
-  font-size: 14px;
+  font-size: 12px;
   cursor: pointer;
 }
 
 .community-post-field input[type="file"]::file-selector-button {
-  margin-right: 12px;
-  padding: 8px 14px;
-
+  margin-right: 10px;
+  padding: 7px 12px;
   border: none;
-  border-radius: 4px;
-
-  background: #147a91;
+  border-radius: 6px;
+  background: #08718a;
   color: #ffffff;
-
-  font-size: 13px;
+  font-size: 11px;
   cursor: pointer;
-
-  transition: background 0.2s ease;
 }
 
 .community-post-field input[type="file"]::file-selector-button:hover {
-  background: #198da7;
+  background: #0b8aa0;
 }
 
 .community-selected-file {
   display: block;
-
   margin-top: 8px;
-
-  color: #8e969f;
-  font-size: 13px;
-
+  color: #8fb4bd;
+  font-size: 12px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-
 .community-media-preview {
   width: 100%;
   margin-top: 12px;
-
-  border: 1px solid #30363d;
-  border-radius: 5px;
-
+  border: 1px solid rgba(112, 196, 201, 0.15);
+  border-radius: 9px;
   overflow: hidden;
-  background: #15191d;
+  background: #001b24;
 }
 
-.community-media-preview img {
+.community-media-preview img,
+.community-media-preview video {
   display: block;
-
   width: 100%;
   max-height: 420px;
-
   object-fit: contain;
 }
 
 .community-media-preview video {
-  display: block;
-
-  width: 100%;
-  max-height: 420px;
-
-  background: #000;
+  background: #001018;
 }
 
-
-.community-post-submit:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
 .community-post-type-tabs {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
-  margin-bottom: 24px;
+  gap: 7px;
+  margin-bottom: 20px;
 }
 
 .community-post-type-tab {
-  min-height: 44px;
-  padding: 10px 8px;
-  border: 1px solid #30343b;
-  border-radius: 4px;
-  background: #101215;
-  color: #c5c9d0;
+  min-height: 38px;
+  padding: 8px 6px;
+  border: 1px solid rgba(112, 196, 201, 0.18);
+  border-radius: 8px;
+  background: #002833;
+  color: #b8d7dc;
   font: inherit;
-  font-size: 13px;
+  font-size: 11px;
   cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .community-post-type-tab:hover {
-  border-color: #66c0f4;
+  border-color: #16cbb5;
 }
 
 .community-post-type-tab.active {
-  border-color: #147a91;
-  background: #147a91;
-  color: #fff;
+  border-color: #087b8b;
+  background: #08718a;
+  color: #ffffff;
 }
 
 .community-post-type-tab:disabled {
@@ -351,25 +272,25 @@
 }
 
 .community-upload-zone {
-  min-height: 150px;
+  min-height: 145px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 9px;
   padding: 20px;
-  border: 1px dashed #4b5661;
-  border-radius: 5px;
-  background: #10191d;
-  color: #aeb8c1;
+  border: 1px dashed rgba(112, 196, 201, 0.4);
+  border-radius: 10px;
+  background: #002833;
+  color: #a9cbd1;
   text-align: center;
   cursor: pointer;
   box-sizing: border-box;
 }
 
 .community-upload-zone:hover {
-  border-color: #66c0f4;
-  background: #142127;
+  border-color: #16d9bd;
+  background: #003541;
 }
 
 .community-upload-zone input[type="file"] {
@@ -377,18 +298,18 @@
 }
 
 .community-upload-zone strong {
-  color: #e5e9ed;
-  font-size: 14px;
+  color: #e5f5f5;
+  font-size: 13px;
   overflow-wrap: anywhere;
 }
 
 .community-upload-zone > span {
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .community-upload-icon {
-  font-size: 30px;
-  color: #66c0f4;
+  font-size: 28px;
+  color: #1de0c4;
 }
 
 .community-upload-zone-compact {
@@ -397,8 +318,8 @@
 
 .community-character-count {
   align-self: flex-end;
-  color: #7e8791;
-  font-size: 12px;
+  color: #83aab3;
+  font-size: 11px;
   text-align: right;
 }
 
@@ -408,18 +329,18 @@
 
 .community-post-error {
   margin: 12px 0;
-  color: #ff8888;
-  font-size: 13px;
+  color: #ff929c;
+  font-size: 12px;
 }
 
 @media (max-width: 600px) {
   .community-post-creator-form {
-    padding: 18px 14px;
+    padding: 15px 12px;
   }
 
   .community-post-type-tabs {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
+    gap: 7px;
   }
 
   .community-post-type-tab {

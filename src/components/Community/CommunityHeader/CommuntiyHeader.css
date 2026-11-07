@@ -1,67 +1,53 @@
 .community-header {
   width: 100%;
-  min-height: 92px;
-
+  min-height: 82px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  padding: 24px 28px;
-
-  background: #17191d;
-  border: 1px solid #292c32;
-  border-radius: 6px;
-
+  gap: 20px;
+  padding: 14px 0;
   box-sizing: border-box;
+  background: transparent;
+  border: none;
+  border-radius: 0;
 }
 
 .community-header-info {
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 5px;
 }
 
 .community-header-info h1 {
   margin: 0;
-
-  color: #ffffff;
-
-  font-size: 24px;
-  font-weight: 600;
+  color: #f3fbfc;
+  font-size: 25px;
+  font-weight: 700;
   line-height: 1.2;
 }
 
-.community-subscribers {
-  color: #8d929b;
-
-  font-size: 14px;
-  line-height: 1.2;
+.community-header-info span {
+  color: #8fb4bd;
+  font-size: 12px;
+  line-height: 1.3;
 }
 
 .community-subscribe-button {
   min-width: 140px;
-  height: 42px;
-
-  padding: 0 20px;
-
+  height: 38px;
+  padding: 0 18px;
   border: none;
-  border-radius: 4px;
-
-  background: #66c0f4;
-  color: #101214;
-
-  font-size: 14px;
-  font-weight: 600;
-
+  border-radius: 22px;
+  background: #16d9bd;
+  color: #00323a;
+  font-size: 13px;
+  font-weight: 700;
   cursor: pointer;
-
-  transition:
-    background 0.15s ease,
-    transform 0.15s ease;
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .community-subscribe-button:hover {
-  background: #7acbfa;
+  background: #54ecd4;
 }
 
 .community-subscribe-button:active {
@@ -69,11 +55,29 @@
 }
 
 .community-subscribe-button.subscribed {
-  background: #2a2e35;
-  color: #c7cbd1;
-  border: 1px solid #41464f;
+  background: #075365;
+  color: #c4e5e8;
+  border: 1px solid rgba(115, 207, 211, 0.2);
 }
 
 .community-subscribe-button.subscribed:hover {
-  background: #343941;
+  background: #0b6576;
+}
+
+@media (max-width: 600px) {
+  .community-header {
+    min-height: 70px;
+    align-items: flex-start;
+  }
+
+  .community-header-info h1 {
+    font-size: 20px;
+  }
+
+  .community-subscribe-button {
+    min-width: auto;
+    height: 34px;
+    padding: 0 12px;
+    font-size: 11px;
+  }
 }

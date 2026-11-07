@@ -1,233 +1,197 @@
 .community-post {
   width: 100%;
-
-  padding: 22px 24px;
-
+  padding: 14px;
   box-sizing: border-box;
-
-  background: #17191d;
-  border: 1px solid #292d33;
-  border-radius: 5px;
-
+  background: #003440;
+  border: 1px solid rgba(69, 171, 179, 0.1);
+  border-radius: 14px;
   color: #ffffff;
+  transition: background 0.2s ease;
 }
 
+.community-post:hover {
+  background: #003946;
+}
 
 .community-post-author {
   display: flex;
   align-items: center;
-
-  gap: 12px;
+  gap: 9px;
 }
 
 .community-post-avatar {
-  width: 42px;
-  height: 42px;
-
+  width: 28px;
+  height: 28px;
   flex-shrink: 0;
-
   overflow: hidden;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
-  border-radius: 4px;
-
-  background: #2a2e35;
-
+  border-radius: 50%;
+  background: #08758b;
   color: #ffffff;
-
-  font-size: 17px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .community-post-avatar img {
   width: 100%;
   height: 100%;
-
   display: block;
-
   object-fit: cover;
 }
 
 .community-post-author-info {
   display: flex;
   flex-direction: column;
-
-  gap: 4px;
+  gap: 2px;
 }
 
 .community-post-author-name {
   color: #ffffff;
-
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .community-post-date {
-  color: #777d86;
-
-  font-size: 12px;
+  color: #83aab3;
+  font-size: 9px;
 }
 
-/* Content */
-
 .community-post-content {
-  margin-top: 18px;
+  margin-top: 12px;
 }
 
 .community-post-title {
-  margin: 0 0 10px;
-
+  margin: 0 0 7px;
   color: #ffffff;
-
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 700;
   line-height: 1.35;
 }
 
 .community-post-description {
-  margin: 0 0 10px;
-
-  color: #c2c6cc;
-
-  font-size: 14px;
+  margin: 0 0 7px;
+  color: #c0dce0;
+  font-size: 12px;
   line-height: 1.5;
 }
 
 .community-post-text {
   margin: 0;
-
-  color: #b4b8bf;
-
-  font-size: 14px;
-  line-height: 1.65;
-
+  color: #b7d4d9;
+  font-size: 12px;
+  line-height: 1.55;
   white-space: pre-wrap;
 }
 
-/* Media */
-
 .community-post-media {
   width: 100%;
-
-  margin-top: 18px;
-
+  margin-top: 12px;
   overflow: hidden;
-
-  border-radius: 4px;
-
-  background: #101215;
+  border-radius: 9px;
+  background: #001b24;
 }
 
 .community-post-media img {
   width: 100%;
-  max-height: 520px;
-
+  max-height: 480px;
   display: block;
-
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .community-post-video video {
   width: 100%;
-  max-height: 520px;
-
+  max-height: 480px;
   display: block;
-
-  background: #000000;
+  background: #001018;
 }
-
-
 
 .community-post-actions {
   display: flex;
   align-items: center;
-
-  gap: 8px;
-
-  margin-top: 18px;
-  padding-top: 15px;
-
-  border-top: 1px solid #292d33;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 11px;
+  padding-top: 0;
+  border-top: none;
 }
 
 .community-post-action {
-  min-height: 34px;
-
+  min-height: 25px;
   display: inline-flex;
   align-items: center;
-
-  gap: 7px;
-
-  padding: 0 10px;
-
-  border: none;
-  border-radius: 4px;
-
-  background: transparent;
-
-  color: #858b94;
-
+  gap: 5px;
+  padding: 0 8px;
+  border: 1px solid rgba(100, 190, 195, 0.12);
+  border-radius: 6px;
+  background: #075064;
+  color: #b6d8de;
   font-family: inherit;
-  font-size: 13px;
-
+  font-size: 10px;
   cursor: pointer;
-
-  transition:
-    color 0.15s ease,
-    background 0.15s ease;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .community-post-action:hover {
-  background: #22262c;
+  background: #0b6879;
   color: #ffffff;
 }
 
 .community-post-action-icon {
-  font-size: 17px;
+  font-size: 13px;
   line-height: 1;
 }
 
 .community-post-action.liked {
-  color: #66c0f4;
+  color: #ff7b9a;
+  background: #074b5c;
 }
 
 .community-post-action.liked:hover {
-  color: #7acbfa;
+  color: #ff9bb1;
 }
 
 .community-post-share {
-  margin-left: auto;
+  margin-left: 0;
 }
 
 .community-post-author-link {
   padding: 0;
   margin: 0;
-
   border: none;
   background: transparent;
-
   cursor: pointer;
 }
 
 .community-post-author-name-button {
   padding: 0;
   margin: 0;
-
   border: none;
   background: transparent;
-
   color: #ffffff;
-
   font: inherit;
-  font-weight: 600;
-
+  font-weight: 700;
   cursor: pointer;
   text-align: left;
 }
 
 .community-post-author-name-button:hover {
-  color: #39a9c4;
+  color: #1de0c4;
+}
+
+@media (max-width: 600px) {
+  .community-post {
+    padding: 12px;
+    border-radius: 11px;
+  }
+
+  .community-post-title {
+    font-size: 14px;
+  }
+
+  .community-post-media img,
+  .community-post-video video {
+    max-height: 340px;
+  }
 }

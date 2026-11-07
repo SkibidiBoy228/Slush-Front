@@ -249,13 +249,9 @@
   color: #1de0c4;
 }
 
-/* ИЗБРАННОЕ И КОРЗИНА */
-
 .store-actions {
   display: flex;
   align-items: center;
-  justify-content: center;
-
   gap: 5px;
   margin-left: 5px;
 }
@@ -267,33 +263,33 @@
 
   width: 34px;
   height: 34px;
-
-  flex-shrink: 0;
   padding: 0;
 
-  border: 1px solid rgba(190, 230, 230, 0.15);
+  border: 1px solid rgba(190, 230, 230, 0.18);
   border-radius: 50%;
 
   background: #073b47;
-
   color: #ffffff;
 
-  font-size: 19px;
-  line-height: 1;
-
   cursor: pointer;
+  transition: 0.2s ease;
+}
 
-  transition:
-    background 0.2s ease,
-    color 0.2s ease;
+.store-circle svg {
+  width: 17px;
+  height: 17px;
+
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .store-circle:hover {
   background: #147080;
   color: #1de0c4;
 }
-
-/* АДАПТИВНОСТЬ */
 
 @media (max-width: 1000px) {
   .store-panel {

@@ -1,12 +1,15 @@
 .community-sidebar {
   width: 260px;
   flex-shrink: 0;
-
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 15px;
+  padding: 14px;
+  box-sizing: border-box;
+  border: 1px solid rgba(75, 181, 186, 0.1);
+  border-radius: 14px;
+  background: #00404d;
 }
-
 
 .community-sidebar-search {
   width: 100%;
@@ -14,150 +17,120 @@
 
 .community-sidebar-search input {
   width: 100%;
-  height: 42px;
-
-  padding: 0 13px;
-
+  height: 32px;
+  padding: 0 11px;
   box-sizing: border-box;
-
-  border: 1px solid #30343b;
-  border-radius: 4px;
-
+  border: 1px solid rgba(112, 196, 201, 0.13);
+  border-radius: 8px;
   outline: none;
-
-  background: #17191d;
+  background: #00313d;
   color: #ffffff;
-
   font-family: inherit;
-  font-size: 14px;
-
-  transition:
-    border-color 0.15s ease,
-    background 0.15s ease;
+  font-size: 11px;
+  transition: border-color 0.2s ease;
 }
 
 .community-sidebar-search input::placeholder {
-  color: #777d86;
+  color: #7faab3;
 }
 
 .community-sidebar-search input:focus {
-  border-color: #4b525c;
-  background: #1a1c21;
+  border-color: #16bfae;
 }
-
-/* Sections */
 
 .community-sidebar-section {
   display: flex;
   flex-direction: column;
-  gap: 9px;
+  gap: 6px;
 }
 
 .community-sidebar-section h3 {
   margin: 0;
-  padding: 0 4px;
-
+  padding: 0 2px 3px;
   color: #ffffff;
-
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 700;
 }
-
 
 .community-filter-list {
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
 
 .community-filter-item {
   width: 100%;
-  min-height: 38px;
-
+  min-height: 29px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  padding: 0 10px;
-
+  padding: 0 9px;
   border: none;
-  border-radius: 3px;
-
+  border-radius: 7px;
   background: transparent;
-
-  color: #9a9fa7;
-
+  color: #b5d3d8;
   font-family: inherit;
-  font-size: 14px;
-
+  font-size: 11px;
   text-align: left;
-
   cursor: pointer;
-
-  transition:
-    color 0.15s ease,
-    background 0.15s ease;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .community-filter-item:hover {
-  background: #202329;
+  background: rgba(20, 130, 145, 0.3);
   color: #ffffff;
 }
 
 .community-filter-item.active {
-  background: #252a31;
+  background: #08718a;
   color: #ffffff;
+  font-weight: 600;
 }
 
 .community-filter-count {
-  min-width: 24px;
-
-  color: #6f757e;
-
-  font-size: 12px;
+  min-width: 20px;
+  color: #8fb8c0;
+  font-size: 10px;
   text-align: right;
 }
 
 .community-filter-item.active .community-filter-count {
-  color: #66c0f4;
+  color: #ffffff;
 }
-
-/* Sorting */
 
 .community-sort-list {
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
 
 .community-sort-list button {
   width: 100%;
-  min-height: 36px;
-
-  padding: 0 10px;
-
+  min-height: 29px;
+  padding: 0 9px;
   border: none;
-  border-radius: 3px;
-
+  border-radius: 7px;
   background: transparent;
-
-  color: #8f959e;
-
+  color: #b5d3d8;
   font-family: inherit;
-  font-size: 14px;
-
+  font-size: 11px;
   text-align: left;
-
   cursor: pointer;
-
-  transition:
-    color 0.15s ease,
-    background 0.15s ease;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .community-sort-list button:hover {
-  background: #202329;
+  background: rgba(20, 130, 145, 0.3);
   color: #ffffff;
 }
 
 .community-sort-list button.active {
-  color: #66c0f4;
+  color: #1de0c4;
+  font-weight: 600;
+}
+
+@media (max-width: 760px) {
+  .community-sidebar {
+    width: 100%;
+  }
 }
