@@ -2,16 +2,17 @@
 
 .friends-page {
   min-height: 100vh;
-  background: #07151e;
+  background: #081720;
   color: #ffffff;
 }
 
 .friends-page-container {
-  width: min(1320px, calc(100% - 48px));
+  width: min(1316px, calc(100% - 48px));
   margin: 0 auto;
   padding: 32px 0 60px;
   box-sizing: border-box;
 }
+
 
 
 .friends-page-heading {
@@ -44,8 +45,9 @@
   gap: 8px;
   flex: 0 0 auto;
 
-  min-height: 40px;
-  padding: 0 17px;
+  min-width: 141px;
+  height: 40px;
+  padding: 0 15px;
 
   border: 1px solid #398bd0;
   border-radius: 7px;
@@ -76,22 +78,26 @@
   margin-bottom: 26px;
 }
 
-/* FriendSearch component */
-
-.friends-search-row .friend-search {
+.friends-search-row .friend-search-group {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   width: 100%;
 }
 
-.friends-search-row .friend-search input {
+.friends-search-row .friend-search {
+  position: relative;
+  display: block;
   width: 100%;
   min-width: 0;
-  height: 43px;
-  box-sizing: border-box;
+}
 
-  padding: 0 16px 0 42px;
+.friends-search-row .friend-search input {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 43px;
+  padding: 0 16px 0 43px;
 
   border: 1px solid #203542;
   border-radius: 8px;
@@ -113,6 +119,19 @@
   background: #122633;
 }
 
+.friends-search-row .friend-search-icon {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+
+  width: 17px;
+  height: 17px;
+
+  transform: translateY(-50%);
+  color: #8295a3;
+  pointer-events: none;
+}
+
 
 
 .friends-search-results {
@@ -128,6 +147,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+
   min-width: 0;
   padding: 11px 13px;
 
@@ -147,6 +167,7 @@
   display: flex;
   align-items: center;
   gap: 11px;
+
   min-width: 0;
   padding: 0;
 
@@ -171,6 +192,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
   background: #263c4b;
   color: #ffffff;
   font-size: 16px;
@@ -211,6 +233,7 @@
   color: #8fc7ff;
   font-size: 11px;
   font-weight: 600;
+
   cursor: pointer;
   transition: background 0.2s;
 }
@@ -249,7 +272,7 @@
 
   min-height: 41px;
   margin: 0 0 25px;
-  padding: 0 0 0 0;
+  padding: 0;
 
   border-bottom: 1px solid rgba(139, 166, 183, 0.12);
 }
@@ -349,6 +372,7 @@
 }
 
 
+
 .friends-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -395,6 +419,7 @@
 
 .friends-activity {
   min-width: 0;
+  margin-top: 0;
   padding: 17px 18px;
 
   border: 1px solid #1b303d;
@@ -415,8 +440,6 @@
   font-size: 16px;
   font-weight: 650;
 }
-
-
 
 .friends-activity-list {
   display: flex;
@@ -518,7 +541,7 @@
   font-size: 9px;
 }
 
-/* Screenshot */
+
 
 .friends-activity-image-button {
   display: block;
@@ -632,6 +655,12 @@
   }
 }
 
+@media (max-width: 620px) {
+  .friends-search-row .friend-search-group {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 600px) {
   .friends-page-container {
     width: calc(100% - 24px);
@@ -652,14 +681,11 @@
   }
 
   .friends-add-button {
+    min-width: auto;
     min-height: 36px;
+    height: 36px;
     padding: 0 10px;
     font-size: 10px;
-  }
-
-  .friends-search-row .friend-search {
-    grid-template-columns: 1fr;
-    gap: 9px;
   }
 
   .friends-tabs {
