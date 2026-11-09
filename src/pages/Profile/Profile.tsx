@@ -71,28 +71,48 @@ const Profile = ({ username }: ProfileProps) => {
   useEffect(() => {
     if (events.length === 0) return;
 
+    const latestEvents = new Map();
+
+    for (const event of events) {
+      latestEvents.set(event.userId, event);
+    }
+
     setProfile((currentProfile) => {
       if (!currentProfile) return currentProfile;
 
+      let hasChanges = false;
+
+      const updatedFriends = currentProfile.friends.map((friend) => {
+        const latestEvent = latestEvents.get(friend.id);
+
+        if (!latestEvent) return friend;
+
+        const isPlaying = latestEvent.eventType === "InGame";
+
+        const updatedFriend = {
+          ...friend,
+          isOnline: true,
+          currentGameId: isPlaying ? latestEvent.gameId : null,
+          currentGameTitle: isPlaying ? latestEvent.gameTitle : null,
+        };
+
+        if (
+          friend.isOnline !== updatedFriend.isOnline ||
+          friend.currentGameId !== updatedFriend.currentGameId ||
+          friend.currentGameTitle !== updatedFriend.currentGameTitle
+        ) {
+          hasChanges = true;
+          return updatedFriend;
+        }
+
+        return friend;
+      });
+
+      if (!hasChanges) return currentProfile;
+
       return {
         ...currentProfile,
-        friends: currentProfile.friends.map((friend) => {
-          const friendEvents = events.filter(
-            (event) => event.userId === friend.id
-          );
-
-          if (friendEvents.length === 0) return friend;
-
-          const latestEvent = friendEvents[friendEvents.length - 1];
-          const isPlaying = latestEvent.eventType === "InGame";
-
-          return {
-            ...friend,
-            isOnline: true,
-            currentGameId: isPlaying ? latestEvent.gameId : null,
-            currentGameTitle: isPlaying ? latestEvent.gameTitle : null,
-          };
-        }),
+        friends: updatedFriends,
       };
     });
   }, [events]);
@@ -189,7 +209,9 @@ const Profile = ({ username }: ProfileProps) => {
     currentUsername?.toLowerCase() === username.toLowerCase();
 
   useEffect(() => {
-    if (isOwnProfile || !profile) return;
+    if (isOwnProfile || !profile?.id) {
+      return;
+    }
 
     let isCancelled = false;
 
@@ -207,7 +229,7 @@ const Profile = ({ username }: ProfileProps) => {
     return () => {
       isCancelled = true;
     };
-  }, [profile, isOwnProfile]);
+  }, [profile?.id, isOwnProfile]);
 
   const handleSendFriendRequest = async () => {
     if (!profile || friendActionLoading) return;
