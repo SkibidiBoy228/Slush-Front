@@ -461,12 +461,14 @@ function Friends() {
           </button>
         </div>
 
-        <FriendSearch
-          value={searchQuery}
-          onChange={setSearchQuery}
-          gameId={searchGameId}
-          onGameIdChange={setSearchGameId}
-        />
+        <div className="friends-search-row">
+          <FriendSearch
+            value={searchQuery}
+            onChange={setSearchQuery}
+            gameId={searchGameId}
+            onGameIdChange={setSearchGameId}
+          />
+        </div>
 
         {hasSearch && (
           <section className="friends-search-results">
@@ -531,7 +533,7 @@ function Friends() {
         )}
 
         <div className="friends-layout">
-          <div className="friends-main-column">
+          <section className="friends-main-column">
             <nav className="friends-tabs">
               <button
                 type="button"
@@ -739,7 +741,7 @@ function Friends() {
                 )}
               </section>
             )}
-          </div>
+          </section>
 
           <aside className="friends-activity">
             <div className="friends-activity-heading">
@@ -778,11 +780,6 @@ function Friends() {
                       </div>
                     </div>
 
-                    <div className="friends-activity-game">
-                      <strong>{activity.gameTitle}</strong>
-                      <span>{formatActivityDate(activity.createdAt)}</span>
-                    </div>
-
                     {activity.activityType === "ScreenshotPublished" &&
                       activity.mediaUrl && (
                         <button
@@ -790,7 +787,7 @@ function Friends() {
                           className="friends-activity-image-button"
                           onClick={() =>
                             window.open(
-                              activity.mediaUrl ?? "",
+                              activity.mediaUrl!,
                               "_blank",
                               "noopener,noreferrer"
                             )
@@ -798,10 +795,23 @@ function Friends() {
                         >
                           <img
                             src={activity.mediaUrl}
-                            alt={`Скриншот гри ${activity.gameTitle}`}
+                            alt={`Скриншот гри ${activity.gameTitle ?? ""}`}
                           />
                         </button>
                       )}
+
+                    {activity.gameTitle && (
+                      <div className="friends-activity-game">
+                        <strong>{activity.gameTitle}</strong>
+                        <span>{formatActivityDate(activity.createdAt)}</span>
+                      </div>
+                    )}
+
+                    {!activity.gameTitle && (
+                      <div className="friends-activity-game">
+                        <span>{formatActivityDate(activity.createdAt)}</span>
+                      </div>
+                    )}
                   </article>
                 ))}
               </div>
