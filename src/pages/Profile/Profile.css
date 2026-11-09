@@ -1,12 +1,11 @@
 .profile-page {
   min-height: 100vh;
-  color: #fff;
-  font-family: Arial, sans-serif;
+  color: #e8f7f8;
+  font-family: Inter, Arial, sans-serif;
   background:
-    linear-gradient(rgba(0, 31, 41, 0.82), rgba(0, 31, 41, 0.95)),
-    url("/background.png");
-  background-size: cover;
-  background-position: center top;
+    radial-gradient(ellipse at 16% 28%, rgba(0, 145, 153, .16), transparent 38%),
+    radial-gradient(ellipse at 88% 72%, rgba(0, 104, 126, .16), transparent 42%),
+    #00151d;
 }
 
 .profile-container {
@@ -791,7 +790,6 @@
   }
 }
 
-/* Profile visual refresh */
 .profile-page {
   min-height: 100vh;
   color: #e8f7f8;
@@ -804,7 +802,7 @@
 
 .profile-container {
   width: min(1160px, calc(100% - 40px));
-  margin: 22px auto 64px;
+  margin: 0 auto 64px;
 }
 
 .profile-top,
