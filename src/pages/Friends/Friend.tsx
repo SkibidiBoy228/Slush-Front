@@ -274,13 +274,13 @@ function Friends() {
 
   async function handleAccept(request: FriendRequest) {
     try {
-      setActionLoadingId(request.requestId);
+      setActionLoadingId(request.id);
       setError("");
 
-      await acceptFriendRequest(request.requestId);
+      await acceptFriendRequest(request.id);
 
       setIncomingRequests((current) =>
-        current.filter((item) => item.requestId !== request.requestId)
+        current.filter((item) => item.id !== request.id)
       );
 
       await loadFriends("all");
@@ -295,13 +295,13 @@ function Friends() {
 
   async function handleReject(request: FriendRequest) {
     try {
-      setActionLoadingId(request.requestId);
+      setActionLoadingId(request.id);
       setError("");
 
-      await rejectFriendRequest(request.requestId);
+      await rejectFriendRequest(request.id);
 
       setIncomingRequests((current) =>
-        current.filter((item) => item.requestId !== request.requestId)
+        current.filter((item) => item.id !== request.id)
       );
 
       setSuccessMessage("Заявку відхилено");
@@ -315,13 +315,13 @@ function Friends() {
 
   async function handleCancel(request: FriendRequest) {
     try {
-      setActionLoadingId(request.requestId);
+      setActionLoadingId(request.id);
       setError("");
 
-      await cancelFriendRequest(request.requestId);
+      await cancelFriendRequest(request.id);
 
       setOutgoingRequests((current) =>
-        current.filter((item) => item.requestId !== request.requestId)
+        current.filter((item) => item.id !== request.id)
       );
 
       setSuccessMessage("Запит скасовано");
@@ -507,9 +507,7 @@ function Friends() {
                               ? "Запит надіслано"
                               : user.friendStatus === "PendingReceived"
                                 ? "Є вхідний запит"
-                                : user.isOnline
-                                  ? "У мережі"
-                                  : "Не в мережі"}
+                                : "Не у друзях"}
                         </span>
                       </span>
                     </button>
@@ -522,9 +520,7 @@ function Friends() {
                         disabled={actionLoadingId === user.userId}
                         onClick={() => void handleSendRequest(user)}
                       >
-                        {actionLoadingId === user.userId
-                          ? "..."
-                          : "Додати"}
+                        {actionLoadingId === user.userId ? "..." : "Додати"}
                       </button>
                     ) : null}
                   </article>
@@ -615,10 +611,10 @@ function Friends() {
                     <div className="friends-request-list">
                       {incomingRequests.map((request) => (
                         <FriendRequestCard
-                          key={request.requestId}
+                          key={request.id}
                           request={request}
                           type="incoming"
-                          loading={actionLoadingId === request.requestId}
+                          loading={actionLoadingId === request.id}
                           onAccept={handleAccept}
                           onReject={handleReject}
                         />
@@ -641,10 +637,10 @@ function Friends() {
                     <div className="friends-request-list">
                       {outgoingRequests.map((request) => (
                         <FriendRequestCard
-                          key={request.requestId}
+                          key={request.id}
                           request={request}
                           type="outgoing"
-                          loading={actionLoadingId === request.requestId}
+                          loading={actionLoadingId === request.id}
                           onCancel={handleCancel}
                         />
                       ))}

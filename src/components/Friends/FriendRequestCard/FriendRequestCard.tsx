@@ -1,3 +1,4 @@
+
 import type { FriendRequest } from "../../../types/friends";
 import "./FriendRequestCard.css";
 
@@ -18,7 +19,9 @@ function FriendRequestCard({
   onReject,
   onCancel,
 }: FriendRequestCardProps) {
-  const username = request.username;
+  const username = request.user.username;
+  const avatarUrl = request.user.avatarUrl;
+  const level = request.user.level;
 
   const openProfile = () => {
     window.location.href = `/profile/${encodeURIComponent(username)}`;
@@ -31,9 +34,9 @@ function FriendRequestCard({
         className="friend-request-user"
         onClick={openProfile}
       >
-        {request.avatarUrl ? (
+        {avatarUrl ? (
           <img
-            src={request.avatarUrl}
+            src={avatarUrl}
             alt={username}
             className="friend-request-avatar"
           />
@@ -47,9 +50,9 @@ function FriendRequestCard({
           <span className="friend-request-name-line">
             <strong>{username}</strong>
 
-            {typeof request.level === "number" && (
+            {typeof level === "number" && (
               <span className="friend-request-level">
-                Рівень {request.level}
+                Рівень {level}
               </span>
             )}
           </span>

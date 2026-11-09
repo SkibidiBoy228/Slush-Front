@@ -7,29 +7,28 @@ export type FriendStatus =
 
 export type FriendFilter = "all" | "online";
 
+export interface PagedResult<T> {
+  items: T[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+}
+
 export interface FriendUser {
   userId: string;
   username: string;
   avatarUrl: string | null;
   level: number;
-  isOnline: boolean;
   lastSeenAt: string | null;
+  isOnline: boolean;
   currentGameId: string | null;
   currentGameTitle: string | null;
 }
 
 export interface FriendRequest {
-  requestId: string;
-  senderId: string;
-  username: string;
-  avatarUrl: string | null;
-  level: number;
+  id: string;
+  user: FriendUser;
   createdAt: string;
-}
-
-export interface FriendRequestsResponse {
-  incoming: FriendRequest[];
-  outgoing: FriendRequest[];
 }
 
 export interface FriendStatusResponse {
@@ -37,8 +36,11 @@ export interface FriendStatusResponse {
   requestId: string | null;
 }
 
-export interface UserSearchResult extends FriendUser {
-  friendStatus?: FriendStatus;
+export interface UserSearchResult {
+  userId: string;
+  username: string;
+  avatarUrl: string | null;
+  friendStatus: FriendStatus;
 }
 
 export interface BlockedUser {
@@ -59,15 +61,28 @@ export interface FriendActivity {
   username: string;
   avatarUrl: string | null;
   activityType: FriendActivityType;
-  gameId: string;
-  gameTitle: string;
+  gameId: string | null;
+  gameTitle: string | null;
   mediaUrl: string | null;
   createdAt: string;
 }
 
-export interface FriendActivityResponse {
-  items: FriendActivity[];
-  totalCount: number;
-  page: number;
-  pageSize: number;
+
+export interface FriendRequestsResponse {
+  incoming: FriendRequest[];
+  outgoing: FriendRequest[];
 }
+
+export interface FriendActivity {
+  id: string;
+  userId: string;
+  username: string;
+  avatarUrl: string | null;
+  activityType: FriendActivityType;
+  gameId: string | null;
+  gameTitle: string | null;
+  mediaUrl: string | null;
+  createdAt: string;
+}
+
+export type FriendActivityResponse = PagedResult<FriendActivity>;
