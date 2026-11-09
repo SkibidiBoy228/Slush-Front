@@ -2,77 +2,78 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
-
+  gap: 18px;
   padding: 15px 17px;
-
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 10px;
-
+  border: 1px solid rgba(133, 158, 177, 0.13);
+  border-radius: 12px;
   background: #101f2b;
 }
 
 .friend-request-user {
   display: flex;
   align-items: center;
-
-  min-width: 0;
   gap: 13px;
-
+  min-width: 0;
   padding: 0;
-
-  border: none;
+  border: 0;
   background: transparent;
-
-  color: #ffffff;
+  color: #fff;
   text-align: left;
-
   cursor: pointer;
 }
 
 .friend-request-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 50px;
   height: 50px;
-
   flex: 0 0 auto;
-
   border-radius: 50%;
   object-fit: cover;
 }
 
 .friend-request-avatar-placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
   background: #263c4b;
-
-  color: #ffffff;
+  color: #fff;
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .friend-request-user-info {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 6px;
+  min-width: 0;
+}
 
+.friend-request-name-line {
+  display: flex;
+  align-items: center;
+  gap: 9px;
   min-width: 0;
 }
 
 .friend-request-user-info strong {
   overflow: hidden;
-
-  color: #ffffff;
+  color: #f4f7fa;
   font-size: 15px;
-
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.friend-request-user-info span {
-  color: #7d8d99;
+.friend-request-user-info > span:last-child {
+  color: #8b9ba8;
   font-size: 12px;
+}
+
+.friend-request-level {
+  flex: 0 0 auto;
+  padding: 3px 7px;
+  border-radius: 5px;
+  background: rgba(63, 142, 220, 0.12);
+  color: #83bfff;
+  font-size: 10px;
 }
 
 .friend-request-actions {
@@ -82,38 +83,36 @@
 
 .friend-request-actions button,
 .friend-request-cancel {
-  height: 36px;
-
+  min-height: 36px;
   padding: 0 14px;
-
-  border-radius: 6px;
-
+  border-radius: 7px;
   font-size: 13px;
-
+  font-weight: 600;
   cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
 }
 
 .friend-request-accept {
-  border: none;
-  background: #3e91d5;
-  color: #ffffff;
+  border: 1px solid #438ed0;
+  background: #347fbd;
+  color: #fff;
 }
 
 .friend-request-accept:hover {
-  background: #4ca0e4;
+  background: #4296d5;
 }
 
 .friend-request-reject,
 .friend-request-cancel {
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   background: #172934;
   color: #b6c1c9;
 }
 
 .friend-request-reject:hover,
 .friend-request-cancel:hover {
-  background: #1d333f;
-  color: #ffffff;
+  background: #203744;
+  color: #fff;
 }
 
 .friend-request-actions button:disabled,

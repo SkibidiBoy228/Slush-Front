@@ -1,29 +1,30 @@
 .friend-card {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 14px;
   min-width: 0;
-  padding: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 10px;
+  padding: 16px 18px;
+  border: 1px solid rgba(133, 158, 177, 0.13);
+  border-radius: 12px;
   background: #101f2b;
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease;
+  transition: background 0.2s, border-color 0.2s;
 }
 
 .friend-card:hover {
-  background: #132532;
-  border-color: rgba(255, 255, 255, 0.1);
+  background: #142735;
+  border-color: rgba(110, 174, 220, 0.28);
 }
 
 .friend-card-main {
   display: flex;
   align-items: center;
+  gap: 14px;
   min-width: 0;
-  gap: 13px;
+  flex: 1;
   padding: 0;
-  border: none;
+  border: 0;
   background: transparent;
   color: inherit;
   text-align: left;
@@ -32,13 +33,14 @@
 
 .friend-card-avatar-wrapper {
   position: relative;
+  display: block;
   flex: 0 0 auto;
 }
 
 .friend-card-avatar {
-  width: 52px;
-  height: 52px;
   display: block;
+  width: 54px;
+  height: 54px;
   border-radius: 50%;
   object-fit: cover;
 }
@@ -48,17 +50,17 @@
   align-items: center;
   justify-content: center;
   background: #263c4b;
-  color: #ffffff;
-  font-size: 18px;
-  font-weight: 600;
+  color: #fff;
+  font-size: 19px;
+  font-weight: 700;
 }
 
 .friend-card-online-dot {
   position: absolute;
-  right: -1px;
-  bottom: -1px;
-  width: 10px;
-  height: 10px;
+  right: 0;
+  bottom: 0;
+  width: 11px;
+  height: 11px;
   border: 2px solid #101f2b;
   border-radius: 50%;
 }
@@ -72,48 +74,68 @@
 }
 
 .friend-card-info {
-  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
 }
 
-.friend-card-info strong {
+.friend-card-name-line {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+
+.friend-card-name-line strong {
   overflow: hidden;
-  color: #ffffff;
+  color: #f4f7fa;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 650;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.friend-card-info span {
+.friend-card-level {
+  flex: 0 0 auto;
+  padding: 3px 7px;
+  border: 1px solid rgba(91, 168, 255, 0.2);
+  border-radius: 5px;
+  background: rgba(63, 142, 220, 0.1);
+  color: #83bfff;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.friend-card-status {
   overflow: hidden;
-  color: #7d8d99;
+  color: #8b9ba8;
   font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+.friend-card-menu-wrapper {
+  position: relative;
+  flex: 0 0 auto;
+}
+
 .friend-card-remove {
   width: 34px;
   height: 34px;
-  flex: 0 0 auto;
-  border: none;
-  border-radius: 6px;
+  border: 0;
+  border-radius: 7px;
   background: transparent;
-  color: #74838e;
-  font-size: 19px;
+  color: #8797a3;
+  font-size: 22px;
+  line-height: 1;
   cursor: pointer;
 }
 
 .friend-card-remove:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: #ffffff;
-}
-.friend-card-menu-wrapper {
-  position: relative;
-  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
 }
 
 .friend-card-menu {
@@ -121,42 +143,48 @@
   top: calc(100% + 6px);
   right: 0;
   z-index: 50;
-
-  min-width: 180px;
+  min-width: 185px;
   padding: 6px;
-
-  background: #1b1d23;
-  border: 1px solid #30343d;
-  border-radius: 8px;
-
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  border: 1px solid #303d47;
+  border-radius: 9px;
+  background: #172631;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.38);
 }
 
 .friend-card-menu button {
   display: block;
   width: 100%;
-  padding: 9px 10px;
-
-  border: none;
-  border-radius: 5px;
-
+  padding: 10px;
+  border: 0;
+  border-radius: 6px;
   background: transparent;
-  color: #e5e7eb;
-
+  color: #e5edf3;
   text-align: left;
   font-size: 13px;
-
   cursor: pointer;
 }
 
 .friend-card-menu button:hover {
-  background: #292d35;
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .friend-card-menu .friend-card-menu-danger {
-  color: #ff6b6b;
+  color: #ff8585;
 }
 
-.friend-card-menu .friend-card-menu-danger:hover {
-  background: rgba(255, 70, 70, 0.12);
+@media (max-width: 520px) {
+  .friend-card {
+    padding: 13px;
+  }
+
+  .friend-card-avatar {
+    width: 46px;
+    height: 46px;
+  }
+
+  .friend-card-name-line {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
 }

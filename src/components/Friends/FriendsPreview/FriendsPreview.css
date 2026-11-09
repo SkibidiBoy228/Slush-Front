@@ -1,10 +1,10 @@
 .friends-preview {
+  box-sizing: border-box;
   width: 100%;
   padding: 22px;
+  border: 1px solid rgba(133, 158, 177, 0.13);
   border-radius: 12px;
   background: #101f2b;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-sizing: border-box;
 }
 
 .friends-preview-header {
@@ -16,29 +16,28 @@
 
 .friends-preview-header h2 {
   margin: 0;
-  color: #ffffff;
-  font-size: 20px;
-  font-weight: 600;
+  color: #f4f7fa;
+  font-size: 19px;
+  font-weight: 650;
 }
 
 .friends-preview-all {
   padding: 0;
-  border: none;
+  border: 0;
   background: transparent;
-  color: #5ba8ff;
-  font-size: 14px;
+  color: #70b5f5;
+  font-size: 13px;
   cursor: pointer;
-  transition: color 0.2s ease;
 }
 
 .friends-preview-all:hover {
-  color: #8bc3ff;
+  color: #a1d1ff;
 }
 
 .friends-preview-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: 10px;
 }
 
 .friend-preview-card {
@@ -47,19 +46,16 @@
   gap: 10px;
   min-width: 0;
   padding: 8px;
-  border: none;
+  border: 0;
   border-radius: 8px;
   background: transparent;
   text-align: left;
   cursor: pointer;
-  transition:
-    background 0.2s ease,
-    transform 0.2s ease;
+  transition: background 0.2s;
 }
 
 .friend-preview-card:hover {
   background: rgba(255, 255, 255, 0.05);
-  transform: translateY(-1px);
 }
 
 .friend-preview-avatar-wrapper {
@@ -68,11 +64,11 @@
 }
 
 .friend-preview-avatar {
-  width: 44px;
-  height: 44px;
+  display: block;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   object-fit: cover;
-  display: block;
 }
 
 .friend-preview-avatar-placeholder {
@@ -80,7 +76,7 @@
   align-items: center;
   justify-content: center;
   background: #263b4a;
-  color: #ffffff;
+  color: #fff;
   font-size: 16px;
   font-weight: 600;
 }
@@ -91,8 +87,8 @@
   bottom: -1px;
   width: 10px;
   height: 10px;
-  border-radius: 50%;
   border: 2px solid #101f2b;
+  border-radius: 50%;
 }
 
 .friend-preview-status.online {
@@ -106,9 +102,9 @@
 .friend-preview-name {
   min-width: 0;
   overflow: hidden;
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 500;
+  color: #eaf0f5;
+  font-size: 13px;
+  font-weight: 550;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -117,7 +113,7 @@
 .friends-preview-empty {
   padding: 20px 0;
   color: #8493a1;
-  font-size: 14px;
+  font-size: 13px;
   text-align: center;
 }
 

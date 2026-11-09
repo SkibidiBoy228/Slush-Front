@@ -18,10 +18,10 @@ function FriendRequestCard({
   onReject,
   onCancel,
 }: FriendRequestCardProps) {
+  const username = request.username;
+
   const openProfile = () => {
-    window.location.href = `/profile/${encodeURIComponent(
-      request.user.username
-    )}`;
+    window.location.href = `/profile/${encodeURIComponent(username)}`;
   };
 
   return (
@@ -31,27 +31,35 @@ function FriendRequestCard({
         className="friend-request-user"
         onClick={openProfile}
       >
-        {request.user.avatarUrl ? (
+        {request.avatarUrl ? (
           <img
-            src={request.user.avatarUrl}
-            alt={request.user.username}
+            src={request.avatarUrl}
+            alt={username}
             className="friend-request-avatar"
           />
         ) : (
-          <div className="friend-request-avatar friend-request-avatar-placeholder">
-            {request.user.username.charAt(0).toUpperCase()}
-          </div>
+          <span className="friend-request-avatar friend-request-avatar-placeholder">
+            {username?.charAt(0).toUpperCase() || "?"}
+          </span>
         )}
 
-        <div className="friend-request-user-info">
-          <strong>{request.user.username}</strong>
+        <span className="friend-request-user-info">
+          <span className="friend-request-name-line">
+            <strong>{username}</strong>
+
+            {typeof request.level === "number" && (
+              <span className="friend-request-level">
+                Рівень {request.level}
+              </span>
+            )}
+          </span>
 
           <span>
             {type === "incoming"
               ? "Хоче додати вас у друзі"
               : "Запит надіслано"}
           </span>
-        </div>
+        </span>
       </button>
 
       {type === "incoming" ? (
@@ -62,7 +70,7 @@ function FriendRequestCard({
             disabled={loading}
             onClick={() => onAccept?.(request)}
           >
-            ✓ Прийняти
+            Прийняти
           </button>
 
           <button
@@ -71,7 +79,7 @@ function FriendRequestCard({
             disabled={loading}
             onClick={() => onReject?.(request)}
           >
-            ✕ Відхилити
+            Відхилити
           </button>
         </div>
       ) : (

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { FriendUser } from "../../../types/friends";
 import "./FriendCard.css";
 
@@ -6,42 +6,77 @@ interface FriendCardProps {
   friend: FriendUser;
   onClick?: (friend: FriendUser) => void;
   onRemove?: (friend: FriendUser) => void;
+  onBlock?: (friend: FriendUser) => void;
   showRemoveButton?: boolean;
+}
+
+function formatLastSeen(value?: string | null) {
+  if (!value) return "Не в мережі";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Не в мережі";
+  }
+
+  return `Був у мережі ${date.toLocaleString("uk-UA", {
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  })}`;
 }
 
 function FriendCard({
   friend,
   onClick,
   onRemove,
+  onBlock,
   showRemoveButton = false,
 }: FriendCardProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const closeOnOutside = (event: MouseEvent) => {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node)
+      ) {
+        setMenuOpen(false);
+      }
+    };
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", closeOnOutside);
+    document.addEventListener("keydown", closeOnEscape);
+
+    return () => {
+      document.removeEventListener("mousedown", closeOnOutside);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [menuOpen]);
 
   const openProfile = () => {
     if (onClick) {
       onClick(friend);
-      return;
+    } else {
+      window.location.href = `/profile/${encodeURIComponent(friend.username)}`;
     }
-
-    window.location.href = `/profile/${encodeURIComponent(
-      friend.username
-    )}`;
   };
 
-  const handleMenuToggle = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    event.stopPropagation();
-    setMenuOpen((prev) => !prev);
-  };
-
-  const handleRemove = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    event.stopPropagation();
-    setMenuOpen(false);
-    onRemove?.(friend);
-  };
+  const status = friend.isOnline
+    ? friend.currentGameTitle
+      ? `Грає в ${friend.currentGameTitle}`
+      : "У мережі"
+    : formatLastSeen(friend.lastSeenAt);
 
   return (
     <article className="friend-card">
@@ -50,7 +85,7 @@ function FriendCard({
         className="friend-card-main"
         onClick={openProfile}
       >
-        <div className="friend-card-avatar-wrapper">
+        <span className="friend-card-avatar-wrapper">
           {friend.avatarUrl ? (
             <img
               className="friend-card-avatar"
@@ -58,9 +93,9 @@ function FriendCard({
               alt={friend.username}
             />
           ) : (
-            <div className="friend-card-avatar friend-card-avatar-placeholder">
-              {friend.username.charAt(0).toUpperCase()}
-            </div>
+            <span className="friend-card-avatar friend-card-avatar-placeholder">
+              {friend.username?.charAt(0).toUpperCase() || "?"}
+            </span>
           )}
 
           <span
@@ -68,36 +103,33 @@ function FriendCard({
               friend.isOnline ? "online" : "offline"
             }`}
           />
-        </div>
-
-        <div className="friend-card-info">
-          <strong>{friend.username}</strong>
-
-        <span>
-          {friend.isOnline && friend.currentGameTitle
-            ? `Грає в ${friend.currentGameTitle}`
-            : friend.isOnline
-              ? "В мережі"
-              : friend.lastSeenAt
-                ? `Був у мережі ${new Date(friend.lastSeenAt).toLocaleString("uk-UA", {
-                    day: "numeric",
-                    month: "short",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}`
-                : "Не в мережі"}
         </span>
-        </div>
+
+        <span className="friend-card-info">
+          <span className="friend-card-name-line">
+            <strong>{friend.username}</strong>
+
+            {typeof friend.level === "number" && (
+              <span className="friend-card-level">
+                Рівень {friend.level}
+              </span>
+            )}
+          </span>
+
+          <span className="friend-card-status" title={status}>
+            {status}
+          </span>
+        </span>
       </button>
 
       {showRemoveButton && (
-        <div className="friend-card-menu-wrapper">
+        <div className="friend-card-menu-wrapper" ref={menuRef}>
           <button
             type="button"
             className="friend-card-remove"
-            onClick={handleMenuToggle}
+            onClick={() => setMenuOpen((value) => !value)}
             aria-label="Меню друга"
-            title="Меню"
+            aria-expanded={menuOpen}
           >
             ⋯
           </button>
@@ -106,18 +138,38 @@ function FriendCard({
             <div className="friend-card-menu">
               <button
                 type="button"
-                onClick={openProfile}
+                onClick={() => {
+                  setMenuOpen(false);
+                  openProfile();
+                }}
               >
-                Открыть профиль
+                Відкрити профіль
               </button>
 
-              <button
-                type="button"
-                className="friend-card-menu-danger"
-                onClick={handleRemove}
-              >
-                Удалить из друзей
-              </button>
+              {onBlock && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    onBlock(friend);
+                  }}
+                >
+                  Заблокувати
+                </button>
+              )}
+
+              {onRemove && (
+                <button
+                  type="button"
+                  className="friend-card-menu-danger"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    onRemove(friend);
+                  }}
+                >
+                  Видалити з друзів
+                </button>
+              )}
             </div>
           )}
         </div>
