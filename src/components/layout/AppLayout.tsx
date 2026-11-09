@@ -1,4 +1,3 @@
-
 import type { ReactNode } from "react";
 
 import Header from "../Header/Header";
@@ -8,18 +7,24 @@ import FriendPresenceNotifications from "../Friends/FriendPresenceNotifications/
 
 interface AppLayoutProps {
   children: ReactNode;
+  showHeader?: boolean;
+  showFooter?: boolean;
 }
 
-function AppLayout({ children }: AppLayoutProps) {
+function AppLayout({
+  children,
+  showHeader = true,
+  showFooter = true,
+}: AppLayoutProps) {
   return (
     <>
       <FriendPresenceNotifications />
 
-      <Header />
+      {showHeader && <Header />}
 
       {children}
 
-      <Footer />
+      {showFooter && <Footer />}
     </>
   );
 }
