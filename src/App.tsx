@@ -148,7 +148,15 @@ function App() {
     page = <Home />;
   }
 
-  return <AppLayout>{page}</AppLayout>;
+  const hideFooter = ["profile", "edit-profile", "chat"].includes(
+    pathParts[0]
+  );
+
+  return (
+    <AppLayout showFooter={!hideFooter}>
+      {page}
+    </AppLayout>
+  );
 }
 
 export default App;

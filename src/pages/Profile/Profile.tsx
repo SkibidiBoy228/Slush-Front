@@ -13,13 +13,13 @@ import {
 } from "../../api/profile";
 
 import {
-    getFriendStatus,
-    sendFriendRequest,
-    acceptFriendRequest,
-    rejectFriendRequest,
-    cancelFriendRequest,
-    removeFriend,
-} from "../../api/friends"
+  getFriendStatus,
+  sendFriendRequest,
+  acceptFriendRequest,
+  rejectFriendRequest,
+  cancelFriendRequest,
+  removeFriend,
+} from "../../api/friends";
 
 import type {
   UserProfile,
@@ -33,7 +33,6 @@ import type {
 } from "../../types/profile";
 
 import { useFriendPresence } from "../../hooks/useFriendPresence";
-
 import { getCurrentUsername } from "../../api/client";
 
 import "./Profile.css";
@@ -47,7 +46,7 @@ const formatPrice = (price: number): string => {
     return "Безкоштовно";
   }
 
-  return `${price.toFixed(2)} $`;
+  return `${price.toFixed(2)} ₴`;
 };
 
 const Profile = ({ username }: ProfileProps) => {
@@ -72,20 +71,19 @@ const Profile = ({ username }: ProfileProps) => {
   useEffect(() => {
     if (events.length === 0) return;
 
-    // Keep the latest event for each user in a single pass.
-    const latestEvents = new Map(
-      events.map((event) => [event.userId, event])
-    );
-
     setProfile((currentProfile) => {
       if (!currentProfile) return currentProfile;
 
       return {
         ...currentProfile,
         friends: currentProfile.friends.map((friend) => {
-          const latestEvent = latestEvents.get(friend.id);
-          if (!latestEvent) return friend;
+          const friendEvents = events.filter(
+            (event) => event.userId === friend.id
+          );
 
+          if (friendEvents.length === 0) return friend;
+
+          const latestEvent = friendEvents[friendEvents.length - 1];
           const isPlaying = latestEvent.eventType === "InGame";
 
           return {
@@ -127,9 +125,7 @@ const Profile = ({ username }: ProfileProps) => {
           getProfileComments(username),
         ]);
 
-        if (isCancelled) {
-          return;
-        }
+        if (isCancelled) return;
 
         setProfile(profileData);
         setGames(gamesData.items ?? []);
@@ -140,9 +136,7 @@ const Profile = ({ username }: ProfileProps) => {
         setGuides(guidesData.items ?? []);
         setComments(commentsData.items ?? []);
       } catch (requestError) {
-        if (isCancelled) {
-          return;
-        }
+        if (isCancelled) return;
 
         setError(
           requestError instanceof Error
@@ -162,6 +156,7 @@ const Profile = ({ username }: ProfileProps) => {
       isCancelled = true;
     };
   }, [username]);
+
   const xpProgress = useMemo(() => {
     if (!profile || profile.maxXp <= 0) {
       return 0;
@@ -193,60 +188,51 @@ const Profile = ({ username }: ProfileProps) => {
   const isOwnProfile =
     currentUsername?.toLowerCase() === username.toLowerCase();
 
-  const profileId = profile?.id;
-
   useEffect(() => {
-    if (isOwnProfile || !profileId) {
-      return;
-    }
+    if (isOwnProfile || !profile) return;
 
     let isCancelled = false;
 
-    getFriendStatus(profileId)
+    getFriendStatus(profile.id)
       .then((response) => {
-        if (isCancelled) {
-          return;
-        }
+        if (isCancelled) return;
 
         setFriendStatus(response.status);
         setFriendRequestId(response.requestId);
       })
       .catch((error) => {
-        if (!isCancelled) {
-          console.error("Не вдалося отримати статус дружби:", error);
-        }
+        console.error("Не вдалося отримати статус дружби:", error);
       });
 
     return () => {
       isCancelled = true;
     };
-  }, [profileId, isOwnProfile]);
-  const handleSendFriendRequest = async () =>{
-    if(!profile || friendActionLoading){
-      return;
-    }
-    try{
-      setFriendActionLoading(true);
-      await sendFriendRequest(profile.id);
-      const status = await getFriendStatus(profile.id);
-      setFriendStatus(status.status);
-      setFriendRequestId(status.requestId);
-    }catch(error){
-      console.error("Не вдалося надіслати запит", error);
-    }finally{
-      setFriendActionLoading(false);
-    }
-  }
-  const handleCancelFriendRequest = async () => {
-    const requestId = friendRequestId;
+  }, [profile, isOwnProfile]);
 
-    if (!requestId || friendActionLoading) {
-      return;
-    }
+  const handleSendFriendRequest = async () => {
+    if (!profile || friendActionLoading) return;
 
     try {
       setFriendActionLoading(true);
+      await sendFriendRequest(profile.id);
 
+      const status = await getFriendStatus(profile.id);
+      setFriendStatus(status.status);
+      setFriendRequestId(status.requestId);
+    } catch (error) {
+      console.error("Не вдалося надіслати запит", error);
+    } finally {
+      setFriendActionLoading(false);
+    }
+  };
+
+  const handleCancelFriendRequest = async () => {
+    const requestId = friendRequestId;
+
+    if (!requestId || friendActionLoading) return;
+
+    try {
+      setFriendActionLoading(true);
       await cancelFriendRequest(requestId);
 
       setFriendStatus("None");
@@ -257,32 +243,32 @@ const Profile = ({ username }: ProfileProps) => {
       setFriendActionLoading(false);
     }
   };
-  const handleAcceptFriendRequest = async () =>{
-    const requestId = friendRequestId;
-    if(!requestId || friendActionLoading){
-      return;
-    }
-    try{
-      setFriendActionLoading(true);
-      await acceptFriendRequest(requestId);
-      setFriendStatus("Friends");
-      setFriendRequestId(null);
-    }catch(error){
-      console.error("Не вдалося прийняти запит:", error)
-    }finally{
-      setFriendActionLoading(false);
-    }
-  }
-  const handleRejectFriendRequest = async () => {
+
+  const handleAcceptFriendRequest = async () => {
     const requestId = friendRequestId;
 
-    if (!requestId || friendActionLoading) {
-      return;
-    }
+    if (!requestId || friendActionLoading) return;
 
     try {
       setFriendActionLoading(true);
+      await acceptFriendRequest(requestId);
 
+      setFriendStatus("Friends");
+      setFriendRequestId(null);
+    } catch (error) {
+      console.error("Не вдалося прийняти запит:", error);
+    } finally {
+      setFriendActionLoading(false);
+    }
+  };
+
+  const handleRejectFriendRequest = async () => {
+    const requestId = friendRequestId;
+
+    if (!requestId || friendActionLoading) return;
+
+    try {
+      setFriendActionLoading(true);
       await rejectFriendRequest(requestId);
 
       setFriendStatus("None");
@@ -295,13 +281,10 @@ const Profile = ({ username }: ProfileProps) => {
   };
 
   const handleRemoveFriend = async () => {
-    if (!profile || friendActionLoading) {
-      return;
-    }
+    if (!profile || friendActionLoading) return;
 
     try {
       setFriendActionLoading(true);
-
       await removeFriend(profile.id);
 
       setFriendStatus("None");
@@ -315,13 +298,11 @@ const Profile = ({ username }: ProfileProps) => {
   if (isLoading) {
     return (
       <div className="profile-page">
-
         <main className="profile-container">
           <div className="profile-message">
             Завантаження профілю...
           </div>
         </main>
-
       </div>
     );
   }
@@ -340,6 +321,7 @@ const Profile = ({ username }: ProfileProps) => {
 
   return (
     <div className="profile-page">
+
       <main className="profile-container">
         <section className="profile-top">
           <div
@@ -410,9 +392,7 @@ const Profile = ({ username }: ProfileProps) => {
                 <button
                   type="button"
                   className="profile-more-button"
-                  onClick={() =>
-                    setIsActionsMenuOpen((prev) => !prev)
-                  }
+                  onClick={() => setIsActionsMenuOpen((prev) => !prev)}
                   aria-label="Додаткові дії"
                 >
                   ⋯
@@ -512,7 +492,7 @@ const Profile = ({ username }: ProfileProps) => {
 
                 {profile.badges.slice(0, 5).map((badge) => (
                   <div className="badge-card" key={badge.id}>
-                    <img loading="lazy" decoding="async" src={badge.imageUrl} alt={badge.title} />
+                    <img src={badge.imageUrl} alt={badge.title} />
                     <span>{badge.title}</span>
                   </div>
                 ))}
@@ -545,7 +525,7 @@ const Profile = ({ username }: ProfileProps) => {
               <div className="games-grid">
                 {games.map((game) => (
                   <article className="game-card" key={game.id}>
-                    <img loading="lazy" decoding="async" src={game.imageUrl} alt={game.title} />
+                    <img src={game.imageUrl} alt={game.title} />
 
                     <div className="game-card-info">
                       <h3>{game.title}</h3>
@@ -571,7 +551,7 @@ const Profile = ({ username }: ProfileProps) => {
               {posts.map((post) => (
                 <article className="content-card" key={post.id}>
                   <div className="content-card-header">
-                    <img loading="lazy" decoding="async"
+                    <img
                       src={post.authorAvatarUrl}
                       alt={post.authorUsername}
                     />
@@ -586,7 +566,7 @@ const Profile = ({ username }: ProfileProps) => {
                   <p>{post.text}</p>
 
                   {post.imageUrl && (
-                    <img loading="lazy" decoding="async"
+                    <img
                       className="content-image"
                       src={post.imageUrl}
                       alt={post.title}
@@ -615,11 +595,8 @@ const Profile = ({ username }: ProfileProps) => {
 
               <div className="media-grid">
                 {screenshots.map((screenshot) => (
-                  <article
-                    className="media-card"
-                    key={screenshot.id}
-                  >
-                    <img loading="lazy" decoding="async"
+                  <article className="media-card" key={screenshot.id}>
+                    <img
                       src={screenshot.imageUrl}
                       alt={screenshot.gameTitle}
                     />
@@ -644,20 +621,17 @@ const Profile = ({ username }: ProfileProps) => {
 
               <div className="media-grid">
                 {videos.map((video) => (
-                  <a
-                    className="media-card video-card"
-                    key={video.id}
-                    href={video.videoUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <img loading="lazy" decoding="async"
-                      src={video.thumbnailUrl}
-                      alt={video.title}
+                  <article className="media-card video-card" key={video.id}>
+                    <video
+                      src={video.videoUrl}
+                      poster={video.thumbnailUrl || undefined}
+                      controls
+                      preload="none"
+                      playsInline
                     />
 
                     <span>{video.title}</span>
-                  </a>
+                  </article>
                 ))}
               </div>
 
@@ -679,23 +653,24 @@ const Profile = ({ username }: ProfileProps) => {
                   className="review-card"
                   key={`${review.gameId}-${index}`}
                 >
-                  {review.gameBannerUrl && (
-                    <img loading="lazy" decoding="async"
-                      src={review.gameBannerUrl}
-                      alt={review.gameTitle}
-                    />
-                  )}
+                  <img
+                    src={review.gameBannerUrl}
+                    alt={review.gameTitle}
+                  />
 
                   <div>
                     <h3>{review.gameTitle}</h3>
 
                     <div className="review-rating">
-                      {"★".repeat(
-                        Math.max(0, Math.min(5, review.rating))
-                      )}
+                      {"★".repeat(Math.max(0, Math.min(5, review.rating)))}
                     </div>
 
                     <p>{review.text}</p>
+
+                    <small>
+                      ♡ {review.likesCount} · Коментарі: {review.commentsCount}
+                    </small>
+
                     <small>{review.createdAt}</small>
                   </div>
                 </article>
@@ -747,12 +722,9 @@ const Profile = ({ username }: ProfileProps) => {
               </div>
 
               {comments.map((comment) => (
-                <article
-                  className="comment-card"
-                  key={comment.id}
-                >
+                <article className="comment-card" key={comment.id}>
                   <div className="content-card-header">
-                    <img loading="lazy" decoding="async"
+                    <img
                       src={comment.authorAvatarUrl}
                       alt={comment.authorUsername}
                     />
@@ -854,41 +826,41 @@ const Profile = ({ username }: ProfileProps) => {
               </div>
 
               <div className="friends-list">
-                  {profile.friends.map((friend) => (
-                      <a
-                          href={`/profile/${encodeURIComponent(friend.username)}`}
-                          className="friend-item"
-                          key={friend.id}
-                      >
-                          <div className="friend-item-avatar-wrapper">
-                              <img loading="lazy" decoding="async"
-                                  src={friend.avatarUrl}
-                                  alt={friend.username}
-                                  className="friend-item-avatar"
-                              />
+                {profile.friends.map((friend) => (
+                  <a
+                    href={`/profile/${encodeURIComponent(friend.username)}`}
+                    className="friend-item"
+                    key={friend.id}
+                  >
+                    <div className="friend-item-avatar-wrapper">
+                      <img
+                        src={friend.avatarUrl}
+                        alt={friend.username}
+                        className="friend-item-avatar"
+                      />
 
-                              <span
-                                  className={`friend-item-status ${
-                                      friend.isOnline ? "online" : "offline"
-                                  }`}
-                              />
-                          </div>
+                      <span
+                        className={`friend-item-status ${
+                          friend.isOnline ? "online" : "offline"
+                        }`}
+                      />
+                    </div>
 
-                          <div className="friend-item-info">
-                              <strong>{friend.username}</strong>
+                    <div className="friend-item-info">
+                      <strong>{friend.username}</strong>
 
-                              <span className="friend-item-details">
-                                  {friend.isOnline && friend.currentGameTitle
-                                      ? `Грає в ${friend.currentGameTitle}`
-                                      : friend.isOnline
-                                          ? "В мережі"
-                                          : "Не в мережі"}
-                                  {" · "}
-                                  Рівень {friend.level}
-                              </span>
-                          </div>
-                      </a>
-                  ))}
+                      <span className="friend-item-details">
+                        {friend.isOnline && friend.currentGameTitle
+                          ? `Грає в ${friend.currentGameTitle}`
+                          : friend.isOnline
+                            ? "В мережі"
+                            : "Не в мережі"}
+                        {" · "}
+                        Рівень {friend.level}
+                      </span>
+                    </div>
+                  </a>
+                ))}
               </div>
 
               {!profile.friends.length && (

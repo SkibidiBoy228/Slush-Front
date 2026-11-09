@@ -322,6 +322,18 @@
   gap: 8px;
 }
 
+.media-card video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: #001f29;
+}
+
+.video-card video {
+  cursor: pointer;
+}
+
 .media-card {
   overflow: hidden;
   display: block;
