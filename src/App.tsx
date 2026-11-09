@@ -15,6 +15,7 @@ import EditProfile from "./pages/EditProfile/EditProfile";
 import CommunityPage from "./pages/CommunityPage/CommunityPage";
 
 import Catalog from "./pages/Catalog/Catalog";
+import NewsPage from "./pages/NewsPage/NewsPage";
 import WishlistPage from "./pages/Wishlist/WishlistPage";
 import CartPage from "./pages/CartPage/CartPage";
 import Settings from "./pages/Settings/Settings";
@@ -126,6 +127,8 @@ function App() {
     page = <CartPage />;
   } else if (pathParts[0] === "catalog") {
     page = <Catalog />;
+  } else if(pathParts[0] === "news"){
+    page = <NewsPage/>
   } else if (pathParts[0] === "login") {
     page = <LoginPage />;
   } else if (pathParts[0] === "register") {
