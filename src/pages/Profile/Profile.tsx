@@ -295,6 +295,12 @@ const Profile = ({ username }: ProfileProps) => {
     }
   };
 
+  const getVideoThumbnail = (videoUrl: string) => {
+    return videoUrl
+      .replace("/video/upload/", "/video/upload/so_0/")
+      .replace(/\.(mp4|webm|mov)(\?.*)?$/i, ".jpg");
+  };
+
   if (isLoading) {
     return (
       <div className="profile-page">
@@ -624,12 +630,11 @@ const Profile = ({ username }: ProfileProps) => {
                   <article className="media-card video-card" key={video.id}>
                     <video
                       src={video.videoUrl}
-                      poster={video.thumbnailUrl || undefined}
+                      poster={video.thumbnailUrl || getVideoThumbnail(video.videoUrl)}
                       controls
                       preload="none"
                       playsInline
                     />
-
                     <span>{video.title}</span>
                   </article>
                 ))}
