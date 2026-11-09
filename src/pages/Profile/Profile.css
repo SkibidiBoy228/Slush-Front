@@ -801,8 +801,8 @@
 }
 
 .profile-container {
-  width: min(1160px, calc(100% - 40px));
-  margin: 0 auto 64px;
+  width: min(1200px, calc(100% - 40px));
+  margin: 25px auto 60px;
 }
 
 .profile-top,
