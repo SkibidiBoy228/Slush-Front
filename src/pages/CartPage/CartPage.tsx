@@ -1,7 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-
-import Header from "../../components/Header/Header";
-import Footer from "../../components/Footer/Footer";
 import GameSearch from "../../components/GameSearch/GameSearch";
 
 import {

@@ -1,8 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-
-import Header from "../../components/Header/Header";
-import Footer from "../../components/Footer/Footer";
-
 import FriendCard from "../../components/Friends/FriendCard/FriendCard";
 import FriendSearch from "../../components/Friends/FriendSearch/FriendSearch";
 import FriendRequestCard from "../../components/Friends/FriendRequestCard/FriendRequestCard";

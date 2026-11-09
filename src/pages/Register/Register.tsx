@@ -1,6 +1,5 @@
-import Header from "../../components/Header/Header";
+
 import RegisterForm from "../../components/RegisterForm/RegisterForm";
-import Footer from "../../components/Footer/Footer";
 
 import "./Register.css";
 

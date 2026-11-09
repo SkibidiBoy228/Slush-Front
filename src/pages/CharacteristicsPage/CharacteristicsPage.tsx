@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 
-import Header from "../../components/Header/Header";
-import Footer from "../../components/Footer/Footer";
 import GameSearch from "../../components/GameSearch/GameSearch";
 import GameSidebar from "../../components/GamePage/GameSidebar";
 import GameCharacteristics from "../../components/GamePage/GameCharacteristics";

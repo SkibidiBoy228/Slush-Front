@@ -1,7 +1,5 @@
 
 import { useCallback, useEffect, useState } from "react";
-
-import Header from "../../components/Header/Header";
 import ChatSidebar from "../../components/Chat/ChatSidebar";
 import ChatWindow from "../../components/Chat/ChatWindow";
 

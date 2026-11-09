@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
 import DOMPurify from "dompurify";
-
-import Header from "../../components/Header/Header";
-import Footer from "../../components/Footer/Footer";
-
 import GameSearch from "../../components/GameSearch/GameSearch";
 
 import GameGallery from "../../components/GamePage/GameGallery";

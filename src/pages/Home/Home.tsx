@@ -1,7 +1,4 @@
 import { useEffect, useState } from "react";
-
-import Header from "../../components/Header/Header";
-import Footer from "../../components/Footer/Footer";
 import GameSection from "../../components/GameSection/GameSection";
 import HeroSlider from "../../components/HeroSlider/HeroSlider";
 import GameCard, {
