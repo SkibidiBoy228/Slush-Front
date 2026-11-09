@@ -441,12 +441,49 @@ function Friends() {
       <Header />
 
       <main className="friends-page-container">
-        <div className="friends-page-heading">
-          <div>
-            <h1>Друзі</h1>
-            <p>Знаходьте друзів, спілкуйтеся та стежте за їхньою активністю</p>
-          </div>
 
+        <div className="friends-topbar">
+          <nav className="friends-tabs">
+            <button
+              type="button"
+              className={activeTab === "all" ? "active" : ""}
+              onClick={() => void handleTabChange("all")}
+            >
+              Усі друзі
+              <span>{friends.length}</span>
+            </button>
+
+            <button
+              type="button"
+              className={activeTab === "online" ? "active" : ""}
+              onClick={() => void handleTabChange("online")}
+            >
+              Онлайн
+              <span>{onlineFriends.length}</span>
+            </button>
+
+            <button
+              type="button"
+              className={activeTab === "blocked" ? "active" : ""}
+              onClick={() => void handleTabChange("blocked")}
+            >
+              Заблоковані
+              <span>{blockedUsers.length}</span>
+            </button>
+
+            <button
+              type="button"
+              className={activeTab === "requests" ? "active" : ""}
+              onClick={() => void handleTabChange("requests")}
+            >
+              Поточні запити
+              {incomingRequests.length > 0 && (
+                <span className="friends-request-count">
+                  {incomingRequests.length}
+                </span>
+              )}
+            </button>
+          </nav>
           <button
             type="button"
             className="friends-add-button"
@@ -461,15 +498,6 @@ function Friends() {
           </button>
         </div>
 
-        <div className="friends-search-row">
-          <FriendSearch
-            value={searchQuery}
-            onChange={setSearchQuery}
-            gameId={searchGameId}
-            onGameIdChange={setSearchGameId}
-          />
-        </div>
-
         {hasSearch && (
           <section className="friends-search-results">
             <div className="friends-content-heading">
@@ -478,7 +506,6 @@ function Friends() {
                 {searchLoading ? "Пошук..." : searchResults.length}
               </span>
             </div>
-
             {searchLoading ? (
               <div className="friends-empty">Шукаємо користувачів...</div>
             ) : searchResults.length === 0 ? (
@@ -531,57 +558,23 @@ function Friends() {
             )}
           </section>
         )}
-
         <div className="friends-layout">
           <section className="friends-main-column">
-            <nav className="friends-tabs">
-              <button
-                type="button"
-                className={activeTab === "all" ? "active" : ""}
-                onClick={() => void handleTabChange("all")}
-              >
-                Усі друзі
-                <span>{friends.length}</span>
-              </button>
-
-              <button
-                type="button"
-                className={activeTab === "online" ? "active" : ""}
-                onClick={() => void handleTabChange("online")}
-              >
-                Онлайн
-                <span>{onlineFriends.length}</span>
-              </button>
-
-              <button
-                type="button"
-                className={activeTab === "blocked" ? "active" : ""}
-                onClick={() => void handleTabChange("blocked")}
-              >
-                Заблоковані
-                <span>{blockedUsers.length}</span>
-              </button>
-
-              <button
-                type="button"
-                className={activeTab === "requests" ? "active" : ""}
-                onClick={() => void handleTabChange("requests")}
-              >
-                Заявки
-                {incomingRequests.length > 0 && (
-                  <span className="friends-request-count">
-                    {incomingRequests.length}
-                  </span>
-                )}
-              </button>
-            </nav>
+            {/* Пошук */}
+            <div className="friends-search-row">
+              <FriendSearch
+                value={searchQuery}
+                onChange={setSearchQuery}
+                gameId={searchGameId}
+                onGameIdChange={setSearchGameId}
+              />
+            </div>
 
             {error && (
               <div className="friends-error" role="alert">
                 {error}
               </div>
             )}
-
             {successMessage && (
               <div className="friends-success" role="status">
                 {successMessage}
@@ -594,7 +587,6 @@ function Friends() {
                 </button>
               </div>
             )}
-
             {loading ? (
               <div className="friends-loading">Завантаження...</div>
             ) : activeTab === "requests" ? (
@@ -604,7 +596,6 @@ function Friends() {
                     <h2>Вхідні заявки</h2>
                     <span>{incomingRequests.length}</span>
                   </div>
-
                   {incomingRequests.length === 0 ? (
                     <div className="friends-empty">
                       Вхідних заявок немає
@@ -624,7 +615,6 @@ function Friends() {
                     </div>
                   )}
                 </section>
-
                 <section className="friends-request-section">
                   <div className="friends-content-heading">
                     <h2>Вихідні заявки</h2>
@@ -656,10 +646,8 @@ function Friends() {
                   <h2>Заблоковані користувачі</h2>
                   <span>{blockedUsers.length}</span>
                 </div>
-
                 {blockedUsers.length === 0 ? (
                   <div className="friends-empty">
-                    Немає заблокованих користувачів
                   </div>
                 ) : (
                   <div className="friends-blocked-list">
@@ -742,7 +730,6 @@ function Friends() {
               </section>
             )}
           </section>
-
           <aside className="friends-activity">
             <div className="friends-activity-heading">
               <h2>Активність друзів</h2>
