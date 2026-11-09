@@ -54,7 +54,6 @@ function GamePage({ appId }: GamePageProps) {
   if (loading) {
     return (
       <div className="game-page-state">
-        <Header />
         <div className="state-content">Завантаження гри...</div>
       </div>
     );
@@ -63,7 +62,7 @@ function GamePage({ appId }: GamePageProps) {
   if (error || !game) {
     return (
       <div className="game-page-state">
-        <Header />
+
         <div className="state-content error-state">
           {error || "Гру не знайдено"}
         </div>
@@ -88,7 +87,7 @@ function GamePage({ appId }: GamePageProps) {
 
   return (
     <div className="game-page">
-      <Header />
+
 
       <main className="game-page-content">
 
@@ -161,7 +160,6 @@ function GamePage({ appId }: GamePageProps) {
         </div>
       </main>
 
-      <Footer />
     </div>
   );
 }

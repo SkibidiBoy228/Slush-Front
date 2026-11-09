@@ -60,7 +60,6 @@ function DlcPage({ appId, dlcId }: DlcPageProps) {
   if (loading) {
     return (
       <div className="game-page-state">
-        <Header />
 
         <div className="state-content">
           Завантаження DLC...
@@ -72,7 +71,6 @@ function DlcPage({ appId, dlcId }: DlcPageProps) {
   if (error || !baseGame) {
     return (
       <div className="game-page-state">
-        <Header />
 
         <div className="state-content error-state">
           {error || "Гру не знайдено"}
@@ -116,7 +114,6 @@ function DlcPage({ appId, dlcId }: DlcPageProps) {
 
   return (
     <div className="game-page">
-      <Header />
 
       <main className="game-page-content">
         <div className="game-page-search">
@@ -244,7 +241,6 @@ function DlcPage({ appId, dlcId }: DlcPageProps) {
         </div>
       </main>
 
-      <Footer />
     </div>
   );
 }

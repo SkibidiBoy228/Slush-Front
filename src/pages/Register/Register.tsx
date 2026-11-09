@@ -7,13 +7,10 @@ import "./Register.css";
 function Register() {
   return (
     <div className="register-page">
-      <Header />
 
       <main className="register-main">
         <RegisterForm />
       </main>
-
-      <Footer />
     </div>
   );
 }

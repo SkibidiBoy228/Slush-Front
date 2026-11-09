@@ -1,6 +1,4 @@
 import type { ReactNode } from "react";
-import Header from "../../Header/Header";
-import Footer from "../../Footer/Footer";
 import LibrarySidebar from "./LibrarySidebar";
 import "./LibraryLayout.css";
 
@@ -11,7 +9,6 @@ interface LibraryLayoutProps {
 function LibraryLayout({ children }: LibraryLayoutProps) {
   return (
     <div className="library-layout">
-      <Header />
 
       <div className="library-layout__body">
         <LibrarySidebar />
@@ -20,8 +17,6 @@ function LibraryLayout({ children }: LibraryLayoutProps) {
           <main className="library-layout__content">
             {children}
           </main>
-
-          <Footer />
         </div>
       </div>
     </div>

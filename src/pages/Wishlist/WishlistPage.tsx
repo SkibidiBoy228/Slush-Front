@@ -131,7 +131,6 @@ export default function WishlistPage() {
 
     return (
         <div className="wishlist-page">
-            <Header />
 
             <GameSearch />
 
@@ -403,8 +402,6 @@ export default function WishlistPage() {
                     </section>
                 </div>
             </main>
-
-            <Footer />
         </div>
     );
 }

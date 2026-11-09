@@ -49,7 +49,6 @@ function CharacteristicsPage({
   if (loading) {
     return (
       <div className="game-page-state">
-        <Header />
         <div className="state-content">
           Завантаження гри...
         </div>
@@ -60,7 +59,6 @@ function CharacteristicsPage({
   if (error || !game) {
     return (
       <div className="game-page-state">
-        <Header />
         <div className="state-content error-state">
           {error || "Гру не знайдено"}
         </div>
@@ -70,7 +68,6 @@ function CharacteristicsPage({
 
   return (
     <div className="game-page">
-      <Header />
 
       <main className="game-page-content">
         <div className="game-page-search">
@@ -109,8 +106,6 @@ function CharacteristicsPage({
           <GameSidebar game={game} />
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

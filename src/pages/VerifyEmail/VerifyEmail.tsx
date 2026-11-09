@@ -7,13 +7,9 @@ import "./VerifyEmail.css";
 function VerifyEmail() {
   return (
     <div className="verify-email-page">
-      <Header />
-
       <main className="verify-email-main">
         <VerifyEmailForm />
       </main>
-
-      <Footer />
     </div>
   );
 }

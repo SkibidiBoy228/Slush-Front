@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import Header from "../../components/Header/Header";
-import Footer from "../../components/Footer/Footer";
 import NotificationItem from "../../components/Notifications/NotificationItem/NotificationItem";
 import{
     getNotifications,
@@ -69,7 +67,6 @@ function Notifications(){
 
     return(
         <>
-            <Header/>
             <main className="notifications-page">
                 <div className="notifications-container">
                     <div className="notifications-header">
@@ -119,7 +116,6 @@ function Notifications(){
                     </section>
                 </div>
             </main>
-            <Footer/>
         </>
     )
 }

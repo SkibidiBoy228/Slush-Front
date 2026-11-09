@@ -434,13 +434,10 @@ function CommunityPage({ gameId }: CommunityPageProps) {
   if (gameLoading) {
     return (
       <div className="community-page-state">
-        <Header />
 
         <div className="community-state-content">
           Завантаження спільноти...
         </div>
-
-        <Footer />
       </div>
     );
   }
@@ -448,7 +445,6 @@ function CommunityPage({ gameId }: CommunityPageProps) {
 
   return (
     <div className="community-page">
-      <Header />
 
       <main className="community-page-content">
         <div className="community-page-search">
@@ -576,8 +572,6 @@ function CommunityPage({ gameId }: CommunityPageProps) {
           )}
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

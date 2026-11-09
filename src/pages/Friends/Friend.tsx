@@ -438,7 +438,6 @@ function Friends() {
 
   return (
     <div className="friends-page">
-      <Header />
 
       <main className="friends-page-container">
 
@@ -806,8 +805,6 @@ function Friends() {
           </aside>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

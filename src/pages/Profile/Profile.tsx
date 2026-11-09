@@ -300,13 +300,11 @@ const Profile = ({ username }: ProfileProps) => {
   if (isLoading) {
     return (
       <div className="profile-page">
-        <Header />
         <main className="profile-container">
           <div className="profile-message">
             Завантаження профілю...
           </div>
         </main>
-        <Footer />
       </div>
     );
   }
@@ -314,20 +312,17 @@ const Profile = ({ username }: ProfileProps) => {
   if (error || !profile) {
     return (
       <div className="profile-page">
-        <Header />
         <main className="profile-container">
           <div className="profile-message profile-error">
             {error || "Профіль не знайдено"}
           </div>
         </main>
-        <Footer />
       </div>
     );
   }
 
   return (
     <div className="profile-page">
-      <Header />
 
       <main className="profile-container">
         <section className="profile-top">
@@ -877,8 +872,6 @@ const Profile = ({ username }: ProfileProps) => {
           </aside>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 };

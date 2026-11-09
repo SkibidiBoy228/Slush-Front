@@ -327,7 +327,6 @@ export default function ChatPage() {
 
   return (
     <div className="chat-page">
-      <Header />
 
       <main className="chat-page__layout">
         <ChatSidebar

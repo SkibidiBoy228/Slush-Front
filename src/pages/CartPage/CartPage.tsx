@@ -154,7 +154,6 @@ export default function CartPage() {
 
     return (
         <div className="cart-page">
-            <Header />
 
             <GameSearch />
 
@@ -338,8 +337,6 @@ export default function CartPage() {
                     </aside>
                 </div>
             </main>
-
-            <Footer />
         </div>
     );
 }

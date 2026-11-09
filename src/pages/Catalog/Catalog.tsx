@@ -219,7 +219,6 @@ function Catalog() {
 
   return (
     <div className="catalog-page">
-      <Header />
 
       <div className="search-section">
         <GameSearch />
@@ -422,8 +421,6 @@ function Catalog() {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

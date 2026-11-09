@@ -153,7 +153,6 @@ function Home() {
 
   return (
     <div className="home-page">
-      <Header />
 
       <main>
         <HeroSlider />
@@ -268,8 +267,6 @@ function Home() {
           )}
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

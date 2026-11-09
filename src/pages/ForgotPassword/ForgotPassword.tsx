@@ -1,7 +1,5 @@
 import {useState} from "react";
 
-import Header from "../../components/Header/Header";
-import Footer from "../../components/Footer/Footer";
 import { forgotPassword } from "../../api/auth";
 
 import "./ForgotPassword.css";
@@ -51,7 +49,6 @@ function ForgotPassword(){
 
     return(
         <div className="forgot-password-page">
-            <Header/>
             <main className="forgot-password-main">
                 <section className="forgot-password-card">
                     <h1>відновлення пароля</h1>
@@ -90,7 +87,6 @@ function ForgotPassword(){
                         </div>
                 </section>
             </main>
-            <Footer/>
         </div>
     )
 }

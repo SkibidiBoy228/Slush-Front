@@ -7,13 +7,10 @@ import "./LoginPage.css";
 function LoginPage() {
   return (
     <div className="login-page">
-      <Header />
 
       <main className="login-main">
         <LoginForm />
       </main>
-
-      <Footer />
     </div>
   );
 }

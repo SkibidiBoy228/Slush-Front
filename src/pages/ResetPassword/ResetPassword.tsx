@@ -90,7 +90,6 @@ function ResetPassword() {
 
   return (
     <div className="reset-password-page">
-      <Header />
 
       <main className="reset-password-main">
         <section className="reset-password-card">
@@ -203,8 +202,6 @@ function ResetPassword() {
           </div>
         </section>
       </main>
-
-      <Footer />
     </div>
   );
 }
