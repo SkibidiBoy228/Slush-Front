@@ -1,7 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 
-import Header from "../../components/Header/Header";
-import Footer from "../../components/Footer/Footer";
 
 import {
   getProfileComments,
@@ -317,7 +315,6 @@ const Profile = ({ username }: ProfileProps) => {
   if (isLoading) {
     return (
       <div className="profile-page">
-        <Header />
 
         <main className="profile-container">
           <div className="profile-message">
@@ -325,7 +322,6 @@ const Profile = ({ username }: ProfileProps) => {
           </div>
         </main>
 
-        <Footer />
       </div>
     );
   }
@@ -333,23 +329,17 @@ const Profile = ({ username }: ProfileProps) => {
   if (error || !profile) {
     return (
       <div className="profile-page">
-        <Header />
-
         <main className="profile-container">
           <div className="profile-message profile-error">
             {error || "Профіль не знайдено"}
           </div>
         </main>
-
-        <Footer />
       </div>
     );
   }
 
   return (
     <div className="profile-page">
-      <Header />
-
       <main className="profile-container">
         <section className="profile-top">
           <div
@@ -910,8 +900,6 @@ const Profile = ({ username }: ProfileProps) => {
           </aside>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 };
