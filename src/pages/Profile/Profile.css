@@ -1166,22 +1166,32 @@
 }
 
 .friends-see-all {
+  padding: 0;
+  margin: 0;
+  border: none;
+  outline: none;
+  background: transparent;
   color: #7ed4d2;
+  font-family: inherit;
   font-size: 9px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s ease;
 }
 
 .friends-see-all:hover {
   color: #c4ffff;
 }
 
-.empty-section {
-  color: #8abdc4;
-  font-size: 10px;
+.empty-section { color: #8abdc4; font-size: 10px; }
+
+.profile-section,
+.sidebar-card {
+  backdrop-filter: blur(8px);
 }
 
-.profile-edit-modal {
-  background: #064653;
-}
+.profile-edit-modal { background: #064653; }
 
 @keyframes profile-menu-in {
   from {
