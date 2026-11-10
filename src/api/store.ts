@@ -72,3 +72,8 @@ export function clearCart(): Promise<void> {
         method: "DELETE",
     });
 }
+export function getUserWishlist(username:string) : Promise<StoreItem[]>{
+    return apiRequest<StoreItem[]>(
+        `/api/Wishlist/user/${encodeURIComponent(username)}`
+    )
+}

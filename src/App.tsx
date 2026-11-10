@@ -7,6 +7,7 @@ import Home from "./pages/Home/Home";
 import Friends from "./pages/Friends/Friend";
 import LibraryGamePage from "./pages/LibraryGamePage/LibraryGamePage";
 import Badges from "./pages/Badges/Badges";
+import ProfileWishlist from "./pages/ProfileWishlist/ProfileWishlist";
 
 import GamePage from "./pages/GamePage/GamePage";
 import CharacteristicsPage from "./pages/CharacteristicsPage/CharacteristicsPage";
@@ -95,6 +96,8 @@ function App() {
       page = <Badges username={username}/>
     } else if (pathParts[2] === "games") {
       page = <ProfileGames username={username} />;
+    }else if (pathParts[2] === "wishlist"){
+      page = <ProfileWishlist username={username}/>
     }
     else{
       page = <Profile username={username} />;

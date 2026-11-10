@@ -1,0 +1,534 @@
+
+.profile-wishlist-page {
+  min-height: 100vh;
+  padding: 22px 20px 60px;
+  box-sizing: border-box;
+  color: #efffff;
+}
+
+.profile-wishlist-container {
+  width: 100%;
+  max-width: 1260px;
+  margin: 0 auto;
+}
+
+.profile-wishlist-header {
+  overflow: hidden;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  background: #064c59;
+}
+
+.profile-wishlist-cover {
+  height: 170px;
+  background-color: #07505c;
+  background-position: center;
+  background-size: cover;
+}
+
+.profile-wishlist-user-info {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 115px;
+  padding: 16px 22px 16px 145px;
+  box-sizing: border-box;
+}
+
+.profile-wishlist-avatar {
+  position: absolute;
+  top: -54px;
+  left: 18px;
+  width: 108px;
+  height: 108px;
+  border: 4px solid #064c59;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-wishlist-user-details {
+  min-width: 0;
+  flex: 1;
+}
+
+.profile-wishlist-user-details h1 {
+  margin: 0 0 7px;
+  color: #fff;
+  font-size: 20px;
+}
+
+.profile-wishlist-online,
+.profile-wishlist-offline {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+}
+
+.profile-wishlist-online {
+  color: #20dfbd;
+}
+
+.profile-wishlist-offline {
+  color: #a5b8bd;
+}
+
+.profile-wishlist-online span,
+.profile-wishlist-offline span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.profile-wishlist-user-details p {
+  margin: 8px 0 0;
+  color: #b4d3d8;
+  font-size: 12px;
+}
+
+.profile-wishlist-view-profile {
+  padding: 10px 17px;
+  border: none;
+  border-radius: 22px;
+  background: #087f91;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.profile-wishlist-view-profile:hover {
+  background: #0b9bad;
+}
+
+.profile-wishlist-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 250px;
+  align-items: start;
+  gap: 16px;
+}
+
+.profile-wishlist-main {
+  min-width: 0;
+}
+
+.profile-wishlist-section {
+  padding: 16px;
+  border-radius: 14px;
+  background: #064c59;
+}
+
+.profile-wishlist-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 17px;
+}
+
+.profile-wishlist-heading h2 {
+  margin: 0;
+  color: #fff;
+  font-size: 18px;
+}
+
+.profile-wishlist-heading p {
+  margin: 5px 0 0;
+  color: #8fbcc4;
+  font-size: 12px;
+}
+
+.profile-wishlist-heading > span {
+  min-width: 32px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  background: #08768a;
+  color: #d9f7fa;
+  font-size: 12px;
+}
+
+.profile-wishlist-toolbar {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) 145px 165px;
+  gap: 10px;
+  margin-bottom: 17px;
+}
+
+.profile-wishlist-search {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 11px;
+  border: 1px solid #176779;
+  border-radius: 22px;
+  background: #003743;
+}
+
+.profile-wishlist-search span {
+  color: #75b4bf;
+  font-size: 20px;
+}
+
+.profile-wishlist-search input {
+  width: 100%;
+  min-width: 0;
+  height: 36px;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #fff;
+  font-size: 12px;
+}
+
+.profile-wishlist-search input::placeholder {
+  color: #719da5;
+}
+
+.profile-wishlist-toolbar select {
+  min-width: 0;
+  padding: 0 10px;
+  border: 1px solid #176779;
+  border-radius: 20px;
+  outline: none;
+  background: #003743;
+  color: #d9f7fa;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.profile-wishlist-toolbar select option {
+  background: #003743;
+}
+
+.profile-wishlist-list-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  color: #e9ffff;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.profile-wishlist-list-heading > span:first-child {
+  color: #8dcbd4;
+}
+
+.profile-wishlist-list-count {
+  margin-left: auto;
+  color: #82b9c2;
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.profile-wishlist-notice {
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #075e6b;
+  color: #c9f8f2;
+  font-size: 12px;
+}
+
+.profile-wishlist-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.profile-wishlist-game {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-width: 0;
+  padding: 10px;
+  border-radius: 12px;
+  background: #003743;
+  transition: background 0.18s ease;
+}
+
+.profile-wishlist-game:hover {
+  background: #00414e;
+}
+
+.profile-wishlist-game-image {
+  width: 170px;
+  height: 92px;
+  flex-shrink: 0;
+  overflow: hidden;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: #07505c;
+  cursor: pointer;
+}
+
+.profile-wishlist-game-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.2s ease;
+}
+
+.profile-wishlist-game-image:hover img {
+  transform: scale(1.04);
+}
+
+.profile-wishlist-game-content {
+  min-width: 0;
+  flex: 1;
+}
+
+.profile-wishlist-game-title {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #f0ffff;
+  font-size: 15px;
+  font-weight: 700;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.profile-wishlist-game-title:hover {
+  color: #22dfc3;
+}
+
+.profile-wishlist-game-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 9px;
+}
+
+.profile-wishlist-game-tags span {
+  padding: 3px 8px;
+  border-radius: 12px;
+  background: #07586a;
+  color: #a8d9e0;
+  font-size: 10px;
+}
+
+.profile-wishlist-game-tags .discount-tag {
+  background: #ed4d85;
+  color: #fff;
+  font-weight: 700;
+}
+
+.profile-wishlist-game-prices {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+.profile-wishlist-game-prices strong {
+  color: #fff;
+  font-size: 13px;
+}
+
+.profile-wishlist-game-prices .old-price {
+  color: #779ba2;
+  text-decoration: line-through;
+}
+
+.profile-wishlist-game-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.profile-wishlist-cart {
+  min-width: 100px;
+  padding: 10px 13px;
+  border: none;
+  border-radius: 20px;
+  background: #20d9b9;
+  color: #003b43;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s ease;
+}
+
+.profile-wishlist-cart:hover:not(:disabled) {
+  background: #42f0d0;
+}
+
+.profile-wishlist-cart:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.profile-wishlist-remove {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: #075d70;
+  color: #ff6b9d;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.profile-wishlist-remove:hover:not(:disabled) {
+  background: #9b315b;
+  color: #fff;
+}
+
+.profile-wishlist-remove:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+.profile-wishlist-empty,
+.profile-wishlist-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 55px 20px;
+  border-radius: 12px;
+  background: #003743;
+  text-align: center;
+}
+
+.profile-wishlist-empty > span {
+  color: #20d9b9;
+  font-size: 42px;
+}
+
+.profile-wishlist-empty h3 {
+  margin: 12px 0 5px;
+  color: #fff;
+  font-size: 16px;
+}
+
+.profile-wishlist-empty p {
+  margin: 0;
+  color: #8fbcc4;
+  font-size: 12px;
+}
+
+.profile-wishlist-message {
+  color: #d7f3f5;
+}
+
+.profile-wishlist-message button {
+  margin-top: 15px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 20px;
+  background: #0c8495;
+  color: #fff;
+  cursor: pointer;
+}
+
+.profile-wishlist-sidebar {
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .profile-wishlist-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .profile-wishlist-sidebar {
+    grid-row: 1;
+  }
+}
+
+@media (max-width: 650px) {
+  .profile-wishlist-page {
+    padding: 12px 10px 35px;
+  }
+
+  .profile-wishlist-cover {
+    height: 125px;
+  }
+
+  .profile-wishlist-user-info {
+    align-items: flex-end;
+    min-height: 125px;
+    padding: 55px 12px 14px;
+  }
+
+  .profile-wishlist-avatar {
+    top: -45px;
+    left: 12px;
+    width: 88px;
+    height: 88px;
+  }
+
+  .profile-wishlist-user-details h1 {
+    font-size: 17px;
+  }
+
+  .profile-wishlist-user-details p {
+    max-width: 220px;
+  }
+
+  .profile-wishlist-view-profile {
+    padding: 8px 10px;
+    font-size: 10px;
+  }
+
+  .profile-wishlist-section {
+    padding: 12px;
+  }
+
+  .profile-wishlist-toolbar {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .profile-wishlist-search {
+    grid-column: 1 / -1;
+  }
+
+  .profile-wishlist-toolbar select {
+    height: 36px;
+  }
+
+  .profile-wishlist-game {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .profile-wishlist-game-image {
+    width: 112px;
+    height: 72px;
+  }
+
+  .profile-wishlist-game-content {
+    flex: 1;
+  }
+
+  .profile-wishlist-game-title {
+    font-size: 13px;
+  }
+
+  .profile-wishlist-game-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .profile-wishlist-cart {
+    min-width: 110px;
+  }
+}
