@@ -34,6 +34,7 @@ import type {
 
 import { useFriendPresence } from "../../hooks/useFriendPresence";
 import { getCurrentUsername } from "../../api/client";
+import ProfileSidebar from "../../components/ProfileSidebar/ProfileSidebar";
 
 import "./Profile.css";
 
@@ -780,145 +781,11 @@ const Profile = ({ username }: ProfileProps) => {
           </div>
 
 
-          <aside className="profile-sidebar">
-            <section className="sidebar-card sidebar-navigation-card">
-              <div className="sidebar-level">
-                <h2>Рівень</h2>
-                <div className="sidebar-level-badge">
-                  <span>{profile.level}</span>
-                </div>
-              </div>
-
-              <nav className="sidebar-navigation">
-                {[
-                  {
-                    label: "Головна",
-                    path: "",
-                    count: null,
-                  },
-                  {
-                    label: "Значки",
-                    path: "badges",
-                    count: profile.counters.badges,
-                  },
-                  {
-                    label: "Ігри",
-                    path: "games",
-                    count: profile.counters.games,
-                  },
-                  {
-                    label: "Бажане",
-                    path: "wishlist",
-                    count: profile.counters.wishlist,
-                  },
-                  {
-                    label: "Обговорення",
-                    path: "discussions",
-                    count: profile.counters.discussions,
-                  },
-                  {
-                    label: "Скриншоти",
-                    path: "screenshots",
-                    count: profile.counters.screenshots,
-                  },
-                  {
-                    label: "Відео",
-                    path: "videos",
-                    count: profile.counters.videos,
-                  },
-                  {
-                    label: "Гайди",
-                    path: "guides",
-                    count: profile.counters.guides,
-                  },
-                  {
-                    label: "Рецензії",
-                    path: "reviews",
-                    count: profile.counters.reviews,
-                  },
-                ].map((item) => {
-                  const basePath = `/profile/${encodeURIComponent(username)}`;
-                  const href = item.path ? `${basePath}/${item.path}` : basePath;
-                  const currentPath = window.location.pathname.replace(/\/$/, "");
-                  const isActive = currentPath === href;
-
-                  return (
-                    <a
-                      key={item.label}
-                      href={href}
-                      className={`sidebar-nav-item ${isActive ? "active" : ""}`}
-                      aria-current={isActive ? "page" : undefined}
-                    >
-                      <span>{item.label}</span>
-
-                      {item.count !== null && (
-                        <span className="sidebar-nav-count">
-                          {item.count}
-                        </span>
-                      )}
-                    </a>
-                  );
-                })}
-              </nav>
-            </section>
-
-            <section className="sidebar-card sidebar-friends-card">
-              <div className="sidebar-title">
-                <div className="sidebar-title-left">
-                  <h2>Друзі</h2>
-                  <strong>{profile.counters.friends}</strong>
-                </div>
-
-                <button
-                  type="button"
-                  className="friends-see-all"
-                  onClick={() => {
-                    window.location.href = "/friends";
-                  }}
-                >
-                  Усі →
-                </button>
-              </div>
-
-              <div className="friends-list">
-                {profile.friends.map((friend) => (
-                  <a
-                    href={`/profile/${encodeURIComponent(friend.username)}`}
-                    className="friend-item"
-                    key={friend.id}
-                  >
-                    <div className="friend-item-avatar-wrapper">
-                      <img
-                        src={friend.avatarUrl}
-                        alt={friend.username}
-                        className="friend-item-avatar"
-                      />
-
-                      <span
-                        className={`friend-item-status ${
-                          friend.isOnline ? "online" : "offline"
-                        }`}
-                      />
-                    </div>
-
-                    <div className="friend-item-info">
-                      <strong>{friend.username}</strong>
-                    </div>
-
-                    <div className="friend-level-badge">
-                      <span>{friend.level}</span>
-                    </div>
-                  </a>
-                ))}
-              </div>
-
-              {!profile.friends.length && (
-                <p className="empty-section">
-                  Друзів поки немає
-                </p>
-              )}
-            </section>
-          </aside>
+          <ProfileSidebar
+            profile={profile}
+            username={username}
+            activeSection="home"
+          />
 
         </div>
       </main>

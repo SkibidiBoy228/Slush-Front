@@ -1,0 +1,333 @@
+
+/* =========================================
+   PROFILE SIDEBAR
+========================================= */
+
+.profile-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+  width: 100%;
+}
+
+.profile-sidebar-card {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 12px;
+  border: none;
+  border-radius: 15px;
+  background: #004653;
+}
+
+/* =========================================
+   LEVEL
+========================================= */
+
+.profile-sidebar-level {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 4px 12px 12px;
+}
+
+.profile-sidebar-level h2 {
+  margin: 0;
+  color: #f0ffff;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.profile-sidebar-level-badge,
+.profile-sidebar-friend-level {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  clip-path: polygon(
+    50% 0%,
+    94% 24%,
+    94% 76%,
+    50% 100%,
+    6% 76%,
+    6% 24%
+  );
+}
+
+.profile-sidebar-level-badge {
+  width: 44px;
+  height: 48px;
+  padding: 2px;
+  background: #69a5ff;
+}
+
+.profile-sidebar-level-badge::before,
+.profile-sidebar-friend-level::before {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  clip-path: polygon(
+    50% 0%,
+    94% 24%,
+    94% 76%,
+    50% 100%,
+    6% 76%,
+    6% 24%
+  );
+  background: #004653;
+}
+
+.profile-sidebar-level-badge span,
+.profile-sidebar-friend-level span {
+  position: relative;
+  z-index: 1;
+  color: #fff;
+  font-weight: 700;
+}
+
+.profile-sidebar-level-badge span {
+  font-size: 17px;
+}
+
+/* =========================================
+   NAVIGATION
+========================================= */
+
+.profile-sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.profile-sidebar-nav-item {
+  min-height: 40px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 12px;
+  border-radius: 11px;
+  color: #e7f7f8;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease;
+}
+
+.profile-sidebar-nav-item:hover {
+  background: rgba(31, 139, 163, 0.35);
+  color: #fff;
+}
+
+.profile-sidebar-nav-item.active {
+  background: #126b80;
+  color: #fff;
+}
+
+.profile-sidebar-count {
+  min-width: 43px;
+  height: 28px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 9px;
+  border-radius: 20px;
+  background: #126b80;
+  color: #a8dce5;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.profile-sidebar-nav-item.active .profile-sidebar-count {
+  background: #0d5c70;
+  color: #d5f5f7;
+}
+
+/* =========================================
+   FRIENDS
+========================================= */
+
+.profile-sidebar-friends {
+  padding: 14px 12px 16px;
+}
+
+.profile-sidebar-friends-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 0 12px;
+}
+
+.profile-sidebar-friends-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.profile-sidebar-friends-title h2 {
+  margin: 0;
+  color: #f0ffff;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.profile-sidebar-friends-title > span {
+  min-width: 43px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 9px;
+  border-radius: 20px;
+  background: #126b80;
+  color: #a8dce5;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.profile-sidebar-see-all {
+  color: #8ed4dc;
+  font-size: 12px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.profile-sidebar-see-all:hover {
+  color: #fff;
+}
+
+.profile-sidebar-friends-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.profile-sidebar-friend {
+  min-height: 47px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  border-radius: 9px;
+  color: #fff;
+  text-decoration: none;
+  transition: background 0.18s ease;
+}
+
+.profile-sidebar-friend:hover {
+  background: rgba(31, 139, 163, 0.2);
+}
+
+.profile-sidebar-friend-avatar-wrapper {
+  position: relative;
+  width: 43px;
+  height: 43px;
+  flex-shrink: 0;
+}
+
+.profile-sidebar-friend-avatar {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-sidebar-friend-status {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 11px;
+  height: 11px;
+  border: 2px solid #004653;
+  border-radius: 50%;
+}
+
+.profile-sidebar-friend-status.online {
+  background: #ff5d91;
+}
+
+.profile-sidebar-friend-status.offline {
+  background: #718b91;
+}
+
+.profile-sidebar-friend-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.profile-sidebar-friend-info strong {
+  overflow: hidden;
+  display: block;
+  color: #efffff;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.profile-sidebar-friend-level {
+  width: 33px;
+  height: 36px;
+  padding: 2px;
+  background: #ffb34f;
+}
+
+.profile-sidebar-friend-level::before {
+  background: #004653;
+}
+
+.profile-sidebar-friend-level span {
+  font-size: 12px;
+}
+
+.profile-sidebar-empty {
+  margin: 12px;
+  color: #a8dce5;
+  font-size: 13px;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 900px) {
+  .profile-sidebar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+}
+
+@media (max-width: 650px) {
+  .profile-sidebar {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .profile-sidebar-card {
+    padding: 12px 10px;
+  }
+
+  .profile-sidebar-nav-item {
+    min-height: 40px;
+    font-size: 14px;
+  }
+
+  .profile-sidebar-friend {
+    min-height: 43px;
+  }
+
+  .profile-sidebar-friend-avatar-wrapper {
+    width: 39px;
+    height: 39px;
+  }
+}

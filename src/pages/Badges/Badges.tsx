@@ -4,6 +4,7 @@ import { getUserProfile } from "../../api/profile";
 import { getCurrentUsername } from "../../api/client";
 
 import type { UserProfile, Badge } from "../../types/profile";
+import ProfileSidebar from "../../components/ProfileSidebar/ProfileSidebar";
 
 import "./Badges.css";
 
@@ -277,106 +278,12 @@ const Badges = ({ username }: BadgesProps) => {
             </div>
           </section>
 
-          <aside className="badges-sidebar">
-            <section className="badges-sidebar-card badges-level-card">
-              <div className="badges-sidebar-title">
-                <h2>Рівень</h2>
-                <span className="badges-level-number">
-                  {profile.level}
-                </span>
-              </div>
-
-              <div className="badges-xp-progress">
-                <div style={{ width: `${xpProgress}%` }} />
-              </div>
-
-              <div className="badges-xp-labels">
-                <span>{profile.currentXp} очок</span>
-                <span>{profile.maxXp} очок</span>
-              </div>
-
-              <div className="badges-sidebar-divider" />
-
-              <h3>Статистика</h3>
-
-              <div className="badges-stat-list">
-                <div>
-                  <span>Значки</span>
-                  <strong>{profile.counters.badges}</strong>
-                </div>
-                <div>
-                  <span>Ігри</span>
-                  <strong>{profile.counters.games}</strong>
-                </div>
-                <div>
-                  <span>У бажаному</span>
-                  <strong>{profile.counters.wishlist}</strong>
-                </div>
-                <div>
-                  <span>Обговорення</span>
-                  <strong>{profile.counters.discussions}</strong>
-                </div>
-                <div>
-                  <span>Скріншоти</span>
-                  <strong>{profile.counters.screenshots}</strong>
-                </div>
-                <div>
-                  <span>Відео</span>
-                  <strong>{profile.counters.videos}</strong>
-                </div>
-                <div>
-                  <span>Гайди</span>
-                  <strong>{profile.counters.guides}</strong>
-                </div>
-                <div>
-                  <span>Рецензії</span>
-                  <strong>{profile.counters.reviews}</strong>
-                </div>
-              </div>
-
-              <button
-                className="badges-back-button"
-                onClick={openProfile}
-              >
-                Головна профілю
-              </button>
-            </section>
-
-            <section className="badges-sidebar-card">
-              <div className="badges-sidebar-title">
-                <h2>Друзі</h2>
-                <span>{profile.counters.friends}</span>
-              </div>
-
-              {profile.friends.length > 0 ? (
-                <div className="badges-friends-list">
-                  {profile.friends.map((friend) => (
-                    <button
-                      className="badges-friend"
-                      key={friend.id}
-                      onClick={() => {
-                        window.location.href =
-                          `/profile/${encodeURIComponent(friend.username)}`;
-                      }}
-                    >
-                      <img
-                        src={friend.avatarUrl}
-                        alt={friend.username}
-                      />
-
-                      <span>{friend.username}</span>
-
-                      <strong>{friend.level}</strong>
-                    </button>
-                  ))}
-                </div>
-              ) : (
-                <p className="badges-no-friends">
-                  Друзів поки немає
-                </p>
-              )}
-            </section>
-          </aside>
+            <ProfileSidebar
+            profile={profile}
+            username={username}
+            activeSection="badges"
+            className="badges-sidebar"
+            />
         </div>
       </main>
     </div>

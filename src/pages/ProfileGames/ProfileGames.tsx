@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { getUserProfile, getProfileGames } from "../../api/profile";
 import { getCurrentUsername } from "../../api/client";
+import ProfileSidebar from "../../components/ProfileSidebar/ProfileSidebar";
 
 import type {
   UserProfile,
@@ -125,7 +126,7 @@ const ProfileGames = ({ username }: ProfileGamesProps) => {
 
   const formatPrice = (price: number) => {
     if (price <= 0) return "Безкоштовно";
-    return `${price.toFixed(2)} $`;
+    return `${price.toFixed(2)} ₴`;
   };
 
   if (isLoading) {
@@ -326,119 +327,13 @@ const ProfileGames = ({ username }: ProfileGamesProps) => {
             </div>
           </section>
 
-          {/* Sidebar */}
 
-          <aside className="profile-games-sidebar">
-
-            <section className="profile-games-sidebar-card">
-
-              <div className="profile-games-sidebar-title">
-                <h2>Рівень</h2>
-
-                <span>{profile.level}</span>
-              </div>
-
-              <div className="profile-games-xp">
-                <div style={{ width: `${xpProgress}%` }} />
-              </div>
-
-              <div className="profile-games-xp-labels">
-                <span>{profile.currentXp} очок</span>
-                <span>{profile.maxXp} очок</span>
-              </div>
-
-              <div className="profile-games-divider" />
-
-              <h3>Статистика</h3>
-
-              <div className="profile-games-stats">
-                <div>
-                  <span>Значки</span>
-                  <strong>{profile.counters.badges}</strong>
-                </div>
-
-                <div>
-                  <span>Ігри</span>
-                  <strong>{profile.counters.games}</strong>
-                </div>
-
-                <div>
-                  <span>У бажаному</span>
-                  <strong>{profile.counters.wishlist}</strong>
-                </div>
-
-                <div>
-                  <span>Обговорення</span>
-                  <strong>{profile.counters.discussions}</strong>
-                </div>
-
-                <div>
-                  <span>Скріншоти</span>
-                  <strong>{profile.counters.screenshots}</strong>
-                </div>
-
-                <div>
-                  <span>Відео</span>
-                  <strong>{profile.counters.videos}</strong>
-                </div>
-
-                <div>
-                  <span>Гайди</span>
-                  <strong>{profile.counters.guides}</strong>
-                </div>
-
-                <div>
-                  <span>Рецензії</span>
-                  <strong>{profile.counters.reviews}</strong>
-                </div>
-              </div>
-
-              <button
-                className="profile-games-back"
-                onClick={openProfile}
-              >
-                Головна профілю
-              </button>
-
-            </section>
-
-            <section className="profile-games-sidebar-card">
-
-              <div className="profile-games-sidebar-title">
-                <h2>Друзі</h2>
-                <span>{profile.counters.friends}</span>
-              </div>
-
-              {profile.friends.length > 0 ? (
-                <div className="profile-games-friends">
-                  {profile.friends.map((friend) => (
-                    <button
-                      key={friend.id}
-                      className="profile-games-friend"
-                      onClick={() =>
-                        openFriendProfile(friend.username)
-                      }
-                    >
-                      <img
-                        src={friend.avatarUrl}
-                        alt={friend.username}
-                      />
-
-                      <span>{friend.username}</span>
-
-                      <strong>{friend.level}</strong>
-                    </button>
-                  ))}
-                </div>
-              ) : (
-                <p className="profile-games-no-friends">
-                  Друзів поки немає
-                </p>
-              )}
-
-            </section>
-
-          </aside>
+            <ProfileSidebar
+            profile={profile}
+            username={username}
+            activeSection="games"
+            className="profile-games-sidebar"
+            />
         </div>
       </main>
     </div>
