@@ -1,6 +1,7 @@
 
 .badges-page {
   min-height: 100vh;
+  padding: 20px 0 50px;
   color: #e8f7f8;
   font-family: Inter, Arial, sans-serif;
   background:
@@ -9,10 +10,18 @@
     #00151d;
 }
 
+.badges-page *,
+.badges-page *::before,
+.badges-page *::after {
+  box-sizing: border-box;
+}
+
 .badges-container {
   width: min(1160px, calc(100% - 40px));
   margin: 0 auto 64px;
 }
+
+/* PROFILE HEADER */
 
 .badges-profile-header,
 .badges-section,
@@ -96,12 +105,13 @@
   color: #b1d0d4;
   font-size: 11px;
   line-height: 1.6;
+  overflow-wrap: anywhere;
 }
 
 .badges-profile-button,
 .badges-back-button {
-  min-height: 34px;
-  padding: 0 17px;
+  min-height: 36px;
+  padding: 0 18px;
   border: 1px solid rgba(45, 226, 205, .2);
   border-radius: 20px;
   background: #087c89;
@@ -117,6 +127,8 @@
   background: #0b9b9e;
   transform: translateY(-1px);
 }
+
+/* MAIN LAYOUT */
 
 .badges-layout {
   display: grid;
@@ -165,6 +177,8 @@
   color: #80cbd0;
   font-size: 11px;
 }
+
+/* TOOLBAR */
 
 .badges-toolbar {
   display: flex;
@@ -219,18 +233,26 @@
   border-color: #19c5b5;
 }
 
-.badges-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 9px;
+/* BADGE GRID */
+
+.badges-page .badges-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  grid-auto-flow: row;
+  align-items: stretch;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
 }
 
-.badges-card {
-  display: flex;
+.badges-page .badges-card {
+  display: grid !important;
+  grid-template-columns: 90px minmax(0, 1fr);
   align-items: center;
   gap: 14px;
+  width: 100%;
   min-width: 0;
-  min-height: 116px;
+  min-height: 120px;
   padding: 12px;
   border: 1px solid rgba(69, 202, 207, .1);
   border-radius: 9px;
@@ -241,57 +263,62 @@
     background .18s ease;
 }
 
-.badges-card:hover {
+.badges-page .badges-card:hover {
   transform: translateY(-2px);
   border-color: rgba(45, 226, 205, .38);
   background: #075365;
 }
 
-.badges-card-image {
+.badges-page .badges-card-image {
   display: flex;
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 78px;
-  height: 78px;
+  width: 90px;
+  height: 90px;
+  overflow: hidden;
   border-radius: 9px;
   background: #002f3b;
 }
 
-.badges-card-image img {
-  width: 68px;
-  height: 68px;
+.badges-page .badges-card-image img {
+  display: block;
+  width: 82px;
+  height: 82px;
   object-fit: contain;
 }
 
-.badges-card-image span {
-  font-size: 34px;
+.badges-page .badges-card-image span {
+  font-size: 38px;
 }
 
-.badges-card-content {
+.badges-page .badges-card-content {
   display: flex;
   flex-direction: column;
   justify-content: center;
   min-width: 0;
+  min-height: 90px;
   flex: 1;
-  height: 100%;
 }
 
-.badges-card-content h3 {
+.badges-page .badges-card-content h3 {
+  display: block;
   overflow: hidden;
-  margin: 0 0 6px;
+  margin: 0 0 7px;
   color: #edffff;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
+  line-height: 1.4;
   text-overflow: ellipsis;
+  overflow-wrap: anywhere;
 }
 
-.badges-card-content p {
+.badges-page .badges-card-content p {
   display: -webkit-box;
   overflow: hidden;
   margin: 0;
   color: #a8cbd0;
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.5;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -302,21 +329,23 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 5px;
+  gap: 5px 10px;
   margin-top: auto;
   padding-top: 10px;
 }
 
 .badges-points {
   color: #67d9cb;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
 }
 
 .badges-date {
   color: #7eafb6;
-  font-size: 9px;
+  font-size: 10px;
 }
+
+/* EMPTY STATE */
 
 .badges-empty {
   display: flex;
@@ -347,6 +376,8 @@
   font-size: 11px;
   line-height: 1.6;
 }
+
+/* SIDEBAR */
 
 .badges-sidebar {
   min-width: 0;
@@ -448,6 +479,8 @@
   margin-top: 17px;
 }
 
+/* FRIENDS */
+
 .badges-friends-list {
   display: flex;
   flex-direction: column;
@@ -489,6 +522,7 @@
   justify-content: center;
   width: 25px;
   height: 25px;
+  flex-shrink: 0;
   border: 1px solid #d7a23b;
   border-radius: 50%;
   color: #ffe7a0;
@@ -503,6 +537,8 @@
   color: #8abdc4;
   font-size: 10px;
 }
+
+/* LOADING / ERROR */
 
 .badges-message {
   display: flex;
@@ -529,6 +565,8 @@
   color: #ff9292;
 }
 
+/* TABLET */
+
 @media (max-width: 900px) {
   .badges-layout {
     grid-template-columns: minmax(0, 1fr);
@@ -546,6 +584,8 @@
     margin-bottom: 0;
   }
 }
+
+/* MOBILE */
 
 @media (max-width: 650px) {
   .badges-container {
@@ -607,25 +647,45 @@
     max-width: 65%;
   }
 
-  .badges-grid {
-    grid-template-columns: 1fr;
+  .badges-page .badges-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
   }
 
-  .badges-card {
-    min-height: 105px;
+  .badges-page .badges-card {
+    grid-template-columns: 72px minmax(0, 1fr);
+    min-height: 100px;
+    gap: 12px;
   }
 
-  .badges-card-image {
-    width: 68px;
-    height: 68px;
+  .badges-page .badges-card-image {
+    width: 72px;
+    height: 72px;
   }
 
-  .badges-card-image img {
-    width: 58px;
-    height: 58px;
+  .badges-page .badges-card-image img {
+    width: 64px;
+    height: 64px;
   }
 
   .badges-sidebar {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 380px) {
+  .badges-page .badges-card {
+    grid-template-columns: 60px minmax(0, 1fr);
+    padding: 9px;
+    gap: 9px;
+  }
+
+  .badges-page .badges-card-image {
+    width: 60px;
+    height: 60px;
+  }
+
+  .badges-page .badges-card-image img {
+    width: 54px;
+    height: 54px;
   }
 }
