@@ -100,15 +100,6 @@ const Badges = ({ username }: BadgesProps) => {
     }
   }, [profile, sortType]);
 
-  const xpProgress = profile
-    ? Math.min(
-        100,
-        Math.max(
-          0,
-          (profile.currentXp / Math.max(profile.maxXp, 1)) * 100
-        )
-      )
-    : 0;
 
   const openProfile = () => {
     window.location.href = `/profile/${encodeURIComponent(username)}`;
