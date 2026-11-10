@@ -1,0 +1,590 @@
+
+.profile-games-page {
+  width: 100%;
+  min-height: 100vh;
+  padding: 25px 30px 50px;
+  background: #002b36;
+  color: #e7f8fa;
+}
+
+.profile-games-container {
+  width: 100%;
+  max-width: 1450px;
+  margin: 0 auto;
+}
+
+/* Header */
+
+.profile-games-header {
+  position: relative;
+  margin-bottom: 25px;
+  border: 1px solid #075565;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #003b49;
+}
+
+.profile-games-cover {
+  height: 190px;
+  background: linear-gradient(120deg, #075767, #002c39);
+  background-size: cover;
+  background-position: center;
+}
+
+.profile-games-user-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  min-height: 125px;
+  padding: 15px 25px;
+  position: relative;
+}
+
+.profile-games-avatar {
+  width: 105px;
+  height: 105px;
+  margin-top: -55px;
+  border: 4px solid #003b49;
+  border-radius: 12px;
+  object-fit: cover;
+  background: #075565;
+}
+
+.profile-games-user-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-games-user-details h1 {
+  margin: 0 0 8px;
+  font-size: 23px;
+  color: #f1ffff;
+}
+
+.profile-games-user-details p {
+  margin: 9px 0 0;
+  color: #91bdc7;
+  font-size: 12px;
+}
+
+.profile-games-online,
+.profile-games-offline {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+}
+
+.profile-games-online {
+  color: #42df9d;
+}
+
+.profile-games-offline {
+  color: #91aeb4;
+}
+
+.profile-games-online span,
+.profile-games-offline span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.profile-games-view-profile {
+  padding: 11px 18px;
+  border: 1px solid #078c9a;
+  border-radius: 7px;
+  background: #056273;
+  color: white;
+  cursor: pointer;
+  font-size: 11px;
+  transition: 0.2s;
+}
+
+.profile-games-view-profile:hover {
+  background: #087d8d;
+}
+
+/* Layout */
+
+.profile-games-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 285px;
+  gap: 22px;
+  align-items: start;
+}
+
+.profile-games-main {
+  min-width: 0;
+}
+
+.profile-games-section,
+.profile-games-sidebar-card {
+  padding: 22px;
+  border: 1px solid #075565;
+  border-radius: 11px;
+  background: #003541;
+}
+
+/* Heading */
+
+.profile-games-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.profile-games-heading h2 {
+  margin: 0;
+  color: #f0ffff;
+  font-size: 19px;
+}
+
+.profile-games-heading p {
+  margin: 6px 0 0;
+  color: #83b8c2;
+  font-size: 11px;
+}
+
+.profile-games-heading > span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 9px;
+  border-radius: 8px;
+  background: #075565;
+  color: #b8ffff;
+  font-size: 13px;
+}
+
+/* Toolbar */
+
+.profile-games-toolbar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 23px;
+}
+
+.profile-games-search {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 9px;
+  min-width: 120px;
+  height: 39px;
+  padding: 0 13px;
+  border: 1px solid #096477;
+  border-radius: 7px;
+  background: #002d39;
+}
+
+.profile-games-search span {
+  color: #70c6ce;
+  font-size: 21px;
+}
+
+.profile-games-search input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: white;
+  font-size: 11px;
+}
+
+.profile-games-search input::placeholder {
+  color: #719ca5;
+}
+
+.profile-games-toolbar select {
+  max-width: 155px;
+  height: 39px;
+  padding: 0 10px;
+  border: 1px solid #096477;
+  border-radius: 7px;
+  outline: none;
+  background: #004653;
+  color: #d8f4f6;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+/* Games list */
+
+.profile-games-list-heading {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 13px;
+  color: #d4f3f5;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.profile-games-list-heading > span:first-child {
+  color: #20d9c5;
+  font-size: 16px;
+}
+
+.profile-games-list-count {
+  margin-left: auto;
+  color: #76aeb8;
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.profile-games-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile-game-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  min-height: 110px;
+  padding: 10px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: #002d39;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.profile-game-card:hover {
+  border-color: #087e8e;
+  background: #064653;
+}
+
+.profile-game-image {
+  width: 175px;
+  height: 90px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #003b49;
+}
+
+.profile-game-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.profile-game-card:hover .profile-game-image img {
+  transform: scale(1.05);
+}
+
+.profile-game-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.profile-game-content h3 {
+  margin: 0;
+  color: #edffff;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.profile-game-price {
+  color: #79c9c7;
+  font-size: 11px;
+}
+
+.profile-game-open {
+  padding: 9px 13px;
+  border: 1px solid #087e8e;
+  border-radius: 6px;
+  background: #004b59;
+  color: #c5f6f5;
+  font-size: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.profile-game-open:hover {
+  background: #087080;
+}
+
+/* Empty state */
+
+.profile-games-empty,
+.profile-games-message {
+  padding: 55px 15px;
+  text-align: center;
+  color: #90bdc5;
+}
+
+.profile-games-empty > span {
+  font-size: 38px;
+}
+
+.profile-games-empty h3 {
+  color: #e7ffff;
+  font-size: 15px;
+}
+
+.profile-games-empty p {
+  font-size: 11px;
+}
+
+.profile-games-message button {
+  display: block;
+  margin: 18px auto 0;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  background: #087080;
+  color: white;
+  cursor: pointer;
+}
+
+/* Sidebar */
+
+.profile-games-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+}
+
+.profile-games-sidebar-card {
+  padding: 19px;
+}
+
+.profile-games-sidebar-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 17px;
+}
+
+.profile-games-sidebar-title h2 {
+  margin: 0;
+  color: #edffff;
+  font-size: 15px;
+}
+
+.profile-games-sidebar-title > span {
+  color: #28d9c7;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.profile-games-xp {
+  width: 100%;
+  height: 8px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #002630;
+}
+
+.profile-games-xp > div {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #08a9a0, #35e0c0);
+}
+
+.profile-games-xp-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  color: #83b5be;
+  font-size: 10px;
+}
+
+.profile-games-divider {
+  height: 1px;
+  margin: 20px 0;
+  background: #075565;
+}
+
+.profile-games-sidebar-card > h3 {
+  margin: 0 0 15px;
+  color: #e3ffff;
+  font-size: 13px;
+}
+
+.profile-games-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.profile-games-stats > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #91bbc3;
+  font-size: 11px;
+}
+
+.profile-games-stats strong {
+  color: #d8fafa;
+  font-size: 12px;
+}
+
+.profile-games-back {
+  width: 100%;
+  margin-top: 22px;
+  padding: 11px;
+  border: 1px solid #087d8e;
+  border-radius: 6px;
+  background: #045565;
+  color: white;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.profile-games-back:hover {
+  background: #087587;
+}
+
+/* Friends */
+
+.profile-games-friends {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.profile-games-friend {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #e0f8fa;
+  text-align: left;
+  cursor: pointer;
+}
+
+.profile-games-friend img {
+  width: 35px;
+  height: 35px;
+  border-radius: 7px;
+  object-fit: cover;
+}
+
+.profile-games-friend span {
+  flex: 1;
+  overflow: hidden;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-games-friend strong {
+  color: #28d9c7;
+  font-size: 11px;
+}
+
+.profile-games-friend:hover span {
+  color: #28d9c7;
+}
+
+.profile-games-no-friends {
+  color: #83aeb7;
+  font-size: 11px;
+}
+
+/* Responsive */
+
+@media (max-width: 1000px) {
+  .profile-games-layout {
+    grid-template-columns: minmax(0, 1fr) 245px;
+    gap: 15px;
+  }
+
+  .profile-games-section {
+    padding: 16px;
+  }
+
+  .profile-game-image {
+    width: 140px;
+  }
+}
+
+@media (max-width: 750px) {
+  .profile-games-page {
+    padding: 15px;
+  }
+
+  .profile-games-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-games-sidebar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 550px) {
+  .profile-games-cover {
+    height: 125px;
+  }
+
+  .profile-games-user-info {
+    flex-wrap: wrap;
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .profile-games-avatar {
+    width: 75px;
+    height: 75px;
+    margin-top: -40px;
+  }
+
+  .profile-games-user-details h1 {
+    font-size: 17px;
+  }
+
+  .profile-games-view-profile {
+    width: 100%;
+  }
+
+  .profile-games-toolbar {
+    flex-direction: column;
+  }
+
+  .profile-games-toolbar select {
+    max-width: none;
+    width: 100%;
+  }
+
+  .profile-game-image {
+    width: 105px;
+    height: 70px;
+  }
+
+  .profile-game-card {
+    gap: 10px;
+    min-height: 90px;
+  }
+
+  .profile-game-content h3 {
+    font-size: 11px;
+  }
+
+  .profile-game-open {
+    display: none;
+  }
+
+  .profile-games-sidebar {
+    grid-template-columns: 1fr;
+  }
+}

@@ -14,6 +14,7 @@ import DlcPage from "./pages/DlcPage/DlcPage";
 import Profile from "./pages/Profile/Profile";
 import EditProfile from "./pages/EditProfile/EditProfile";
 import CommunityPage from "./pages/CommunityPage/CommunityPage";
+import ProfileGames from "./pages/ProfileGames/ProfileGames";
 
 import Catalog from "./pages/Catalog/Catalog";
 import NewsPage from "./pages/NewsPage/NewsPage";
@@ -92,7 +93,10 @@ function App() {
     const username = decodeURIComponent(pathParts[1]);
     if(pathParts[2] === "badges"){
       page = <Badges username={username}/>
-    }else{
+    } else if (pathParts[2] === "games") {
+      page = <ProfileGames username={username} />;
+    }
+    else{
       page = <Profile username={username} />;
     }
   } else if (pathParts[0] === "friends") {
