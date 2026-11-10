@@ -432,7 +432,13 @@ const Profile = ({ username }: ProfileProps) => {
                       🏅 Видати нагороду спільноти
                     </button>
 
-                    <button type="button">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        window.location.href =
+                          `/profile/${encodeURIComponent(username)}/badges`;
+                      }}
+                    >
                       🏆 Колекція значків
                     </button>
 
@@ -509,7 +515,17 @@ const Profile = ({ username }: ProfileProps) => {
             <section className="profile-section">
               <div className="section-title-row">
                 <h2>Галерея значків</h2>
-                <span>{profile.counters.badges}</span>
+
+                <button
+                  type="button"
+                  className="badges-see-all"
+                  onClick={() => {
+                    window.location.href =
+                      `/profile/${encodeURIComponent(username)}/badges`;
+                  }}
+                >
+                  Усі →
+                </button>
               </div>
 
               <div className="badges-grid">

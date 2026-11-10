@@ -6,6 +6,7 @@ import VerifyEmail from "./pages/VerifyEmail/VerifyEmail";
 import Home from "./pages/Home/Home";
 import Friends from "./pages/Friends/Friend";
 import LibraryGamePage from "./pages/LibraryGamePage/LibraryGamePage";
+import Badges from "./pages/Badges/Badges";
 
 import GamePage from "./pages/GamePage/GamePage";
 import CharacteristicsPage from "./pages/CharacteristicsPage/CharacteristicsPage";
@@ -89,7 +90,11 @@ function App() {
     }
 
     const username = decodeURIComponent(pathParts[1]);
-    page = <Profile username={username} />;
+    if(pathParts[2] === "badges"){
+      page = <Badges username={username}/>
+    }else{
+      page = <Profile username={username} />;
+    }
   } else if (pathParts[0] === "friends") {
     if (!isAuthenticated()) {
       window.location.replace("/login");
