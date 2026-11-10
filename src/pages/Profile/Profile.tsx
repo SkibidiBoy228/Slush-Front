@@ -790,67 +790,90 @@ const Profile = ({ username }: ProfileProps) => {
             </section>
           </div>
 
+
           <aside className="profile-sidebar">
-            <section className="sidebar-card">
-              <div className="sidebar-title">
+            <section className="sidebar-card sidebar-navigation-card">
+              <div className="sidebar-level">
                 <h2>Рівень</h2>
-                <strong>{profile.level}</strong>
-              </div>
-
-              <div className="xp-progress">
-                <div style={{ width: `${xpProgress}%` }} />
-              </div>
-
-              <p className="xp-text">
-                {profile.currentXp} / {profile.maxXp} XP
-              </p>
-
-              <h3>Статистика</h3>
-
-              <div className="counter-list">
-                <div>
-                  <span>Значки</span>
-                  <strong>{profile.counters.badges}</strong>
-                </div>
-
-                <div>
-                  <span>Ігри</span>
-                  <strong>{profile.counters.games}</strong>
-                </div>
-
-                <div>
-                  <span>У бажаному</span>
-                  <strong>{profile.counters.wishlist}</strong>
-                </div>
-
-                <div>
-                  <span>Обговорення</span>
-                  <strong>{profile.counters.discussions}</strong>
-                </div>
-
-                <div>
-                  <span>Скриншоти</span>
-                  <strong>{profile.counters.screenshots}</strong>
-                </div>
-
-                <div>
-                  <span>Відео</span>
-                  <strong>{profile.counters.videos}</strong>
-                </div>
-
-                <div>
-                  <span>Гайди</span>
-                  <strong>{profile.counters.guides}</strong>
-                </div>
-
-                <div>
-                  <span>Рецензії</span>
-                  <strong>{profile.counters.reviews}</strong>
+                <div className="sidebar-level-badge">
+                  <span>{profile.level}</span>
                 </div>
               </div>
+
+              <nav className="sidebar-navigation">
+                {[
+                  {
+                    label: "Головна",
+                    path: "",
+                    count: null,
+                  },
+                  {
+                    label: "Значки",
+                    path: "badges",
+                    count: profile.counters.badges,
+                  },
+                  {
+                    label: "Ігри",
+                    path: "games",
+                    count: profile.counters.games,
+                  },
+                  {
+                    label: "Бажане",
+                    path: "wishlist",
+                    count: profile.counters.wishlist,
+                  },
+                  {
+                    label: "Обговорення",
+                    path: "discussions",
+                    count: profile.counters.discussions,
+                  },
+                  {
+                    label: "Скриншоти",
+                    path: "screenshots",
+                    count: profile.counters.screenshots,
+                  },
+                  {
+                    label: "Відео",
+                    path: "videos",
+                    count: profile.counters.videos,
+                  },
+                  {
+                    label: "Гайди",
+                    path: "guides",
+                    count: profile.counters.guides,
+                  },
+                  {
+                    label: "Рецензії",
+                    path: "reviews",
+                    count: profile.counters.reviews,
+                  },
+                ].map((item) => {
+                  const basePath = `/profile/${encodeURIComponent(username)}`;
+                  const href = item.path ? `${basePath}/${item.path}` : basePath;
+                  const currentPath = window.location.pathname.replace(/\/$/, "");
+                  const isActive = currentPath === href;
+
+                  return (
+                    <a
+                      key={item.label}
+                      href={href}
+                      className={`sidebar-nav-item ${isActive ? "active" : ""}`}
+                      aria-current={isActive ? "page" : undefined}
+                    >
+                      <span>{item.label}</span>
+
+                      {item.count !== null && (
+                        <span className="sidebar-nav-count">
+                          {item.count}
+                        </span>
+                      )}
+                    </a>
+                  );
+                })}
+              </nav>
             </section>
 
-            <section className="sidebar-card">
+            <section className="sidebar-card sidebar-friends-card">
               <div className="sidebar-title">
                 <div className="sidebar-title-left">
                   <h2>Друзі</h2>
@@ -891,16 +914,10 @@ const Profile = ({ username }: ProfileProps) => {
 
                     <div className="friend-item-info">
                       <strong>{friend.username}</strong>
+                    </div>
 
-                      <span className="friend-item-details">
-                        {friend.isOnline && friend.currentGameTitle
-                          ? `Грає в ${friend.currentGameTitle}`
-                          : friend.isOnline
-                            ? "В мережі"
-                            : "Не в мережі"}
-                        {" · "}
-                        Рівень {friend.level}
-                      </span>
+                    <div className="friend-level-badge">
+                      <span>{friend.level}</span>
                     </div>
                   </a>
                 ))}
@@ -913,6 +930,7 @@ const Profile = ({ username }: ProfileProps) => {
               )}
             </section>
           </aside>
+
         </div>
       </main>
     </div>
