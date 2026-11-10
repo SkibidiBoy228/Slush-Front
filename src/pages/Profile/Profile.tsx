@@ -177,17 +177,6 @@ const Profile = ({ username }: ProfileProps) => {
     };
   }, [username]);
 
-  const xpProgress = useMemo(() => {
-    if (!profile || profile.maxXp <= 0) {
-      return 0;
-    }
-
-    return Math.min(
-      100,
-      Math.max(0, (profile.currentXp / profile.maxXp) * 100)
-    );
-  }, [profile]);
-
   useEffect(() => {
     const interval = window.setInterval(async () => {
       try {
