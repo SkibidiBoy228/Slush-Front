@@ -55,7 +55,7 @@ export async function getProfileScreenshots(
   username: string
 ): Promise<PagedResult<ProfileScreenshot>> {
   return profileRequest<PagedResult<ProfileScreenshot>>(
-    `${profilePath(username)}/screenshots?page=1&pageSize=10`
+    `${profilePath(username)}/screenshots?page=1&pageSize=30`
   );
 }
 
@@ -63,7 +63,7 @@ export async function getProfileVideos(
   username: string
 ): Promise<PagedResult<ProfileVideo>> {
   return profileRequest<PagedResult<ProfileVideo>>(
-    `${profilePath(username)}/videos?page=1&pageSize=10`
+    `${profilePath(username)}/videos?page=1&pageSize=30`
   );
 }
 
@@ -71,7 +71,7 @@ export async function getProfileReviews(
   username: string
 ): Promise<PagedResult<ProfileReview>> {
   return profileRequest<PagedResult<ProfileReview>>(
-    `${profilePath(username)}/reviews?page=1&pageSize=5`
+    `${profilePath(username)}/reviews?page=1&pageSize=30`
   );
 }
 
@@ -79,7 +79,7 @@ export async function getProfileGuides(
   username: string
 ): Promise<PagedResult<ProfileGuide>> {
   return profileRequest<PagedResult<ProfileGuide>>(
-    `${profilePath(username)}/guides?page=1&pageSize=5`
+    `${profilePath(username)}/guides?page=1&pageSize=30`
   );
 }
 

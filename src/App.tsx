@@ -9,6 +9,10 @@ import LibraryGamePage from "./pages/LibraryGamePage/LibraryGamePage";
 import Badges from "./pages/Badges/Badges";
 import ProfileWishlist from "./pages/ProfileWishlist/ProfileWishlist";
 import ProfileDiscussions from "./pages/ProfileDiscussions/ProfileDiscussions";
+import ProfileScreenshots from "./pages/ProfileScreenshot/ProfileScreenshot";
+import ProfileVideos from "./pages/ProfileVideos/ProfileVideos";
+import ProfileGuides from "./pages/ProfileGuides/ProfileGuides";
+import ProfileReviews from "./pages/ProfileReviews/ProfileReviews";
 
 import GamePage from "./pages/GamePage/GamePage";
 import CharacteristicsPage from "./pages/CharacteristicsPage/CharacteristicsPage";
@@ -101,6 +105,14 @@ function App() {
       page = <ProfileWishlist username={username}/>
     } else if(pathParts[2] === "discussions"){
       page = <ProfileDiscussions username={username} />
+    } else if(pathParts[2] === "screenshots"){
+      page = <ProfileScreenshots username = {username} />
+    } else if(pathParts[2] === "videos"){
+      page = <ProfileVideos username={username} />
+    } else if(pathParts[2] === "guides"){
+      page = <ProfileGuides username={username} />
+    } else if(pathParts[2] === "reviews"){
+      page = <ProfileReviews username = {username} />
     }
     else{
       page = <Profile username={username} />;
