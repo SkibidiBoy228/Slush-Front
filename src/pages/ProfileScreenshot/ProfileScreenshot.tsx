@@ -15,7 +15,7 @@ import type {
   ProfileScreenshot,
 } from "../../types/profile";
 
-import "./ProfileScreenshots.css";
+import "./ProfileScreenshot.css"
 
 interface ProfileScreenshotsProps {
   username: string;
