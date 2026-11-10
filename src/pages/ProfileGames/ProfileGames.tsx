@@ -99,27 +99,10 @@ const ProfileGames = ({ username }: ProfileGamesProps) => {
 
     return result;
   }, [games, search, sortType, priceFilter]);
-
-  const xpProgress = profile
-    ? Math.min(
-        100,
-        Math.max(
-          0,
-          (profile.currentXp / Math.max(profile.maxXp, 1)) * 100
-        )
-      )
-    : 0;
-
   const openProfile = () => {
     window.location.href =
       `/profile/${encodeURIComponent(username)}`;
   };
-
-  const openFriendProfile = (friendUsername: string) => {
-    window.location.href =
-      `/profile/${encodeURIComponent(friendUsername)}`;
-  };
-
   const openGame = (gameId: string) => {
     window.location.href = `/game/${encodeURIComponent(gameId)}`;
   };

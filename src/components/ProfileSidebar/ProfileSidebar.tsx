@@ -17,12 +17,14 @@ interface ProfileSidebarProps {
   profile: UserProfile;
   username: string;
   activeSection: ProfileSection;
+  className?: string;
 }
 
 const ProfileSidebar = ({
   profile,
   username,
   activeSection,
+  className,
 }: ProfileSidebarProps) => {
   const basePath = `/profile/${encodeURIComponent(username)}`;
 
@@ -84,9 +86,8 @@ const ProfileSidebar = ({
   ] as const;
 
   return (
-    <aside className="profile-sidebar">
+    <aside className={`profile-sidebar ${className ?? ""}`}>
 
-      {/* Navigation */}
 
       <section className="profile-sidebar-card profile-sidebar-navigation">
 
