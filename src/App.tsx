@@ -8,6 +8,7 @@ import Friends from "./pages/Friends/Friend";
 import LibraryGamePage from "./pages/LibraryGamePage/LibraryGamePage";
 import Badges from "./pages/Badges/Badges";
 import ProfileWishlist from "./pages/ProfileWishlist/ProfileWishlist";
+import ProfileDiscussions from "./pages/ProfileDiscussions/ProfileDiscussions";
 
 import GamePage from "./pages/GamePage/GamePage";
 import CharacteristicsPage from "./pages/CharacteristicsPage/CharacteristicsPage";
@@ -98,6 +99,8 @@ function App() {
       page = <ProfileGames username={username} />;
     }else if (pathParts[2] === "wishlist"){
       page = <ProfileWishlist username={username}/>
+    } else if(pathParts[2] === "discussions"){
+      page = <ProfileDiscussions username={username} />
     }
     else{
       page = <Profile username={username} />;
