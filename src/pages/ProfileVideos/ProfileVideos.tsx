@@ -272,12 +272,20 @@ const ProfileVideos = ({ username }: ProfileVideosProps) => {
                     onClick={() => setSelectedVideo(video)}
                     title={video.title}
                   >
-                    <img
-                      className="profile-video-thumbnail"
-                      src={video.thumbnailUrl}
-                      alt={video.title || video.gameTitle}
-                      loading="lazy"
-                    />
+                        <video
+                        className="profile-video-thumbnail"
+                        src={video.videoUrl}
+                        muted
+                        playsInline
+                        preload="metadata"
+                        onLoadedMetadata={(event) => {
+                            const videoElement = event.currentTarget;
+
+                            if (videoElement.duration > 1) {
+                            videoElement.currentTime = 1;
+                            }
+                        }}
+                        />
 
                     <span className="profile-video-overlay">
                       <span className="profile-video-play">

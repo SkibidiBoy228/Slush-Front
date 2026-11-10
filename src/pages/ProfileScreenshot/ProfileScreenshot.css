@@ -336,6 +336,30 @@
   background: #08758a;
 }
 
+.profile-videos-grid {
+  gap: 12px;
+}
+
+.profile-video-card {
+  border: 1px solid rgba(89, 181, 194, 0.25);
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.profile-video-card:hover {
+  border-color: rgba(89, 181, 194, 0.7);
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 600px) {
+  .profile-videos-grid {
+    gap: 8px;
+  }
+}
+
 @media (max-width: 900px) {
   .profile-screenshots-layout {
     grid-template-columns: 1fr;

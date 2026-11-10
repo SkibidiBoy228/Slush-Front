@@ -402,6 +402,24 @@
   cursor: pointer;
 }
 
+.profile-reviews-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.profile-review-card{
+  border: 1px solid rgba(89, 181, 194, 0.2);
+  border-radius: 12px;
+  background: #003542;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+.profile-review-card:hover {
+  border-color: rgba(89, 181, 194, 0.45);
+  background: #03404e;
+}
+
 /* Responsive */
 
 @media (max-width: 900px) {
