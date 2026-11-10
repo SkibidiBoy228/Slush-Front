@@ -8,9 +8,6 @@ import type {
   UserProfile,
   ProfileGame,
 } from "../../types/profile";
-
-import type { PagedResult } from "../../types/profile";
-
 import "./ProfileGames.css";
 
 interface ProfileGamesProps {
@@ -19,410 +16,433 @@ interface ProfileGamesProps {
 
 type SortType = "name" | "price";
 
-const ProfileGames = ({username} : ProfileGamesProps) =>{
-    const [profile, setProfile] = useState<UserProfile | null>(null);
-    const [games, setGames] = useState<ProfileGame[]>([]);
+const ProfileGames = ({ username }: ProfileGamesProps) => {
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [games, setGames] = useState<ProfileGame[]>([]);
 
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
 
-    const [search, setSearch] = useState("");
-    const [sortType,setSortType] = useState<SortType>("name");
-    const [priceFilter, setPriceFilter] = useState("all");
+  const [search, setSearch] = useState("");
+  const [sortType, setSortType] = useState<SortType>("name");
+  const [priceFilter, setPriceFilter] = useState("all");
 
-    const currentUsername = getCurrentUsername();
+  const currentUsername = getCurrentUsername();
 
-    const isOwnProfile = currentUsername?.toLowerCase() === username.toLowerCase();
+  const isOwnProfile =
+    currentUsername?.toLowerCase() === username.toLowerCase();
 
-    useEffect(()=>{
-        let canceled = false;
+  useEffect(() => {
+    let cancelled = false;
 
-        const loadData = async () =>{
-            try{
-                setIsLoading(true);
-                setError("");
+    const loadData = async () => {
+      try {
+        setIsLoading(true);
+        setError("");
 
-                const [profileData, gamesData] = await Promise.all([
-                    getUserProfile(username),
-                    getProfileGames(username),
-                ]);
-                if(canceled) return;
+        const [profileData, gamesData] = await Promise.all([
+          getUserProfile(username),
+          getProfileGames(username),
+        ]);
 
-                setProfile(profileData);
-                setGames(gamesData.items || []);
-            }catch(err){
-                if(!canceled){
-                    setError(
-                        err instanceof Error
-                        ? err.message
-                        : "Не вдалося завантажити ігри"
-                    );
-                }
-            }finally{
-                if(!canceled){
-                    setIsLoading(false);
-                }
-            }
-        };
-        loadData();
+        if (cancelled) return;
 
-        return () => {
-            canceled = true;
+        setProfile(profileData);
+        setGames(gamesData.items || []);
+      } catch (err) {
+        if (!cancelled) {
+          setError(
+            err instanceof Error
+              ? err.message
+              : "Не вдалося завантажити ігри"
+          );
         }
-    }, [username]);
-
-    const filteredGames = useMemo(()=>{
-        let result = [...games];
-
-        if(search.trim()){
-            result = result.filter((game)=> game.title.toLowerCase().includes(search.toLowerCase()));
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
         }
-        if(priceFilter === "free"){
-            result = result.filter((game)=>game.price <=0);
-        }
-        if(priceFilter === "paid"){
-            result = result.filter((game)=> game.price > 0);
-        }
-        if(sortType ===  "name"){
-            result.sort((a,b)=>a.title.localeCompare(b.title));
-        }else{
-            result.sort((a,b)=>b.price - a.price);
-        }
-        return result;
-    }, [games,search,sortType,priceFilter]);
-
-    const xpProgress = profile
-        ? Math.min(
-            100,
-            Math.max(
-                0, (profile.currentXp / Math.max(profile.maxXp, 1)) * 100
-            )
-        )
-    : 0;
-
-    const openProfile = () => {
-        window.location.href = `/profile/${encodeURIComponent(username)}`;
-    } 
-    const openFriendProfile = (friendUsername : string) => {
-        window.location.href = `/profile/${encodeURIComponent(friendUsername)}`;
-    }
-    const openGame = (gameId: string) =>{
-        window.location.href = `/game/${encodeURIComponent(gameId)}`;
-    }
-    const formatPrice = (price: number) => {
-        if (price <= 0) return "Безкоштовно";
-        return `${price.toFixed(2)} ₴`;
+      }
     };
 
-    if(isLoading){
-        return(
-            <div className="profile-games-page">
-                <main className="profile-games-container">
-                    <div className="profile-games-message">
-                        Завантаження ігор...
-                    </div>
-                </main>
-            </div>
-        );
-    }
-    if(error || !profile){
-        return(
-            <div className="profile-games-page">
-                <main className="profile-games-container">
-                    <div className="profile-games-message">
-                        {error || "Профіль не знайдено"}
-                        <button onClick={openProfile}>
-                            Повернутися до профілю
-                        </button>
-                    </div>
-                </main>
-            </div>
-        );
+    loadData();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [username]);
+
+  const filteredGames = useMemo(() => {
+    let result = [...games];
+
+    if (search.trim()) {
+      result = result.filter((game) =>
+        game.title.toLowerCase().includes(search.toLowerCase())
+      );
     }
 
+    if (priceFilter === "free") {
+      result = result.filter((game) => game.price <= 0);
+    }
+
+    if (priceFilter === "paid") {
+      result = result.filter((game) => game.price > 0);
+    }
+
+    if (sortType === "name") {
+      result.sort((a, b) =>
+        a.title.localeCompare(b.title)
+      );
+    } else {
+      result.sort((a, b) => b.price - a.price);
+    }
+
+    return result;
+  }, [games, search, sortType, priceFilter]);
+
+  const xpProgress = profile
+    ? Math.min(
+        100,
+        Math.max(
+          0,
+          (profile.currentXp / Math.max(profile.maxXp, 1)) * 100
+        )
+      )
+    : 0;
+
+  const openProfile = () => {
+    window.location.href =
+      `/profile/${encodeURIComponent(username)}`;
+  };
+
+  const openFriendProfile = (friendUsername: string) => {
+    window.location.href =
+      `/profile/${encodeURIComponent(friendUsername)}`;
+  };
+
+  const openGame = (gameId: string) => {
+    window.location.href = `/game/${encodeURIComponent(gameId)}`;
+  };
+
+  const formatPrice = (price: number) => {
+    if (price <= 0) return "Безкоштовно";
+    return `${price.toFixed(2)} $`;
+  };
+
+  if (isLoading) {
     return (
-        <div className="profile-games-page">
+      <div className="profile-games-page">
         <main className="profile-games-container">
-            <section className="profile-games-header">
-            <div
-                className="profile-games-cover"
-                style={{
-                backgroundImage: profile.coverUrl
-                    ? `url("${profile.coverUrl}")`
-                    : undefined,
-                }}
+          <div className="profile-games-message">
+            Завантаження ігор...
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (error || !profile) {
+    return (
+      <div className="profile-games-page">
+        <main className="profile-games-container">
+          <div className="profile-games-message">
+            {error || "Профіль не знайдено"}
+
+            <button onClick={openProfile}>
+              Повернутися до профілю
+            </button>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  return (
+    <div className="profile-games-page">
+      <main className="profile-games-container">
+
+        {/* Profile header */}
+
+        <section className="profile-games-header">
+          <div
+            className="profile-games-cover"
+            style={{
+              backgroundImage: profile.coverUrl
+                ? `url("${profile.coverUrl}")`
+                : undefined,
+            }}
+          />
+
+          <div className="profile-games-user-info">
+            <img
+              className="profile-games-avatar"
+              src={profile.avatarUrl}
+              alt={profile.username}
             />
 
-            <div className="profile-games-user-info">
-                <img
-                className="profile-games-avatar"
-                src={profile.avatarUrl}
-                alt={profile.username}
-                />
+            <div className="profile-games-user-details">
+              <h1>{profile.username}</h1>
 
-                <div className="profile-games-user-details">
-                <h1>{profile.username}</h1>
+              <span
+                className={
+                  profile.isOnline
+                    ? "profile-games-online"
+                    : "profile-games-offline"
+                }
+              >
+                <span />
+                {profile.isOnline ? "В мережі" : "Не в мережі"}
+              </span>
 
-                <span
-                    className={
-                    profile.isOnline
-                        ? "profile-games-online"
-                        : "profile-games-offline"
-                    }
+              <p>{profile.bio}</p>
+            </div>
+
+            <button
+              className="profile-games-view-profile"
+              onClick={openProfile}
+            >
+              Переглянути профіль
+            </button>
+          </div>
+        </section>
+
+        {/* Main layout */}
+
+        <div className="profile-games-layout">
+
+          {/* Games */}
+
+          <section className="profile-games-main">
+            <div className="profile-games-section">
+
+              <div className="profile-games-heading">
+                <div>
+                  <h2>Ігри</h2>
+                  <p>
+                    Колекція ігор користувача {profile.username}
+                  </p>
+                </div>
+
+                <span>{profile.counters.games}</span>
+              </div>
+
+              <div className="profile-games-toolbar">
+
+                <div className="profile-games-search">
+                  <span>⌕</span>
+
+                  <input
+                    type="search"
+                    placeholder="Пошук ігор..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                </div>
+
+                <select
+                  value={priceFilter}
+                  onChange={(e) => setPriceFilter(e.target.value)}
                 >
-                    <span />
-                    {profile.isOnline ? "В мережі" : "Не в мережі"}
+                  <option value="all">Усі ігри</option>
+                  <option value="free">Безкоштовні</option>
+                  <option value="paid">Платні</option>
+                </select>
+
+                <select
+                  value={sortType}
+                  onChange={(e) =>
+                    setSortType(e.target.value as SortType)
+                  }
+                >
+                  <option value="name">За назвою</option>
+                  <option value="price">За ціною</option>
+                </select>
+
+              </div>
+
+              <div className="profile-games-list-heading">
+                <span>⌄</span>
+                Колекція
+                <span className="profile-games-list-count">
+                  {filteredGames.length} ігор
                 </span>
+              </div>
 
-                <p>{profile.bio}</p>
-                </div>
-
-                <button
-                className="profile-games-view-profile"
-                onClick={openProfile}
-                >
-                Переглянути профіль
-                </button>
-            </div>
-            </section>
-
-            {/* Main layout */}
-
-            <div className="profile-games-layout">
-
-            {/* Games */}
-
-            <section className="profile-games-main">
-                <div className="profile-games-section">
-
-                <div className="profile-games-heading">
-                    <div>
-                    <h2>Ігри</h2>
-                    <p>
-                        Колекція ігор користувача {profile.username}
-                    </p>
-                    </div>
-
-                    <span>{profile.counters.games}</span>
-                </div>
-
-                <div className="profile-games-toolbar">
-
-                    <div className="profile-games-search">
-                    <span>⌕</span>
-
-                    <input
-                        type="search"
-                        placeholder="Пошук ігор..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
-                    </div>
-
-                    <select
-                    value={priceFilter}
-                    onChange={(e) => setPriceFilter(e.target.value)}
+              {filteredGames.length > 0 ? (
+                <div className="profile-games-list">
+                  {filteredGames.map((game) => (
+                    <article
+                      className="profile-game-card"
+                      key={game.id}
+                      onClick={() => openGame(game.id)}
                     >
-                    <option value="all">Усі ігри</option>
-                    <option value="free">Безкоштовні</option>
-                    <option value="paid">Платні</option>
-                    </select>
-
-                    <select
-                    value={sortType}
-                    onChange={(e) =>
-                        setSortType(e.target.value as SortType)
-                    }
-                    >
-                    <option value="name">За назвою</option>
-                    <option value="price">За ціною</option>
-                    </select>
-
-                </div>
-
-                <div className="profile-games-list-heading">
-                    <span>⌄</span>
-                    Колекція
-                    <span className="profile-games-list-count">
-                    {filteredGames.length} ігор
-                    </span>
-                </div>
-
-                {filteredGames.length > 0 ? (
-                    <div className="profile-games-list">
-                    {filteredGames.map((game) => (
-                        <article
-                        className="profile-game-card"
-                        key={game.id}
-                        onClick={() => openGame(game.id)}
-                        >
-                        <div className="profile-game-image">
-                            <img
-                            src={game.imageUrl}
-                            alt={game.title}
-                            loading="lazy"
-                            />
-                        </div>
-
-                        <div className="profile-game-content">
-                            <h3>{game.title}</h3>
-
-                            <span className="profile-game-price">
-                            {formatPrice(game.price)}
-                            </span>
-                        </div>
-
-                        <button
-                            className="profile-game-open"
-                            onClick={(e) => {
-                            e.stopPropagation();
-                            openGame(game.id);
-                            }}
-                        >
-                            Переглянути
-                        </button>
-                        </article>
-                    ))}
-                    </div>
-                ) : (
-                    <div className="profile-games-empty">
-                    <span>🎮</span>
-
-                    <h3>
-                        {search
-                        ? "Ігор не знайдено"
-                        : "Колекція поки порожня"}
-                    </h3>
-
-                    <p>
-                        {search
-                        ? "Спробуй змінити пошуковий запит."
-                        : isOwnProfile
-                            ? "Придбай свою першу гру та вона з'явиться тут."
-                            : "Цей користувач ще не додав ігор до колекції."}
-                    </p>
-                    </div>
-                )}
-
-                </div>
-            </section>
-
-            {/* Sidebar */}
-
-            <aside className="profile-games-sidebar">
-
-                <section className="profile-games-sidebar-card">
-
-                <div className="profile-games-sidebar-title">
-                    <h2>Рівень</h2>
-
-                    <span>{profile.level}</span>
-                </div>
-
-                <div className="profile-games-xp">
-                    <div style={{ width: `${xpProgress}%` }} />
-                </div>
-
-                <div className="profile-games-xp-labels">
-                    <span>{profile.currentXp} очок</span>
-                    <span>{profile.maxXp} очок</span>
-                </div>
-
-                <div className="profile-games-divider" />
-
-                <h3>Статистика</h3>
-
-                <div className="profile-games-stats">
-                    <div>
-                    <span>Значки</span>
-                    <strong>{profile.counters.badges}</strong>
-                    </div>
-
-                    <div>
-                    <span>Ігри</span>
-                    <strong>{profile.counters.games}</strong>
-                    </div>
-
-                    <div>
-                    <span>У бажаному</span>
-                    <strong>{profile.counters.wishlist}</strong>
-                    </div>
-
-                    <div>
-                    <span>Обговорення</span>
-                    <strong>{profile.counters.discussions}</strong>
-                    </div>
-
-                    <div>
-                    <span>Скріншоти</span>
-                    <strong>{profile.counters.screenshots}</strong>
-                    </div>
-
-                    <div>
-                    <span>Відео</span>
-                    <strong>{profile.counters.videos}</strong>
-                    </div>
-
-                    <div>
-                    <span>Гайди</span>
-                    <strong>{profile.counters.guides}</strong>
-                    </div>
-
-                    <div>
-                    <span>Рецензії</span>
-                    <strong>{profile.counters.reviews}</strong>
-                    </div>
-                </div>
-
-                <button
-                    className="profile-games-back"
-                    onClick={openProfile}
-                >
-                    Головна профілю
-                </button>
-
-                </section>
-
-                <section className="profile-games-sidebar-card">
-
-                <div className="profile-games-sidebar-title">
-                    <h2>Друзі</h2>
-                    <span>{profile.counters.friends}</span>
-                </div>
-
-                {profile.friends.length > 0 ? (
-                    <div className="profile-games-friends">
-                    {profile.friends.map((friend) => (
-                        <button
-                        key={friend.id}
-                        className="profile-games-friend"
-                        onClick={() =>
-                            openFriendProfile(friend.username)
-                        }
-                        >
+                      <div className="profile-game-image">
                         <img
-                            src={friend.avatarUrl}
-                            alt={friend.username}
+                          src={game.imageUrl}
+                          alt={game.title}
+                          loading="lazy"
                         />
+                      </div>
 
-                        <span>{friend.username}</span>
+                      <div className="profile-game-content">
+                        <h3>{game.title}</h3>
 
-                        <strong>{friend.level}</strong>
-                        </button>
-                    ))}
-                    </div>
-                ) : (
-                    <p className="profile-games-no-friends">
-                    Друзів поки немає
-                    </p>
-                )}
+                        <span className="profile-game-price">
+                          {formatPrice(game.price)}
+                        </span>
+                      </div>
 
-                </section>
+                      <button
+                        className="profile-game-open"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openGame(game.id);
+                        }}
+                      >
+                        Переглянути
+                      </button>
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <div className="profile-games-empty">
+                  <span>🎮</span>
 
-            </aside>
+                  <h3>
+                    {search
+                      ? "Ігор не знайдено"
+                      : "Колекція поки порожня"}
+                  </h3>
+
+                  <p>
+                    {search
+                      ? "Спробуй змінити пошуковий запит."
+                      : isOwnProfile
+                        ? "Придбай свою першу гру та вона з'явиться тут."
+                        : "Цей користувач ще не додав ігор до колекції."}
+                  </p>
+                </div>
+              )}
+
             </div>
-        </main>
+          </section>
+
+          {/* Sidebar */}
+
+          <aside className="profile-games-sidebar">
+
+            <section className="profile-games-sidebar-card">
+
+              <div className="profile-games-sidebar-title">
+                <h2>Рівень</h2>
+
+                <span>{profile.level}</span>
+              </div>
+
+              <div className="profile-games-xp">
+                <div style={{ width: `${xpProgress}%` }} />
+              </div>
+
+              <div className="profile-games-xp-labels">
+                <span>{profile.currentXp} очок</span>
+                <span>{profile.maxXp} очок</span>
+              </div>
+
+              <div className="profile-games-divider" />
+
+              <h3>Статистика</h3>
+
+              <div className="profile-games-stats">
+                <div>
+                  <span>Значки</span>
+                  <strong>{profile.counters.badges}</strong>
+                </div>
+
+                <div>
+                  <span>Ігри</span>
+                  <strong>{profile.counters.games}</strong>
+                </div>
+
+                <div>
+                  <span>У бажаному</span>
+                  <strong>{profile.counters.wishlist}</strong>
+                </div>
+
+                <div>
+                  <span>Обговорення</span>
+                  <strong>{profile.counters.discussions}</strong>
+                </div>
+
+                <div>
+                  <span>Скріншоти</span>
+                  <strong>{profile.counters.screenshots}</strong>
+                </div>
+
+                <div>
+                  <span>Відео</span>
+                  <strong>{profile.counters.videos}</strong>
+                </div>
+
+                <div>
+                  <span>Гайди</span>
+                  <strong>{profile.counters.guides}</strong>
+                </div>
+
+                <div>
+                  <span>Рецензії</span>
+                  <strong>{profile.counters.reviews}</strong>
+                </div>
+              </div>
+
+              <button
+                className="profile-games-back"
+                onClick={openProfile}
+              >
+                Головна профілю
+              </button>
+
+            </section>
+
+            <section className="profile-games-sidebar-card">
+
+              <div className="profile-games-sidebar-title">
+                <h2>Друзі</h2>
+                <span>{profile.counters.friends}</span>
+              </div>
+
+              {profile.friends.length > 0 ? (
+                <div className="profile-games-friends">
+                  {profile.friends.map((friend) => (
+                    <button
+                      key={friend.id}
+                      className="profile-games-friend"
+                      onClick={() =>
+                        openFriendProfile(friend.username)
+                      }
+                    >
+                      <img
+                        src={friend.avatarUrl}
+                        alt={friend.username}
+                      />
+
+                      <span>{friend.username}</span>
+
+                      <strong>{friend.level}</strong>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <p className="profile-games-no-friends">
+                  Друзів поки немає
+                </p>
+              )}
+
+            </section>
+
+          </aside>
         </div>
-    );
-}
+      </main>
+    </div>
+  );
+};
+
 export default ProfileGames;
