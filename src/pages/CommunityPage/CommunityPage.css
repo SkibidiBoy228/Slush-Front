@@ -131,6 +131,19 @@
   line-height: 1.65;
 }
 
+.community-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+.community-sidebar-creator {
+  width: 100%;
+  min-width: 0;
+}
+
 @media (max-width: 1100px) {
   .community-page-content {
     width: calc(100% - 40px);

@@ -1,7 +1,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import GameSearch from "../../components/GameSearch/GameSearch";
 
+import GameSearch from "../../components/GameSearch/GameSearch";
 import CommunityHeader from "../../components/Community/CommunityHeader/CommunityHeader";
 import CommunityTabs from "../../components/Community/CommunityTabs/CommunityTabs";
 import CommunitySidebar, {
@@ -77,8 +77,6 @@ function CommunityPage({ gameId }: CommunityPageProps) {
   const [openComments, setOpenComments] =
     useState<Record<string, boolean>>({});
 
-
-
   const loadGame = useCallback(async () => {
     try {
       setGameLoading(true);
@@ -92,7 +90,6 @@ function CommunityPage({ gameId }: CommunityPageProps) {
     }
   }, [gameId]);
 
-
   const loadCounts = useCallback(async () => {
     try {
       const data = await getCommunityTabCounts(gameId);
@@ -101,8 +98,6 @@ function CommunityPage({ gameId }: CommunityPageProps) {
       console.error("Failed to load community counts:", error);
     }
   }, [gameId]);
-
-
 
   const getBackendType = (
     filter: CommunityFilter
@@ -125,7 +120,6 @@ function CommunityPage({ gameId }: CommunityPageProps) {
 
   const getBackendSort = (value: CommunitySort) =>
     value === "popular" ? "ByRating" : "Newest";
-
 
   const loadPosts = useCallback(async () => {
     try {
@@ -165,8 +159,6 @@ function CommunityPage({ gameId }: CommunityPageProps) {
     loadPosts();
   }, [loadPosts]);
 
-
-
   const handleSubscribe = async () => {
     try {
       await toggleCommunitySubscription(gameId);
@@ -175,7 +167,6 @@ function CommunityPage({ gameId }: CommunityPageProps) {
       console.error("Failed to toggle subscription:", error);
     }
   };
-
 
   const handleLike = async (postId: string) => {
     try {
@@ -198,8 +189,6 @@ function CommunityPage({ gameId }: CommunityPageProps) {
       console.error("Failed to toggle like:", error);
     }
   };
-
-
 
   const handleLoadComments = useCallback(async (postId: string) => {
     try {
@@ -232,8 +221,6 @@ function CommunityPage({ gameId }: CommunityPageProps) {
       [postId]: willOpen,
     }));
   };
-
-
 
   const handleSubmitComment = async (
     postId: string,
@@ -280,8 +267,6 @@ function CommunityPage({ gameId }: CommunityPageProps) {
     );
   };
 
-
-
   const handleUpdateComment = async (
     commentId: string,
     content: string
@@ -315,8 +300,6 @@ function CommunityPage({ gameId }: CommunityPageProps) {
       return updated;
     });
   };
-
-
 
   const handleDeleteComment = async (
     postId: string,
@@ -370,7 +353,6 @@ function CommunityPage({ gameId }: CommunityPageProps) {
     }
   };
 
-
   const handleCreatePost = async (data: {
     postType: CommunityPostType;
     title: string;
@@ -403,8 +385,6 @@ function CommunityPage({ gameId }: CommunityPageProps) {
     }
   };
 
- 
-
   const filteredPosts = useMemo(() => {
     const search = searchValue.trim().toLowerCase();
 
@@ -426,12 +406,9 @@ function CommunityPage({ gameId }: CommunityPageProps) {
     });
   }, [posts, searchValue]);
 
-
-
   if (gameLoading) {
     return (
       <div className="community-page-state">
-
         <div className="community-state-content">
           Завантаження спільноти...
         </div>
@@ -439,10 +416,8 @@ function CommunityPage({ gameId }: CommunityPageProps) {
     );
   }
 
-
   return (
     <div className="community-page">
-
       <main className="community-page-content">
         <div className="community-page-search">
           <GameSearch />
@@ -470,13 +445,6 @@ function CommunityPage({ gameId }: CommunityPageProps) {
 
         <div className="community-layout">
           <section className="community-main">
-            <div className="community-feed-header">
-              <CommunityPostCreator
-                onSubmit={handleCreatePost}
-                onOpenChange={setIsCreatingPost}
-              />
-            </div>
-
             <div className="community-feed">
               {loading ? (
                 <div className="community-feed-state">
@@ -485,10 +453,7 @@ function CommunityPage({ gameId }: CommunityPageProps) {
               ) : error ? (
                 <div className="community-feed-state community-feed-error">
                   {error}
-                  <button
-                    type="button"
-                    onClick={loadPosts}
-                  >
+                  <button type="button" onClick={loadPosts}>
                     Спробувати ще раз
                   </button>
                 </div>
@@ -530,43 +495,52 @@ function CommunityPage({ gameId }: CommunityPageProps) {
             </div>
           </section>
 
-          {isCreatingPost ? (
-            <aside className="community-rules">
-              <h3>Правила спільноти</h3>
+          <aside className="community-sidebar">
+            <div className="community-sidebar-creator">
+              <CommunityPostCreator
+                onSubmit={handleCreatePost}
+                onOpenChange={setIsCreatingPost}
+              />
+            </div>
 
-              <ul>
-                <li>
-                  Публікуйте тільки оригінальний контент.
-                </li>
+            {isCreatingPost ? (
+              <div className="community-rules">
+                <h3>Правила спільноти</h3>
 
-                <li>
-                  Не допускайте образ та принижень на адресу інших
-                  гравців, розробників чи груп.
-                </li>
+                <ul>
+                  <li>
+                    Публікуйте тільки оригінальний контент.
+                  </li>
 
-                <li>
-                  Не включайте погрози або образливий контент.
-                </li>
-              </ul>
-            </aside>
-          ) : (
-            <CommunitySidebar
-              activeFilter={activeFilter}
-              sort={sort}
-              counts={{
-                all: counts.all,
-                discussions: counts.discussions,
-                screenshots: counts.screenshots,
-                videos: counts.videos,
-                guides: counts.guides,
-                news: counts.news,
-              }}
-              onFilterChange={setActiveFilter}
-              onSortChange={setSort}
-              searchValue={searchValue}
-              onSearchChange={setSearchValue}
-            />
-          )}
+                  <li>
+                    Не допускайте образ та принижень на адресу інших
+                    гравців, розробників чи груп.
+                  </li>
+
+                  <li>
+                    Не включайте погрози або образливий контент.
+                  </li>
+                </ul>
+              </div>
+            ) : (
+              <CommunitySidebar
+                activeFilter={activeFilter}
+                sort={sort}
+                counts={{
+                  all: counts.all,
+                  discussions: counts.discussions,
+                  screenshots: counts.screenshots,
+                  videos: counts.videos,
+                  guides: counts.guides,
+                  news: counts.news,
+                }}
+                onFilterChange={setActiveFilter}
+                onSortChange={setSort}
+                searchValue={searchValue}
+                onSearchChange={setSearchValue}
+              />
+            )}
+          </aside>
         </div>
       </main>
     </div>
