@@ -3,7 +3,7 @@ import type { CommunityPost as CommunityPostData } from "../../../types/communit
 import "./CommunityPost.css";
 
 interface CommunityPostProps {
-  gameId: string;
+  gameId?: string;
   post: CommunityPostData;
   onLike: (postId: string) => void;
   onComments: (postId: string) => void;
@@ -16,6 +16,8 @@ function CommunityPost({
   onComments,
 }: CommunityPostProps) {
   const openPost = () => {
+    if (!gameId) return;
+
     window.location.href =
       `/game/${encodeURIComponent(gameId)}/community/post/${encodeURIComponent(post.id)}`;
   };
@@ -53,26 +55,28 @@ function CommunityPost({
   const authorInitial =
     post.authorUsername?.charAt(0).toUpperCase() || "?";
 
-  const handleShare = async () => {
-    try {
-      const postUrl =
-        `${window.location.origin}/game/${encodeURIComponent(gameId)}/community/post/${encodeURIComponent(post.id)}`;
+const handleShare = async () => {
+  if (!gameId) return;
 
-      if (navigator.share) {
-        await navigator.share({
-          title: post.title || "Публікація спільноти",
-          text: post.content || post.shortDescription || "",
-          url: postUrl,
-        });
-      } else if (navigator.clipboard) {
-        await navigator.clipboard.writeText(postUrl);
-      }
-    } catch (error) {
-      if (error instanceof Error && error.name !== "AbortError") {
-        console.error("Share failed:", error);
-      }
+  try {
+    const postUrl =
+      `${window.location.origin}/game/${encodeURIComponent(gameId)}/community/post/${encodeURIComponent(post.id)}`;
+
+    if (navigator.share) {
+      await navigator.share({
+        title: post.title || "Публікація спільноти",
+        text: post.content || post.shortDescription || "",
+        url: postUrl,
+      });
+    } else if (navigator.clipboard) {
+      await navigator.clipboard.writeText(postUrl);
     }
-  };
+  } catch (error) {
+    if (error instanceof Error && error.name !== "AbortError") {
+      console.error("Share failed:", error);
+    }
+  }
+};
 
   const renderMedia = () => {
     if (!post.mediaUrl) return null;

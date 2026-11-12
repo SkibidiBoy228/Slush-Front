@@ -503,6 +503,7 @@ function CommunityPage({ gameId }: CommunityPageProps) {
                     key={post.id}
                   >
                     <CommunityPost
+                      gameId={gameId}
                       post={post}
                       onLike={handleLike}
                       onComments={handleToggleComments}
