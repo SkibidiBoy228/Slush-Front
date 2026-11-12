@@ -13,6 +13,8 @@ import type {
   UpdateCommunityPostRequest,
 } from "../types/community";
 
+import type { CommunityPost } from "../types/community";
+
 export async function getCommunityPosts(
   gameId: string,
   options: {
@@ -150,4 +152,10 @@ export async function deleteComment(
       method: "DELETE",
     }
   );
+}
+
+export const getCommunityPostById = async (
+  postId: string
+) : Promise<CommunityPost> =>{
+  return apiRequest<CommunityPost>(`/api/Community/${postId}`)
 }

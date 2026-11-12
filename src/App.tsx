@@ -13,6 +13,7 @@ import ProfileScreenshots from "./pages/ProfileScreenshot/ProfileScreenshot";
 import ProfileVideos from "./pages/ProfileVideos/ProfileVideos";
 import ProfileGuides from "./pages/ProfileGuides/ProfileGuides";
 import ProfileReviews from "./pages/ProfileReviews/ProfileReviews";
+import CommunityPostDetails from "./pages/CommunityPostDetails/CommunityPostDetails";
 
 import GamePage from "./pages/GamePage/GamePage";
 import CharacteristicsPage from "./pages/CharacteristicsPage/CharacteristicsPage";
@@ -54,9 +55,18 @@ function App() {
     } else if (pathParts[2] === "dlc") {
       const dlcId = pathParts[3];
       page = <DlcPage appId={appId} dlcId={dlcId} />;
-    } else if (pathParts[2] === "community") {
-      page = <CommunityPage gameId={appId} />;
-    } else {
+    }  else if (pathParts[2] === "community") {
+      if (pathParts[3] === "post" && pathParts[4]) {
+        page = (
+          <CommunityPostDetails
+            gameId={decodeURIComponent(appId)}
+            postId={decodeURIComponent(pathParts[4])}
+          />
+        );
+      } else {
+        page = <CommunityPage gameId={appId} />;
+      }
+    }else {
       page = <GamePage appId={appId} />;
     }
   } else if (pathParts[0] === "library") {

@@ -361,6 +361,337 @@
   font-size: 11px;
 }
 
+/* =====================================================
+   DETAILS PAGE — COMMENTS DESIGN
+   Эти стили применяются только в режиме variant="details"
+===================================================== */
+
+.community-comments-details {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(66, 166, 174, 0.13);
+}
+
+.community-comments-details .community-comments-title {
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.community-comments-details .community-comments-title h3 {
+  color: #eafafa;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.community-comments-details .community-comments-title > span {
+  min-width: 19px;
+  height: 19px;
+  background: #075064;
+  color: #a8e2e4;
+  font-size: 9px;
+}
+
+/* Comment composer */
+
+.community-comments-details .community-comment-form {
+  gap: 8px;
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid rgba(57, 160, 169, 0.13);
+  border-radius: 9px;
+  background: #002b36;
+}
+
+.community-comments-details .community-comment-form textarea {
+  min-height: 55px;
+  padding: 9px 10px;
+  border: 1px solid rgba(83, 157, 166, 0.14);
+  border-radius: 7px;
+  background: #003642;
+  font-size: 11px;
+}
+
+.community-comments-details .community-comment-form-footer {
+  justify-content: flex-end;
+}
+
+.community-comments-details .community-comment-form-footer > span {
+  margin-right: auto;
+  font-size: 9px;
+}
+
+.community-comments-details .community-comment-form-footer button {
+  min-height: 28px;
+  padding: 0 16px;
+  border-radius: 6px;
+  background: #1bd7bd;
+  font-size: 10px;
+}
+
+
+
+.community-comments-details .community-comments-list {
+  gap: 9px;
+}
+
+.community-comments-details .community-comment {
+  gap: 9px;
+  padding: 11px;
+  border: 1px solid rgba(56, 151, 163, 0.11);
+  border-radius: 9px;
+  background: #003440;
+}
+
+.community-comments-details .community-comment-avatar {
+  width: 29px;
+  height: 29px;
+  background: #096477;
+  font-size: 11px;
+}
+
+.community-comments-details .community-comment-header {
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.community-comments-details .community-comment-author {
+  color: #e4fafa;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.community-comments-details .community-comment-date {
+  color: #739ba3;
+  font-size: 9px;
+}
+
+.community-comments-details .community-comment-content {
+  color: #c0dadd;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.community-comments-details .community-comment-actions {
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.community-comments-details .community-comment-actions button {
+  font-size: 9px;
+}
+
+.community-comments-details .community-comment-reply-button {
+  color: #25d9c4;
+}
+
+
+.community-comments-details .community-comment-replies {
+  gap: 8px;
+  margin-top: 10px;
+  margin-left: 0;
+  padding-left: 10px;
+  border-left: 2px solid rgba(24, 211, 193, 0.45);
+}
+
+.community-comments-details .community-comment-reply {
+  padding: 8px;
+  border: 1px solid rgba(56, 151, 163, 0.08);
+  border-radius: 7px;
+  background: rgba(0, 28, 37, 0.48);
+}
+
+.community-comments-details .community-comment-reply .community-comment-avatar {
+  width: 25px;
+  height: 25px;
+}
+
+
+
+.community-comments-details .community-reply-indicator {
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  border-left: 2px solid #1bd7bd;
+  border-radius: 5px;
+  background: rgba(0, 214, 193, 0.06);
+  font-size: 10px;
+}
+
+
+
+.community-comments-details .community-comment-edit-form textarea {
+  min-height: 55px;
+  font-size: 11px;
+}
+
+.community-comments-details .community-comment-edit-actions button {
+  min-height: 27px;
+  font-size: 9px;
+}
+
+
+
+.community-comments-details .community-comments-state {
+  padding: 20px 12px;
+  border: 1px solid rgba(56, 151, 163, 0.1);
+  border-radius: 9px;
+  background: #003440;
+  font-size: 10px;
+}
+
+.community-comments-details .community-comments-empty-icon {
+  width: 34px;
+  height: 34px;
+  margin-bottom: 8px;
+}
+
+
+/* =========================================
+   DETAILS PAGE — COMMENT HEADER MENU
+========================================= */
+
+.community-comments-details .community-comment-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.community-comments-details .community-comment-menu {
+  position: relative;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.community-comments-details .community-comment-menu-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 25px;
+  height: 25px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #8bb5bd;
+  font-size: 21px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.community-comments-details .community-comment-menu-trigger:hover {
+  background: rgba(0, 214, 193, 0.1);
+  color: #20e5d0;
+}
+
+.community-comments-details .community-comment-menu-dropdown {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% + 5px);
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 135px;
+  padding: 5px;
+  border: 1px solid rgba(74, 170, 179, 0.2);
+  border-radius: 8px;
+  background: #00313c;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.3);
+}
+
+.community-comments-details .community-comment-menu-dropdown button {
+  padding: 8px 10px;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: #c5e1e4;
+  font-family: inherit;
+  font-size: 10px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.community-comments-details .community-comment-menu-dropdown button:hover {
+  background: rgba(0, 214, 193, 0.1);
+  color: #20e5d0;
+}
+
+.community-comments-details .community-comment-menu-dropdown button.danger {
+  color: #e58b9a;
+}
+
+.community-comments-details .community-comment-menu-dropdown button.danger:hover {
+  background: rgba(229, 100, 125, 0.1);
+  color: #ff8198;
+}
+
+
+.community-comments-details .community-comment-form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.community-comments-details .community-comment-form-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.community-comments-details .community-comment-form-buttons button {
+  min-height: 29px;
+  padding: 0 14px;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.community-comments-details .community-comment-form-buttons .community-comment-cancel {
+  border: 1px solid rgba(133, 183, 193, 0.25);
+  background: transparent;
+  color: #9bbdc3;
+}
+
+.community-comments-details .community-comment-form-buttons .community-comment-cancel:hover:not(:disabled) {
+  border-color: rgba(133, 183, 193, 0.5);
+  background: rgba(255, 255, 255, 0.04);
+  color: #e5ffff;
+}
+
+.community-comments-details .community-comment-form-buttons button[type="submit"] {
+  border: none;
+  background: #1bd7bd;
+  color: #002d36;
+}
+
+.community-comments-details .community-comment-form-buttons button[type="submit"]:hover:not(:disabled) {
+  background: #39ead1;
+}
+
+.community-comments-details .community-comment-form-buttons button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  .community-comments-details .community-comment-form-footer {
+    align-items: flex-end;
+  }
+
+  .community-comments-details .community-comment-form-buttons {
+    gap: 6px;
+  }
+
+  .community-comments-details .community-comment-form-buttons button {
+    padding: 0 10px;
+  }
+}
+
 @media (max-width: 600px) {
   .community-comment {
     gap: 8px;

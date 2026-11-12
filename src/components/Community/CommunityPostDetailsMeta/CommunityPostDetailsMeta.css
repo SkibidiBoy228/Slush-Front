@@ -1,0 +1,75 @@
+.community-details-meta {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 34px;
+  min-width: 0;
+  margin-bottom: 2px;
+}
+
+.community-details-meta-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 19px;
+  height: 25px;
+  flex: 0 0 19px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #d9f4f4;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.community-details-meta-back:hover {
+  color: #22dec5;
+}
+
+.community-details-meta-game-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 27px;
+  height: 27px;
+  flex: 0 0 27px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #087b91, #03404e);
+  color: #eaffff;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.community-details-meta-info {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  min-width: 0;
+}
+
+.community-details-meta-game-title {
+  overflow: hidden;
+  color: #e7fafa;
+  font-size: 11px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.community-details-meta-date {
+  color: #7fa6ad;
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .community-details-meta-info {
+    gap: 5px;
+  }
+
+  .community-details-meta-game-title {
+    max-width: 190px;
+  }
+}

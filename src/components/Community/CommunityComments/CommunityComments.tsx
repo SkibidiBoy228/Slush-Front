@@ -20,6 +20,7 @@ interface CommunityCommentsProps {
     content: string
   ) => Promise<void>;
   currentUsername?: string | null;
+  variant?: "default" | "details";
 }
 
 function CommunityComments({
@@ -31,6 +32,7 @@ function CommunityComments({
   onDelete,
   onUpdate,
   currentUsername,
+  variant = "default",
 }: CommunityCommentsProps) {
   const [content, setContent] = useState("");
   const [replyTo, setReplyTo] = useState<PostComment | null>(null);
@@ -44,6 +46,9 @@ function CommunityComments({
     useState<string | null>(null);
   const [updatingCommentId, setUpdatingCommentId] =
     useState<string | null>(null);
+  
+  const [activeMenuCommentId, setActiveMenuCommentId] =
+  useState<string | null>(null);
 
   useEffect(() => {
     onLoad(postId);
@@ -53,6 +58,12 @@ function CommunityComments({
     !!currentUsername &&
     comment.authorUsername.toLowerCase() ===
       currentUsername.toLowerCase();
+
+
+  const handleCancelComposer = () => {
+    setContent("");
+    setReplyTo(null);
+  };    
 
   const handleSubmit = async (
     event: FormEvent<HTMLFormElement>
@@ -105,6 +116,7 @@ function CommunityComments({
       setDeletingCommentId(null);
     }
   };
+
 
   const startEditing = (comment: PostComment) => {
     setEditingComment(comment);
@@ -199,6 +211,63 @@ function CommunityComments({
             <span className="community-comment-date">
               {comment.createdAt}
             </span>
+
+            <div className="community-comment-menu">
+              <button
+                type="button"
+                className="community-comment-menu-trigger"
+                aria-label="Дії з коментарем"
+                aria-expanded={activeMenuCommentId === comment.id}
+                onClick={() =>
+                  setActiveMenuCommentId((current) =>
+                    current === comment.id ? null : comment.id
+                  )
+                }
+              >
+                ⋯
+              </button>
+
+              {activeMenuCommentId === comment.id && (
+                <div className="community-comment-menu-dropdown">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setReplyTo(comment);
+                      setEditingComment(null);
+                      setEditContent("");
+                      setActiveMenuCommentId(null);
+                    }}
+                  >
+                    Відповісти
+                  </button>
+
+                  {canManage && onUpdate && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        startEditing(comment);
+                        setActiveMenuCommentId(null);
+                      }}
+                    >
+                      Редагувати
+                    </button>
+                  )}
+
+                  {canManage && (
+                    <button
+                      type="button"
+                      className="danger"
+                      onClick={() => {
+                        setActiveMenuCommentId(null);
+                        void handleDelete(comment);
+                      }}
+                    >
+                      Видалити
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
 
           {isEditing ? (
@@ -251,6 +320,7 @@ function CommunityComments({
                   setReplyTo(comment);
                   setEditingComment(null);
                   setEditContent("");
+                  setActiveMenuCommentId(null);
                 }}
               >
                 Відповісти
@@ -292,11 +362,17 @@ function CommunityComments({
   };
 
   return (
-    <section className="community-comments">
+    <section
+      className={`community-comments ${
+        variant === "details" ? "community-comments-details" : ""
+      }`}
+    >
+    {variant !== "details" && (
       <div className="community-comments-title">
         <h3>Коментарі</h3>
         <span>{comments.length}</span>
       </div>
+    )}
 
       {replyTo && (
         <div className="community-reply-indicator">
@@ -331,8 +407,18 @@ function CommunityComments({
           disabled={submitting}
         />
 
-        <div className="community-comment-form-footer">
-          <span>{content.length}/2000</span>
+      <div className="community-comment-form-footer">
+        <span>{content.length}/2000</span>
+
+        <div className="community-comment-form-buttons">
+          <button
+            type="button"
+            className="community-comment-cancel"
+            onClick={handleCancelComposer}
+            disabled={submitting}
+          >
+            Відхилити
+          </button>
 
           <button
             type="submit"
@@ -341,6 +427,7 @@ function CommunityComments({
             {submitting ? "Надсилання..." : "Надіслати"}
           </button>
         </div>
+      </div>
       </form>
 
       <div className="community-comments-list">
