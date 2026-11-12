@@ -1,13 +1,47 @@
+import type { MouseEvent, KeyboardEvent } from "react";
 import type { CommunityPost as CommunityPostData } from "../../../types/community";
 import "./CommunityPost.css";
 
 interface CommunityPostProps {
+  gameId: string;
   post: CommunityPostData;
   onLike: (postId: string) => void;
   onComments: (postId: string) => void;
 }
 
-function CommunityPost({ post, onLike, onComments }: CommunityPostProps) {
+function CommunityPost({
+  gameId,
+  post,
+  onLike,
+  onComments,
+}: CommunityPostProps) {
+  const openPost = () => {
+    window.location.href =
+      `/game/${encodeURIComponent(gameId)}/community/post/${encodeURIComponent(post.id)}`;
+  };
+
+  const handleCardClick = (event: MouseEvent<HTMLElement>) => {
+    const target = event.target;
+
+    if (
+      target instanceof Element &&
+      target.closest("button, a, video")
+    ) {
+      return;
+    }
+
+    openPost();
+  };
+
+  const handleCardKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (event.target !== event.currentTarget) return;
+
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openPost();
+    }
+  };
+
   const postTypeLabels: Record<string, string> = {
     Discussion: "Обговорення",
     Screenshot: "Скріншот",
@@ -16,18 +50,22 @@ function CommunityPost({ post, onLike, onComments }: CommunityPostProps) {
     News: "Новини",
   };
 
-  const authorInitial = post.authorUsername?.charAt(0).toUpperCase() || "?";
+  const authorInitial =
+    post.authorUsername?.charAt(0).toUpperCase() || "?";
 
   const handleShare = async () => {
     try {
+      const postUrl =
+        `${window.location.origin}/game/${encodeURIComponent(gameId)}/community/post/${encodeURIComponent(post.id)}`;
+
       if (navigator.share) {
         await navigator.share({
           title: post.title || "Публікація спільноти",
           text: post.content || post.shortDescription || "",
-          url: window.location.href,
+          url: postUrl,
         });
       } else if (navigator.clipboard) {
-        await navigator.clipboard.writeText(window.location.href);
+        await navigator.clipboard.writeText(postUrl);
       }
     } catch (error) {
       if (error instanceof Error && error.name !== "AbortError") {
@@ -50,7 +88,6 @@ function CommunityPost({ post, onLike, onComments }: CommunityPostProps) {
             autoPlay
             loop
           />
-
           <span className="community-post-play" aria-hidden="true">
             ▶
           </span>
@@ -72,6 +109,11 @@ function CommunityPost({ post, onLike, onComments }: CommunityPostProps) {
   return (
     <article
       className={`community-post community-post-${post.postType.toLowerCase()}`}
+      role="link"
+      tabIndex={0}
+      aria-label={`Відкрити публікацію: ${post.title || "Публікація спільноти"}`}
+      onClick={handleCardClick}
+      onKeyDown={handleCardKeyDown}
     >
       <header className="community-post-header">
         <button
@@ -108,6 +150,10 @@ function CommunityPost({ post, onLike, onComments }: CommunityPostProps) {
             {post.createdAt}
           </span>
         </div>
+
+        <span className="community-post-more" aria-hidden="true">
+          •••
+        </span>
       </header>
 
       <div className="community-post-content">

@@ -1,4 +1,3 @@
-
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import GameSearch from "../../components/GameSearch/GameSearch";
@@ -412,6 +411,57 @@ function CommunityPage({ gameId }: CommunityPageProps) {
           <GameSearch />
         </div>
 
+        <section className="community-page-heading">
+          <div className="community-page-heading-info">
+            <h1>{gameTitle}</h1>
+
+            <div className="community-page-stats">
+              <span>
+                {counts.subscribersCount.toLocaleString("uk-UA")} підписників
+              </span>
+
+              <span
+                className="community-page-online-dot"
+                aria-hidden="true"
+              />
+
+              <span>
+                {counts.all.toLocaleString("uk-UA")} публікацій
+              </span>
+            </div>
+          </div>
+
+          <div className="community-page-heading-actions">
+            <CommunityPostCreator
+              onSubmit={handleCreatePost}
+              onOpenChange={setIsCreatingPost}
+            />
+
+            <div className="community-page-heading-tools" aria-label="Дії спільноти">
+              <span
+                className="community-page-heading-icon"
+                role="img"
+                aria-label="Сповіщення"
+                title="Сповіщення"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" />
+                  <path d="M10 21h4" />
+                </svg>
+              </span>
+
+              <span
+                className="community-page-heading-icon community-page-heading-more"
+                role="img"
+                aria-label="Додаткові дії"
+                title="Додаткові дії"
+              >
+                <span aria-hidden="true">•••</span>
+              </span>
+            </div>
+          </div>
+        </section>
+
         <CommunityTabs
           activeTab="community"
           onTabChange={(tab) => {
@@ -425,24 +475,6 @@ function CommunityPage({ gameId }: CommunityPageProps) {
           }}
         />
 
-        <section className="community-page-heading">
-          <div className="community-page-heading-info">
-            <h1>{gameTitle}</h1>
-            <div className="community-page-stats">
-              <span>{counts.subscribersCount.toLocaleString("uk-UA")} підписників</span>
-              <span className="community-page-online-dot" aria-hidden="true" />
-              <span>{counts.all.toLocaleString("uk-UA")} публікацій</span>
-            </div>
-          </div>
-
-          <div className="community-page-heading-actions">
-            <CommunityPostCreator
-              onSubmit={handleCreatePost}
-              onOpenChange={setIsCreatingPost}
-            />
-          </div>
-        </section>
-
         <div className="community-layout">
           <section className="community-main">
             <div className="community-feed">
@@ -453,6 +485,7 @@ function CommunityPage({ gameId }: CommunityPageProps) {
               ) : error ? (
                 <div className="community-feed-state community-feed-error">
                   {error}
+
                   <button type="button" onClick={loadPosts}>
                     Спробувати ще раз
                   </button>

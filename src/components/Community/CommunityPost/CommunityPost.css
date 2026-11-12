@@ -274,6 +274,32 @@
   margin-bottom: 7px;
 }
 
+.community-post {
+  position: relative;
+  cursor: pointer;
+}
+
+.community-post:focus-visible {
+  outline: 2px solid #00d6c1;
+  outline-offset: 3px;
+}
+
+.community-post-more {
+  margin-left: auto;
+  padding: 0 3px 5px 8px;
+  color: #9bc3ca;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+@media (max-width: 600px) {
+  .community-post-more {
+    font-size: 11px;
+  }
+}
+
 @media (max-width: 600px) {
   .community-post {
     padding: 10px;
