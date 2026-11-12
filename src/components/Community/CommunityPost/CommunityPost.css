@@ -1,34 +1,33 @@
-
 .community-post {
   position: relative;
   width: 100%;
-  padding: 19px;
+  padding: 10px;
   box-sizing: border-box;
   overflow: hidden;
-  border: 1px solid rgba(56, 189, 190, 0.12);
-  border-radius: 16px;
+  border: 1px solid rgba(56, 189, 190, 0.1);
+  border-radius: 10px;
   background: #003440;
   color: #e8f7f8;
   transition: border-color 0.2s ease, background 0.2s ease;
 }
 
 .community-post:hover {
-  border-color: rgba(0, 214, 193, 0.3);
+  border-color: rgba(0, 214, 193, 0.22);
   background: #003945;
 }
 
 .community-post-header {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   min-width: 0;
-  margin-bottom: 17px;
+  margin-bottom: 8px;
 }
 
 .community-post-author-link {
   display: inline-flex;
   align-items: center;
-  gap: 9px;
+  gap: 6px;
   min-width: 0;
   padding: 0;
   border: 0;
@@ -44,9 +43,9 @@
 }
 
 .community-post-avatar {
-  width: 34px;
-  height: 34px;
-  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -55,7 +54,7 @@
   border-radius: 50%;
   background: linear-gradient(135deg, #087d8b, #075064);
   color: #fff;
-  font-size: 13px;
+  font-size: 9px;
   font-weight: 700;
 }
 
@@ -68,11 +67,11 @@
 .community-post-author-name {
   max-width: 180px;
   overflow: hidden;
+  color: #e4f8f9;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 12px;
+  font-size: 9px;
   font-weight: 700;
-  transition: color 0.2s ease;
 }
 
 .community-post-author-link:hover .community-post-author-name {
@@ -82,24 +81,17 @@
 .community-post-header-meta {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 7px;
   min-width: 0;
 }
 
 .community-post-type {
-  padding: 5px 9px;
-  border: 1px solid rgba(0, 214, 193, 0.12);
-  border-radius: 6px;
-  background: rgba(0, 214, 193, 0.08);
-  color: #00d6c1;
-  font-size: 10px;
-  font-weight: 600;
-  white-space: nowrap;
+  display: none;
 }
 
 .community-post-date {
   color: #729ca4;
-  font-size: 10px;
+  font-size: 8px;
   white-space: nowrap;
 }
 
@@ -107,91 +99,108 @@
   min-width: 0;
 }
 
+.community-post-copy {
+  min-width: 0;
+}
+
 .community-post-title {
-  margin: 0 0 9px;
+  margin: 0 0 4px;
   color: #f1fbfc;
-  font-size: 17px;
-  font-weight: 700;
-  line-height: 1.4;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.35;
   overflow-wrap: anywhere;
 }
 
-.community-post-description {
-  margin: 0 0 9px;
+.community-post-description,
+.community-post-text {
+  margin: 0 0 5px;
   color: #b7d4d9;
-  font-size: 13px;
-  line-height: 1.6;
+  font-size: 9px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
 }
 
 .community-post-text {
-  margin: 0 0 12px;
   color: #a9c9cf;
-  font-size: 13px;
-  line-height: 1.7;
   white-space: pre-wrap;
-  overflow-wrap: anywhere;
 }
 
 .community-post-media {
+  position: relative;
   width: 100%;
-  margin-top: 12px;
+  margin-top: 8px;
   overflow: hidden;
-  border: 1px solid rgba(76, 164, 176, 0.12);
-  border-radius: 12px;
+  border-radius: 7px;
   background: #001f29;
 }
 
-.community-post-media img {
+.community-post-media img,
+.community-post-media video {
   display: block;
   width: 100%;
-  max-height: 480px;
-  object-fit: contain;
+  max-height: 420px;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
 }
 
 .community-post-video video {
-  display: block;
-  width: 100%;
-  max-height: 480px;
   background: #00151d;
+}
+
+.community-post-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding-left: 2px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.94);
+  color: #00333d;
+  font-size: 13px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
 }
 
 .community-post-actions {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 9px;
-  margin-top: 16px;
-  padding-top: 13px;
-  border-top: 1px solid rgba(76, 164, 176, 0.1);
+  gap: 7px;
+  margin-top: 8px;
 }
 
 .community-post-action {
-  min-height: 32px;
+  min-height: 20px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
-  padding: 5px 11px;
-  border: 1px solid rgba(76, 164, 176, 0.13);
-  border-radius: 7px;
+  gap: 4px;
+  padding: 2px 5px;
+  border: 1px solid rgba(76, 164, 176, 0.12);
+  border-radius: 5px;
   background: #075064;
   color: #a9d4dc;
-  font-size: 11px;
+  font-size: 8px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .community-post-action:hover {
-  border-color: rgba(0, 214, 193, 0.4);
+  border-color: rgba(0, 214, 193, 0.35);
   background: #096174;
   color: #fff;
 }
 
 .community-post-action svg {
-  width: 15px;
-  height: 15px;
-  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  flex: 0 0 10px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.8;
@@ -215,39 +224,62 @@
 }
 
 .community-post-share {
-  margin-left: auto;
+  margin-left: 0;
+}
+
+/* Forum and news: text first, optional image below it. */
+.community-post-discussion .community-post-media,
+.community-post-news .community-post-media {
+  margin-top: 8px;
+}
+
+/* Guides: landscape thumbnail at the left, text at the right. */
+.community-post-guide .community-post-content:has(.community-post-media) {
+  display: grid;
+  grid-template-columns: minmax(112px, 25%) minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+}
+
+.community-post-guide .community-post-copy {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.community-post-guide .community-post-media {
+  grid-column: 1;
+  grid-row: 1;
+  margin: 0;
+}
+
+.community-post-guide .community-post-media img {
+  aspect-ratio: 1.35 / 1;
+  max-height: 120px;
+}
+
+/* Screenshots and videos use the media as the dominant card element. */
+.community-post-screenshot .community-post-media,
+.community-post-video .community-post-media {
+  margin-top: 0;
+}
+
+.community-post-screenshot .community-post-title,
+.community-post-video .community-post-title {
+  margin-bottom: 7px;
 }
 
 @media (max-width: 600px) {
   .community-post {
-    padding: 14px;
-    border-radius: 12px;
+    padding: 9px;
+    border-radius: 9px;
   }
 
-  .community-post-header {
-    flex-wrap: wrap;
+  .community-post-guide .community-post-content {
+    grid-template-columns: minmax(96px, 32%) minmax(0, 1fr);
     gap: 8px;
   }
 
-  .community-post-header-meta {
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-
-  .community-post-title {
-    font-size: 15px;
-  }
-
-  .community-post-description,
-  .community-post-text {
-    font-size: 12px;
-  }
-
-  .community-post-media img {
-    max-height: 320px;
-  }
-
-  .community-post-share {
-    margin-left: 0;
+  .community-post-guide .community-post-media img {
+    max-height: 105px;
   }
 }

@@ -1,8 +1,6 @@
-
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import GameSearch from "../../components/GameSearch/GameSearch";
-import CommunityHeader from "../../components/Community/CommunityHeader/CommunityHeader";
 import CommunityTabs from "../../components/Community/CommunityTabs/CommunityTabs";
 import CommunitySidebar, {
   type CommunityFilter,
@@ -18,7 +16,6 @@ import { getCurrentUsername } from "../../api/client";
 import {
   getCommunityPosts,
   getCommunityTabCounts,
-  toggleCommunitySubscription,
   togglePostLike,
   getPostComments,
   addPostComment,
@@ -158,15 +155,6 @@ function CommunityPage({ gameId }: CommunityPageProps) {
   useEffect(() => {
     loadPosts();
   }, [loadPosts]);
-
-  const handleSubscribe = async () => {
-    try {
-      await toggleCommunitySubscription(gameId);
-      await loadCounts();
-    } catch (error) {
-      console.error("Failed to toggle subscription:", error);
-    }
-  };
 
   const handleLike = async (postId: string) => {
     try {
@@ -423,12 +411,33 @@ function CommunityPage({ gameId }: CommunityPageProps) {
           <GameSearch />
         </div>
 
-        <CommunityHeader
-          gameTitle={gameTitle}
-          subscribersCount={counts.subscribersCount}
-          isSubscribed={counts.isSubscribed}
-          onSubscribe={handleSubscribe}
-        />
+        <section className="community-page-heading">
+          <div className="community-page-heading-info">
+            <h1>{gameTitle}</h1>
+
+            <div className="community-page-stats">
+              <span>
+                {counts.subscribersCount.toLocaleString("uk-UA")} підписників
+              </span>
+
+              <span
+                className="community-page-online-dot"
+                aria-hidden="true"
+              />
+
+              <span>
+                {counts.all.toLocaleString("uk-UA")} публікацій
+              </span>
+            </div>
+          </div>
+
+          <div className="community-page-heading-actions">
+            <CommunityPostCreator
+              onSubmit={handleCreatePost}
+              onOpenChange={setIsCreatingPost}
+            />
+          </div>
+        </section>
 
         <CommunityTabs
           activeTab="community"
@@ -453,6 +462,7 @@ function CommunityPage({ gameId }: CommunityPageProps) {
               ) : error ? (
                 <div className="community-feed-state community-feed-error">
                   {error}
+
                   <button type="button" onClick={loadPosts}>
                     Спробувати ще раз
                   </button>
@@ -495,14 +505,7 @@ function CommunityPage({ gameId }: CommunityPageProps) {
             </div>
           </section>
 
-          <aside className="community-sidebar">
-            <div className="community-sidebar-creator">
-              <CommunityPostCreator
-                onSubmit={handleCreatePost}
-                onOpenChange={setIsCreatingPost}
-              />
-            </div>
-
+          <aside className="community-sidebar-column">
             {isCreatingPost ? (
               <div className="community-rules">
                 <h3>Правила спільноти</h3>

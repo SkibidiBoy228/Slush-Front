@@ -2,12 +2,13 @@
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 7px;
-  margin-top: 18px;
-  padding: 5px;
-  border: 1px solid rgba(117, 180, 188, 0.12);
-  border-radius: 12px;
-  background: rgba(0, 39, 49, 0.58);
+  gap: 17px;
+  margin-top: 10px;
+  padding: 0 0 7px;
+  border: 0;
+  border-bottom: 1px solid rgba(117, 180, 188, 0.12);
+  border-radius: 0;
+  background: transparent;
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -19,47 +20,46 @@
 .community-tabs button {
   position: relative;
   flex: 0 0 auto;
-  min-height: 39px;
-  padding: 0 19px;
-  border: 1px solid transparent;
-  border-radius: 8px;
+  min-height: 24px;
+  padding: 0 1px 5px;
+  border: 0;
+  border-radius: 0;
   background: transparent;
-  color: #91b3ba;
+  color: #9bb9bf;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 10px;
   font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
-  transition:
-    background 0.2s,
-    color 0.2s,
-    border-color 0.2s;
+  transition: color 0.2s ease;
 }
 
 .community-tabs button:hover {
   color: #fff;
-  background: rgba(255, 255, 255, 0.04);
 }
 
 .community-tabs button.active {
   color: #35e2cb;
-  background: rgba(32, 217, 192, 0.1);
-  border-color: rgba(32, 217, 192, 0.16);
+  background: transparent;
 }
 
 .community-tabs button.active::after {
-  display: none;
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -8px;
+  left: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: #20d9c0;
 }
 
 @media (max-width: 480px) {
   .community-tabs {
-    gap: 4px;
-    padding: 4px;
+    gap: 13px;
   }
 
   .community-tabs button {
-    min-height: 36px;
-    padding: 0 12px;
-    font-size: 11px;
+    font-size: 9px;
   }
 }

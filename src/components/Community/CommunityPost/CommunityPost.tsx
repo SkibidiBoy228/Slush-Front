@@ -1,4 +1,3 @@
-
 import type { CommunityPost as CommunityPostData } from "../../../types/community";
 import "./CommunityPost.css";
 
@@ -40,35 +39,40 @@ function CommunityPost({ post, onLike, onComments }: CommunityPostProps) {
   const renderMedia = () => {
     if (!post.mediaUrl) return null;
 
-    if (post.postType === "Screenshot" || post.postType === "Guide") {
-      return (
-        <div className="community-post-media">
-          <img
-            src={post.mediaUrl}
-            alt={post.title || "Зображення публікації"}
-            loading="lazy"
-          />
-        </div>
-      );
-    }
-
     if (post.postType === "Video") {
       return (
         <div className="community-post-media community-post-video">
           <video
             src={post.mediaUrl}
-            controls
             preload="metadata"
+            muted
+            playsInline
+            autoPlay
+            loop
           />
+
+          <span className="community-post-play" aria-hidden="true">
+            ▶
+          </span>
         </div>
       );
     }
 
-    return null;
+    return (
+      <div className="community-post-media">
+        <img
+          src={post.mediaUrl}
+          alt={post.title || "Зображення публікації"}
+          loading="lazy"
+        />
+      </div>
+    );
   };
 
   return (
-    <article className="community-post">
+    <article
+      className={`community-post community-post-${post.postType.toLowerCase()}`}
+    >
       <header className="community-post-header">
         <button
           type="button"
@@ -107,23 +111,21 @@ function CommunityPost({ post, onLike, onComments }: CommunityPostProps) {
       </header>
 
       <div className="community-post-content">
-        {post.title && (
-          <h2 className="community-post-title">
-            {post.title}
-          </h2>
-        )}
+        <div className="community-post-copy">
+          {post.title && (
+            <h2 className="community-post-title">{post.title}</h2>
+          )}
 
-        {post.shortDescription && (
-          <p className="community-post-description">
-            {post.shortDescription}
-          </p>
-        )}
+          {post.shortDescription && (
+            <p className="community-post-description">
+              {post.shortDescription}
+            </p>
+          )}
 
-        {post.content && (
-          <p className="community-post-text">
-            {post.content}
-          </p>
-        )}
+          {post.content && (
+            <p className="community-post-text">{post.content}</p>
+          )}
+        </div>
 
         {renderMedia()}
       </div>

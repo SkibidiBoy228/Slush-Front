@@ -1,13 +1,12 @@
-
 .community-sidebar {
   position: sticky;
-  top: 85px;
+  top: 78px;
   width: 100%;
   min-width: 0;
-  padding: 13px;
+  padding: 10px;
   box-sizing: border-box;
-  border: 1px solid rgba(0, 214, 193, 0.08);
-  border-radius: 13px;
+  border: 1px solid rgba(0, 214, 193, 0.07);
+  border-radius: 10px;
   background: #034451;
   color: #e7f7f8;
 }
@@ -15,27 +14,27 @@
 .community-sidebar-top {
   display: flex;
   flex-direction: column;
-  gap: 11px;
-  margin-bottom: 12px;
+  gap: 8px;
+  margin-bottom: 10px;
 }
 
 .community-sidebar-sort-label {
   display: flex;
   align-items: center;
-  gap: 7px;
-  color: #78aeb6;
-  font-size: 11px;
+  gap: 5px;
+  color: #8bb7bf;
+  font-size: 9px;
 }
 
 .community-sidebar-sort-label select {
   min-width: 0;
-  padding: 3px 18px 3px 3px;
-  border: none;
+  padding: 2px 15px 2px 2px;
+  border: 0;
   outline: none;
   background: transparent;
   color: #e6fafa;
-  font-size: 11px;
-  font-weight: 600;
+  font: inherit;
+  font-weight: 700;
   cursor: pointer;
 }
 
@@ -45,19 +44,19 @@
 }
 
 .community-sidebar-search {
-  height: 30px;
+  height: 25px;
   display: flex;
   align-items: center;
-  gap: 7px;
-  padding: 0 10px;
-  border: 1px solid rgba(0, 214, 193, 0.13);
+  gap: 6px;
+  padding: 0 8px;
+  border: 1px solid rgba(0, 214, 193, 0.1);
   border-radius: 20px;
   background: #002e39;
 }
 
 .community-sidebar-search svg {
-  width: 14px;
-  height: 14px;
+  width: 11px;
+  height: 11px;
   flex-shrink: 0;
   fill: none;
   stroke: #6fabb3;
@@ -68,11 +67,11 @@
 .community-sidebar-search input {
   width: 100%;
   min-width: 0;
-  border: none;
-  outline: none;
+  border: 0;
+  outline: 0;
   background: transparent;
   color: #e9fbfc;
-  font-size: 10px;
+  font-size: 9px;
 }
 
 .community-sidebar-search input::placeholder {
@@ -80,41 +79,40 @@
 }
 
 .community-sidebar-section h3 {
-  margin: 0 0 8px;
-  padding: 7px 9px;
-  border-radius: 7px;
-  background: #11677b;
-  color: #efffff;
-  font-size: 12px;
-  font-weight: 700;
+  margin: 0 0 5px;
+  padding: 4px 7px;
+  border-radius: 5px;
+  color: #eaf9fa;
+  font-size: 10px;
+  font-weight: 800;
 }
 
 .community-filter-list {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 1px;
 }
 
 .community-filter-item {
   width: 100%;
-  min-height: 32px;
+  min-height: 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  padding: 6px 10px;
-  border: none;
-  border-radius: 7px;
+  gap: 7px;
+  padding: 4px 7px;
+  border: 0;
+  border-radius: 5px;
   background: transparent;
   color: #c4e1e5;
   text-align: left;
-  font-size: 12px;
+  font-size: 9px;
   cursor: pointer;
   transition: background 0.18s ease, color 0.18s ease;
 }
 
 .community-filter-item:hover {
-  background: rgba(0, 214, 193, 0.09);
+  background: rgba(0, 214, 193, 0.08);
   color: #fff;
 }
 
@@ -126,14 +124,14 @@
 
 .community-filter-count {
   color: #76abb4;
-  font-size: 10px;
+  font-size: 8px;
 }
 
 .community-filter-item.active .community-filter-count {
   color: #00e2cb;
 }
 
-@media (max-width: 750px) {
+@media (max-width: 680px) {
   .community-sidebar {
     position: static;
   }
