@@ -1,3 +1,4 @@
+
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import GameSearch from "../../components/GameSearch/GameSearch";
@@ -411,34 +412,6 @@ function CommunityPage({ gameId }: CommunityPageProps) {
           <GameSearch />
         </div>
 
-        <section className="community-page-heading">
-          <div className="community-page-heading-info">
-            <h1>{gameTitle}</h1>
-
-            <div className="community-page-stats">
-              <span>
-                {counts.subscribersCount.toLocaleString("uk-UA")} підписників
-              </span>
-
-              <span
-                className="community-page-online-dot"
-                aria-hidden="true"
-              />
-
-              <span>
-                {counts.all.toLocaleString("uk-UA")} публікацій
-              </span>
-            </div>
-          </div>
-
-          <div className="community-page-heading-actions">
-            <CommunityPostCreator
-              onSubmit={handleCreatePost}
-              onOpenChange={setIsCreatingPost}
-            />
-          </div>
-        </section>
-
         <CommunityTabs
           activeTab="community"
           onTabChange={(tab) => {
@@ -452,6 +425,24 @@ function CommunityPage({ gameId }: CommunityPageProps) {
           }}
         />
 
+        <section className="community-page-heading">
+          <div className="community-page-heading-info">
+            <h1>{gameTitle}</h1>
+            <div className="community-page-stats">
+              <span>{counts.subscribersCount.toLocaleString("uk-UA")} підписників</span>
+              <span className="community-page-online-dot" aria-hidden="true" />
+              <span>{counts.all.toLocaleString("uk-UA")} публікацій</span>
+            </div>
+          </div>
+
+          <div className="community-page-heading-actions">
+            <CommunityPostCreator
+              onSubmit={handleCreatePost}
+              onOpenChange={setIsCreatingPost}
+            />
+          </div>
+        </section>
+
         <div className="community-layout">
           <section className="community-main">
             <div className="community-feed">
@@ -462,7 +453,6 @@ function CommunityPage({ gameId }: CommunityPageProps) {
               ) : error ? (
                 <div className="community-feed-state community-feed-error">
                   {error}
-
                   <button type="button" onClick={loadPosts}>
                     Спробувати ще раз
                   </button>

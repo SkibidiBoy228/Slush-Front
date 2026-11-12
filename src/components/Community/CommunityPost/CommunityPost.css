@@ -1,3 +1,4 @@
+
 .community-post {
   position: relative;
   width: 100%;
@@ -257,9 +258,16 @@
   max-height: 120px;
 }
 
-/* Screenshots and videos use the media as the dominant card element. */
+/* Screenshots and videos show media before the supporting text. */
+.community-post-screenshot .community-post-content,
+.community-post-video .community-post-content {
+  display: flex;
+  flex-direction: column;
+}
+
 .community-post-screenshot .community-post-media,
 .community-post-video .community-post-media {
+  order: -1;
   margin-top: 0;
 }
 
