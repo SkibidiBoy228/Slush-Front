@@ -1,4 +1,6 @@
+
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { FriendUser } from "../../../types/friends";
 import "./FriendCard.css";
 
@@ -17,6 +19,8 @@ function FriendCard({
   onBlock,
   showRemoveButton = false,
 }: FriendCardProps) {
+  const { t } = useTranslation();
+
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -93,7 +97,7 @@ function FriendCard({
         {typeof friend.level === "number" && (
           <span
             className="friend-card-level"
-            title={`Рівень ${friend.level}`}
+            title={t("friendCard.level", { level: friend.level })}
           >
             <span>{friend.level}</span>
           </span>
@@ -105,7 +109,7 @@ function FriendCard({
               type="button"
               className="friend-card-remove"
               onClick={() => setMenuOpen((value) => !value)}
-              aria-label="Меню друга"
+              aria-label={t("friendCard.menu")}
               aria-expanded={menuOpen}
             >
               ⋯
@@ -120,7 +124,7 @@ function FriendCard({
                     openProfile();
                   }}
                 >
-                  Відкрити профіль
+                  {t("friendCard.openProfile")}
                 </button>
 
                 {onBlock && (
@@ -131,7 +135,7 @@ function FriendCard({
                       onBlock(friend);
                     }}
                   >
-                    Заблокувати
+                    {t("friendCard.block")}
                   </button>
                 )}
 
@@ -144,7 +148,7 @@ function FriendCard({
                       onRemove(friend);
                     }}
                   >
-                    Видалити з друзів
+                    {t("friendCard.remove")}
                   </button>
                 )}
               </div>

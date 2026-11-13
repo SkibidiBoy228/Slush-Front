@@ -1,5 +1,6 @@
 
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
     getProfileSettings,
@@ -10,21 +11,31 @@ import { uploadBanner, uploadAvatar } from "../../../api/profile";
 
 import type { ProfileSettings } from "../../../types/settings";
 
+import i18n, { LANGUAGE_STORAGE_KEY } from "../../../i18n";
+
 import "./GeneralSettings.css";
 
+const supportedLanguages = ["uk", "en", "sk", "ru"] as const;
+
 function GeneralSettings() {
+    const { t } = useTranslation();
+
     const [profile, setProfile] = useState<ProfileSettings | null>(null);
 
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [bio, setBio] = useState("");
-    const [language, setLanguage] = useState("");
+    const [language, setLanguage] = useState("uk");
+
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
     const [bannerPreview, setBannerPreview] = useState<string | null>(null);
+
     const [avatarFile, setAvatarFile] = useState<File | null>(null);
     const [bannerFile, setBannerFile] = useState<File | null>(null);
+
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
 
@@ -54,16 +65,25 @@ function GeneralSettings() {
 
             const data = await getProfileSettings();
 
+            const savedLanguage = supportedLanguages.includes(
+                data.language as (typeof supportedLanguages)[number]
+            )
+                ? data.language
+                : "uk";
+
             setProfile(data);
             setUsername(data.username);
             setEmail(data.email);
             setBio(data.bio);
-            setLanguage(data.language);
+            setLanguage(savedLanguage);
+
+            await i18n.changeLanguage(savedLanguage);
+            localStorage.setItem(LANGUAGE_STORAGE_KEY, savedLanguage);
         } catch (err) {
             if (err instanceof Error) {
                 setError(err.message);
             } else {
-                setError("Не вдалося завантажити налаштування профілю");
+                setError(t("settings.loadError"));
             }
         } finally {
             setLoading(false);
@@ -111,17 +131,24 @@ function GeneralSettings() {
             setError("");
 
             if (!username.trim()) {
-                setError("Введіть імя користувача.");
+                setError(t("settings.usernameRequired"));
                 return;
             }
 
             if (!email.trim()) {
-                setError("Введіть e-mail.");
+                setError(t("settings.emailRequired"));
                 return;
             }
 
             if (bio.length > 100) {
-                setError("Опис не може містити більше 100 символів");
+                setError(t("settings.bioTooLong"));
+                return;
+            }
+
+            if (!supportedLanguages.includes(
+                language as (typeof supportedLanguages)[number]
+            )) {
+                setError(t("settings.loadError"));
                 return;
             }
 
@@ -139,6 +166,9 @@ function GeneralSettings() {
                 bio,
                 language,
             });
+
+            await i18n.changeLanguage(language);
+            localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
 
             const updatedProfile: ProfileSettings = {
                 username: username.trim(),
@@ -171,12 +201,12 @@ function GeneralSettings() {
                 bannerInputRef.current.value = "";
             }
 
-            setMessage("Налаштування збережено.");
+            setMessage(t("settings.saved"));
         } catch (err) {
             if (err instanceof Error) {
                 setError(err.message);
             } else {
-                setError("Не вдалося зберегти налаштування.");
+                setError(t("settings.saveError"));
             }
         } finally {
             setSaving(false);
@@ -220,7 +250,7 @@ function GeneralSettings() {
         return (
             <section className="general-settings">
                 <div className="general-settings-loading">
-                    Завантаження...
+                    {t("settings.loading")}
                 </div>
             </section>
         );
@@ -230,7 +260,7 @@ function GeneralSettings() {
         return (
             <section className="general-settings">
                 <div className="general-settings-error">
-                    {error || "Не вдалося завантажити профіль."}
+                    {error || t("settings.loadError")}
                 </div>
             </section>
         );
@@ -242,8 +272,8 @@ function GeneralSettings() {
     return (
         <section className="general-settings">
             <div className="general-settings-header">
-                <h1>Загальні налаштування</h1>
-                <p>Керуйте основню інформацією свого профілю.</p>
+                <h1>{t("settings.general")}</h1>
+                <p>{t("settings.description")}</p>
             </div>
 
             <div className="general-settings-profile">
@@ -251,7 +281,7 @@ function GeneralSettings() {
                     {currentBanner ? (
                         <img
                             src={currentBanner}
-                            alt="Обкладинка профілю"
+                            alt={t("settings.changeCover")}
                         />
                     ) : (
                         <div className="general-settings-banner-empty" />
@@ -261,10 +291,10 @@ function GeneralSettings() {
                         type="button"
                         className="general-settings-image-button general-settings-banner-button"
                         onClick={() => bannerInputRef.current?.click()}
-                        aria-label="Змінити обкладинку"
-                        title="Змінити обкладинку"
+                        aria-label={t("settings.changeCover")}
+                        title={t("settings.changeCover")}
                     >
-                        Змінити обкладинку
+                        {t("settings.changeCover")}
                     </button>
 
                     <input
@@ -294,10 +324,10 @@ function GeneralSettings() {
                         type="button"
                         className="general-settings-image-button"
                         onClick={() => avatarInputRef.current?.click()}
-                        aria-label="Змінити аватар"
-                        title="Змінити аватар"
+                        aria-label={t("settings.changeAvatar")}
+                        title={t("settings.changeAvatar")}
                     >
-                        Змінити аватар
+                        {t("settings.changeAvatar")}
                     </button>
 
                     <input
@@ -312,7 +342,7 @@ function GeneralSettings() {
                 <div className="general-settings-form">
                     <div className="general-settings-field">
                         <label htmlFor="settings-username">
-                            Нікнейм
+                            {t("settings.nickname")}
                         </label>
 
                         <input
@@ -326,7 +356,7 @@ function GeneralSettings() {
 
                     <div className="general-settings-field">
                         <label htmlFor="settings-email">
-                            Ел. пошта
+                            {t("settings.email")}
                         </label>
 
                         <input
@@ -341,7 +371,7 @@ function GeneralSettings() {
                     <div className="general-settings-field">
                         <div className="general-settings-label-row">
                             <label htmlFor="settings-bio">
-                                Про себе
+                                {t("settings.about")}
                             </label>
 
                             <span>{bio.length}/100</span>
@@ -359,7 +389,7 @@ function GeneralSettings() {
 
                     <div className="general-settings-field">
                         <label htmlFor="settings-language">
-                            Мова сайту
+                            {t("settings.language")}
                         </label>
 
                         <select
@@ -388,7 +418,6 @@ function GeneralSettings() {
                     </div>
                 )}
 
-                {/* Кнопки дій */}
                 <div className="general-settings-actions">
                     <button
                         type="button"
@@ -396,7 +425,7 @@ function GeneralSettings() {
                         onClick={handleCancel}
                         disabled={saving}
                     >
-                        Скасувати
+                        {t("settings.cancel")}
                     </button>
 
                     <button
@@ -405,7 +434,9 @@ function GeneralSettings() {
                         onClick={handleSave}
                         disabled={saving}
                     >
-                        {saving ? "Збереження..." : "Зберегти"}
+                        {saving
+                            ? t("settings.saving")
+                            : t("settings.save")}
                     </button>
                 </div>
             </div>

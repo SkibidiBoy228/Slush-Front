@@ -1,11 +1,15 @@
+
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+
 import { resetPassword } from "../../api/auth";
 
 import "./ResetPassword.css";
 
 function ResetPassword() {
-  const params = new URLSearchParams(window.location.search);
+  const { t } = useTranslation();
 
+  const params = new URLSearchParams(window.location.search);
   const emailFromUrl = params.get("email") || "";
 
   const [email, setEmail] = useState(emailFromUrl);
@@ -27,32 +31,32 @@ function ResetPassword() {
     setSuccess("");
 
     if (!email.trim()) {
-      setError("Введіть e-mail");
+      setError(t("resetPassword.emailRequired"));
       return;
     }
 
     if (!code.trim()) {
-      setError("Введіть код підтвердження");
+      setError(t("resetPassword.codeRequired"));
       return;
     }
 
     if (!newPassword) {
-      setError("Введіть новий пароль");
+      setError(t("resetPassword.passwordRequired"));
       return;
     }
 
     if (newPassword.length < 6) {
-      setError("Пароль повинен містити щонайменше 6 символів");
+      setError(t("resetPassword.passwordTooShort"));
       return;
     }
 
     if (!confirmPassword) {
-      setError("Підтвердіть новий пароль");
+      setError(t("resetPassword.confirmRequired"));
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setError("Паролі не співпадають");
+      setError(t("resetPassword.passwordMismatch"));
       return;
     }
 
@@ -68,7 +72,7 @@ function ResetPassword() {
 
       setSuccess(
         response.message ||
-          "Пароль успішно змінено."
+          t("resetPassword.success")
       );
 
       setTimeout(() => {
@@ -78,7 +82,7 @@ function ResetPassword() {
       if (error instanceof Error) {
         setError(error.message);
       } else {
-        setError("Не вдалося змінити пароль");
+        setError(t("resetPassword.changeError"));
       }
     } finally {
       setLoading(false);
@@ -87,26 +91,24 @@ function ResetPassword() {
 
   return (
     <div className="reset-password-page">
-
       <main className="reset-password-main">
         <section className="reset-password-card">
-          <h1>Новий пароль</h1>
+          <h1>{t("resetPassword.title")}</h1>
 
           <p className="reset-password-description">
-            Введіть код, який ми надіслали на вашу
-            електронну пошту, та придумайте новий пароль.
+            {t("resetPassword.description")}
           </p>
 
           <form onSubmit={handleSubmit}>
             <div className="reset-password-form-group">
               <label htmlFor="reset-email">
-                E-mail
+                {t("resetPassword.email")}
               </label>
 
               <input
                 id="reset-email"
                 type="email"
-                placeholder="Введіть ваш e-mail..."
+                placeholder={t("resetPassword.emailPlaceholder")}
                 value={email}
                 onChange={(event) =>
                   setEmail(event.target.value)
@@ -118,13 +120,13 @@ function ResetPassword() {
 
             <div className="reset-password-form-group">
               <label htmlFor="reset-code">
-                Код підтвердження
+                {t("resetPassword.code")}
               </label>
 
               <input
                 id="reset-code"
                 type="text"
-                placeholder="Введіть код з e-mail..."
+                placeholder={t("resetPassword.codePlaceholder")}
                 value={code}
                 onChange={(event) =>
                   setCode(event.target.value)
@@ -136,13 +138,13 @@ function ResetPassword() {
 
             <div className="reset-password-form-group">
               <label htmlFor="new-password">
-                Новий пароль
+                {t("resetPassword.newPassword")}
               </label>
 
               <input
                 id="new-password"
                 type="password"
-                placeholder="Введіть новий пароль..."
+                placeholder={t("resetPassword.newPasswordPlaceholder")}
                 value={newPassword}
                 onChange={(event) =>
                   setNewPassword(event.target.value)
@@ -154,13 +156,13 @@ function ResetPassword() {
 
             <div className="reset-password-form-group">
               <label htmlFor="confirm-password">
-                Підтвердження пароля
+                {t("resetPassword.confirmPassword")}
               </label>
 
               <input
                 id="confirm-password"
                 type="password"
-                placeholder="Повторіть новий пароль..."
+                placeholder={t("resetPassword.confirmPasswordPlaceholder")}
                 value={confirmPassword}
                 onChange={(event) =>
                   setConfirmPassword(event.target.value)
@@ -188,14 +190,16 @@ function ResetPassword() {
               disabled={loading}
             >
               {loading
-                ? "Збереження..."
-                : "Змінити пароль"}
+                ? t("resetPassword.saving")
+                : t("resetPassword.changePassword")}
             </button>
           </form>
 
           <div className="reset-password-login-link">
-            Згадали пароль?{" "}
-            <a href="/login">Увійти</a>
+            {t("resetPassword.rememberPassword")}{" "}
+            <a href="/login">
+              {t("resetPassword.login")}
+            </a>
           </div>
         </section>
       </main>

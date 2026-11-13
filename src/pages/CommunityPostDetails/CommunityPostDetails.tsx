@@ -1,9 +1,12 @@
+
 import {
   useCallback,
   useEffect,
   useRef,
   useState,
 } from "react";
+import type React from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   getCommunityPostById,
@@ -16,7 +19,7 @@ import {
   updateComment,
 } from "../../api/community";
 
-import { getGameDetails, } from "../../api/games";
+import { getGameDetails } from "../../api/games";
 import { getCurrentUsername } from "../../api/client";
 
 import type {
@@ -41,6 +44,8 @@ function CommunityPostDetails({
   gameId,
   postId,
 }: CommunityPostDetailsProps) {
+  const { t } = useTranslation();
+
   const [gameTitle, setGameTitle] = useState("");
   const [post, setPost] = useState<CommunityPostData | null>(null);
 
@@ -52,7 +57,7 @@ function CommunityPostDetails({
 
   const [commentSort, setCommentSort] = useState<"newest" | "oldest">(
     "newest"
-    );
+  );
 
   const [counts, setCounts] = useState<CommunityTabCounts>({
     all: 0,
@@ -65,15 +70,14 @@ function CommunityPostDetails({
     subscribersCount: 0,
   });
 
-
-    const sortedComments = [...comments].sort((a, b) => {
+  const sortedComments = [...comments].sort((a, b) => {
     const dateA = new Date(a.createdAt).getTime();
     const dateB = new Date(b.createdAt).getTime();
 
     return commentSort === "newest"
-        ? dateB - dateA
-        : dateA - dateB;
-    });
+      ? dateB - dateA
+      : dateA - dateB;
+  });
 
   const [loading, setLoading] = useState(true);
   const [commentsLoading, setCommentsLoading] = useState(false);
@@ -117,12 +121,12 @@ function CommunityPostDetails({
       setError(
         error instanceof Error
           ? error.message
-          : "Не вдалося завантажити публікацію."
+          : t("communityPostDetails.loadError")
       );
     } finally {
       setLoading(false);
     }
-  }, [gameId, postId]);
+  }, [gameId, postId, t]);
 
   useEffect(() => {
     loadPage();
@@ -173,7 +177,6 @@ function CommunityPostDetails({
       setPost(previousPost);
     }
   };
-
 
   const handleSubmitComment = async (
     targetPostId: string,
@@ -273,7 +276,7 @@ function CommunityPostDetails({
   if (loading) {
     return (
       <div className="community-details-status">
-        Завантаження публікації...
+        {t("communityPostDetails.loading")}
       </div>
     );
   }
@@ -281,19 +284,19 @@ function CommunityPostDetails({
   if (error || !post) {
     return (
       <div className="community-details-status community-details-error">
-        {error || "Публікацію не знайдено."}
+        {error || t("communityPostDetails.postNotFound")}
       </div>
     );
   }
 
   return (
     <CommunityPostDetailsLayout
-    gameId={gameId}
-    gameTitle={gameTitle}
-    subscribersCount={counts.subscribersCount}
-    activeTab="community"
-    recommendationsTitle="Інші обговорення"
-    recommendations={recommendations.map((item) => ({
+      gameId={gameId}
+      gameTitle={gameTitle}
+      subscribersCount={counts.subscribersCount}
+      activeTab="community"
+      recommendationsTitle={t("communityPostDetails.otherDiscussions")}
+      recommendations={recommendations.map((item) => ({
         id: item.id,
         title: item.title ?? "",
         description: item.shortDescription ?? item.content,
@@ -301,52 +304,58 @@ function CommunityPostDetails({
         postType: item.postType,
         likesCount: item.likesCount,
         commentsCount: item.commentsCount,
-    }))}
-    onCreatePost={() => {
-      window.location.href =
-        `/game/${encodeURIComponent(gameId)}/community/create/discussion`;
-    }}
-    onTabChange={(tab) => {
+      }))}
+      onCreatePost={() => {
+        window.location.href =
+          `/game/${encodeURIComponent(gameId)}/community/create/discussion`;
+      }}
+      onTabChange={(tab) => {
         if (tab === "community") {
-        window.location.href = `/game/${encodeURIComponent(
+          window.location.href = `/game/${encodeURIComponent(
             gameId
-        )}/community`;
+          )}/community`;
         }
-    }}
+      }}
     >
       <div className="community-details-post-area">
         <CommunityPostDetailsMeta
-        gameId={gameId}
-        gameTitle={gameTitle}
-        createdAt={post.createdAt}
+          gameId={gameId}
+          gameTitle={gameTitle}
+          createdAt={post.createdAt}
         />
 
         <CommunityPostDetailsCard
-        post={post}
-        onLike={handleLike}
-        onComments={() => handleScrollToComments()}
+          post={post}
+          onLike={handleLike}
+          onComments={handleScrollToComments}
         />
 
         <div
           className="community-details-comments"
           ref={commentsRef as React.RefObject<HTMLDivElement>}
         >
-            <div className="community-details-sort">
-            <span>Сортування:</span>
+          <div className="community-details-sort">
+            <span>{t("communityPostDetails.sorting")}:</span>
 
             <select
-                value={commentSort}
-                onChange={(event) =>
-                setCommentSort(event.target.value as "newest" | "oldest")
-                }
-                aria-label="Сортування коментарів"
+              value={commentSort}
+              onChange={(event) =>
+                setCommentSort(
+                  event.target.value as "newest" | "oldest"
+                )
+              }
+              aria-label={t("communityPostDetails.sortComments")}
             >
-                <option value="newest">Спочатку нові</option>
-                <option value="oldest">Спочатку старі</option>
+              <option value="newest">
+                {t("communityPostDetails.newestFirst")}
+              </option>
+              <option value="oldest">
+                {t("communityPostDetails.oldestFirst")}
+              </option>
             </select>
-            </div>
+          </div>
 
-            <CommunityComments
+          <CommunityComments
             postId={post.id}
             comments={sortedComments}
             loading={commentsLoading}
@@ -356,7 +365,7 @@ function CommunityPostDetails({
             onUpdate={handleUpdateComment}
             currentUsername={currentUsername}
             variant="details"
-            />
+          />
         </div>
       </div>
     </CommunityPostDetailsLayout>

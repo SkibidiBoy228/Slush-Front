@@ -1,14 +1,17 @@
 
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+
 import { apiRequest } from "../../../api/client";
 import type { CommunityPost } from "../../../types/library";
+
 import "./FeedPostCard.css";
 
 interface FeedPostCardProps {
   post: CommunityPost;
 }
 
-function formatPostDate(value: string): string {
+function formatPostDate(value: string, locale: string): string {
   if (!value) return "";
 
   const date = new Date(value);
@@ -17,7 +20,7 @@ function formatPostDate(value: string): string {
     return value;
   }
 
-  return new Intl.DateTimeFormat("uk-UA", {
+  return new Intl.DateTimeFormat(locale, {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -27,7 +30,9 @@ function formatPostDate(value: string): string {
 }
 
 function FeedPostCard({ post }: FeedPostCardProps) {
-  const title = post.title?.trim() || "Без назви";
+  const { t, i18n } = useTranslation();
+
+  const title = post.title?.trim() || t("feedPostCard.untitled");
 
   const description =
     post.shortDescription?.trim() ||
@@ -39,7 +44,29 @@ function FeedPostCard({ post }: FeedPostCardProps) {
   const [isLikeLoading, setIsLikeLoading] = useState(false);
   const [shareMessage, setShareMessage] = useState("");
 
-  const formattedDate = formatPostDate(post.createdAt);
+  const dateLocales: Record<string, string> = {
+    uk: "uk-UA",
+    en: "en-US",
+    sk: "sk-SK",
+    ru: "ru-RU",
+  };
+
+  const currentLocale =
+    dateLocales[i18n.language.split("-")[0]] || "uk-UA";
+
+  const formattedDate = formatPostDate(post.createdAt, currentLocale);
+
+  const postTypeLabels: Record<string, string> = {
+    Discussion: t("feedPostCard.types.discussion"),
+    Screenshot: t("feedPostCard.types.screenshot"),
+    Video: t("feedPostCard.types.video"),
+    Guide: t("feedPostCard.types.guide"),
+    News: t("feedPostCard.types.news"),
+  };
+
+  const displayedPostType = post.postType
+    ? postTypeLabels[post.postType] || post.postType
+    : "";
 
   async function handleLike() {
     if (isLikeLoading) return;
@@ -49,14 +76,14 @@ function FeedPostCard({ post }: FeedPostCardProps) {
 
     setIsLiked(!previousLiked);
     setLikesCount(
-      Math.max(0, previousCount + (previousLiked ? -1 : 1)),
+      Math.max(0, previousCount + (previousLiked ? -1 : 1))
     );
     setIsLikeLoading(true);
 
     try {
       await apiRequest<void>(
         `/api/Community/${encodeURIComponent(post.id)}/like`,
-        { method: "POST" },
+        { method: "POST" }
       );
     } catch (error) {
       console.error("Не вдалося змінити вподобання:", error);
@@ -73,10 +100,10 @@ function FeedPostCard({ post }: FeedPostCardProps) {
 
     try {
       await navigator.clipboard.writeText(shareData);
-      setShareMessage("Скопійовано");
+      setShareMessage(t("feedPostCard.copied"));
     } catch (error) {
       console.error("Не вдалося скопіювати публікацію:", error);
-      setShareMessage("Не вдалося скопіювати");
+      setShareMessage(t("feedPostCard.copyError"));
     }
 
     window.setTimeout(() => {
@@ -96,7 +123,7 @@ function FeedPostCard({ post }: FeedPostCardProps) {
               preload="metadata"
               className="feed-post__video"
             >
-              Твій браузер не підтримує відтворення відео.
+              {t("feedPostCard.videoUnsupported")}
             </video>
           ) : (
             <img
@@ -125,7 +152,7 @@ function FeedPostCard({ post }: FeedPostCardProps) {
             )}
 
             <span className="feed-post__username">
-              {post.authorUsername || "Користувач"}
+              {post.authorUsername || t("feedPostCard.user")}
             </span>
 
             <time
@@ -140,8 +167,8 @@ function FeedPostCard({ post }: FeedPostCardProps) {
           <button
             className="feed-post__more"
             type="button"
-            aria-label="Інші дії"
-            title="Інші дії"
+            aria-label={t("feedPostCard.moreActions")}
+            title={t("feedPostCard.moreActions")}
             disabled
           >
             ···
@@ -149,9 +176,9 @@ function FeedPostCard({ post }: FeedPostCardProps) {
         </header>
 
         <div className="feed-post__main">
-          {post.postType && (
+          {displayedPostType && (
             <span className="feed-post__type">
-              {post.postType}
+              {displayedPostType}
             </span>
           )}
 
@@ -170,8 +197,14 @@ function FeedPostCard({ post }: FeedPostCardProps) {
               isLiked ? "feed-post__action--liked" : ""
             }`}
             type="button"
-            title={isLiked ? "Прибрати вподобання" : "Вподобати"}
-            aria-label={`Вподобання: ${likesCount}`}
+            title={
+              isLiked
+                ? t("feedPostCard.unlike")
+                : t("feedPostCard.like")
+            }
+            aria-label={t("feedPostCard.likes", {
+              count: likesCount,
+            })}
             aria-pressed={isLiked}
             disabled={isLikeLoading}
             onClick={() => void handleLike()}
@@ -185,8 +218,10 @@ function FeedPostCard({ post }: FeedPostCardProps) {
           <button
             className="feed-post__action"
             type="button"
-            title="Коментарі"
-            aria-label={`Коментарі: ${post.commentsCount}`}
+            title={t("feedPostCard.comments")}
+            aria-label={t("feedPostCard.commentsCount", {
+              count: post.commentsCount,
+            })}
             onClick={() => {
               // Підключимо відкриття коментарів пізніше.
             }}
@@ -201,7 +236,9 @@ function FeedPostCard({ post }: FeedPostCardProps) {
             onClick={() => void handleShare()}
           >
             <span className="feed-post__share-icon">↥</span>
-            <span>{shareMessage || "Поділитись"}</span>
+            <span>
+              {shareMessage || t("feedPostCard.share")}
+            </span>
           </button>
         </footer>
       </div>

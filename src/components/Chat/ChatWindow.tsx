@@ -1,4 +1,6 @@
 import { useRef, useState } from "react";
+import type { ChangeEvent } from "react";
+import { useTranslation } from "react-i18next";
 
 import type {
   ChatConversation,
@@ -31,18 +33,20 @@ function formatAudioTime(seconds: number): string {
 }
 
 function VoicePlayer({ src }: VoicePlayerProps) {
+  const { t } = useTranslation();
+
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
-  const progress = duration > 0
-    ? (currentTime / duration) * 100
-    : 0;
+  const progress =
+    duration > 0 ? (currentTime / duration) * 100 : 0;
 
   async function togglePlayback() {
     const audio = audioRef.current;
+
     if (!audio) return;
 
     if (audio.paused) {
@@ -59,8 +63,9 @@ function VoicePlayer({ src }: VoicePlayerProps) {
     }
   }
 
-  function handleSeek(event: React.ChangeEvent<HTMLInputElement>) {
+  function handleSeek(event: ChangeEvent<HTMLInputElement>) {
     const audio = audioRef.current;
+
     if (!audio) return;
 
     const newTime = Number(event.target.value);
@@ -100,7 +105,11 @@ function VoicePlayer({ src }: VoicePlayerProps) {
         type="button"
         className="voice-player__button"
         onClick={() => void togglePlayback()}
-        aria-label={isPlaying ? "Пауза" : "Відтворити"}
+        aria-label={
+          isPlaying
+            ? t("chatWindow.pause")
+            : t("chatWindow.play")
+        }
       >
         {isPlaying ? (
           <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -147,7 +156,7 @@ function VoicePlayer({ src }: VoicePlayerProps) {
             step={0.1}
             value={Math.min(currentTime, duration || 0)}
             onChange={handleSeek}
-            aria-label="Прогрес відтворення"
+            aria-label={t("chatWindow.playbackProgress")}
             disabled={!duration}
           />
         </div>
@@ -177,13 +186,15 @@ export default function ChatWindow({
   isSending,
   onSendMessage,
 }: ChatWindowProps) {
+  const { t } = useTranslation();
+
   if (!conversation) {
     return (
       <main className="chat-window chat-window--empty">
         <div className="chat-window__welcome">
           <div className="chat-window__welcome-icon">✉</div>
-          <h2>Ваші повідомлення</h2>
-          <p>Оберіть діалог, щоб почати спілкування.</p>
+          <h2>{t("chatWindow.welcomeTitle")}</h2>
+          <p>{t("chatWindow.welcomeDescription")}</p>
         </div>
       </main>
     );
@@ -206,7 +217,9 @@ export default function ChatWindow({
           <h2>{conversation.username}</h2>
 
           <span className={conversation.isOnline ? "is-online" : ""}>
-            {conversation.isOnline ? "У мережі" : "Не в мережі"}
+            {conversation.isOnline
+              ? t("chatWindow.online")
+              : t("chatWindow.offline")}
           </span>
         </div>
       </header>
@@ -214,13 +227,13 @@ export default function ChatWindow({
       <section className="chat-window__messages">
         {isLoading && (
           <p className="chat-window__notice">
-            Завантаження повідомлень...
+            {t("chatWindow.loading")}
           </p>
         )}
 
         {!isLoading && messages.length === 0 && (
           <p className="chat-window__notice">
-            Повідомлень поки немає. Напишіть першим!
+            {t("chatWindow.empty")}
           </p>
         )}
 
@@ -230,6 +243,12 @@ export default function ChatWindow({
           const showDate =
             !previousMessage ||
             previousMessage.dateFormatted !== message.dateFormatted;
+
+          const isVideoFile =
+            message.messageType === "File" &&
+            /\.(mp4|webm|ogg|mov|m4v)$/i.test(
+              message.fileName ?? ""
+            );
 
           return (
             <div key={message.id}>
@@ -247,42 +266,27 @@ export default function ChatWindow({
                 }`}
               >
                 <div className="chat-message__bubble">
-                  {message.messageType === "Text" && message.content}
+                  {message.messageType === "Text" &&
+                    message.content}
 
-                  {message.messageType === "Image" && message.mediaUrl && (
-                    <div className="chat-message__media">
-                      <img
-                        src={message.mediaUrl}
-                        alt="Зображення"
-                        loading="lazy"
-                      />
+                  {message.messageType === "Image" &&
+                    message.mediaUrl && (
+                      <div className="chat-message__media">
+                        <img
+                          src={message.mediaUrl}
+                          alt={t("chatWindow.image")}
+                          loading="lazy"
+                        />
 
-                      {message.content && <p>{message.content}</p>}
-                    </div>
-                  )}
+                        {message.content && (
+                          <p>{message.content}</p>
+                        )}
+                      </div>
+                    )}
 
-                  {message.messageType === "File" && message.mediaUrl && (
-                    <a
-                      className="chat-message__file"
-                      href={message.mediaUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <span>📎</span>
-
-                      <span>
-                        <strong>{message.fileName || "Файл"}</strong>
-                        <small>{message.formattedFileSize}</small>
-                      </span>
-                    </a>
-                  )}
-
-                  {message.messageType === "Voice" && message.mediaUrl && (
-                    <VoicePlayer src={message.mediaUrl} />
-                  )}
-
-                  {message.messageType === "File" && message.mediaUrl && (
-                    /\.(mp4|webm|ogg|mov|m4v)$/i.test(message.fileName ?? "") ? (
+                  {message.messageType === "File" &&
+                    message.mediaUrl &&
+                    isVideoFile && (
                       <div className="chat-message__video">
                         <video
                           src={message.mediaUrl}
@@ -290,10 +294,12 @@ export default function ChatWindow({
                           preload="metadata"
                           playsInline
                         >
-                          Ваш браузер не підтримує відтворення відео.
+                          {t("chatWindow.videoUnsupported")}
                         </video>
 
-                        {message.content && <p>{message.content}</p>}
+                        {message.content && (
+                          <p>{message.content}</p>
+                        )}
 
                         <a
                           href={message.mediaUrl}
@@ -301,10 +307,14 @@ export default function ChatWindow({
                           rel="noreferrer"
                           download={message.fileName || undefined}
                         >
-                          Завантажити відео
+                          {t("chatWindow.downloadVideo")}
                         </a>
                       </div>
-                    ) : (
+                    )}
+
+                  {message.messageType === "File" &&
+                    message.mediaUrl &&
+                    !isVideoFile && (
                       <a
                         className="chat-message__file"
                         href={message.mediaUrl}
@@ -313,12 +323,19 @@ export default function ChatWindow({
                       >
                         <span>📎</span>
                         <span>
-                          <strong>{message.fileName || "Файл"}</strong>
+                          <strong>
+                            {message.fileName ||
+                              t("chatWindow.file")}
+                          </strong>
                           <small>{message.formattedFileSize}</small>
                         </span>
                       </a>
-                    )
-                  )}
+                    )}
+
+                  {message.messageType === "Voice" &&
+                    message.mediaUrl && (
+                      <VoicePlayer src={message.mediaUrl} />
+                    )}
 
                   <div className="chat-message__meta">
                     <time>{message.timeFormatted}</time>
@@ -327,8 +344,8 @@ export default function ChatWindow({
                       <span
                         title={
                           message.isRead
-                            ? "Прочитано"
-                            : "Надіслано"
+                            ? t("chatWindow.read")
+                            : t("chatWindow.sent")
                         }
                       >
                         {message.isRead ? "✓✓" : "✓"}

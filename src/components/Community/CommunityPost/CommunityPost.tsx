@@ -1,4 +1,6 @@
+
 import type { MouseEvent, KeyboardEvent } from "react";
+import { useTranslation } from "react-i18next";
 import type { CommunityPost as CommunityPostData } from "../../../types/community";
 import "./CommunityPost.css";
 
@@ -15,6 +17,17 @@ function CommunityPost({
   onLike,
   onComments,
 }: CommunityPostProps) {
+  const { t, i18n } = useTranslation();
+
+  const numberLocale: Record<string, string> = {
+    uk: "uk-UA",
+    en: "en-US",
+    sk: "sk-SK",
+    ru: "ru-RU",
+  };
+
+  const locale = numberLocale[i18n.language] || "uk-UA";
+
   const openPost = () => {
     if (!gameId) return;
 
@@ -45,38 +58,38 @@ function CommunityPost({
   };
 
   const postTypeLabels: Record<string, string> = {
-    Discussion: "Обговорення",
-    Screenshot: "Скріншот",
-    Video: "Відео",
-    Guide: "Гайд",
-    News: "Новини",
+    Discussion: t("communityPost.types.discussion"),
+    Screenshot: t("communityPost.types.screenshot"),
+    Video: t("communityPost.types.video"),
+    Guide: t("communityPost.types.guide"),
+    News: t("communityPost.types.news"),
   };
 
   const authorInitial =
     post.authorUsername?.charAt(0).toUpperCase() || "?";
 
-const handleShare = async () => {
-  if (!gameId) return;
+  const handleShare = async () => {
+    if (!gameId) return;
 
-  try {
-    const postUrl =
-      `${window.location.origin}/game/${encodeURIComponent(gameId)}/community/post/${encodeURIComponent(post.id)}`;
+    try {
+      const postUrl =
+        `${window.location.origin}/game/${encodeURIComponent(gameId)}/community/post/${encodeURIComponent(post.id)}`;
 
-    if (navigator.share) {
-      await navigator.share({
-        title: post.title || "Публікація спільноти",
-        text: post.content || post.shortDescription || "",
-        url: postUrl,
-      });
-    } else if (navigator.clipboard) {
-      await navigator.clipboard.writeText(postUrl);
+      if (navigator.share) {
+        await navigator.share({
+          title: post.title || t("communityPost.communityPost"),
+          text: post.content || post.shortDescription || "",
+          url: postUrl,
+        });
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(postUrl);
+      }
+    } catch (error) {
+      if (error instanceof Error && error.name !== "AbortError") {
+        console.error("Share failed:", error);
+      }
     }
-  } catch (error) {
-    if (error instanceof Error && error.name !== "AbortError") {
-      console.error("Share failed:", error);
-    }
-  }
-};
+  };
 
   const renderMedia = () => {
     if (!post.mediaUrl) return null;
@@ -103,7 +116,7 @@ const handleShare = async () => {
       <div className="community-post-media">
         <img
           src={post.mediaUrl}
-          alt={post.title || "Зображення публікації"}
+          alt={post.title || t("communityPost.postImage")}
           loading="lazy"
         />
       </div>
@@ -115,7 +128,9 @@ const handleShare = async () => {
       className={`community-post community-post-${post.postType.toLowerCase()}`}
       role="link"
       tabIndex={0}
-      aria-label={`Відкрити публікацію: ${post.title || "Публікація спільноти"}`}
+      aria-label={t("communityPost.openPost", {
+        title: post.title || t("communityPost.communityPost"),
+      })}
       onClick={handleCardClick}
       onKeyDown={handleCardKeyDown}
     >
@@ -187,27 +202,27 @@ const handleShare = async () => {
             post.isLiked ? "liked" : ""
           }`}
           onClick={() => onLike(post.id)}
-          aria-label="Подобається"
+          aria-label={t("communityPost.like")}
           aria-pressed={post.isLiked}
         >
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z" />
           </svg>
 
-          <span>{post.likesCount.toLocaleString("uk-UA")}</span>
+          <span>{post.likesCount.toLocaleString(locale)}</span>
         </button>
 
         <button
           type="button"
           className="community-post-action"
           onClick={() => onComments(post.id)}
-          aria-label="Коментарі"
+          aria-label={t("communityPost.comments")}
         >
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z" />
           </svg>
 
-          <span>{post.commentsCount.toLocaleString("uk-UA")}</span>
+          <span>{post.commentsCount.toLocaleString(locale)}</span>
         </button>
 
         <button
@@ -220,7 +235,7 @@ const handleShare = async () => {
             <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" />
           </svg>
 
-          <span>Поділитися</span>
+          <span>{t("communityPost.share")}</span>
         </button>
       </footer>
     </article>

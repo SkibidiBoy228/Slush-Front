@@ -1,36 +1,33 @@
+
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
-import {
-  deleteAccount,
-} from "../../../api/settings";
-
-import {
-  logout,
-} from "../../../api/client";
+import { deleteAccount } from "../../../api/settings";
+import { logout } from "../../../api/client";
 
 import "./DeleteAccount.css";
 
 function DeleteAccount() {
+  const { t } = useTranslation();
+
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] =
-    useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState("");
 
-  const [showConfirmation, setShowConfirmation] =
-    useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   async function handleDelete() {
     setError("");
 
     if (!password) {
-      setError("Введіть пароль.");
+      setError(t("deleteAccount.passwordRequired"));
       return;
     }
 
     if (password !== confirmPassword) {
-      setError("Паролі не співпадають.");
+      setError(t("deleteAccount.passwordMismatch"));
       return;
     }
 
@@ -49,7 +46,7 @@ function DeleteAccount() {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError("Не вдалося видалити акаунт.");
+        setError(t("deleteAccount.deleteError"));
       }
     } finally {
       setDeleting(false);
@@ -59,54 +56,47 @@ function DeleteAccount() {
   return (
     <section className="delete-account">
       <div className="delete-account-header">
-        <h1>Видалення акаунта</h1>
+        <h1>{t("deleteAccount.title")}</h1>
       </div>
 
       <div className="delete-account-card">
         <div className="delete-account-warning">
-          <h2>Увага</h2>
+          <h2>{t("deleteAccount.warning")}</h2>
 
           <p>
-            Натисніть «Видалити мій акаунт», щоб
-            розпочати процес остаточного видалення
-            вашого акаунта.
+            {t("deleteAccount.warningDescription")}
           </p>
 
           <p>
-            Після видалення відновити акаунт буде
-            неможливо.
+            {t("deleteAccount.warningIrreversible")}
           </p>
         </div>
 
         <div className="delete-account-form">
           <div className="delete-account-field">
             <label htmlFor="delete-password">
-              Пароль
+              {t("deleteAccount.password")}
             </label>
 
             <input
               id="delete-password"
               type="password"
               value={password}
-              onChange={(event) =>
-                setPassword(event.target.value)
-              }
+              onChange={(event) => setPassword(event.target.value)}
               disabled={deleting}
             />
           </div>
 
           <div className="delete-account-field">
             <label htmlFor="delete-confirm-password">
-              Повторіть пароль
+              {t("deleteAccount.confirmPassword")}
             </label>
 
             <input
               id="delete-confirm-password"
               type="password"
               value={confirmPassword}
-              onChange={(event) =>
-                setConfirmPassword(event.target.value)
-              }
+              onChange={(event) => setConfirmPassword(event.target.value)}
               disabled={deleting}
             />
           </div>
@@ -125,26 +115,23 @@ function DeleteAccount() {
               className="delete-account-button"
               onClick={() => setShowConfirmation(true)}
             >
-              Видалити мій акаунт
+              {t("deleteAccount.deleteButton")}
             </button>
           </div>
         ) : (
           <div className="delete-account-confirmation">
             <p>
-              Ви впевнені, що хочете остаточно
-              видалити акаунт?
+              {t("deleteAccount.confirmationQuestion")}
             </p>
 
             <div className="delete-account-confirmation-actions">
               <button
                 type="button"
                 className="delete-account-cancel"
-                onClick={() =>
-                  setShowConfirmation(false)
-                }
+                onClick={() => setShowConfirmation(false)}
                 disabled={deleting}
               >
-                Скасувати
+                {t("deleteAccount.cancel")}
               </button>
 
               <button
@@ -154,8 +141,8 @@ function DeleteAccount() {
                 disabled={deleting}
               >
                 {deleting
-                  ? "Видалення..."
-                  : "Так, видалити"}
+                  ? t("deleteAccount.deleting")
+                  : t("deleteAccount.confirmDelete")}
               </button>
             </div>
           </div>

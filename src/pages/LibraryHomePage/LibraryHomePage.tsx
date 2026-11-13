@@ -1,4 +1,6 @@
+
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import LibraryLayout from "../../components/Library/layout/LibraryLayout";
 import LibraryNewsSection from "../../components/Library/Home/LibraryNewsSection";
 import CommunityHighlights from "../../components/Library/Home/CommunityHighlights";
@@ -21,6 +23,8 @@ type LibraryTab = "all" | "favorites" | "collections";
 type LibraryView = "grid" | "list";
 
 function LibraryHomePage() {
+  const { t } = useTranslation();
+
   const [home, setHome] = useState<LibraryHome | null>(null);
   const [games, setGames] = useState<LibraryGame[]>([]);
   const [favorites, setFavorites] = useState<LibraryGame[]>([]);
@@ -73,12 +77,12 @@ function LibraryHomePage() {
         return collectionData[0]?.id ?? null;
       });
     } catch (err) {
-      console.error("Не вдалося завантажити бібліотеку:", err);
-      setError("Не вдалося завантажити дані бібліотеки.");
+      console.error("Failed to load library:", err);
+      setError(t("libraryHome.loadError"));
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void loadLibrary();
@@ -104,10 +108,10 @@ function LibraryHomePage() {
           setCollectionGames(result);
         }
       } catch (err) {
-        console.error("Не вдалося завантажити колекцію:", err);
+        console.error("Failed to load collection:", err);
 
         if (active) {
-          setCollectionError("Не вдалося завантажити ігри колекції.");
+          setCollectionError(t("libraryHome.collectionLoadError"));
         }
       } finally {
         if (active) {
@@ -121,7 +125,7 @@ function LibraryHomePage() {
     return () => {
       active = false;
     };
-  }, [activeTab, selectedCollection]);
+  }, [activeTab, selectedCollection, t]);
 
   const visibleGames = useMemo(() => {
     let source: LibraryGame[] = [];
@@ -146,7 +150,7 @@ function LibraryHomePage() {
   }, [activeTab, games, favorites, collectionGames, search]);
 
   async function handleCreateCollection() {
-    const name = window.prompt("Введіть назву нової колекції:");
+    const name = window.prompt(t("libraryHome.collectionPrompt"));
 
     if (!name?.trim()) {
       return;
@@ -164,8 +168,8 @@ function LibraryHomePage() {
       setActiveTab("collections");
       setCollectionGames([]);
     } catch (err) {
-      console.error("Не вдалося створити колекцію:", err);
-      window.alert("Не вдалося створити колекцію. Спробуйте ще раз.");
+      console.error("Failed to create collection:", err);
+      window.alert(t("libraryHome.collectionCreateError"));
     } finally {
       setIsCreatingCollection(false);
     }
@@ -175,7 +179,7 @@ function LibraryHomePage() {
     if (isLoading) {
       return (
         <p className="library-home__message">
-          Завантаження ігор...
+          {t("libraryHome.loadingGames")}
         </p>
       );
     }
@@ -183,7 +187,7 @@ function LibraryHomePage() {
     if (activeTab === "collections" && isCollectionLoading) {
       return (
         <p className="library-home__message">
-          Завантаження колекції...
+          {t("libraryHome.loadingCollection")}
         </p>
       );
     }
@@ -199,14 +203,16 @@ function LibraryHomePage() {
     if (activeTab === "collections" && !selectedCollection) {
       return (
         <div className="library-home__empty">
-          <h3>У вас ще немає колекцій</h3>
-          <p>Створіть колекцію, щоб упорядкувати свої ігри.</p>
+          <h3>{t("libraryHome.noCollections")}</h3>
+          <p>{t("libraryHome.createCollectionDescription")}</p>
           <button
             type="button"
             onClick={handleCreateCollection}
             disabled={isCreatingCollection}
           >
-            {isCreatingCollection ? "Створення..." : "Створити колекцію"}
+            {isCreatingCollection
+              ? t("libraryHome.creating")
+              : t("libraryHome.createCollection")}
           </button>
         </div>
       );
@@ -216,12 +222,12 @@ function LibraryHomePage() {
       return (
         <p className="library-home__message">
           {search
-            ? "За вашим запитом нічого не знайдено."
+            ? t("libraryHome.noSearchResults")
             : activeTab === "favorites"
-              ? "У вас поки немає обраних ігор."
+              ? t("libraryHome.noFavorites")
               : activeTab === "collections"
-                ? "У цій колекції поки немає ігор."
-                : "Ваша бібліотека поки порожня."}
+                ? t("libraryHome.emptyCollection")
+                : t("libraryHome.emptyLibrary")}
         </p>
       );
     }
@@ -246,14 +252,14 @@ function LibraryHomePage() {
 
               {game.isCurrentlyPlaying && (
                 <span className="library-home__playing">
-                  Зараз граєте
+                  {t("libraryHome.currentlyPlaying")}
                 </span>
               )}
 
               {game.isFavorite && (
                 <span
                   className="library-home__favorite"
-                  title="В обраному"
+                  title={t("libraryHome.inFavorites")}
                 >
                   ♥
                 </span>
@@ -267,7 +273,7 @@ function LibraryHomePage() {
 
               {view === "list" && (
                 <span className="library-home__game-meta">
-                  {game.playtimeFormatted || "0 хв."}
+                  {game.playtimeFormatted || t("libraryHome.zeroMinutes")}
                 </span>
               )}
             </div>
@@ -286,21 +292,21 @@ function LibraryHomePage() {
               type="search"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Пошук у бібліотеці..."
-              aria-label="Пошук у бібліотеці"
+              placeholder={t("libraryHome.searchPlaceholder")}
+              aria-label={t("libraryHome.searchLabel")}
             />
             <span aria-hidden="true">⌕</span>
           </label>
 
           <div className="library-home__view">
-            <span>Вид:</span>
+            <span>{t("libraryHome.view")}:</span>
 
             <button
               type="button"
               className={view === "grid" ? "is-active" : ""}
               onClick={() => setView("grid")}
-              aria-label="Сітка"
-              title="Сітка"
+              aria-label={t("libraryHome.grid")}
+              title={t("libraryHome.grid")}
               aria-pressed={view === "grid"}
             >
               ▦
@@ -310,8 +316,8 @@ function LibraryHomePage() {
               type="button"
               className={view === "list" ? "is-active" : ""}
               onClick={() => setView("list")}
-              aria-label="Список"
-              title="Список"
+              aria-label={t("libraryHome.list")}
+              title={t("libraryHome.list")}
               aria-pressed={view === "list"}
             >
               ☰
@@ -321,13 +327,13 @@ function LibraryHomePage() {
 
         {isLoading ? (
           <p className="library-home__message">
-            Завантаження бібліотеки...
+            {t("libraryHome.loadingLibrary")}
           </p>
         ) : error ? (
           <div className="library-home__error" role="alert">
             <p>{error}</p>
             <button type="button" onClick={() => void loadLibrary()}>
-              Спробувати ще раз
+              {t("libraryHome.retry")}
             </button>
           </div>
         ) : (
@@ -361,7 +367,7 @@ function LibraryHomePage() {
                   }
                   onClick={() => setActiveTab("all")}
                 >
-                  Усі ігри
+                  {t("libraryHome.allGames")}
                 </button>
 
                 <button
@@ -373,7 +379,7 @@ function LibraryHomePage() {
                   }
                   onClick={() => setActiveTab("favorites")}
                 >
-                  Обране
+                  {t("libraryHome.favorites")}
                 </button>
 
                 <button
@@ -385,7 +391,7 @@ function LibraryHomePage() {
                   }
                   onClick={() => setActiveTab("collections")}
                 >
-                  Моя колекція
+                  {t("libraryHome.myCollection")}
                 </button>
 
                 <button
@@ -393,8 +399,8 @@ function LibraryHomePage() {
                   className="library-home__add-collection"
                   onClick={handleCreateCollection}
                   disabled={isCreatingCollection}
-                  title="Створити колекцію"
-                  aria-label="Створити колекцію"
+                  title={t("libraryHome.createCollection")}
+                  aria-label={t("libraryHome.createCollection")}
                 >
                   +
                 </button>

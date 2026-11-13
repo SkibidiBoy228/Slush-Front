@@ -1,3 +1,5 @@
+
+import { useTranslation } from "react-i18next";
 import "./CommunityPostDetailsMeta.css";
 
 interface CommunityPostDetailsMetaProps {
@@ -11,8 +13,20 @@ function CommunityPostDetailsMeta({
   gameTitle,
   createdAt,
 }: CommunityPostDetailsMetaProps) {
+  const { t, i18n } = useTranslation();
+
+  const localeMap: Record<string, string> = {
+    uk: "uk-UA",
+    en: "en-US",
+    sk: "sk-SK",
+    ru: "ru-RU",
+  };
+
+  const locale =
+    localeMap[i18n.language.split("-")[0]] || "uk-UA";
+
   const formattedDate = createdAt
-    ? new Date(createdAt).toLocaleDateString("uk-UA")
+    ? new Date(createdAt).toLocaleDateString(locale)
     : "";
 
   return (
@@ -25,7 +39,7 @@ function CommunityPostDetailsMeta({
             gameId
           )}/community`;
         }}
-        aria-label="Повернутися до спільноти"
+        aria-label={t("communityPostDetailsMeta.back")}
       >
         ←
       </button>

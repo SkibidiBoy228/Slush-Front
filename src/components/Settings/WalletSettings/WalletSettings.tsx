@@ -1,4 +1,6 @@
+
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   depositToWallet,
@@ -14,8 +16,9 @@ import type {
 import "./WalletSettings.css";
 
 function WalletSettings() {
-  const [wallet, setWallet] =
-    useState<WalletBalance | null>(null);
+  const { t, i18n } = useTranslation();
+
+  const [wallet, setWallet] = useState<WalletBalance | null>(null);
 
   const [transactions, setTransactions] =
     useState<WalletTransaction[]>([]);
@@ -27,6 +30,15 @@ function WalletSettings() {
 
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+
+  const localeMap: Record<string, string> = {
+    uk: "uk-UA",
+    en: "en-US",
+    sk: "sk-SK",
+    ru: "ru-RU",
+  };
+
+  const locale = localeMap[i18n.language] || "uk-UA";
 
   useEffect(() => {
     loadWallet();
@@ -49,7 +61,7 @@ function WalletSettings() {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError("Не вдалося завантажити гаманець.");
+        setError(t("walletSettings.loadError"));
       }
     } finally {
       setLoading(false);
@@ -69,7 +81,7 @@ function WalletSettings() {
     );
 
     if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) {
-      setError("Введіть коректну суму.");
+      setError(t("walletSettings.invalidAmount"));
       return;
     }
 
@@ -91,12 +103,12 @@ function WalletSettings() {
 
       setTransactions(transactionResponse.items);
 
-      setMessage("Баланс успішно поповнено.");
+      setMessage(t("walletSettings.depositSuccess"));
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError("Не вдалося поповнити баланс.");
+        setError(t("walletSettings.depositError"));
       }
     } finally {
       setDepositing(false);
@@ -107,7 +119,7 @@ function WalletSettings() {
     return (
       <section className="wallet-settings">
         <div className="wallet-settings-loading">
-          Завантаження...
+          {t("walletSettings.loading")}
         </div>
       </section>
     );
@@ -116,7 +128,7 @@ function WalletSettings() {
   return (
     <section className="wallet-settings">
       <div className="wallet-settings-header">
-        <h1>Гаманець</h1>
+        <h1>{t("walletSettings.title")}</h1>
       </div>
 
       {error && (
@@ -132,15 +144,15 @@ function WalletSettings() {
       )}
 
       <div className="wallet-settings-balance">
-        <span>Мій баланс</span>
+        <span>{t("walletSettings.myBalance")}</span>
 
         <strong>
-          {(wallet?.balance ?? 0).toFixed(2)}₴
+          {(wallet?.balance ?? 0).toFixed(2)} ₴
         </strong>
       </div>
 
       <div className="wallet-settings-card">
-        <h2>Поповнення балансу</h2>
+        <h2>{t("walletSettings.depositTitle")}</h2>
 
         <form
           className="wallet-settings-deposit"
@@ -149,7 +161,7 @@ function WalletSettings() {
           <input
             type="text"
             inputMode="decimal"
-            placeholder="Сума"
+            placeholder={t("walletSettings.amountPlaceholder")}
             value={amount}
             onChange={(event) =>
               setAmount(event.target.value)
@@ -162,30 +174,29 @@ function WalletSettings() {
             disabled={depositing}
           >
             {depositing
-              ? "Поповнення..."
-              : "Поповнити"}
+              ? t("walletSettings.depositing")
+              : t("walletSettings.deposit")}
           </button>
         </form>
       </div>
 
       <div className="wallet-settings-card">
-        <h2>Історія транзакцій</h2>
+        <h2>{t("walletSettings.historyTitle")}</h2>
 
         {transactions.length === 0 ? (
           <div className="wallet-settings-empty">
-            Транзакцій поки немає.
+            {t("walletSettings.noTransactions")}
           </div>
         ) : (
           <div className="wallet-settings-transactions">
             <div className="wallet-settings-transaction-header">
-              <span>Сума</span>
-              <span>Найменування</span>
-              <span>Дата</span>
+              <span>{t("walletSettings.amount")}</span>
+              <span>{t("walletSettings.description")}</span>
+              <span>{t("walletSettings.date")}</span>
             </div>
 
             {transactions.map((transaction) => {
-              const positive =
-                transaction.amount >= 0;
+              const positive = transaction.amount >= 0;
 
               return (
                 <div
@@ -200,7 +211,7 @@ function WalletSettings() {
                     }
                   >
                     {positive ? "+" : ""}
-                    {transaction.amount.toFixed(2)}₴
+                    {transaction.amount.toFixed(2)} ₴
                   </span>
 
                   <span>
@@ -210,7 +221,7 @@ function WalletSettings() {
                   <span>
                     {new Date(
                       transaction.createdAt
-                    ).toLocaleDateString("uk-UA")}
+                    ).toLocaleDateString(locale)}
                   </span>
                 </div>
               );

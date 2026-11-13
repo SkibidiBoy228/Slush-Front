@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import DOMPurify from "dompurify";
+
 import GameSearch from "../../components/GameSearch/GameSearch";
 
 import GameGallery from "../../components/GamePage/GameGallery";
@@ -19,6 +21,8 @@ interface GamePageProps {
 }
 
 function GamePage({ appId }: GamePageProps) {
+  const { t } = useTranslation();
+
   const [game, setGame] = useState<GameDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -37,7 +41,7 @@ function GamePage({ appId }: GamePageProps) {
         if (error instanceof Error) {
           setError(error.message);
         } else {
-          setError("Не вдалося завантажити гру");
+          setError(t("gamePage.loadError"));
         }
       } finally {
         setLoading(false);
@@ -45,12 +49,14 @@ function GamePage({ appId }: GamePageProps) {
     }
 
     loadGame();
-  }, [appId]);
+  }, [appId, t]);
 
   if (loading) {
     return (
       <div className="game-page-state">
-        <div className="state-content">Завантаження гри...</div>
+        <div className="state-content">
+          {t("gamePage.loading")}
+        </div>
       </div>
     );
   }
@@ -58,9 +64,8 @@ function GamePage({ appId }: GamePageProps) {
   if (error || !game) {
     return (
       <div className="game-page-state">
-
         <div className="state-content error-state">
-          {error || "Гру не знайдено"}
+          {error || t("gamePage.gameNotFound")}
         </div>
       </div>
     );
@@ -83,17 +88,14 @@ function GamePage({ appId }: GamePageProps) {
 
   return (
     <div className="game-page">
-
-
       <main className="game-page-content">
-
-          <div className="game-page-search">
+        <div className="game-page-search">
           <GameSearch />
         </div>
 
         <nav className="game-tabs">
           <button className="active">
-            Про гру
+            {t("gamePage.aboutGame")}
           </button>
 
           <button
@@ -101,16 +103,16 @@ function GamePage({ appId }: GamePageProps) {
               window.location.href = `/game/${game.id}/characteristics`;
             }}
           >
-            Характеристики
+            {t("gamePage.characteristics")}
           </button>
 
-        <button
-          onClick={() => {
-            window.location.href = `/game/${game.id}/community`;
-          }}
-        >
-          Спільнота
-        </button>
+          <button
+            onClick={() => {
+              window.location.href = `/game/${game.id}/community`;
+            }}
+          >
+            {t("gamePage.community")}
+          </button>
         </nav>
 
         <div className="game-layout">
@@ -126,7 +128,7 @@ function GamePage({ appId }: GamePageProps) {
             </div>
 
             <section className="game-description">
-              <h2>Про гру</h2>
+              <h2>{t("gamePage.aboutGame")}</h2>
 
               <div
                 className="steam-description"
@@ -155,7 +157,6 @@ function GamePage({ appId }: GamePageProps) {
           <GameSidebar game={game} />
         </div>
       </main>
-
     </div>
   );
 }

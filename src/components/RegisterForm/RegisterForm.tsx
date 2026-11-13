@@ -1,10 +1,14 @@
+
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { register } from "../../api/auth";
 
 import "./RegisterForm.css";
 
 function RegisterForm() {
+  const { t } = useTranslation();
+
   const [login, setLogin] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,7 +19,7 @@ function RegisterForm() {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit: React.SubmitEventHandler<HTMLFormElement> = async (
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (
     event
   ) => {
     event.preventDefault();
@@ -24,53 +28,53 @@ function RegisterForm() {
     setSuccess("");
 
     if (!login.trim()) {
-      setError("Введіть логін");
+      setError(t("register.loginRequired"));
       return;
     }
 
     if (!email.trim()) {
-      setError("Введіть e-mail");
+      setError(t("register.emailRequired"));
       return;
     }
 
     if (!password) {
-      setError("Введіть пароль");
+      setError(t("register.passwordRequired"));
       return;
     }
 
     if (!repeatPassword) {
-      setError("Повторіть пароль");
+      setError(t("register.repeatPasswordRequired"));
       return;
     }
 
     if (password !== repeatPassword) {
-      setError("Паролі не співпадають");
+      setError(t("register.passwordMismatch"));
       return;
     }
 
     if (!agree) {
-      setError("Потрібно погодитися з умовами використання");
+      setError(t("register.termsRequired"));
       return;
     }
 
     try {
       setLoading(true);
 
-    await register({
-      username: login.trim(),
-      email: email.trim(),
-      password,
-      confirmPassword: repeatPassword,
-    });
+      await register({
+        username: login.trim(),
+        email: email.trim(),
+        password,
+        confirmPassword: repeatPassword,
+      });
 
-    window.location.href = `/verify-email?email=${encodeURIComponent(
-      email.trim()
-    )}`;
+      window.location.href = `/verify-email?email=${encodeURIComponent(
+        email.trim()
+      )}`;
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
       } else {
-        setError("Не вдалося створити акаунт");
+        setError(t("register.registrationError"));
       }
     } finally {
       setLoading(false);
@@ -79,16 +83,16 @@ function RegisterForm() {
 
   return (
     <section className="register-card">
-      <h1>Створіть новий акаунт</h1>
+      <h1>{t("register.title")}</h1>
 
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="login">Логін</label>
+          <label htmlFor="login">{t("register.login")}</label>
 
           <input
             id="login"
             type="text"
-            placeholder="Придумайте новий логін..."
+            placeholder={t("register.loginPlaceholder")}
             value={login}
             onChange={(event) => setLogin(event.target.value)}
             disabled={loading}
@@ -101,7 +105,7 @@ function RegisterForm() {
           <input
             id="email"
             type="email"
-            placeholder="Введіть ваш e-mail..."
+            placeholder={t("register.emailPlaceholder")}
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             disabled={loading}
@@ -109,12 +113,12 @@ function RegisterForm() {
         </div>
 
         <div className="form-group">
-          <label htmlFor="password">Пароль</label>
+          <label htmlFor="password">{t("register.password")}</label>
 
           <input
             id="password"
             type="password"
-            placeholder="Придумайте новий пароль..."
+            placeholder={t("register.passwordPlaceholder")}
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             disabled={loading}
@@ -123,13 +127,13 @@ function RegisterForm() {
 
         <div className="form-group">
           <label htmlFor="repeat-password">
-            Повторіть пароль
+            {t("register.repeatPassword")}
           </label>
 
           <input
             id="repeat-password"
             type="password"
-            placeholder="Напишіть пароль ще раз..."
+            placeholder={t("register.repeatPasswordPlaceholder")}
             value={repeatPassword}
             onChange={(event) => setRepeatPassword(event.target.value)}
             disabled={loading}
@@ -145,10 +149,8 @@ function RegisterForm() {
           />
 
           <span>
-            Я погоджуюсь з{" "}
-            <a href="/terms">
-              Умовами використання
-            </a>
+            {t("register.termsAgreement")}{" "}
+            <a href="/terms">{t("register.termsLink")}</a>
           </span>
         </label>
 
@@ -169,15 +171,13 @@ function RegisterForm() {
           type="submit"
           disabled={!agree || loading}
         >
-          {loading ? "Завантаження..." : "Продовжити"}
+          {loading ? t("register.loading") : t("register.continue")}
         </button>
       </form>
 
       <div className="login-link">
-        Маєте акаунт?{" "}
-        <a href="/login">
-          Авторизуйтесь
-        </a>
+        {t("register.haveAccount")}{" "}
+        <a href="/login">{t("register.loginLink")}</a>
       </div>
     </section>
   );

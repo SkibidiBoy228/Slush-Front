@@ -1,3 +1,5 @@
+
+import { useTranslation } from "react-i18next";
 import type { GameReview } from "../../types/game";
 
 interface GameReviewsProps {
@@ -9,30 +11,32 @@ function GameReviews({
   reviews,
   averageRating,
 }: GameReviewsProps) {
+  const { t } = useTranslation();
+
   return (
     <section className="game-reviews-section">
       <div className="section-title-row">
-        <h2>Відгуки</h2>
+        <h2>{t("gameReviews.title")}</h2>
 
         <button className="outline-button">
-          Написати рецензію
+          {t("gameReviews.writeReview")}
         </button>
       </div>
 
       <div className="reviews-toolbar">
         <span>
-          Середній рейтинг:{" "}
+          {t("gameReviews.averageRating")}:{" "}
           <strong>{averageRating.toFixed(1)}</strong>
         </span>
 
         <button className="review-sort">
-          Сортування: Спочатку популярні ▾
+          {t("gameReviews.sorting")}: {t("gameReviews.popularFirst")} ▾
         </button>
       </div>
 
       {reviews.length === 0 ? (
         <div className="empty-reviews">
-          Поки що немає відгуків про цю гру.
+          {t("gameReviews.empty")}
         </div>
       ) : (
         <div className="reviews-grid">
@@ -63,11 +67,16 @@ function GameReviews({
                   </div>
                 </div>
 
-                <button className="review-more">•••</button>
+                <button
+                  className="review-more"
+                  aria-label={t("gameReviews.moreActions")}
+                >
+                  •••
+                </button>
               </div>
 
               <p className="review-text">
-                {review.text || "Користувач не залишив текстового відгуку."}
+                {review.text || t("gameReviews.noReviewText")}
               </p>
 
               <div className="review-footer">
@@ -85,7 +94,7 @@ function GameReviews({
 
       {reviews.length > 0 && (
         <button className="show-more-button">
-          Показати більше⌄
+          {t("gameReviews.showMore")}⌄
         </button>
       )}
     </section>

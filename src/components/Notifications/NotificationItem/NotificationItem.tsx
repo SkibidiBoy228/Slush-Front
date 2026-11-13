@@ -1,3 +1,5 @@
+
+import { useTranslation } from "react-i18next";
 import type { Notification } from "../../../types/notifications";
 import "./NotificationItem.css";
 
@@ -10,6 +12,8 @@ function NotificationItem({
   notification,
   onRead,
 }: NotificationItemProps) {
+  const { t, i18n } = useTranslation();
+
   const handleClick = () => {
     if (!notification.isRead) {
       onRead?.(notification);
@@ -51,7 +55,17 @@ function NotificationItem({
       return date;
     }
 
-    return notificationDate.toLocaleString("uk-UA", {
+    const locales: Record<string, string> = {
+      uk: "uk-UA",
+      en: "en-US",
+      sk: "sk-SK",
+      ru: "ru-RU",
+    };
+
+    const language = i18n.language.split("-")[0];
+    const locale = locales[language] ?? "uk-UA";
+
+    return notificationDate.toLocaleString(locale, {
       day: "numeric",
       month: "short",
       hour: "2-digit",
@@ -83,7 +97,7 @@ function NotificationItem({
       {!notification.isRead && (
         <span
           className="notification-unread-dot"
-          aria-label="Непрочитане"
+          aria-label={t("notifications.unreadAria")}
         />
       )}
     </article>

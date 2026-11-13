@@ -1,5 +1,6 @@
 
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
     getNotificationSettings,
@@ -46,6 +47,8 @@ function NotificationItem({
 }
 
 function NotificationSettings() {
+    const { t } = useTranslation();
+
     const [settings, setSettings] =
         useState<NotificationSettingsData | null>(null);
 
@@ -69,7 +72,7 @@ function NotificationSettings() {
             if (err instanceof Error) {
                 setError(err.message);
             } else {
-                setError("Не вдалося завантажити налаштування");
+                setError(t("notificationSettings.loadError"));
             }
         } finally {
             setLoading(false);
@@ -98,10 +101,10 @@ function NotificationSettings() {
 
             await updateNotificationSettings(updated);
 
-            setMessage("Налаштування збережено.");
+            setMessage(t("notificationSettings.saved"));
         } catch {
             setSettings(previousSettings);
-            setError("Не вдалося зберегти налаштування.");
+            setError(t("notificationSettings.saveError"));
         } finally {
             setSaving(false);
         }
@@ -111,7 +114,7 @@ function NotificationSettings() {
         return (
             <section className="notification-settings">
                 <div className="notification-settings-loading">
-                    Завантаження...
+                    {t("notificationSettings.loading")}
                 </div>
             </section>
         );
@@ -121,7 +124,7 @@ function NotificationSettings() {
         return (
             <section className="notification-settings">
                 <div className="notification-settings-error">
-                    {error || "Не вдалося завантажити налаштування."}
+                    {error || t("notificationSettings.loadError")}
                 </div>
             </section>
         );
@@ -130,16 +133,16 @@ function NotificationSettings() {
     return (
         <section className="notification-settings">
             <div className="notification-settings-header">
-                <h1>Сповіщення</h1>
-                <p>Керуйте сповіщеннями та звуками</p>
+                <h1>{t("notificationSettings.title")}</h1>
+                <p>{t("notificationSettings.description")}</p>
             </div>
 
             <div className="notification-settings-panel">
                 <div className="notification-settings-silent">
-                    <h2>Беззвучні сповіщення</h2>
+                    <h2>{t("notificationSettings.silentTitle")}</h2>
 
                     <NotificationItem
-                        title="Великий розпродаж"
+                        title={t("notificationSettings.bigSale")}
                         checked={settings.bigSale}
                         onChange={(value) =>
                             handleChange("bigSale", value)
@@ -148,7 +151,7 @@ function NotificationSettings() {
                     />
 
                     <NotificationItem
-                        title="Знижка на ігри з мого Бажаного"
+                        title={t("notificationSettings.wishlistDiscount")}
                         checked={settings.wishlistDiscount}
                         onChange={(value) =>
                             handleChange("wishlistDiscount", value)
@@ -157,7 +160,7 @@ function NotificationSettings() {
                     />
 
                     <NotificationItem
-                        title="Новий коментар під моїм профілем"
+                        title={t("notificationSettings.profileComment")}
                         checked={settings.profileComment}
                         onChange={(value) =>
                             handleChange("profileComment", value)
@@ -166,7 +169,7 @@ function NotificationSettings() {
                     />
 
                     <NotificationItem
-                        title="Новий запит на дружбу"
+                        title={t("notificationSettings.friendRequest")}
                         checked={settings.friendRequest}
                         onChange={(value) =>
                             handleChange("friendRequest", value)
@@ -175,7 +178,7 @@ function NotificationSettings() {
                     />
 
                     <NotificationItem
-                        title="Мій запит на дружбу прийнято"
+                        title={t("notificationSettings.friendRequestAccepted")}
                         checked={settings.friendRequestAccepted}
                         onChange={(value) =>
                             handleChange("friendRequestAccepted", value)
@@ -184,7 +187,7 @@ function NotificationSettings() {
                     />
 
                     <NotificationItem
-                        title="Мій запит на дружбу відхилено"
+                        title={t("notificationSettings.friendRequestRejected")}
                         checked={settings.friendRequestRejected}
                         onChange={(value) =>
                             handleChange("friendRequestRejected", value)
@@ -192,17 +195,20 @@ function NotificationSettings() {
                         disabled={saving}
                     />
                 </div>
+
                 <div className="notification-settings-chat">
-                    <h2>Чат</h2>
+                    <h2>{t("notificationSettings.chatTitle")}</h2>
 
                     <div className="notification-settings-chat-header">
                         <span />
-                        <span>Сповіщення</span>
-                        <span>Звук</span>
+                        <span>{t("notificationSettings.notifications")}</span>
+                        <span>{t("notificationSettings.sound")}</span>
                     </div>
 
                     <div className="notification-settings-chat-row">
-                        <span>Нове повідомлення у чаті</span>
+                        <span>
+                            {t("notificationSettings.newChatMessage")}
+                        </span>
 
                         <button
                             type="button"
@@ -219,7 +225,9 @@ function NotificationSettings() {
                                 )
                             }
                             aria-pressed={settings.chatMessageNotification}
-                            aria-label="Сповіщення про нові повідомлення"
+                            aria-label={t(
+                                "notificationSettings.newMessageNotification"
+                            )}
                         >
                             <span className="notification-switch-thumb" />
                         </button>
@@ -239,7 +247,9 @@ function NotificationSettings() {
                                 )
                             }
                             aria-pressed={settings.chatMessageSound}
-                            aria-label="Звук нових повідомлень"
+                            aria-label={t(
+                                "notificationSettings.newMessageSound"
+                            )}
                         >
                             <span className="notification-switch-thumb" />
                         </button>

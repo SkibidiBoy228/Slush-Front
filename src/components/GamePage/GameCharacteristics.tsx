@@ -1,3 +1,5 @@
+
+import { useTranslation } from "react-i18next";
 import DOMPurify from "dompurify";
 
 import type { GameDetails } from "../../types/game";
@@ -9,6 +11,8 @@ interface GameCharacteristicsProps {
 function GameCharacteristics({
   game,
 }: GameCharacteristicsProps) {
+  const { t } = useTranslation();
+
   const minimum = DOMPurify.sanitize(
     game.pcRequirements?.minimum ?? ""
   );
@@ -27,7 +31,7 @@ function GameCharacteristics({
 
       <div className="requirements-grid">
         <section className="requirements-column">
-          <h2>Мінімальні налаштування</h2>
+          <h2>{t("gameCharacteristics.minimum")}</h2>
 
           {minimum ? (
             <div
@@ -38,13 +42,13 @@ function GameCharacteristics({
             />
           ) : (
             <p className="empty-requirements">
-              Мінімальні вимоги відсутні.
+              {t("gameCharacteristics.minimumUnavailable")}
             </p>
           )}
         </section>
 
         <section className="requirements-column">
-          <h2>Рекомендовані налаштування</h2>
+          <h2>{t("gameCharacteristics.recommended")}</h2>
 
           {recommended ? (
             <div
@@ -55,7 +59,7 @@ function GameCharacteristics({
             />
           ) : (
             <p className="empty-requirements">
-              Рекомендовані вимоги відсутні.
+              {t("gameCharacteristics.recommendedUnavailable")}
             </p>
           )}
         </section>

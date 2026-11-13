@@ -1,5 +1,8 @@
+
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import DOMPurify from "dompurify";
+
 import GameSearch from "../../components/GameSearch/GameSearch";
 import GameGallery from "../../components/GamePage/GameGallery";
 import GameSidebar from "../../components/GamePage/GameSidebar";
@@ -19,6 +22,8 @@ interface DlcPageProps {
 }
 
 function DlcPage({ appId, dlcId }: DlcPageProps) {
+  const { t } = useTranslation();
+
   const [baseGame, setBaseGame] = useState<GameDetails | null>(null);
   const [dlcGame, setDlcGame] = useState<GameDetails | null>(null);
 
@@ -44,7 +49,7 @@ function DlcPage({ appId, dlcId }: DlcPageProps) {
         setError(
           error instanceof Error
             ? error.message
-            : "Не вдалося завантажити DLC"
+            : t("dlcPage.loadError")
         );
       } finally {
         setLoading(false);
@@ -52,14 +57,13 @@ function DlcPage({ appId, dlcId }: DlcPageProps) {
     }
 
     loadData();
-  }, [appId, dlcId]);
+  }, [appId, dlcId, t]);
 
   if (loading) {
     return (
       <div className="game-page-state">
-
         <div className="state-content">
-          Завантаження DLC...
+          {t("dlcPage.loading")}
         </div>
       </div>
     );
@@ -68,9 +72,8 @@ function DlcPage({ appId, dlcId }: DlcPageProps) {
   if (error || !baseGame) {
     return (
       <div className="game-page-state">
-
         <div className="state-content error-state">
-          {error || "Гру не знайдено"}
+          {error || t("dlcPage.gameNotFound")}
         </div>
       </div>
     );
@@ -111,7 +114,6 @@ function DlcPage({ appId, dlcId }: DlcPageProps) {
 
   return (
     <div className="game-page">
-
       <main className="game-page-content">
         <div className="game-page-search">
           <GameSearch />
@@ -119,7 +121,7 @@ function DlcPage({ appId, dlcId }: DlcPageProps) {
 
         <nav className="game-tabs">
           <button onClick={openBaseGame}>
-            Про гру
+            {t("dlcPage.aboutGame")}
           </button>
 
           <button
@@ -128,21 +130,20 @@ function DlcPage({ appId, dlcId }: DlcPageProps) {
                 `/game/${parentGame.id}/characteristics`;
             }}
           >
-            Характеристики
+            {t("dlcPage.characteristics")}
           </button>
 
           <button
             onClick={() => {
-              alert("Розділ спільноти поки що в розробці");
+              alert(t("dlcPage.communityDeveloping"));
             }}
           >
-            Спільнота
+            {t("dlcPage.community")}
           </button>
         </nav>
 
         <div className="dlc-page-heading">
           <span className="dlc-badge">DLC</span>
-
           <h1>{currentGame.title}</h1>
         </div>
 
@@ -168,7 +169,7 @@ function DlcPage({ appId, dlcId }: DlcPageProps) {
             <section className="base-game-card">
               <div className="base-game-info">
                 <span className="base-game-badge">
-                  Базова гра
+                  {t("dlcPage.baseGame")}
                 </span>
 
                 <strong>{parentGame.title}</strong>
@@ -177,20 +178,20 @@ function DlcPage({ appId, dlcId }: DlcPageProps) {
               <span className="base-game-price">
                 {parentGame.price > 0
                   ? formatPrice(parentGame.price)
-                  : "Безкоштовно"}
+                  : t("common.free")}
               </span>
 
               <button
                 className="base-game-button"
                 onClick={openBaseGame}
               >
-                До гри
+                {t("dlcPage.goToGame")}
               </button>
             </section>
 
             <section className="other-dlc-section">
               <div className="section-title-row">
-                <h2>Інші DLC</h2>
+                <h2>{t("dlcPage.otherDlcs")}</h2>
 
                 <button
                   className="more-link"
@@ -199,13 +200,13 @@ function DlcPage({ appId, dlcId }: DlcPageProps) {
                       `/game/${parentGame.id}/dlc`;
                   }}
                 >
-                  Усі DLC →
+                  {t("dlcPage.allDlcs")} →
                 </button>
               </div>
 
               {otherDlcs.length === 0 ? (
                 <p className="empty-dlc-text">
-                  Інших DLC не знайдено.
+                  {t("dlcPage.noOtherDlcs")}
                 </p>
               ) : (
                 <div className="other-dlc-list">
@@ -220,7 +221,7 @@ function DlcPage({ appId, dlcId }: DlcPageProps) {
                       <strong>
                         {dlc.price > 0
                           ? formatPrice(dlc.price)
-                          : "Безкоштовно"}
+                          : t("common.free")}
                       </strong>
                     </button>
                   ))}
@@ -237,7 +238,6 @@ function DlcPage({ appId, dlcId }: DlcPageProps) {
           <GameSidebar game={currentGame} />
         </div>
       </main>
-
     </div>
   );
 }

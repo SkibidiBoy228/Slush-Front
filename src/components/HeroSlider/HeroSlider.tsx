@@ -1,4 +1,6 @@
+
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { getGames, getGameDetails } from "../../api/games";
 import type { CatalogGame } from "../../types/catalog";
@@ -51,6 +53,8 @@ function convertGameToSlide(
 }
 
 function HeroSlider() {
+  const { t } = useTranslation();
+
   const [heroSlides, setHeroSlides] = useState<HeroSlide[]>([]);
   const [activeSlide, setActiveSlide] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -76,7 +80,6 @@ function HeroSlider() {
             try {
               const details = await getGameDetails(game.id);
 
-              // Дополнительная защита от бесплатных игр
               if (details.price <= 0) {
                 return null;
               }
@@ -88,7 +91,6 @@ function HeroSlider() {
                 error
               );
 
-              // Если детали не загрузились, используем данные каталога
               return game.price > 0
                 ? convertGameToSlide(game)
                 : null;
@@ -125,7 +127,10 @@ function HeroSlider() {
 
   if (loading) {
     return (
-      <section className="hero-slider-container">
+      <section
+        className="hero-slider-container"
+        aria-label={t("hero.loading")}
+      >
         <div className="hero-section" />
       </section>
     );
@@ -162,6 +167,7 @@ function HeroSlider() {
         tabIndex={0}
         onKeyDown={(event) => {
           if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
             openGame();
           }
         }}
@@ -207,23 +213,25 @@ function HeroSlider() {
         </div>
 
         <button
+          type="button"
           className="hero-arrow hero-arrow-left"
           onClick={(event) => {
             event.stopPropagation();
             previous();
           }}
-          aria-label="Попередній слайд"
+          aria-label={t("hero.previous")}
         >
           ‹
         </button>
 
         <button
+          type="button"
           className="hero-arrow hero-arrow-right"
           onClick={(event) => {
             event.stopPropagation();
             next();
           }}
-          aria-label="Наступний слайд"
+          aria-label={t("hero.next")}
         >
           ›
         </button>
@@ -233,11 +241,16 @@ function HeroSlider() {
         <div className="thumbnail-list">
           {heroSlides.map((item, index) => (
             <button
+              type="button"
               key={item.id}
               className={`thumbnail ${
                 index === activeSlide ? "selected" : ""
               }`}
               onClick={() => setActiveSlide(index)}
+              aria-label={t("hero.selectSlide", {
+                number: index + 1,
+              })}
+              aria-current={index === activeSlide ? "true" : undefined}
             >
               <img
                 src={item.image}

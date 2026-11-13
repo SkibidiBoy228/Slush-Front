@@ -1,5 +1,6 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   getUserProfile,
@@ -15,13 +16,15 @@ import type {
   ProfileScreenshot,
 } from "../../types/profile";
 
-import "./ProfileScreenshot.css"
+import "./ProfileScreenshot.css";
 
 interface ProfileScreenshotsProps {
   username: string;
 }
 
 const ProfileScreenshots = ({ username }: ProfileScreenshotsProps) => {
+  const { t, i18n } = useTranslation();
+
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [screenshots, setScreenshots] = useState<ProfileScreenshot[]>([]);
 
@@ -60,14 +63,14 @@ const ProfileScreenshots = ({ username }: ProfileScreenshotsProps) => {
       setError(
         err instanceof Error
           ? err.message
-          : "Не вдалося завантажити скріншоти"
+          : t("profileScreenshots.loadError")
       );
     } finally {
       if (!signal.cancelled) {
         setIsLoading(false);
       }
     }
-  }, [username]);
+  }, [username, t]);
 
   useEffect(() => {
     const signal = { cancelled: false };
@@ -86,8 +89,8 @@ const ProfileScreenshots = ({ username }: ProfileScreenshotsProps) => {
           .map((screenshot) => screenshot.gameTitle)
           .filter(Boolean)
       )
-    ).sort((a, b) => a.localeCompare(b));
-  }, [screenshots]);
+    ).sort((a, b) => a.localeCompare(b, i18n.language));
+  }, [screenshots, i18n.language]);
 
   const filteredScreenshots = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -141,7 +144,7 @@ const ProfileScreenshots = ({ username }: ProfileScreenshotsProps) => {
       <div className="profile-screenshots-page">
         <main className="profile-screenshots-container">
           <div className="profile-screenshots-message">
-            Завантаження скріншотів...
+            {t("profileScreenshots.loading")}
           </div>
         </main>
       </div>
@@ -153,10 +156,10 @@ const ProfileScreenshots = ({ username }: ProfileScreenshotsProps) => {
       <div className="profile-screenshots-page">
         <main className="profile-screenshots-container">
           <div className="profile-screenshots-message">
-            {error || "Профіль не знайдено"}
+            {error || t("profileScreenshots.profileNotFound")}
 
             <button onClick={openProfile}>
-              Повернутися до профілю
+              {t("profileScreenshots.backToProfile")}
             </button>
           </div>
         </main>
@@ -195,7 +198,9 @@ const ProfileScreenshots = ({ username }: ProfileScreenshotsProps) => {
                 }
               >
                 <span />
-                {profile.isOnline ? "онлайн" : "не в мережі"}
+                {profile.isOnline
+                  ? t("profileScreenshots.online")
+                  : t("profileScreenshots.offline")}
               </span>
 
               <p>{profile.bio}</p>
@@ -205,7 +210,7 @@ const ProfileScreenshots = ({ username }: ProfileScreenshotsProps) => {
               className="profile-screenshots-view-profile"
               onClick={openProfile}
             >
-              Переглянути профіль
+              {t("profileScreenshots.viewProfile")}
             </button>
           </div>
         </section>
@@ -218,7 +223,7 @@ const ProfileScreenshots = ({ username }: ProfileScreenshotsProps) => {
                   <span>⌕</span>
                   <input
                     type="search"
-                    placeholder="Пошук за назвою гри..."
+                    placeholder={t("profileScreenshots.searchPlaceholder")}
                     value={search}
                     onChange={(event) => setSearch(event.target.value)}
                   />
@@ -226,24 +231,30 @@ const ProfileScreenshots = ({ username }: ProfileScreenshotsProps) => {
 
                 <div className="profile-screenshots-filters">
                   <label>
-                    <span>Сортування:</span>
+                    <span>{t("profileScreenshots.sorting")}:</span>
                     <select
                       value={sort}
                       onChange={(event) =>
                         setSort(event.target.value as "Newest" | "Oldest")
                       }
                     >
-                      <option value="Newest">Спочатку нові</option>
-                      <option value="Oldest">Спочатку старі</option>
+                      <option value="Newest">
+                        {t("profileScreenshots.newest")}
+                      </option>
+                      <option value="Oldest">
+                        {t("profileScreenshots.oldest")}
+                      </option>
                     </select>
                   </label>
 
                   <select
                     value={selectedGame}
                     onChange={(event) => setSelectedGame(event.target.value)}
-                    aria-label="Фільтр за грою"
+                    aria-label={t("profileScreenshots.gameFilter")}
                   >
-                    <option value="all">Усі ігри</option>
+                    <option value="all">
+                      {t("profileScreenshots.allGames")}
+                    </option>
                     {games.map((game) => (
                       <option key={game} value={game}>
                         {game}
@@ -278,15 +289,15 @@ const ProfileScreenshots = ({ username }: ProfileScreenshotsProps) => {
                   <span>▧</span>
                   <h3>
                     {search || selectedGame !== "all"
-                      ? "Скріншотів не знайдено"
-                      : "Скріншотів поки немає"}
+                      ? t("profileScreenshots.notFound")
+                      : t("profileScreenshots.emptyTitle")}
                   </h3>
                   <p>
                     {search || selectedGame !== "all"
-                      ? "Спробуй змінити пошуковий запит або фільтр."
+                      ? t("profileScreenshots.changeSearch")
                       : isOwnProfile
-                        ? "Твої ігрові моменти з'являться тут."
-                        : "Цей користувач ще не додавав скріншоти."}
+                        ? t("profileScreenshots.emptyOwnDescription")
+                        : t("profileScreenshots.emptyOtherDescription")}
                   </p>
                 </div>
               )}
@@ -311,7 +322,7 @@ const ProfileScreenshots = ({ username }: ProfileScreenshotsProps) => {
           <button
             className="profile-screenshots-lightbox-close"
             onClick={closeLightbox}
-            aria-label="Закрити"
+            aria-label={t("profileScreenshots.close")}
           >
             ×
           </button>

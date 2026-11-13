@@ -1,3 +1,6 @@
+
+import { useTranslation } from "react-i18next";
+
 import "./FeedFilters.css";
 
 export type FeedType =
@@ -17,25 +20,27 @@ interface FeedFiltersProps {
   onSortChange: (sort: FeedSort) => void;
 }
 
-const sections: { label: string; value: FeedType }[] = [
-  { label: "Усі розділи", value: "all" },
-  { label: "Форум", value: "discussions" },
-  { label: "Скріншоти", value: "screenshots" },
-  { label: "Відео", value: "videos" },
-  { label: "Гайди", value: "guides" },
-  { label: "Новини", value: "news" },
-];
-
 function FeedFilters({
   type,
   sort,
   onTypeChange,
   onSortChange,
 }: FeedFiltersProps) {
+  const { t } = useTranslation();
+
+  const sections: { label: string; value: FeedType }[] = [
+    { label: t("feedFilters.all"), value: "all" },
+    { label: t("feedFilters.discussions"), value: "discussions" },
+    { label: t("feedFilters.screenshots"), value: "screenshots" },
+    { label: t("feedFilters.videos"), value: "videos" },
+    { label: t("feedFilters.guides"), value: "guides" },
+    { label: t("feedFilters.news"), value: "news" },
+  ];
+
   return (
     <aside className="feed-filters">
       <label className="feed-filters__sort">
-        <span>Сортування:</span>
+        <span>{t("feedFilters.sorting")}</span>
 
         <select
           value={sort}
@@ -43,8 +48,12 @@ function FeedFilters({
             onSortChange(event.target.value as FeedSort)
           }
         >
-          <option value="popular">Популярні</option>
-          <option value="newest">Нові</option>
+          <option value="popular">
+            {t("feedFilters.popular")}
+          </option>
+          <option value="newest">
+            {t("feedFilters.newest")}
+          </option>
         </select>
       </label>
 

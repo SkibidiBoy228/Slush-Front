@@ -1,5 +1,6 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   getUserProfile,
@@ -22,6 +23,8 @@ interface ProfileVideosProps {
 }
 
 const ProfileVideos = ({ username }: ProfileVideosProps) => {
+  const { t, i18n } = useTranslation();
+
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [videos, setVideos] = useState<ProfileVideo[]>([]);
 
@@ -60,14 +63,14 @@ const ProfileVideos = ({ username }: ProfileVideosProps) => {
       setError(
         err instanceof Error
           ? err.message
-          : "Не вдалося завантажити відео"
+          : t("profileVideos.loadError")
       );
     } finally {
       if (!signal.cancelled) {
         setIsLoading(false);
       }
     }
-  }, [username]);
+  }, [username, t]);
 
   useEffect(() => {
     const signal = { cancelled: false };
@@ -87,8 +90,8 @@ const ProfileVideos = ({ username }: ProfileVideosProps) => {
           .map((video) => video.gameTitle)
           .filter(Boolean)
       )
-    ).sort((a, b) => a.localeCompare(b));
-  }, [videos]);
+    ).sort((a, b) => a.localeCompare(b, i18n.language));
+  }, [videos, i18n.language]);
 
   // Поиск, фильтрация и сортировка
   const filteredVideos = useMemo(() => {
@@ -146,7 +149,7 @@ const ProfileVideos = ({ username }: ProfileVideosProps) => {
       <div className="profile-videos-page">
         <main className="profile-videos-container">
           <div className="profile-videos-message">
-            Завантаження відео...
+            {t("profileVideos.loading")}
           </div>
         </main>
       </div>
@@ -158,10 +161,10 @@ const ProfileVideos = ({ username }: ProfileVideosProps) => {
       <div className="profile-videos-page">
         <main className="profile-videos-container">
           <div className="profile-videos-message">
-            {error || "Профіль не знайдено"}
+            {error || t("profileVideos.profileNotFound")}
 
             <button onClick={openProfile}>
-              Повернутися до профілю
+              {t("profileVideos.backToProfile")}
             </button>
           </div>
         </main>
@@ -201,7 +204,9 @@ const ProfileVideos = ({ username }: ProfileVideosProps) => {
                 }
               >
                 <span />
-                {profile.isOnline ? "онлайн" : "не в мережі"}
+                {profile.isOnline
+                  ? t("profileVideos.online")
+                  : t("profileVideos.offline")}
               </span>
 
               <p>{profile.bio}</p>
@@ -211,7 +216,7 @@ const ProfileVideos = ({ username }: ProfileVideosProps) => {
               className="profile-videos-view-profile"
               onClick={openProfile}
             >
-              Переглянути профіль
+              {t("profileVideos.viewProfile")}
             </button>
           </div>
         </section>
@@ -226,7 +231,7 @@ const ProfileVideos = ({ username }: ProfileVideosProps) => {
 
                   <input
                     type="search"
-                    placeholder="Пошук за назвою гри..."
+                    placeholder={t("profileVideos.searchPlaceholder")}
                     value={search}
                     onChange={(event) => setSearch(event.target.value)}
                   />
@@ -234,7 +239,7 @@ const ProfileVideos = ({ username }: ProfileVideosProps) => {
 
                 <div className="profile-videos-filters">
                   <label>
-                    <span>Сортування:</span>
+                    <span>{t("profileVideos.sorting")}:</span>
 
                     <select
                       value={sort}
@@ -242,17 +247,23 @@ const ProfileVideos = ({ username }: ProfileVideosProps) => {
                         setSort(event.target.value as "Newest" | "Oldest")
                       }
                     >
-                      <option value="Newest">Спочатку нові</option>
-                      <option value="Oldest">Спочатку старі</option>
+                      <option value="Newest">
+                        {t("profileVideos.newest")}
+                      </option>
+                      <option value="Oldest">
+                        {t("profileVideos.oldest")}
+                      </option>
                     </select>
                   </label>
 
                   <select
                     value={selectedGame}
                     onChange={(event) => setSelectedGame(event.target.value)}
-                    aria-label="Фільтр за грою"
+                    aria-label={t("profileVideos.gameFilter")}
                   >
-                    <option value="all">Усі ігри</option>
+                    <option value="all">
+                      {t("profileVideos.allGames")}
+                    </option>
 
                     {games.map((game) => (
                       <option key={game} value={game}>
@@ -272,20 +283,20 @@ const ProfileVideos = ({ username }: ProfileVideosProps) => {
                     onClick={() => setSelectedVideo(video)}
                     title={video.title}
                   >
-                        <video
-                        className="profile-video-thumbnail"
-                        src={video.videoUrl}
-                        muted
-                        playsInline
-                        preload="metadata"
-                        onLoadedMetadata={(event) => {
-                            const videoElement = event.currentTarget;
+                    <video
+                      className="profile-video-thumbnail"
+                      src={video.videoUrl}
+                      muted
+                      playsInline
+                      preload="metadata"
+                      onLoadedMetadata={(event) => {
+                        const videoElement = event.currentTarget;
 
-                            if (videoElement.duration > 1) {
-                            videoElement.currentTime = 1;
-                            }
-                        }}
-                        />
+                        if (videoElement.duration > 1) {
+                          videoElement.currentTime = 1;
+                        }
+                      }}
+                    />
 
                     <span className="profile-video-overlay">
                       <span className="profile-video-play">
@@ -308,16 +319,16 @@ const ProfileVideos = ({ username }: ProfileVideosProps) => {
 
                   <h3>
                     {search || selectedGame !== "all"
-                      ? "Відео не знайдено"
-                      : "Відео поки немає"}
+                      ? t("profileVideos.noVideosFound")
+                      : t("profileVideos.emptyTitle")}
                   </h3>
 
                   <p>
                     {search || selectedGame !== "all"
-                      ? "Спробуй змінити пошуковий запит або фільтр."
+                      ? t("profileVideos.changeSearch")
                       : isOwnProfile
-                        ? "Твої ігрові відео з'являться тут."
-                        : "Цей користувач ще не додавав відео."}
+                        ? t("profileVideos.emptyOwnDescription")
+                        : t("profileVideos.emptyOtherDescription")}
                   </p>
                 </div>
               )}
@@ -343,7 +354,7 @@ const ProfileVideos = ({ username }: ProfileVideosProps) => {
           <button
             className="profile-videos-player-close"
             onClick={closePlayer}
-            aria-label="Закрити"
+            aria-label={t("profileVideos.close")}
           >
             ×
           </button>
@@ -360,7 +371,7 @@ const ProfileVideos = ({ username }: ProfileVideosProps) => {
               autoPlay
               playsInline
             >
-              Ваш браузер не підтримує відтворення відео.
+              {t("profileVideos.videoUnsupported")}
             </video>
 
             <div className="profile-videos-player-caption">

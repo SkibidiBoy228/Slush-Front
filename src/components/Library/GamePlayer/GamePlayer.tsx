@@ -1,7 +1,14 @@
 
 import { useEffect, useRef, useState } from "react";
-import { heartbeatGameSession, stopGameSession } from "../../../api/library";
+import { useTranslation } from "react-i18next";
+
+import {
+  heartbeatGameSession,
+  stopGameSession,
+} from "../../../api/library";
+
 import type { GameSession } from "../../../types/library";
+
 import "./GamePlayer.css";
 
 interface GamePlayerProps {
@@ -20,6 +27,8 @@ function formatTime(totalSeconds: number): string {
 }
 
 function GamePlayer({ session, onExit }: GamePlayerProps) {
+  const { t } = useTranslation();
+
   const [elapsedSeconds, setElapsedSeconds] = useState(() => {
     if (!session.sessionStartedAt) return 0;
 
@@ -87,7 +96,7 @@ function GamePlayer({ session, onExit }: GamePlayerProps) {
     } catch (error) {
       console.error("Не вдалося зупинити ігрову сесію:", error);
 
-      setStopError("Не вдалося завершити сесію. Спробуйте ще раз.");
+      setStopError(t("gamePlayer.stopError"));
 
       stopRequested.current = false;
       setIsStopping(false);
@@ -109,7 +118,7 @@ function GamePlayer({ session, onExit }: GamePlayerProps) {
 
             <span>
               <span className="game-player__status-dot" />
-              Зараз граєте
+              {t("gamePlayer.playing")}
             </span>
           </div>
         </div>
@@ -125,7 +134,9 @@ function GamePlayer({ session, onExit }: GamePlayerProps) {
             onClick={handleExit}
             disabled={isStopping}
           >
-            {isStopping ? "Завершення..." : "Вийти з гри"}
+            {isStopping
+              ? t("gamePlayer.stopping")
+              : t("gamePlayer.exit")}
           </button>
         </div>
       </header>
@@ -147,18 +158,16 @@ function GamePlayer({ session, onExit }: GamePlayerProps) {
           />
         ) : (
           <div className="game-player__unsupported">
-            <h2>Гру неможливо відкрити у вбудованому плеєрі</h2>
+            <h2>{t("gamePlayer.unsupportedTitle")}</h2>
 
-            <p>
-              Ця гра не підтримує запуск через iframe.
-            </p>
+            <p>{t("gamePlayer.unsupportedDescription")}</p>
 
             <a
               href={session.playUrl}
               target="_blank"
               rel="noopener noreferrer"
             >
-              Відкрити гру в новій вкладці
+              {t("gamePlayer.openInNewTab")}
             </a>
           </div>
         )}

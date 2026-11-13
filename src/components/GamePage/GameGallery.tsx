@@ -1,5 +1,6 @@
 
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import type { GameDetails } from "../../types/game";
 
@@ -25,6 +26,8 @@ type GalleryItem =
     };
 
 function GameGallery({ game }: GameGalleryProps) {
+  const { t } = useTranslation();
+
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
@@ -114,7 +117,7 @@ function GameGallery({ game }: GameGalleryProps) {
               />
             )}
 
-            Ваш браузер не підтримує відтворення відео.
+            {t("gameGallery.videoUnsupported")}
           </video>
         ) : (
           <img
@@ -130,7 +133,7 @@ function GameGallery({ game }: GameGalleryProps) {
         <button
           className="gallery-arrow"
           onClick={previousImage}
-          aria-label="Попередній слайд"
+          aria-label={t("gameGallery.previousSlide")}
           type="button"
         >
           ‹
@@ -147,8 +150,8 @@ function GameGallery({ game }: GameGalleryProps) {
               onClick={() => setActiveIndex(index)}
               aria-label={
                 item.type === "video"
-                  ? `Трейлер ${index + 1}`
-                  : `Скріншот ${index + 1}`
+                  ? t("gameGallery.trailer", { number: index + 1 })
+                  : t("gameGallery.screenshot", { number: index + 1 })
               }
               aria-current={
                 index === currentIndex ? "true" : undefined
@@ -162,8 +165,11 @@ function GameGallery({ game }: GameGalleryProps) {
                 }
                 alt={
                   item.type === "video"
-                    ? item.name || "Трейлер"
-                    : `${game.title} screenshot ${index + 1}`
+                    ? item.name || t("gameGallery.trailerFallback")
+                    : t("gameGallery.gameScreenshot", {
+                        title: game.title,
+                        number: index + 1,
+                      })
                 }
                 loading="lazy"
               />
@@ -180,7 +186,7 @@ function GameGallery({ game }: GameGalleryProps) {
         <button
           className="gallery-arrow"
           onClick={nextImage}
-          aria-label="Наступний слайд"
+          aria-label={t("gameGallery.nextSlide")}
           type="button"
         >
           ›

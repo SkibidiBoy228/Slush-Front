@@ -1,4 +1,7 @@
+
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+
 import GameSection from "../../components/GameSection/GameSection";
 import HeroSlider from "../../components/HeroSlider/HeroSlider";
 import GameCard, {
@@ -51,6 +54,8 @@ function convertGame(game: ActualGame): Game {
 }
 
 function Home() {
+  const { t } = useTranslation();
+
   const [catalogGames, setCatalogGames] = useState<ActualGame[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -96,7 +101,7 @@ function Home() {
           setError(
             err instanceof Error
               ? err.message
-              : "Не вдалося завантажити ігри"
+              : t("home.loadError")
           );
         }
       } finally {
@@ -111,7 +116,7 @@ function Home() {
     return () => {
       isCancelled = true;
     };
-  }, []);
+  }, [t]);
 
   const paidGames = catalogGames.filter(
     (game) => game.details.price > 0
@@ -150,14 +155,13 @@ function Home() {
 
   return (
     <div className="home-page">
-
       <main>
         <HeroSlider />
 
         <div className="content-container">
           {loading && (
             <div className="catalog-message">
-              Завантаження ігор...
+              {t("home.loading")}
             </div>
           )}
 
@@ -170,19 +174,19 @@ function Home() {
           {!loading && !error && (
             <>
               <GameSection
-                title="Особливі пропозиції"
+                title={t("home.specialOffers")}
                 games={specialOffers}
                 variant="wide"
               />
 
               <GameSection
-                title="Рекомендовані вам"
+                title={t("home.recommended")}
                 games={recommendedGames}
                 variant="vertical"
               />
 
               <GameSection
-                title="До 100₴"
+                title={t("home.budget")}
                 games={budgetGames}
                 variant="vertical"
               />
@@ -190,12 +194,12 @@ function Home() {
               <section className="three-columns">
                 <div className="game-column">
                   <div className="column-heading">
-                    <h2>Хіти продажу</h2>
+                    <h2>{t("home.topSellers")}</h2>
 
                     <button
                       type="button"
                       className="column-arrow"
-                      aria-label="Наступні"
+                      aria-label={t("home.next")}
                     >
                       ›
                     </button>
@@ -214,12 +218,12 @@ function Home() {
 
                 <div className="game-column">
                   <div className="column-heading">
-                    <h2>Нові релізи</h2>
+                    <h2>{t("home.newReleases")}</h2>
 
                     <button
                       type="button"
                       className="column-arrow"
-                      aria-label="Наступні"
+                      aria-label={t("home.next")}
                     >
                       ›
                     </button>
@@ -238,12 +242,12 @@ function Home() {
 
                 <div className="game-column">
                   <div className="column-heading">
-                    <h2>Безкоштовні</h2>
+                    <h2>{t("home.freeGames")}</h2>
 
                     <button
                       type="button"
                       className="column-arrow"
-                      aria-label="Наступні"
+                      aria-label={t("home.next")}
                     >
                       ›
                     </button>

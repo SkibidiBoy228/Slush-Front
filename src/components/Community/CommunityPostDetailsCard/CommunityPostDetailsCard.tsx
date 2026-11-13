@@ -1,3 +1,5 @@
+
+import { useTranslation } from "react-i18next";
 import type { CommunityPost as CommunityPostData } from "../../../types/community";
 import "./CommunityPostDetailsCard.css";
 
@@ -12,19 +14,31 @@ function CommunityPostDetailsCard({
   onLike,
   onComments,
 }: CommunityPostDetailsCardProps) {
+  const { t, i18n } = useTranslation();
+
+  const localeMap: Record<string, string> = {
+    uk: "uk-UA",
+    en: "en-US",
+    sk: "sk-SK",
+    ru: "ru-RU",
+  };
+
+  const locale =
+    localeMap[i18n.language.split("-")[0]] || "uk-UA";
+
   const postTypeLabels: Record<string, string> = {
-    Discussion: "Обговорення",
-    Screenshot: "Скріншот",
-    Video: "Відео",
-    Guide: "Гайд",
-    News: "Новини",
+    Discussion: t("communityPostDetailsCard.types.discussion"),
+    Screenshot: t("communityPostDetailsCard.types.screenshot"),
+    Video: t("communityPostDetailsCard.types.video"),
+    Guide: t("communityPostDetailsCard.types.guide"),
+    News: t("communityPostDetailsCard.types.news"),
   };
 
   const authorInitial =
     post.authorUsername?.charAt(0).toUpperCase() || "?";
 
   const formattedDate = post.createdAt
-    ? new Date(post.createdAt).toLocaleDateString("uk-UA")
+    ? new Date(post.createdAt).toLocaleDateString(locale)
     : "";
 
   const renderMedia = () => {
@@ -40,7 +54,10 @@ function CommunityPostDetailsCard({
         <div className="community-details-card-media">
           <img
             src={post.mediaUrl}
-            alt={post.title || "Зображення публікації"}
+            alt={
+              post.title ||
+              t("communityPostDetailsCard.postImage")
+            }
           />
         </div>
       );
@@ -94,7 +111,9 @@ function CommunityPostDetailsCard({
     try {
       if (navigator.share) {
         await navigator.share({
-          title: post.title || "Публікація спільноти",
+          title:
+            post.title ||
+            t("communityPostDetailsCard.communityPost"),
           text: post.content || post.shortDescription || "",
           url: window.location.href,
         });
@@ -170,7 +189,7 @@ function CommunityPostDetailsCard({
             post.isLiked ? "liked" : ""
           }`}
           onClick={() => onLike(post.id)}
-          aria-label="Подобається"
+          aria-label={t("communityPostDetailsCard.like")}
           aria-pressed={post.isLiked}
         >
           <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -178,7 +197,7 @@ function CommunityPostDetailsCard({
           </svg>
 
           <span>
-            {post.likesCount.toLocaleString("uk-UA")}
+            {post.likesCount.toLocaleString(locale)}
           </span>
         </button>
 
@@ -186,14 +205,14 @@ function CommunityPostDetailsCard({
           type="button"
           className="community-details-card-action"
           onClick={() => onComments(post.id)}
-          aria-label="Коментарі"
+          aria-label={t("communityPostDetailsCard.comments")}
         >
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z" />
           </svg>
 
           <span>
-            {post.commentsCount.toLocaleString("uk-UA")}
+            {post.commentsCount.toLocaleString(locale)}
           </span>
         </button>
 
@@ -207,7 +226,7 @@ function CommunityPostDetailsCard({
             <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" />
           </svg>
 
-          <span>Поділитися</span>
+          <span>{t("communityPostDetailsCard.share")}</span>
         </button>
       </footer>
     </article>

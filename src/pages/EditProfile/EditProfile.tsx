@@ -1,5 +1,7 @@
+
 import { useEffect, useRef, useState } from "react";
 import type React from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   getUserProfile,
@@ -15,6 +17,8 @@ import { getAccessToken } from "../../api/client";
 import "./EditProfile.css";
 
 function EditProfile() {
+  const { t } = useTranslation();
+
   const [username, setUsername] = useState("");
   const [bio, setBio] = useState("");
 
@@ -57,7 +61,7 @@ function EditProfile() {
         const token = getAccessToken();
 
         if (!token) {
-          setError("Пользователь не авторизован");
+          setError(t("editProfile.notAuthorized"));
           return;
         }
 
@@ -69,7 +73,7 @@ function EditProfile() {
           tokenPayload.sub;
 
         if (!currentUsername) {
-          setError("Не удалось определить пользователя");
+          setError(t("editProfile.userNotFound"));
           return;
         }
 
@@ -83,7 +87,7 @@ function EditProfile() {
         setError(
           err instanceof Error
             ? err.message
-            : "Не удалось загрузить профиль"
+            : t("editProfile.loadError")
         );
       } finally {
         setLoading(false);
@@ -91,13 +95,12 @@ function EditProfile() {
     };
 
     loadProfile();
-  }, []);
+  }, [t]);
 
   const handleAvatarChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
-
     if (!file) return;
 
     setAvatarFile(file);
@@ -108,7 +111,6 @@ function EditProfile() {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
-
     if (!file) return;
 
     setBannerFile(file);
@@ -119,17 +121,16 @@ function EditProfile() {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
-
     if (!file) return;
 
-    if(videoPreviewUrl){
+    if (videoPreviewUrl) {
       URL.revokeObjectURL(videoPreviewUrl);
     }
 
     const previewUrl = URL.createObjectURL(file);
 
     setVideoFile(file);
-    setVideoPreviewUrl(previewUrl)
+    setVideoPreviewUrl(previewUrl);
     setVideoMessage("");
     setVideoError("");
   };
@@ -138,10 +139,9 @@ function EditProfile() {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
-
     if (!file) return;
 
-    if(screenshotPreviewUrl){
+    if (screenshotPreviewUrl) {
       URL.revokeObjectURL(screenshotPreviewUrl);
     }
 
@@ -158,22 +158,22 @@ function EditProfile() {
     setVideoError("");
 
     if (!videoFile) {
-      setVideoError("Выберите видеофайл");
+      setVideoError(t("editProfile.videoRequired"));
       return;
     }
 
     if (!videoTitle.trim()) {
-      setVideoError("Введите название видео");
+      setVideoError(t("editProfile.videoTitleRequired"));
       return;
     }
 
     if (!videoGameId.trim()) {
-      setVideoError("Введите ID игры");
+      setVideoError(t("editProfile.gameIdRequired"));
       return;
     }
 
     if (!videoGameTitle.trim()) {
-      setVideoError("Введите название игры");
+      setVideoError(t("editProfile.gameTitleRequired"));
       return;
     }
 
@@ -192,7 +192,7 @@ function EditProfile() {
       setVideoGameId("");
       setVideoGameTitle("");
 
-      if(videoPreviewUrl){
+      if (videoPreviewUrl) {
         URL.revokeObjectURL(videoPreviewUrl);
       }
       setVideoPreviewUrl(null);
@@ -201,12 +201,12 @@ function EditProfile() {
         videoInputRef.current.value = "";
       }
 
-      setVideoMessage("Видео успешно загружено");
+      setVideoMessage(t("editProfile.videoSuccess"));
     } catch (err) {
       setVideoError(
         err instanceof Error
           ? err.message
-          : "Не удалось загрузить видео"
+          : t("editProfile.videoUploadError")
       );
     } finally {
       setUploadingVideo(false);
@@ -218,17 +218,17 @@ function EditProfile() {
     setScreenshotError("");
 
     if (!screenshotFile) {
-      setScreenshotError("Выберите изображение");
+      setScreenshotError(t("editProfile.screenshotRequired"));
       return;
     }
 
     if (!screenshotGameId.trim()) {
-      setScreenshotError("Введите ID игры");
+      setScreenshotError(t("editProfile.gameIdRequired"));
       return;
     }
 
     if (!screenshotGameTitle.trim()) {
-      setScreenshotError("Введите название игры");
+      setScreenshotError(t("editProfile.gameTitleRequired"));
       return;
     }
 
@@ -244,7 +244,8 @@ function EditProfile() {
       setScreenshotFile(null);
       setScreenshotGameId("");
       setScreenshotGameTitle("");
-      if(screenshotPreviewUrl){
+
+      if (screenshotPreviewUrl) {
         URL.revokeObjectURL(screenshotPreviewUrl);
       }
       setScreenshotPreviewUrl(null);
@@ -253,12 +254,12 @@ function EditProfile() {
         screenshotInputRef.current.value = "";
       }
 
-      setScreenshotMessage("Скриншот успешно загружен");
+      setScreenshotMessage(t("editProfile.screenshotSuccess"));
     } catch (err) {
       setScreenshotError(
         err instanceof Error
           ? err.message
-          : "Не удалось загрузить скриншот"
+          : t("editProfile.screenshotUploadError")
       );
     } finally {
       setUploadingScreenshot(false);
@@ -289,7 +290,7 @@ function EditProfile() {
       setAvatarFile(null);
       setBannerFile(null);
 
-      setMessage("Профиль успешно обновлён");
+      setMessage(t("editProfile.profileSuccess"));
 
       const updatedUsername = updatedProfile.username || username.trim();
 
@@ -302,7 +303,7 @@ function EditProfile() {
       setError(
         err instanceof Error
           ? err.message
-          : "Не удалось сохранить изменения"
+          : t("editProfile.saveError")
       );
     } finally {
       setSaving(false);
@@ -318,7 +319,7 @@ function EditProfile() {
       <main className="edit-profile-page">
         <div className="edit-profile-card">
           <p className="edit-profile-loading">
-            Загрузка профиля...
+            {t("editProfile.loading")}
           </p>
         </div>
       </main>
@@ -329,10 +330,8 @@ function EditProfile() {
     <main className="edit-profile-page">
       <div className="edit-profile-card">
         <div className="edit-profile-heading">
-          <h1>Редактировать профиль</h1>
-          <p>
-            Настройте внешний вид и информацию о своём профиле
-          </p>
+          <h1>{t("editProfile.title")}</h1>
+          <p>{t("editProfile.description")}</p>
         </div>
 
         <div
@@ -345,7 +344,7 @@ function EditProfile() {
               : undefined
           }
         >
-          {!bannerUrl && "Баннер профиля"}
+          {!bannerUrl && t("editProfile.bannerPlaceholder")}
         </div>
 
         <button
@@ -353,7 +352,7 @@ function EditProfile() {
           className="change-banner-button"
           onClick={() => bannerInputRef.current?.click()}
         >
-          Изменить баннер
+          {t("editProfile.changeBanner")}
         </button>
 
         <input
@@ -367,25 +366,26 @@ function EditProfile() {
         <div className="avatar-section">
           <div className="avatar-wrapper">
             {avatarUrl ? (
-              <img src={avatarUrl} alt="Аватар профиля" />
+              <img
+                src={avatarUrl}
+                alt={t("editProfile.avatarAlt")}
+              />
             ) : (
               <div className="empty-avatar">?</div>
             )}
           </div>
 
           <div className="avatar-info">
-            <h2>Аватар профиля</h2>
+            <h2>{t("editProfile.avatarTitle")}</h2>
 
-            <p>
-              PNG, JPG или WEBP. Рекомендуемый размер — 512×512.
-            </p>
+            <p>{t("editProfile.avatarDescription")}</p>
 
             <button
               type="button"
               className="secondary-button"
               onClick={() => avatarInputRef.current?.click()}
             >
-              Изменить аватар
+              {t("editProfile.changeAvatar")}
             </button>
 
             <input
@@ -399,27 +399,29 @@ function EditProfile() {
         </div>
 
         <div className="form-section">
-          <label htmlFor="username">Имя пользователя</label>
+          <label htmlFor="username">
+            {t("editProfile.username")}
+          </label>
 
           <input
             id="username"
             type="text"
             value={username}
             onChange={(event) => setUsername(event.target.value)}
-            placeholder="Введите имя пользователя"
+            placeholder={t("editProfile.usernamePlaceholder")}
             minLength={3}
             required
           />
         </div>
 
         <div className="form-section">
-          <label htmlFor="bio">О себе</label>
+          <label htmlFor="bio">{t("editProfile.bio")}</label>
 
           <textarea
             id="bio"
             value={bio}
             onChange={(event) => setBio(event.target.value)}
-            placeholder="Расскажите немного о себе..."
+            placeholder={t("editProfile.bioPlaceholder")}
             rows={5}
             maxLength={500}
           />
@@ -431,43 +433,46 @@ function EditProfile() {
 
         <div className="media-section">
           <div className="section-title">
-            <h2>Мои материалы</h2>
-
-            <p>
-              Здесь будут храниться ваши скриншоты и видео из игр.
-            </p>
+            <h2>{t("editProfile.mediaTitle")}</h2>
+            <p>{t("editProfile.mediaDescription")}</p>
           </div>
 
           <div className="video-upload-form">
-            <h3>Добавить видео</h3>
+            <h3>{t("editProfile.addVideo")}</h3>
 
             <div className="video-form-field">
-              <label htmlFor="video-title">Название видео</label>
+              <label htmlFor="video-title">
+                {t("editProfile.videoTitle")}
+              </label>
 
               <input
                 id="video-title"
                 type="text"
                 value={videoTitle}
                 onChange={(event) => setVideoTitle(event.target.value)}
-                placeholder="Например: Мой лучший момент"
+                placeholder={t("editProfile.videoTitlePlaceholder")}
                 maxLength={150}
               />
             </div>
 
             <div className="video-form-field">
-              <label htmlFor="video-game-id">ID игры</label>
+              <label htmlFor="video-game-id">
+                {t("editProfile.gameId")}
+              </label>
 
               <input
                 id="video-game-id"
                 type="text"
                 value={videoGameId}
                 onChange={(event) => setVideoGameId(event.target.value)}
-                placeholder="Например: 730"
+                placeholder={t("editProfile.gameIdPlaceholder")}
               />
             </div>
 
             <div className="video-form-field">
-              <label htmlFor="video-game-title">Название игры</label>
+              <label htmlFor="video-game-title">
+                {t("editProfile.gameTitle")}
+              </label>
 
               <input
                 id="video-game-title"
@@ -476,12 +481,14 @@ function EditProfile() {
                 onChange={(event) =>
                   setVideoGameTitle(event.target.value)
                 }
-                placeholder="Например: Counter-Strike 2"
+                placeholder={t("editProfile.gameTitlePlaceholder")}
               />
             </div>
 
             <div className="video-form-field">
-              <label htmlFor="video-file">Видео-файл</label>
+              <label htmlFor="video-file">
+                {t("editProfile.videoFile")}
+              </label>
 
               <input
                 ref={videoInputRef}
@@ -490,19 +497,20 @@ function EditProfile() {
                 accept="video/*"
                 onChange={handleVideoChange}
               />
+
               {videoPreviewUrl && (
                 <div className="edit-profile-media-preview">
-                  <video 
-                    src ={videoPreviewUrl}
+                  <video
+                    src={videoPreviewUrl}
                     controls
                     preload="metadata"
-                  />  
+                  />
                 </div>
               )}
 
               {videoFile && (
                 <span className="selected-file">
-                  Выбран файл: {videoFile.name}
+                  {t("editProfile.selectedFile")}: {videoFile.name}
                 </span>
               )}
             </div>
@@ -522,17 +530,17 @@ function EditProfile() {
               onClick={handleVideoUpload}
             >
               {uploadingVideo
-                ? "Загрузка видео..."
-                : "Загрузить видео"}
+                ? t("editProfile.uploadingVideo")
+                : t("editProfile.uploadVideo")}
             </button>
           </div>
 
           <div className="video-upload-form">
-            <h3>Добавить скриншот</h3>
+            <h3>{t("editProfile.addScreenshot")}</h3>
 
             <div className="video-form-field">
               <label htmlFor="screenshot-game-id">
-                ID игры
+                {t("editProfile.gameId")}
               </label>
 
               <input
@@ -542,13 +550,13 @@ function EditProfile() {
                 onChange={(event) =>
                   setScreenshotGameId(event.target.value)
                 }
-                placeholder="Например: 730"
+                placeholder={t("editProfile.gameIdPlaceholder")}
               />
             </div>
 
             <div className="video-form-field">
               <label htmlFor="screenshot-game-title">
-                Название игры
+                {t("editProfile.gameTitle")}
               </label>
 
               <input
@@ -558,13 +566,13 @@ function EditProfile() {
                 onChange={(event) =>
                   setScreenshotGameTitle(event.target.value)
                 }
-                placeholder="Например: Counter-Strike 2"
+                placeholder={t("editProfile.gameTitlePlaceholder")}
               />
             </div>
 
             <div className="video-form-field">
               <label htmlFor="screenshot-file">
-                Изображение
+                {t("editProfile.screenshotFile")}
               </label>
 
               <input
@@ -574,18 +582,19 @@ function EditProfile() {
                 accept="image/png,image/jpeg,image/webp"
                 onChange={handleScreenshotChange}
               />
-              {screenshotPreviewUrl &&(
-                <div className="edit-profile-media-preview">
-                    <img src = {screenshotPreviewUrl}
-                      alt = "Передсмотр скрішнота">
 
-                      </img>
+              {screenshotPreviewUrl && (
+                <div className="edit-profile-media-preview">
+                  <img
+                    src={screenshotPreviewUrl}
+                    alt={t("editProfile.screenshotPreviewAlt")}
+                  />
                 </div>
               )}
 
               {screenshotFile && (
                 <span className="selected-file">
-                  Выбран файл: {screenshotFile.name}
+                  {t("editProfile.selectedFile")}: {screenshotFile.name}
                 </span>
               )}
             </div>
@@ -597,9 +606,7 @@ function EditProfile() {
             )}
 
             {screenshotError && (
-              <p className="error-message">
-                {screenshotError}
-              </p>
+              <p className="error-message">{screenshotError}</p>
             )}
 
             <button
@@ -609,8 +616,8 @@ function EditProfile() {
               onClick={handleScreenshotUpload}
             >
               {uploadingScreenshot
-                ? "Загрузка скриншота..."
-                : "Загрузить скриншот"}
+                ? t("editProfile.uploadingScreenshot")
+                : t("editProfile.uploadScreenshot")}
             </button>
           </div>
         </div>
@@ -627,7 +634,7 @@ function EditProfile() {
             className="cancel-button"
             onClick={handleCancel}
           >
-            Отмена
+            {t("editProfile.cancel")}
           </button>
 
           <button
@@ -636,7 +643,9 @@ function EditProfile() {
             disabled={saving}
             onClick={handleSubmit}
           >
-            {saving ? "Сохранение..." : "Сохранить изменения"}
+            {saving
+              ? t("editProfile.saving")
+              : t("editProfile.save")}
           </button>
         </div>
       </div>

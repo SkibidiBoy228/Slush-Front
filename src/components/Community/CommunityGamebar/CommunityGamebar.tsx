@@ -1,4 +1,5 @@
 
+import { useTranslation } from "react-i18next";
 import "./CommunityGamebar.css";
 
 export interface CommunityGamebarPost {
@@ -20,14 +21,6 @@ interface CommunityGamebarProps {
   onCreatePost: () => void;
 }
 
-const postTypeLabels: Record<string, string> = {
-  Discussion: "Обговорення",
-  Screenshot: "Скріншот",
-  Video: "Відео",
-  Guide: "Гайд",
-  News: "Новини",
-};
-
 function CommunityGamebar({
   gameId,
   gameTitle,
@@ -36,6 +29,25 @@ function CommunityGamebar({
   recommendations,
   onCreatePost,
 }: CommunityGamebarProps) {
+  const { t, i18n } = useTranslation();
+
+  const numberLocale: Record<string, string> = {
+    uk: "uk-UA",
+    en: "en-US",
+    sk: "sk-SK",
+    ru: "ru-RU",
+  };
+
+  const locale = numberLocale[i18n.language] || "uk-UA";
+
+  const postTypeLabels: Record<string, string> = {
+    Discussion: t("communityGamebar.types.discussion"),
+    Screenshot: t("communityGamebar.types.screenshot"),
+    Video: t("communityGamebar.types.video"),
+    Guide: t("communityGamebar.types.guide"),
+    News: t("communityGamebar.types.news"),
+  };
+
   return (
     <aside className="community-gamebar">
       <section className="community-gamebar-info">
@@ -45,7 +57,10 @@ function CommunityGamebar({
           <div className="community-gamebar-subscribers">
             <span className="community-gamebar-status-dot" />
             <span>
-              {subscribersCount.toLocaleString("uk-UA")} підписників
+              {t("communityGamebar.subscribers", {
+                count: subscribersCount,
+                formattedCount: subscribersCount.toLocaleString(locale),
+              })}
             </span>
           </div>
         </div>
@@ -56,15 +71,15 @@ function CommunityGamebar({
           onClick={onCreatePost}
         >
           <span aria-hidden="true">+</span>
-          Створити пост
+          {t("communityGamebar.createPost")}
         </button>
 
         <div className="community-gamebar-actions">
           <button
             type="button"
             className="community-gamebar-icon-button"
-            aria-label="Сповіщення"
-            title="Сповіщення"
+            aria-label={t("communityGamebar.notifications")}
+            title={t("communityGamebar.notifications")}
             disabled
           >
             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -76,8 +91,8 @@ function CommunityGamebar({
           <button
             type="button"
             className="community-gamebar-icon-button"
-            aria-label="Додаткові дії"
-            title="Додаткові дії"
+            aria-label={t("communityGamebar.moreActions")}
+            title={t("communityGamebar.moreActions")}
             disabled
           >
             ⋯
@@ -90,7 +105,7 @@ function CommunityGamebar({
 
         {recommendations.length === 0 ? (
           <div className="community-gamebar-empty">
-            Інших публікацій поки немає.
+            {t("communityGamebar.empty")}
           </div>
         ) : (
           <div className="community-gamebar-list">
@@ -105,32 +120,35 @@ function CommunityGamebar({
                       `/community/post/${encodeURIComponent(post.id)}`;
                   }}
                 >
-                {post.mediaUrl && (
-                  <div className="community-gamebar-post-media">
-                    {post.postType === "Video" ? (
-                      <video
-                        src={post.mediaUrl}
-                        muted
-                        autoPlay
-                        loop
-                        playsInline
-                        preload="auto"
-                      />
-                    ) : (
-                      <img
-                        src={post.mediaUrl}
-                        alt={post.title || "Прев'ю публікації"}
-                        loading="lazy"
-                      />
-                    )}
+                  {post.mediaUrl && (
+                    <div className="community-gamebar-post-media">
+                      {post.postType === "Video" ? (
+                        <video
+                          src={post.mediaUrl}
+                          muted
+                          autoPlay
+                          loop
+                          playsInline
+                          preload="auto"
+                        />
+                      ) : (
+                        <img
+                          src={post.mediaUrl}
+                          alt={
+                            post.title ||
+                            t("communityGamebar.postPreview")
+                          }
+                          loading="lazy"
+                        />
+                      )}
 
-                    {post.postType === "Video" && (
-                      <span className="community-gamebar-play">
-                        ▶
-                      </span>
-                    )}
-                  </div>
-                )}
+                      {post.postType === "Video" && (
+                        <span className="community-gamebar-play">
+                          ▶
+                        </span>
+                      )}
+                    </div>
+                  )}
 
                   <div className="community-gamebar-post-info">
                     {post.postType && (
@@ -139,15 +157,22 @@ function CommunityGamebar({
                       </span>
                     )}
 
-                    <h4>{post.title || "Публікація спільноти"}</h4>
+                    <h4>
+                      {post.title ||
+                        t("communityGamebar.communityPost")}
+                    </h4>
 
                     {post.description && <p>{post.description}</p>}
                   </div>
                 </button>
 
                 <div className="community-gamebar-post-stats">
-                  <span>♡ {post.likesCount.toLocaleString("uk-UA")}</span>
-                  <span>▢ {post.commentsCount.toLocaleString("uk-UA")}</span>
+                  <span>
+                    ♡ {post.likesCount.toLocaleString(locale)}
+                  </span>
+                  <span>
+                    ▢ {post.commentsCount.toLocaleString(locale)}
+                  </span>
                 </div>
               </article>
             ))}

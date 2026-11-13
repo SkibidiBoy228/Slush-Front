@@ -1,12 +1,20 @@
+
 import { useEffect, useRef, useState } from "react";
 import type { ChangeEvent, DragEvent, FormEvent } from "react";
+import { useTranslation } from "react-i18next";
 
 import GameSearch from "../../GameSearch/GameSearch";
 import CommunityTabs from "../CommunityTabs/CommunityTabs";
 
 import { getGameDetails } from "../../../api/games";
-import { getCommunityTabCounts, createCommunityPost } from "../../../api/community";
-import { uploadScreenshot, uploadVideo } from "../../../api/media";
+import {
+  getCommunityTabCounts,
+  createCommunityPost,
+} from "../../../api/community";
+import {
+  uploadScreenshot,
+  uploadVideo,
+} from "../../../api/media";
 
 import type {
   CommunityPostType,
@@ -21,12 +29,11 @@ interface CommunityPostCreatorProps {
 const POST_TYPES: {
   value: CommunityPostType;
   slug: string;
-  label: string;
 }[] = [
-  { value: "Discussion", slug: "discussion", label: "Обговорення" },
-  { value: "Screenshot", slug: "screenshot", label: "Скріншот" },
-  { value: "Video", slug: "video", label: "Відео" },
-  { value: "Guide", slug: "guide", label: "Гайд" },
+  { value: "Discussion", slug: "discussion" },
+  { value: "Screenshot", slug: "screenshot" },
+  { value: "Video", slug: "video" },
+  { value: "Guide", slug: "guide" },
 ];
 
 const getTypeFromPath = (): CommunityPostType => {
@@ -35,6 +42,8 @@ const getTypeFromPath = (): CommunityPostType => {
 };
 
 function CommunityPostCreator({ gameId }: CommunityPostCreatorProps) {
+  const { t, i18n } = useTranslation();
+
   const [postType, setPostType] = useState<CommunityPostType>(getTypeFromPath);
   const [gameTitle, setGameTitle] = useState("");
   const [subscribersCount, setSubscribersCount] = useState(0);
@@ -57,6 +66,16 @@ function CommunityPostCreator({ gameId }: CommunityPostCreatorProps) {
   const isVideo = postType === "Video";
   const isGuide = postType === "Guide";
 
+  const localeMap: Record<string, string> = {
+    uk: "uk-UA",
+    en: "en-US",
+    sk: "sk-SK",
+    ru: "ru-RU",
+  };
+
+  const locale =
+    localeMap[i18n.language.split("-")[0]] || "uk-UA";
+
   useEffect(() => {
     let cancelled = false;
 
@@ -74,7 +93,7 @@ function CommunityPostCreator({ gameId }: CommunityPostCreatorProps) {
       } catch (loadError) {
         console.error("Failed to load community creation page:", loadError);
         if (!cancelled) {
-          setError("Не вдалося завантажити сторінку спільноти.");
+          setError(t("communityPostCreator.loadError"));
         }
       } finally {
         if (!cancelled) setLoadingPage(false);
@@ -86,7 +105,7 @@ function CommunityPostCreator({ gameId }: CommunityPostCreatorProps) {
     return () => {
       cancelled = true;
     };
-  }, [gameId]);
+  }, [gameId, t]);
 
   useEffect(() => {
     return () => {
@@ -137,12 +156,12 @@ function CommunityPostCreator({ gameId }: CommunityPostCreatorProps) {
     }
 
     if ((isDiscussion || isScreenshot || isGuide) && !file.type.startsWith("image/")) {
-      setError("Оберіть файл зображення.");
+      setError(t("communityPostCreator.imageFileError"));
       return;
     }
 
     if (isVideo && !file.type.startsWith("video/")) {
-      setError("Оберіть відеофайл.");
+      setError(t("communityPostCreator.videoFileError"));
       return;
     }
 
@@ -171,22 +190,22 @@ function CommunityPostCreator({ gameId }: CommunityPostCreatorProps) {
     setError("");
 
     if (isDiscussion && (!title.trim() || !content.trim())) {
-      setError("Вкажіть заголовок і текст обговорення.");
+      setError(t("communityPostCreator.discussionRequired"));
       return;
     }
 
     if (isScreenshot && !selectedFile) {
-      setError("Додайте скріншот перед публікацією.");
+      setError(t("communityPostCreator.screenshotRequired"));
       return;
     }
 
     if (isVideo && !selectedFile) {
-      setError("Додайте відео перед публікацією.");
+      setError(t("communityPostCreator.videoRequired"));
       return;
     }
 
     if (isGuide && (!title.trim() || !shortDescription.trim() || !content.trim())) {
-      setError("Заповніть заголовок, опис і текст гайда.");
+      setError(t("communityPostCreator.guideRequired"));
       return;
     }
 
@@ -217,7 +236,7 @@ function CommunityPostCreator({ gameId }: CommunityPostCreatorProps) {
       setError(
         submitError instanceof Error
           ? submitError.message
-          : "Не вдалося створити публікацію. Спробуйте ще раз."
+          : t("communityPostCreator.createError")
       );
     } finally {
       setUploading(false);
@@ -225,12 +244,12 @@ function CommunityPostCreator({ gameId }: CommunityPostCreatorProps) {
   };
 
   const uploadLabel = isVideo
-    ? "Відео"
+    ? t("communityPostCreator.video")
     : isGuide
-      ? "Обкладинка"
+      ? t("communityPostCreator.cover")
       : isScreenshot
-        ? "Скріншот"
-        : "Зображення до обговорення";
+        ? t("communityPostCreator.screenshot")
+        : t("communityPostCreator.discussionImage");
 
   const uploadAccept = isVideo ? "video/*" : "image/*";
 
@@ -238,7 +257,7 @@ function CommunityPostCreator({ gameId }: CommunityPostCreatorProps) {
     return (
       <div className="community-create-page">
         <div className="community-create-page-status">
-          Завантаження...
+          {t("communityPostCreator.loading")}
         </div>
       </div>
     );
@@ -267,7 +286,7 @@ function CommunityPostCreator({ gameId }: CommunityPostCreatorProps) {
         <div className="community-create-page-layout">
           <section className="community-create-main">
             <h1 className="community-create-page-title">
-              Створення поста
+              {t("communityPostCreator.title")}
             </h1>
 
             <form
@@ -287,7 +306,7 @@ function CommunityPostCreator({ gameId }: CommunityPostCreatorProps) {
                     onClick={() => changeType(type.value)}
                     disabled={uploading}
                   >
-                    {type.label}
+                    {t(`communityPostCreator.types.${type.slug}`)}
                   </button>
                 ))}
               </div>
@@ -295,7 +314,7 @@ function CommunityPostCreator({ gameId }: CommunityPostCreatorProps) {
               {isGuide && (
                 <div className="community-guide-top-fields">
                   <div className="community-post-field">
-                    <label>Обкладинка</label>
+                    <label>{t("communityPostCreator.cover")}</label>
                     <label
                       className="community-upload-zone community-upload-zone-compact"
                       onDragOver={(event) => event.preventDefault()}
@@ -312,24 +331,29 @@ function CommunityPostCreator({ gameId }: CommunityPostCreatorProps) {
                       <strong>
                         {selectedFile
                           ? selectedFile.name
-                          : "Перетягніть файл сюди або натисніть «Завантажити»"}
+                          : t("communityPostCreator.dropOrUpload")}
                       </strong>
                     </label>
                     {previewUrl && (
                       <div className="community-media-preview">
-                        <img src={previewUrl} alt="Обкладинка гайда" />
+                        <img
+                          src={previewUrl}
+                          alt={t("communityPostCreator.guideCoverPreview")}
+                        />
                       </div>
                     )}
                   </div>
 
                   <div className="community-guide-fields">
                     <div className="community-post-field">
-                      <label htmlFor="community-post-title">Заголовок</label>
+                      <label htmlFor="community-post-title">
+                        {t("communityPostCreator.heading")}
+                      </label>
                       <input
                         id="community-post-title"
                         value={title}
                         onChange={(event) => setTitle(event.target.value)}
-                        placeholder="Про що ваш гайд?"
+                        placeholder={t("communityPostCreator.guideTitlePlaceholder")}
                         maxLength={160}
                         disabled={uploading}
                       />
@@ -339,12 +363,14 @@ function CommunityPostCreator({ gameId }: CommunityPostCreatorProps) {
                     </div>
 
                     <div className="community-post-field">
-                      <label htmlFor="community-post-description">Опис</label>
+                      <label htmlFor="community-post-description">
+                        {t("communityPostCreator.description")}
+                      </label>
                       <textarea
                         id="community-post-description"
                         value={shortDescription}
                         onChange={(event) => setShortDescription(event.target.value)}
-                        placeholder="Опишіть тему детальніше..."
+                        placeholder={t("communityPostCreator.descriptionPlaceholder")}
                         rows={5}
                         maxLength={300}
                         disabled={uploading}
@@ -360,12 +386,14 @@ function CommunityPostCreator({ gameId }: CommunityPostCreatorProps) {
               {isDiscussion && (
                 <>
                   <div className="community-post-field">
-                    <label htmlFor="community-post-title">Заголовок</label>
+                    <label htmlFor="community-post-title">
+                      {t("communityPostCreator.heading")}
+                    </label>
                     <input
                       id="community-post-title"
                       value={title}
                       onChange={(event) => setTitle(event.target.value)}
-                      placeholder="Тема вашого обговорення..."
+                      placeholder={t("communityPostCreator.discussionTitlePlaceholder")}
                       maxLength={160}
                       disabled={uploading}
                     />
@@ -375,12 +403,14 @@ function CommunityPostCreator({ gameId }: CommunityPostCreatorProps) {
                   </div>
 
                   <div className="community-post-field">
-                    <label htmlFor="community-post-content">Текст</label>
+                    <label htmlFor="community-post-content">
+                      {t("communityPostCreator.text")}
+                    </label>
                     <textarea
                       id="community-post-content"
                       value={content}
                       onChange={(event) => setContent(event.target.value)}
-                      placeholder="Що ви хочете обговорити?"
+                      placeholder={t("communityPostCreator.discussionTextPlaceholder")}
                       rows={6}
                       disabled={uploading}
                     />
@@ -390,12 +420,14 @@ function CommunityPostCreator({ gameId }: CommunityPostCreatorProps) {
 
               {isGuide && (
                 <div className="community-post-field">
-                  <label htmlFor="community-post-content">Текст</label>
+                  <label htmlFor="community-post-content">
+                    {t("communityPostCreator.text")}
+                  </label>
                   <textarea
                     id="community-post-content"
                     value={content}
                     onChange={(event) => setContent(event.target.value)}
-                    placeholder="Текст вашого гайду..."
+                    placeholder={t("communityPostCreator.guideTextPlaceholder")}
                     rows={7}
                     disabled={uploading}
                   />
@@ -422,9 +454,11 @@ function CommunityPostCreator({ gameId }: CommunityPostCreatorProps) {
                       <strong>
                         {selectedFile
                           ? selectedFile.name
-                          : "Перетягніть файл сюди"}
+                          : t("communityPostCreator.dropFile")}
                       </strong>
-                      <span>або натисніть, щоб завантажити</span>
+                      <span>
+                        {t("communityPostCreator.orClickToUpload")}
+                      </span>
                     </label>
 
                     {previewUrl && (
@@ -432,22 +466,27 @@ function CommunityPostCreator({ gameId }: CommunityPostCreatorProps) {
                         {isVideo ? (
                           <video src={previewUrl} controls />
                         ) : (
-                          <img src={previewUrl} alt="Попередній перегляд" />
+                          <img
+                            src={previewUrl}
+                            alt={t("communityPostCreator.preview")}
+                          />
                         )}
                       </div>
                     )}
                   </div>
 
                   <div className="community-post-field">
-                    <label htmlFor="community-post-caption">Підпис</label>
+                    <label htmlFor="community-post-caption">
+                      {t("communityPostCreator.caption")}
+                    </label>
                     <input
                       id="community-post-caption"
                       value={shortDescription}
                       onChange={(event) => setShortDescription(event.target.value)}
                       placeholder={
                         isVideo
-                          ? "Ваш коментар до відео..."
-                          : "Ваш коментар до скріншота..."
+                          ? t("communityPostCreator.videoCaptionPlaceholder")
+                          : t("communityPostCreator.screenshotCaptionPlaceholder")
                       }
                       maxLength={300}
                       disabled={uploading}
@@ -461,7 +500,9 @@ function CommunityPostCreator({ gameId }: CommunityPostCreatorProps) {
 
               {isDiscussion && (
                 <div className="community-post-field">
-                  <label>Зображення (необов'язково)</label>
+                  <label>
+                    {t("communityPostCreator.optionalImage")}
+                  </label>
                   <label
                     className="community-upload-zone community-upload-zone-compact"
                     onDragOver={(event) => event.preventDefault()}
@@ -478,12 +519,15 @@ function CommunityPostCreator({ gameId }: CommunityPostCreatorProps) {
                     <strong>
                       {selectedFile
                         ? selectedFile.name
-                        : "Додайте зображення до обговорення"}
+                        : t("communityPostCreator.addDiscussionImage")}
                     </strong>
                   </label>
                   {previewUrl && (
                     <div className="community-media-preview">
-                      <img src={previewUrl} alt="Зображення обговорення" />
+                      <img
+                        src={previewUrl}
+                        alt={t("communityPostCreator.discussionImagePreview")}
+                      />
                     </div>
                   )}
                 </div>
@@ -502,7 +546,7 @@ function CommunityPostCreator({ gameId }: CommunityPostCreatorProps) {
                   onClick={handleCancel}
                   disabled={uploading}
                 >
-                  Відхилити
+                  {t("communityPostCreator.cancel")}
                 </button>
 
                 <button
@@ -510,7 +554,9 @@ function CommunityPostCreator({ gameId }: CommunityPostCreatorProps) {
                   className="community-post-submit"
                   disabled={uploading}
                 >
-                  {uploading ? "Завантаження..." : "Опублікувати"}
+                  {uploading
+                    ? t("communityPostCreator.uploading")
+                    : t("communityPostCreator.publish")}
                 </button>
               </div>
             </form>
@@ -521,24 +567,20 @@ function CommunityPostCreator({ gameId }: CommunityPostCreatorProps) {
               <h2>{gameTitle}</h2>
               <span>
                 <i />
-                {subscribersCount.toLocaleString("uk-UA")} підписників
+                {subscribersCount.toLocaleString(locale)}{" "}
+                {t("communityPostCreator.subscribers")}
               </span>
             </div>
 
             <div className="community-create-rules">
-              <h3>Правила спільноти</h3>
+              <h3>{t("communityPostCreator.rulesTitle")}</h3>
               <ol>
-                <li>Публікуйте тільки оригінальний контент.</li>
-                <li>
-                  Не допускайте образ та принижень на адресу інших гравців,
-                  розробників чи груп.
-                </li>
-                <li>Не включайте погрози або заохочення до заподіяння шкоди.</li>
-                <li>Не завантажуйте контент, на який у вас немає прав.</li>
-                <li>Не рекламуйте комерційний контент.</li>
-                <li>
-                  Переконайтеся, що контент відповідає місцю, де він розміщується.
-                </li>
+                <li>{t("communityPostCreator.rules.originalContent")}</li>
+                <li>{t("communityPostCreator.rules.respect")}</li>
+                <li>{t("communityPostCreator.rules.noThreats")}</li>
+                <li>{t("communityPostCreator.rules.ownership")}</li>
+                <li>{t("communityPostCreator.rules.noAdvertising")}</li>
+                <li>{t("communityPostCreator.rules.relevance")}</li>
               </ol>
             </div>
           </aside>

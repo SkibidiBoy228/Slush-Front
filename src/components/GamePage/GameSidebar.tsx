@@ -1,4 +1,6 @@
+
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { GameDetails } from "../../types/game";
 import {
     convertUsdToUah,
@@ -12,19 +14,18 @@ import {
     removeFromWishlist,
 } from "../../api/store";
 
-
-
 interface GameSidebarProps {
     game: GameDetails;
 }
 
 function GameSideBar({ game }: GameSidebarProps) {
+    const { t } = useTranslation();
+
     const [isInCart, setIsInCart] = useState(game.isInCart);
     const [isInWishlist, setIsInWishlist] = useState(
         game.isInWishlist
     );
     const [isProcessing, setIsProcessing] = useState(false);
-
 
     useEffect(() => {
         setIsInCart(game.isInCart);
@@ -37,14 +38,13 @@ function GameSideBar({ game }: GameSidebarProps) {
 
     const formattedPrice = formatPrice(game.price);
     const formattedOldPrice = formatPrice(game.oldPrice);
+
     const gamePayload = {
         gameId: game.id,
         title: game.title,
         imageUrl: game.thumbnail,
-
         price: convertUsdToUah(game.price),
         oldPrice: convertUsdToUah(game.oldPrice),
-
         discountPercent: game.discountPercent,
     };
 
@@ -56,11 +56,9 @@ function GameSideBar({ game }: GameSidebarProps) {
         try {
             if (isInCart) {
                 await removeFromCart(game.id);
-
                 setIsInCart(false);
             } else {
                 await addToCart(gamePayload);
-
                 setIsInCart(true);
             }
         } catch (error) {
@@ -69,9 +67,7 @@ function GameSideBar({ game }: GameSidebarProps) {
                 error
             );
 
-            alert(
-                "Не вдалося оновити кошик. Спробуйте ще раз."
-            );
+            alert(t("gameSidebar.cartError"));
         } finally {
             setIsProcessing(false);
         }
@@ -85,11 +81,9 @@ function GameSideBar({ game }: GameSidebarProps) {
         try {
             if (isInWishlist) {
                 await removeFromWishlist(game.id);
-
                 setIsInWishlist(false);
             } else {
                 await addToWishlist(gamePayload);
-
                 setIsInWishlist(true);
             }
         } catch (error) {
@@ -98,29 +92,31 @@ function GameSideBar({ game }: GameSidebarProps) {
                 error
             );
 
-            alert(
-                "Не вдалося оновити обране. Спробуйте ще раз."
-            );
+            alert(t("gameSidebar.wishlistError"));
         } finally {
             setIsProcessing(false);
         }
     };
-    const handleBuyClick = async() => {
-        if(isProcessing) return;
+
+    const handleBuyClick = async () => {
+        if (isProcessing) return;
+
         setIsProcessing(true);
-        try{
-            if(!isInCart){
+
+        try {
+            if (!isInCart) {
                 await addToCart(gamePayload);
                 setIsInCart(true);
             }
+
             window.location.href = "/cart";
-        }catch(error){
+        } catch (error) {
             console.error("Помилка переходу до покупки:", error);
-            alert("Не вдалося додати гру до кошика. Спробуйте ще раз.")
-        }finally{
+            alert(t("gameSidebar.buyError"));
+        } finally {
             setIsProcessing(false);
         }
-    }
+    };
 
     return (
         <aside className="game-sidebar">
@@ -138,9 +134,7 @@ function GameSideBar({ game }: GameSidebarProps) {
                                         key={index}
                                         className={
                                             index <
-                                            Math.round(
-                                                game.averageRating
-                                            )
+                                            Math.round(game.averageRating)
                                                 ? "filled"
                                                 : ""
                                         }
@@ -153,7 +147,7 @@ function GameSideBar({ game }: GameSidebarProps) {
                     </>
                 ) : (
                     <span className="no-rating">
-                        Немає оцінки
+                        {t("gameSidebar.noRating")}
                     </span>
                 )}
             </div>
@@ -183,7 +177,9 @@ function GameSideBar({ game }: GameSidebarProps) {
                 onClick={handleBuyClick}
                 disabled={isProcessing}
             >
-                {isProcessing ? "Зачекайте..." : "Купити"}
+                {isProcessing
+                    ? t("gameSidebar.wait")
+                    : t("gameSidebar.buy")}
             </button>
 
             <div className="sidebar-actions">
@@ -193,10 +189,10 @@ function GameSideBar({ game }: GameSidebarProps) {
                     disabled={isProcessing}
                 >
                     {isProcessing
-                        ? "Зачекайте..."
+                        ? t("gameSidebar.wait")
                         : isInCart
-                        ? "У кошику"
-                        : "Додати в кошик"}
+                        ? t("gameSidebar.inCart")
+                        : t("gameSidebar.addToCart")}
                 </button>
 
                 <button
@@ -207,8 +203,8 @@ function GameSideBar({ game }: GameSidebarProps) {
                     disabled={isProcessing}
                     aria-label={
                         isInWishlist
-                            ? "Видалити з обраного"
-                            : "Додати в обране"
+                            ? t("gameSidebar.removeFromWishlist")
+                            : t("gameSidebar.addToWishlist")
                     }
                 >
                     {isInWishlist ? "♥" : "♡"}
@@ -216,40 +212,40 @@ function GameSideBar({ game }: GameSidebarProps) {
             </div>
 
             <div className="game-secondary-actions">
-                <button>↗ Репост</button>
-                <button>⚑ Поскаржитись</button>
+                <button>↗ {t("gameSidebar.repost")}</button>
+                <button>⚑ {t("gameSidebar.report")}</button>
             </div>
 
             <div className="game-metadata">
                 <div>
-                    <span>Дата виходу</span>
+                    <span>{t("gameSidebar.releaseDate")}</span>
                     <strong>
-                        {game.releaseDate || "Невідомо"}
+                        {game.releaseDate || t("gameSidebar.unknown")}
                     </strong>
                 </div>
 
                 <div>
-                    <span>Розробник</span>
+                    <span>{t("gameSidebar.developer")}</span>
                     <strong>
-                        {game.developer || "Невідомо"}
+                        {game.developer || t("gameSidebar.unknown")}
                     </strong>
                 </div>
 
                 <div>
-                    <span>Видавець</span>
+                    <span>{t("gameSidebar.publisher")}</span>
                     <strong>
-                        {game.publisher || "Невідомо"}
+                        {game.publisher || t("gameSidebar.unknown")}
                     </strong>
                 </div>
 
                 <div>
-                    <span>Платформи</span>
+                    <span>{t("gameSidebar.platforms")}</span>
                     <strong>Windows</strong>
                 </div>
             </div>
 
             <div className="frined-block">
-                <h3>Друзі грають</h3>
+                <h3>{t("gameSidebar.friendsPlaying")}</h3>
 
                 {game.friendsPlaying.length > 0 ? (
                     game.friendsPlaying.map((friend) => (
@@ -276,7 +272,7 @@ function GameSideBar({ game }: GameSidebarProps) {
                     ))
                 ) : (
                     <p className="empty-sidebar-text">
-                        Ніхто з друзів зараз не грає
+                        {t("gameSidebar.noFriendsPlaying")}
                     </p>
                 )}
             </div>

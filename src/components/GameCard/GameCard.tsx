@@ -1,3 +1,4 @@
+
 import "./GameCard.css";
 
 export interface Game {
@@ -30,6 +31,7 @@ function GameCard({
       tabIndex={0}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
           openGame();
         }
       }}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import { useTranslation } from "react-i18next";
 
 import {
   getProfileComments,
@@ -34,6 +34,7 @@ import type {
 
 import { useFriendPresence } from "../../hooks/useFriendPresence";
 import { getCurrentUsername } from "../../api/client";
+
 import ProfileSidebar from "../../components/ProfileSidebar/ProfileSidebar";
 
 import "./Profile.css";
@@ -42,15 +43,9 @@ interface ProfileProps {
   username: string;
 }
 
-const formatPrice = (price: number): string => {
-  if (price <= 0) {
-    return "Безкоштовно";
-  }
-
-  return `${price.toFixed(2)} ₴`;
-};
-
 const Profile = ({ username }: ProfileProps) => {
+  const { t, i18n } = useTranslation();
+
   const [profile, setProfile] = useState<UserProfile | null>(null);
 
   const [games, setGames] = useState<ProfileGame[]>([]);
@@ -63,11 +58,45 @@ const Profile = ({ username }: ProfileProps) => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+
   const [isActionsMenuOpen, setIsActionsMenuOpen] = useState(false);
-  const [friendStatus, setFriendStatus] = useState<"None" | "PendingSent" | "PendingReceived" | "Friends">("None");
+
+  const [friendStatus, setFriendStatus] = useState<
+    "None" | "PendingSent" | "PendingReceived" | "Friends"
+  >("None");
+
   const [friendRequestId, setFriendRequestId] = useState<string | null>(null);
   const [friendActionLoading, setFriendActionLoading] = useState(false);
+
   const { events } = useFriendPresence();
+
+  const localeMap: Record<string, string> = {
+    uk: "uk-UA",
+    en: "en-US",
+    sk: "sk-SK",
+    ru: "ru-RU",
+  };
+
+  const locale = localeMap[i18n.language] || "uk-UA";
+
+  const formatPrice = (price: number): string => {
+    if (price <= 0) {
+      return t("common.free");
+    }
+
+    return `${price.toFixed(2)} ₴`;
+  };
+
+  const formatLastSeen = (date: string): string => {
+    return t("profile.lastSeen", {
+      date: new Date(date).toLocaleString(locale, {
+        day: "numeric",
+        month: "long",
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    });
+  };
 
   useEffect(() => {
     if (events.length === 0) return;
@@ -162,7 +191,7 @@ const Profile = ({ username }: ProfileProps) => {
         setError(
           requestError instanceof Error
             ? requestError.message
-            : "Не вдалося завантажити профіль"
+            : t("profile.loadError")
         );
       } finally {
         if (!isCancelled) {
@@ -176,7 +205,7 @@ const Profile = ({ username }: ProfileProps) => {
     return () => {
       isCancelled = true;
     };
-  }, [username]);
+  }, [username, t]);
 
   useEffect(() => {
     const interval = window.setInterval(async () => {
@@ -226,9 +255,11 @@ const Profile = ({ username }: ProfileProps) => {
 
     try {
       setFriendActionLoading(true);
+
       await sendFriendRequest(profile.id);
 
       const status = await getFriendStatus(profile.id);
+
       setFriendStatus(status.status);
       setFriendRequestId(status.requestId);
     } catch (error) {
@@ -245,6 +276,7 @@ const Profile = ({ username }: ProfileProps) => {
 
     try {
       setFriendActionLoading(true);
+
       await cancelFriendRequest(requestId);
 
       setFriendStatus("None");
@@ -263,6 +295,7 @@ const Profile = ({ username }: ProfileProps) => {
 
     try {
       setFriendActionLoading(true);
+
       await acceptFriendRequest(requestId);
 
       setFriendStatus("Friends");
@@ -281,6 +314,7 @@ const Profile = ({ username }: ProfileProps) => {
 
     try {
       setFriendActionLoading(true);
+
       await rejectFriendRequest(requestId);
 
       setFriendStatus("None");
@@ -297,6 +331,7 @@ const Profile = ({ username }: ProfileProps) => {
 
     try {
       setFriendActionLoading(true);
+
       await removeFriend(profile.id);
 
       setFriendStatus("None");
@@ -318,7 +353,7 @@ const Profile = ({ username }: ProfileProps) => {
       <div className="profile-page">
         <main className="profile-container">
           <div className="profile-message">
-            Завантаження профілю...
+            {t("profile.loading")}
           </div>
         </main>
       </div>
@@ -330,7 +365,7 @@ const Profile = ({ username }: ProfileProps) => {
       <div className="profile-page">
         <main className="profile-container">
           <div className="profile-message profile-error">
-            {error || "Профіль не знайдено"}
+            {error || t("profile.profileNotFound")}
           </div>
         </main>
       </div>
@@ -339,7 +374,6 @@ const Profile = ({ username }: ProfileProps) => {
 
   return (
     <div className="profile-page">
-
       <main className="profile-container">
         <section className="profile-top">
           <div
@@ -369,17 +403,10 @@ const Profile = ({ username }: ProfileProps) => {
                 <span className="profile-status-dot" />
 
                 {profile.isOnline
-                  ? "В сети"
+                  ? t("profile.online")
                   : profile.lastSeenAt
-                    ? `Был в сети ${new Date(
-                        profile.lastSeenAt
-                      ).toLocaleString("ru-RU", {
-                        day: "numeric",
-                        month: "long",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}`
-                    : "Не в сети"}
+                    ? formatLastSeen(profile.lastSeenAt)
+                    : t("profile.offline")}
               </span>
 
               <p>{profile.bio}</p>
@@ -393,7 +420,7 @@ const Profile = ({ username }: ProfileProps) => {
                   window.location.href = "/edit-profile";
                 }}
               >
-                Редагувати профіль
+                {t("profile.editProfile")}
               </button>
             ) : (
               <div className="profile-actions-wrapper">
@@ -404,14 +431,14 @@ const Profile = ({ username }: ProfileProps) => {
                     window.location.href = `/chat?friendId=${encodeURIComponent(profile.id)}`;
                   }}
                 >
-                  Написати повідомлення
+                  {t("profile.sendMessage")}
                 </button>
 
                 <button
                   type="button"
                   className="profile-more-button"
                   onClick={() => setIsActionsMenuOpen((prev) => !prev)}
-                  aria-label="Додаткові дії"
+                  aria-label={t("profile.moreActions")}
                 >
                   ⋯
                 </button>
@@ -419,7 +446,7 @@ const Profile = ({ username }: ProfileProps) => {
                 {isActionsMenuOpen && (
                   <div className="profile-actions-menu">
                     <button type="button">
-                      🏅 Видати нагороду спільноти
+                      🏅 {t("profile.giveAward")}
                     </button>
 
                     <button
@@ -429,11 +456,11 @@ const Profile = ({ username }: ProfileProps) => {
                           `/profile/${encodeURIComponent(username)}/badges`;
                       }}
                     >
-                      🏆 Колекція значків
+                      🏆 {t("profile.badgeCollection")}
                     </button>
 
                     <button type="button" disabled>
-                      👥 Запросити до групи
+                      👥 {t("profile.inviteToGroup")}
                     </button>
 
                     {friendStatus === "None" && (
@@ -442,7 +469,7 @@ const Profile = ({ username }: ProfileProps) => {
                         onClick={handleSendFriendRequest}
                         disabled={friendActionLoading}
                       >
-                        ❤️ Додати в друзі
+                        ❤️ {t("profile.addFriend")}
                       </button>
                     )}
 
@@ -452,7 +479,7 @@ const Profile = ({ username }: ProfileProps) => {
                         onClick={handleCancelFriendRequest}
                         disabled={friendActionLoading}
                       >
-                        ↩ Скасувати запит
+                        ↩ {t("profile.cancelRequest")}
                       </button>
                     )}
 
@@ -463,7 +490,7 @@ const Profile = ({ username }: ProfileProps) => {
                           onClick={handleAcceptFriendRequest}
                           disabled={friendActionLoading}
                         >
-                          ✓ Прийняти запит
+                          ✓ {t("profile.acceptRequest")}
                         </button>
 
                         <button
@@ -471,7 +498,7 @@ const Profile = ({ username }: ProfileProps) => {
                           onClick={handleRejectFriendRequest}
                           disabled={friendActionLoading}
                         >
-                          ✕ Відхилити
+                          ✕ {t("profile.rejectRequest")}
                         </button>
                       </>
                     )}
@@ -482,16 +509,16 @@ const Profile = ({ username }: ProfileProps) => {
                         onClick={handleRemoveFriend}
                         disabled={friendActionLoading}
                       >
-                        👥 Видалити з друзів
+                        👥 {t("profile.removeFriend")}
                       </button>
                     )}
 
                     <button type="button">
-                      🚫 Заблокувати
+                      🚫 {t("profile.block")}
                     </button>
 
                     <button type="button">
-                      🚩 Поскаржитися
+                      🚩 {t("profile.report")}
                     </button>
                   </div>
                 )}
@@ -504,7 +531,7 @@ const Profile = ({ username }: ProfileProps) => {
           <div className="profile-main-column">
             <section className="profile-section">
               <div className="section-title-row">
-                <h2>Галерея значків</h2>
+                <h2>{t("profile.badgeGallery")}</h2>
 
                 <button
                   type="button"
@@ -514,14 +541,14 @@ const Profile = ({ username }: ProfileProps) => {
                       `/profile/${encodeURIComponent(username)}/badges`;
                   }}
                 >
-                  Усі →
+                  {t("profile.seeAll")} →
                 </button>
               </div>
 
               <div className="badges-grid">
                 <div className="badge-count">
                   <strong>{profile.counters.badges}</strong>
-                  <span>Значків</span>
+                  <span>{t("profile.badges")}</span>
                 </div>
 
                 {profile.badges.slice(0, 5).map((badge) => (
@@ -535,24 +562,24 @@ const Profile = ({ username }: ProfileProps) => {
 
             <section className="profile-section">
               <div className="section-title-row">
-                <h2>Колекція ігор</h2>
+                <h2>{t("profile.gameCollection")}</h2>
                 <span>{profile.counters.games}</span>
               </div>
 
               <div className="profile-stats">
                 <div>
                   <strong>{profile.counters.games}</strong>
-                  <span>Ігор</span>
+                  <span>{t("profile.games")}</span>
                 </div>
 
                 <div>
                   <strong>{profile.counters.wishlist}</strong>
-                  <span>У бажаному</span>
+                  <span>{t("profile.wishlist")}</span>
                 </div>
 
                 <div>
                   <strong>{profile.counters.badges}</strong>
-                  <span>Значків</span>
+                  <span>{t("profile.badges")}</span>
                 </div>
               </div>
 
@@ -571,14 +598,14 @@ const Profile = ({ username }: ProfileProps) => {
 
               {!games.length && (
                 <p className="empty-section">
-                  Ігор поки немає
+                  {t("profile.noGames")}
                 </p>
               )}
             </section>
 
             <section className="profile-section">
               <div className="section-title-row">
-                <h2>Галерея обговорень</h2>
+                <h2>{t("profile.discussionGallery")}</h2>
                 <span>{posts.length}</span>
               </div>
 
@@ -616,14 +643,14 @@ const Profile = ({ username }: ProfileProps) => {
 
               {!posts.length && (
                 <p className="empty-section">
-                  Обговорень поки немає
+                  {t("profile.noDiscussions")}
                 </p>
               )}
             </section>
 
             <section className="profile-section">
               <div className="section-title-row">
-                <h2>Галерея скриншотів</h2>
+                <h2>{t("profile.screenshotGallery")}</h2>
                 <span>{screenshots.length}</span>
               </div>
 
@@ -634,7 +661,6 @@ const Profile = ({ username }: ProfileProps) => {
                       src={screenshot.imageUrl}
                       alt={screenshot.gameTitle}
                     />
-
                     <span>{screenshot.gameTitle}</span>
                   </article>
                 ))}
@@ -642,14 +668,14 @@ const Profile = ({ username }: ProfileProps) => {
 
               {!screenshots.length && (
                 <p className="empty-section">
-                  Скриншотів поки немає
+                  {t("profile.noScreenshots")}
                 </p>
               )}
             </section>
 
             <section className="profile-section">
               <div className="section-title-row">
-                <h2>Галерея відео</h2>
+                <h2>{t("profile.videoGallery")}</h2>
                 <span>{videos.length}</span>
               </div>
 
@@ -658,11 +684,15 @@ const Profile = ({ username }: ProfileProps) => {
                   <article className="media-card video-card" key={video.id}>
                     <video
                       src={video.videoUrl}
-                      poster={video.thumbnailUrl || getVideoThumbnail(video.videoUrl)}
+                      poster={
+                        video.thumbnailUrl ||
+                        getVideoThumbnail(video.videoUrl)
+                      }
                       controls
                       preload="none"
                       playsInline
                     />
+
                     <span>{video.title}</span>
                   </article>
                 ))}
@@ -670,14 +700,14 @@ const Profile = ({ username }: ProfileProps) => {
 
               {!videos.length && (
                 <p className="empty-section">
-                  Відео поки немає
+                  {t("profile.noVideos")}
                 </p>
               )}
             </section>
 
             <section className="profile-section">
               <div className="section-title-row">
-                <h2>Галерея рецензій</h2>
+                <h2>{t("profile.reviewGallery")}</h2>
                 <span>{reviews.length}</span>
               </div>
 
@@ -695,13 +725,16 @@ const Profile = ({ username }: ProfileProps) => {
                     <h3>{review.gameTitle}</h3>
 
                     <div className="review-rating">
-                      {"★".repeat(Math.max(0, Math.min(5, review.rating)))}
+                      {"★".repeat(
+                        Math.max(0, Math.min(5, review.rating))
+                      )}
                     </div>
 
                     <p>{review.text}</p>
 
                     <small>
-                      ♡ {review.likesCount} · Коментарі: {review.commentsCount}
+                      ♡ {review.likesCount} ·{" "}
+                      {t("profile.commentsLabel")}: {review.commentsCount}
                     </small>
 
                     <small>{review.createdAt}</small>
@@ -711,14 +744,14 @@ const Profile = ({ username }: ProfileProps) => {
 
               {!reviews.length && (
                 <p className="empty-section">
-                  Рецензій поки немає
+                  {t("profile.noReviews")}
                 </p>
               )}
             </section>
 
             <section className="profile-section">
               <div className="section-title-row">
-                <h2>Галерея гайдів</h2>
+                <h2>{t("profile.guideGallery")}</h2>
                 <span>{guides.length}</span>
               </div>
 
@@ -736,20 +769,20 @@ const Profile = ({ username }: ProfileProps) => {
 
               {!guides.length && (
                 <p className="empty-section">
-                  Гайдів поки немає
+                  {t("profile.noGuides")}
                 </p>
               )}
             </section>
 
             <section className="profile-section">
               <div className="section-title-row">
-                <h2>Коментарі</h2>
+                <h2>{t("profile.comments")}</h2>
                 <span>{comments.length}</span>
               </div>
 
               <div className="comment-form">
                 <input
-                  placeholder="Залишити коментар..."
+                  placeholder={t("profile.leaveComment")}
                   disabled
                 />
               </div>
@@ -774,19 +807,17 @@ const Profile = ({ username }: ProfileProps) => {
 
               {!comments.length && (
                 <p className="empty-section">
-                  Коментарів поки немає
+                  {t("profile.noComments")}
                 </p>
               )}
             </section>
           </div>
-
 
           <ProfileSidebar
             profile={profile}
             username={username}
             activeSection="home"
           />
-
         </div>
       </main>
     </div>

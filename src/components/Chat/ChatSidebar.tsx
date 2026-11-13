@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { useChatConversations } from "../../hooks/useChatConvertations";
 import type { ChatConversation } from "../../types/chat";
@@ -15,6 +16,8 @@ export default function ChatSidebar({
   selectedFriendId,
   onSelectConversation,
 }: ChatSidebarProps) {
+  const { t } = useTranslation();
+
   const [search, setSearch] = useState("");
 
   const {
@@ -32,12 +35,12 @@ export default function ChatSidebar({
   return (
     <aside className="chat-sidebar">
       <div className="chat-sidebar__header">
-        <h2>Повідомлення</h2>
+        <h2>{t("chatSidebar.title")}</h2>
 
         <input
           className="chat-sidebar__search"
           type="search"
-          placeholder="Пошук діалогів..."
+          placeholder={t("chatSidebar.searchPlaceholder")}
           value={search}
           onChange={(event) => handleSearch(event.target.value)}
         />
@@ -46,7 +49,7 @@ export default function ChatSidebar({
       <div className="chat-sidebar__list">
         {isLoading && (
           <p className="chat-sidebar__status">
-            Завантаження діалогів...
+            {t("chatSidebar.loading")}
           </p>
         )}
 
@@ -58,7 +61,7 @@ export default function ChatSidebar({
 
         {!isLoading && !error && conversations.length === 0 && (
           <p className="chat-sidebar__status">
-            Діалогів не знайдено.
+            {t("chatSidebar.empty")}
           </p>
         )}
 
@@ -107,7 +110,7 @@ export default function ChatSidebar({
                 <div className="chat-conversation__bottom">
                   <span className="chat-conversation__preview">
                     {conversation.lastMessagePreview ||
-                      "Почніть спілкування"}
+                      t("chatSidebar.startConversation")}
                   </span>
 
                   {conversation.unreadCount > 0 && (

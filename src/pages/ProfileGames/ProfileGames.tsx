@@ -1,5 +1,6 @@
 
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { getUserProfile, getProfileGames } from "../../api/profile";
 import { getCurrentUsername } from "../../api/client";
@@ -9,6 +10,7 @@ import type {
   UserProfile,
   ProfileGame,
 } from "../../types/profile";
+
 import "./ProfileGames.css";
 
 interface ProfileGamesProps {
@@ -18,6 +20,8 @@ interface ProfileGamesProps {
 type SortType = "name" | "price";
 
 const ProfileGames = ({ username }: ProfileGamesProps) => {
+  const { t, i18n } = useTranslation();
+
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [games, setGames] = useState<ProfileGame[]>([]);
 
@@ -55,7 +59,7 @@ const ProfileGames = ({ username }: ProfileGamesProps) => {
           setError(
             err instanceof Error
               ? err.message
-              : "Не вдалося завантажити ігри"
+              : t("profileGames.loadError")
           );
         }
       } finally {
@@ -70,7 +74,7 @@ const ProfileGames = ({ username }: ProfileGamesProps) => {
     return () => {
       cancelled = true;
     };
-  }, [username]);
+  }, [username, t]);
 
   const filteredGames = useMemo(() => {
     let result = [...games];
@@ -91,24 +95,26 @@ const ProfileGames = ({ username }: ProfileGamesProps) => {
 
     if (sortType === "name") {
       result.sort((a, b) =>
-        a.title.localeCompare(b.title)
+        a.title.localeCompare(b.title, i18n.language)
       );
     } else {
       result.sort((a, b) => b.price - a.price);
     }
 
     return result;
-  }, [games, search, sortType, priceFilter]);
+  }, [games, search, sortType, priceFilter, i18n.language]);
+
   const openProfile = () => {
     window.location.href =
       `/profile/${encodeURIComponent(username)}`;
   };
+
   const openGame = (gameId: string) => {
     window.location.href = `/game/${encodeURIComponent(gameId)}`;
   };
 
   const formatPrice = (price: number) => {
-    if (price <= 0) return "Безкоштовно";
+    if (price <= 0) return t("common.free");
     return `${price.toFixed(2)} ₴`;
   };
 
@@ -117,7 +123,7 @@ const ProfileGames = ({ username }: ProfileGamesProps) => {
       <div className="profile-games-page">
         <main className="profile-games-container">
           <div className="profile-games-message">
-            Завантаження ігор...
+            {t("profileGames.loading")}
           </div>
         </main>
       </div>
@@ -129,10 +135,10 @@ const ProfileGames = ({ username }: ProfileGamesProps) => {
       <div className="profile-games-page">
         <main className="profile-games-container">
           <div className="profile-games-message">
-            {error || "Профіль не знайдено"}
+            {error || t("profileGames.profileNotFound")}
 
             <button onClick={openProfile}>
-              Повернутися до профілю
+              {t("profileGames.backToProfile")}
             </button>
           </div>
         </main>
@@ -174,7 +180,9 @@ const ProfileGames = ({ username }: ProfileGamesProps) => {
                 }
               >
                 <span />
-                {profile.isOnline ? "В мережі" : "Не в мережі"}
+                {profile.isOnline
+                  ? t("profileGames.online")
+                  : t("profileGames.offline")}
               </span>
 
               <p>{profile.bio}</p>
@@ -184,7 +192,7 @@ const ProfileGames = ({ username }: ProfileGamesProps) => {
               className="profile-games-view-profile"
               onClick={openProfile}
             >
-              Переглянути профіль
+              {t("profileGames.viewProfile")}
             </button>
           </div>
         </section>
@@ -200,9 +208,11 @@ const ProfileGames = ({ username }: ProfileGamesProps) => {
 
               <div className="profile-games-heading">
                 <div>
-                  <h2>Ігри</h2>
+                  <h2>{t("profileGames.title")}</h2>
                   <p>
-                    Колекція ігор користувача {profile.username}
+                    {t("profileGames.collectionDescription", {
+                      username: profile.username,
+                    })}
                   </p>
                 </div>
 
@@ -216,7 +226,7 @@ const ProfileGames = ({ username }: ProfileGamesProps) => {
 
                   <input
                     type="search"
-                    placeholder="Пошук ігор..."
+                    placeholder={t("profileGames.searchPlaceholder")}
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                   />
@@ -226,9 +236,15 @@ const ProfileGames = ({ username }: ProfileGamesProps) => {
                   value={priceFilter}
                   onChange={(e) => setPriceFilter(e.target.value)}
                 >
-                  <option value="all">Усі ігри</option>
-                  <option value="free">Безкоштовні</option>
-                  <option value="paid">Платні</option>
+                  <option value="all">
+                    {t("profileGames.filterAll")}
+                  </option>
+                  <option value="free">
+                    {t("profileGames.filterFree")}
+                  </option>
+                  <option value="paid">
+                    {t("profileGames.filterPaid")}
+                  </option>
                 </select>
 
                 <select
@@ -237,17 +253,23 @@ const ProfileGames = ({ username }: ProfileGamesProps) => {
                     setSortType(e.target.value as SortType)
                   }
                 >
-                  <option value="name">За назвою</option>
-                  <option value="price">За ціною</option>
+                  <option value="name">
+                    {t("profileGames.sortName")}
+                  </option>
+                  <option value="price">
+                    {t("profileGames.sortPrice")}
+                  </option>
                 </select>
 
               </div>
 
               <div className="profile-games-list-heading">
                 <span>⌄</span>
-                Колекція
+                {t("profileGames.collection")}
                 <span className="profile-games-list-count">
-                  {filteredGames.length} ігор
+                  {t("profileGames.gamesCount", {
+                    count: filteredGames.length,
+                  })}
                 </span>
               </div>
 
@@ -282,7 +304,7 @@ const ProfileGames = ({ username }: ProfileGamesProps) => {
                           openGame(game.id);
                         }}
                       >
-                        Переглянути
+                        {t("profileGames.viewGame")}
                       </button>
                     </article>
                   ))}
@@ -293,16 +315,16 @@ const ProfileGames = ({ username }: ProfileGamesProps) => {
 
                   <h3>
                     {search
-                      ? "Ігор не знайдено"
-                      : "Колекція поки порожня"}
+                      ? t("profileGames.notFound")
+                      : t("profileGames.emptyTitle")}
                   </h3>
 
                   <p>
                     {search
-                      ? "Спробуй змінити пошуковий запит."
+                      ? t("profileGames.changeSearch")
                       : isOwnProfile
-                        ? "Придбай свою першу гру та вона з'явиться тут."
-                        : "Цей користувач ще не додав ігор до колекції."}
+                        ? t("profileGames.emptyOwnDescription")
+                        : t("profileGames.emptyOtherDescription")}
                   </p>
                 </div>
               )}
@@ -310,13 +332,12 @@ const ProfileGames = ({ username }: ProfileGamesProps) => {
             </div>
           </section>
 
-
-            <ProfileSidebar
+          <ProfileSidebar
             profile={profile}
             username={username}
             activeSection="games"
             className="profile-games-sidebar"
-            />
+          />
         </div>
       </main>
     </div>

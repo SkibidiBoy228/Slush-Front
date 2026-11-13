@@ -1,4 +1,6 @@
+
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { login } from "../../api/auth";
 
@@ -24,15 +26,21 @@ function getRoleFromToken(token: string): string | null {
       )
     );
 
-    return payload[
-      "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-    ] || payload.role || null;
+    return (
+      payload[
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+      ] ||
+      payload.role ||
+      null
+    );
   } catch {
     return null;
   }
 }
 
 function LoginForm() {
+  const { t } = useTranslation();
+
   const [loginOrEmail, setLoginOrEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
@@ -40,7 +48,7 @@ function LoginForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit: React.SubmitEventHandler<HTMLFormElement> = async (
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (
     event
   ) => {
     event.preventDefault();
@@ -48,12 +56,12 @@ function LoginForm() {
     setError("");
 
     if (!loginOrEmail.trim()) {
-      setError("Введіть логін або e-mail");
+      setError(t("loginForm.loginRequired"));
       return;
     }
 
     if (!password) {
-      setError("Введіть пароль");
+      setError(t("loginForm.passwordRequired"));
       return;
     }
 
@@ -78,15 +86,15 @@ function LoginForm() {
       window.dispatchEvent(new Event("auth-changed"));
 
       const role = getRoleFromToken(response.accessToken);
-
       const normalizedRole = role?.toLowerCase();
 
       // Админка живёт на другом домене: localStorage туда не shared,
-      // поэтому ключ едет во фрагменте (# — не уходит на сервер и в Referer).
-      // Админка сама заберёт его в свой ключ и стрёт из адреса.
+      // поэтому ключ передаётся во фрагменте (# — не уходит на сервер и в Referer).
+      // Админка сама заберёт его в свой ключ и удалит из адреса.
       const adminBase = (
         (import.meta.env.VITE_ADMIN_URL as string | undefined) ?? ""
       ).replace(/\/$/, "");
+
       const adminDoors: Record<string, string> = {
         superadmin: "/superadmin",
         admin: "/admin",
@@ -94,7 +102,9 @@ function LoginForm() {
         analyst: "/analyst",
       };
 
-      const adminDoor = normalizedRole ? adminDoors[normalizedRole] : undefined;
+      const adminDoor = normalizedRole
+        ? adminDoors[normalizedRole]
+        : undefined;
 
       if (adminDoor) {
         window.location.href = `${adminBase}${adminDoor}#access_token=${response.accessToken}`;
@@ -105,7 +115,7 @@ function LoginForm() {
       if (error instanceof Error) {
         setError(error.message);
       } else {
-        setError("Не вдалося виконати вхід");
+        setError(t("loginForm.loginError"));
       }
     } finally {
       setLoading(false);
@@ -114,16 +124,18 @@ function LoginForm() {
 
   return (
     <section className="login-card">
-      <h1>Авторизуйтесь, щоб продовжити</h1>
+      <h1>{t("loginForm.title")}</h1>
 
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="loginOrEmail">Логін або e-mail</label>
+          <label htmlFor="loginOrEmail">
+            {t("loginForm.loginOrEmail")}
+          </label>
 
           <input
             id="loginOrEmail"
             type="text"
-            placeholder="Введіть ваш логін або e-mail..."
+            placeholder={t("loginForm.loginPlaceholder")}
             value={loginOrEmail}
             onChange={(event) => setLoginOrEmail(event.target.value)}
             disabled={loading}
@@ -132,12 +144,12 @@ function LoginForm() {
         </div>
 
         <div className="form-group">
-          <label htmlFor="password">Пароль</label>
+          <label htmlFor="password">{t("loginForm.password")}</label>
 
           <input
             id="password"
             type="password"
-            placeholder="Введіть ваш пароль..."
+            placeholder={t("loginForm.passwordPlaceholder")}
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             disabled={loading}
@@ -154,23 +166,26 @@ function LoginForm() {
               disabled={loading}
             />
 
-            <span>Запам'ятати мене</span>
+            <span>{t("loginForm.rememberMe")}</span>
           </label>
 
           <a href="/forgot-password" className="forgot-password">
-            Не пам'ятаю пароль
+            {t("loginForm.forgotPassword")}
           </a>
         </div>
 
-        {error && <div className="form-message form-error">{error}</div>}
+        {error && (
+          <div className="form-message form-error">{error}</div>
+        )}
 
         <button className="login-button" type="submit" disabled={loading}>
-          {loading ? "Завантаження..." : "Продовжити"}
+          {loading ? t("loginForm.loading") : t("loginForm.continue")}
         </button>
       </form>
 
       <div className="register-link">
-        Не маєте акаунту? <a href="/register">Зареєструйтесь</a>
+        {t("loginForm.noAccount")}{" "}
+        <a href="/register">{t("loginForm.register")}</a>
       </div>
     </section>
   );

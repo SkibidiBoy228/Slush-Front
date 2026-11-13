@@ -1,4 +1,7 @@
+
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+
 import FriendCard from "../../components/Friends/FriendCard/FriendCard";
 import FriendSearch from "../../components/Friends/FriendSearch/FriendSearch";
 import FriendRequestCard from "../../components/Friends/FriendRequestCard/FriendRequestCard";
@@ -32,32 +35,46 @@ import "./Friends.css";
 
 type FriendsTab = "all" | "online" | "blocked" | "requests";
 
-function formatActivityDate(value: string) {
+function getDateLocale(language: string) {
+  const locales: Record<string, string> = {
+    uk: "uk-UA",
+    en: "en-US",
+    sk: "sk-SK",
+    ru: "ru-RU",
+  };
+
+  return locales[language.split("-")[0]] ?? "uk-UA";
+}
+
+function formatActivityDate(value: string, locale: string) {
   const date = new Date(value);
 
   if (Number.isNaN(date.getTime())) {
     return "";
   }
 
-  return date.toLocaleDateString("uk-UA", {
+  return date.toLocaleDateString(locale, {
     day: "numeric",
     month: "long",
   });
 }
 
-function getActivityText(activity: FriendActivity) {
+function getActivityText(
+  activity: FriendActivity,
+  t: (key: string) => string,
+) {
   switch (activity.activityType) {
     case "GamePurchased":
-      return "придбав гру";
+      return t("friends.activityGamePurchased");
 
     case "WishlistAdded":
-      return "додав гру до списку бажань";
+      return t("friends.activityWishlistAdded");
 
     case "ScreenshotPublished":
-      return "опублікував скриншот";
+      return t("friends.activityScreenshotPublished");
 
     default:
-      return "здійснив дію";
+      return t("friends.activityDefault");
   }
 }
 
@@ -78,6 +95,9 @@ function getActivityIcon(activity: FriendActivity) {
 }
 
 function Friends() {
+  const { t, i18n } = useTranslation();
+  const dateLocale = getDateLocale(i18n.language);
+
   const [activeTab, setActiveTab] = useState<FriendsTab>("all");
 
   const [friends, setFriends] = useState<FriendUser[]>([]);
@@ -100,7 +120,7 @@ function Friends() {
 
   const onlineFriends = useMemo(
     () => friends.filter((friend) => friend.isOnline),
-    [friends]
+    [friends],
   );
 
   const loadFriends = useCallback(async (filter: "all" | "online" = "all") => {
@@ -137,23 +157,23 @@ function Friends() {
         loadActivities(),
       ]);
     } catch (requestError) {
-      console.error("Не вдалося завантажити сторінку друзів:", requestError);
+      console.error("Failed to load friends page:", requestError);
 
       setError(
         requestError instanceof Error
           ? requestError.message
-          : "Не вдалося завантажити дані"
+          : t("friends.loadError"),
       );
     } finally {
       setLoading(false);
     }
-  }, [loadFriends, loadRequests, loadBlockedUsers, loadActivities]);
+  }, [loadFriends, loadRequests, loadBlockedUsers, loadActivities, t]);
 
   useEffect(() => {
     void loadInitialData();
   }, [loadInitialData]);
 
-  // Обробка оновлень присутності через SignalR.
+  // Обработка обновлений присутствия через SignalR.
   useEffect(() => {
     if (events.length === 0) return;
 
@@ -203,7 +223,7 @@ function Friends() {
               return friend;
           }
         });
-      }, currentFriends)
+      }, currentFriends),
     );
   }, [events]);
 
@@ -224,12 +244,12 @@ function Friends() {
 
         const result = await searchUsers(
           query || undefined,
-          gameId || undefined
+          gameId || undefined,
         );
 
         setSearchResults(result ?? []);
       } catch (requestError) {
-        console.error("Не вдалося виконати пошук:", requestError);
+        console.error("Search failed:", requestError);
         setSearchResults([]);
       } finally {
         setSearchLoading(false);
@@ -256,12 +276,12 @@ function Friends() {
         await loadRequests();
       }
     } catch (requestError) {
-      console.error("Не вдалося завантажити вкладку:", requestError);
+      console.error("Failed to load tab:", requestError);
 
       setError(
         requestError instanceof Error
           ? requestError.message
-          : "Не вдалося завантажити дані"
+          : t("friends.loadError"),
       );
     } finally {
       setLoading(false);
@@ -276,14 +296,14 @@ function Friends() {
       await acceptFriendRequest(request.id);
 
       setIncomingRequests((current) =>
-        current.filter((item) => item.id !== request.id)
+        current.filter((item) => item.id !== request.id),
       );
 
       await loadFriends("all");
-      setSuccessMessage("Заявку прийнято");
+      setSuccessMessage(t("friends.requestAccepted"));
     } catch (requestError) {
-      console.error("Не вдалося прийняти заявку:", requestError);
-      setError("Не вдалося прийняти заявку");
+      console.error("Failed to accept request:", requestError);
+      setError(t("friends.acceptError"));
     } finally {
       setActionLoadingId(null);
     }
@@ -297,13 +317,13 @@ function Friends() {
       await rejectFriendRequest(request.id);
 
       setIncomingRequests((current) =>
-        current.filter((item) => item.id !== request.id)
+        current.filter((item) => item.id !== request.id),
       );
 
-      setSuccessMessage("Заявку відхилено");
+      setSuccessMessage(t("friends.requestRejected"));
     } catch (requestError) {
-      console.error("Не вдалося відхилити заявку:", requestError);
-      setError("Не вдалося відхилити заявку");
+      console.error("Failed to reject request:", requestError);
+      setError(t("friends.rejectError"));
     } finally {
       setActionLoadingId(null);
     }
@@ -317,13 +337,13 @@ function Friends() {
       await cancelFriendRequest(request.id);
 
       setOutgoingRequests((current) =>
-        current.filter((item) => item.id !== request.id)
+        current.filter((item) => item.id !== request.id),
       );
 
-      setSuccessMessage("Запит скасовано");
+      setSuccessMessage(t("friends.requestCancelled"));
     } catch (requestError) {
-      console.error("Не вдалося скасувати заявку:", requestError);
-      setError("Не вдалося скасувати заявку");
+      console.error("Failed to cancel request:", requestError);
+      setError(t("friends.cancelError"));
     } finally {
       setActionLoadingId(null);
     }
@@ -331,7 +351,7 @@ function Friends() {
 
   async function handleRemove(friend: FriendUser) {
     const confirmed = window.confirm(
-      `Видалити ${friend.username} зі списку друзів?`
+      t("friends.confirmRemove", { username: friend.username }),
     );
 
     if (!confirmed) return;
@@ -343,13 +363,13 @@ function Friends() {
       await removeFriend(friend.userId);
 
       setFriends((current) =>
-        current.filter((item) => item.userId !== friend.userId)
+        current.filter((item) => item.userId !== friend.userId),
       );
 
-      setSuccessMessage("Користувача видалено з друзів");
+      setSuccessMessage(t("friends.friendRemoved"));
     } catch (requestError) {
-      console.error("Не вдалося видалити друга:", requestError);
-      setError("Не вдалося видалити друга");
+      console.error("Failed to remove friend:", requestError);
+      setError(t("friends.removeError"));
     } finally {
       setActionLoadingId(null);
     }
@@ -357,7 +377,7 @@ function Friends() {
 
   async function handleBlock(friend: FriendUser) {
     const confirmed = window.confirm(
-      `Заблокувати користувача ${friend.username}?`
+      t("friends.confirmBlock", { username: friend.username }),
     );
 
     if (!confirmed) return;
@@ -369,14 +389,14 @@ function Friends() {
       await blockUser(friend.userId);
 
       setFriends((current) =>
-        current.filter((item) => item.userId !== friend.userId)
+        current.filter((item) => item.userId !== friend.userId),
       );
 
       await loadBlockedUsers();
-      setSuccessMessage("Користувача заблоковано");
+      setSuccessMessage(t("friends.userBlocked"));
     } catch (requestError) {
-      console.error("Не вдалося заблокувати користувача:", requestError);
-      setError("Не вдалося заблокувати користувача");
+      console.error("Failed to block user:", requestError);
+      setError(t("friends.blockError"));
     } finally {
       setActionLoadingId(null);
     }
@@ -390,13 +410,13 @@ function Friends() {
       await unblockUser(user.userId);
 
       setBlockedUsers((current) =>
-        current.filter((item) => item.userId !== user.userId)
+        current.filter((item) => item.userId !== user.userId),
       );
 
-      setSuccessMessage("Користувача розблоковано");
+      setSuccessMessage(t("friends.userUnblocked"));
     } catch (requestError) {
-      console.error("Не вдалося розблокувати користувача:", requestError);
-      setError("Не вдалося розблокувати користувача");
+      console.error("Failed to unblock user:", requestError);
+      setError(t("friends.unblockError"));
     } finally {
       setActionLoadingId(null);
     }
@@ -413,14 +433,14 @@ function Friends() {
         current.map((item) =>
           item.userId === user.userId
             ? { ...item, friendStatus: "PendingSent" }
-            : item
-        )
+            : item,
+        ),
       );
 
-      setSuccessMessage("Заявку надіслано");
+      setSuccessMessage(t("friends.requestSent"));
     } catch (requestError) {
-      console.error("Не вдалося надіслати заявку:", requestError);
-      setError("Не вдалося надіслати заявку");
+      console.error("Failed to send request:", requestError);
+      setError(t("friends.sendRequestError"));
     } finally {
       setActionLoadingId(null);
     }
@@ -434,9 +454,7 @@ function Friends() {
 
   return (
     <div className="friends-page">
-
       <main className="friends-page-container">
-
         <div className="friends-topbar">
           <nav className="friends-tabs">
             <button
@@ -444,7 +462,7 @@ function Friends() {
               className={activeTab === "all" ? "active" : ""}
               onClick={() => void handleTabChange("all")}
             >
-              Усі друзі
+              {t("friends.allFriends")}
               <span>{friends.length}</span>
             </button>
 
@@ -453,7 +471,7 @@ function Friends() {
               className={activeTab === "online" ? "active" : ""}
               onClick={() => void handleTabChange("online")}
             >
-              Онлайн
+              {t("friends.online")}
               <span>{onlineFriends.length}</span>
             </button>
 
@@ -462,7 +480,7 @@ function Friends() {
               className={activeTab === "blocked" ? "active" : ""}
               onClick={() => void handleTabChange("blocked")}
             >
-              Заблоковані
+              {t("friends.blocked")}
               <span>{blockedUsers.length}</span>
             </button>
 
@@ -471,7 +489,7 @@ function Friends() {
               className={activeTab === "requests" ? "active" : ""}
               onClick={() => void handleTabChange("requests")}
             >
-              Поточні запити
+              {t("friends.currentRequests")}
               {incomingRequests.length > 0 && (
                 <span className="friends-request-count">
                   {incomingRequests.length}
@@ -479,6 +497,7 @@ function Friends() {
               )}
             </button>
           </nav>
+
           <button
             type="button"
             className="friends-add-button"
@@ -489,22 +508,27 @@ function Friends() {
             }}
           >
             <span>＋</span>
-            Додати друга
+            {t("friends.addFriend")}
           </button>
         </div>
 
         {hasSearch && (
           <section className="friends-search-results">
             <div className="friends-content-heading">
-              <h2>Результати пошуку</h2>
+              <h2>{t("friends.searchResults")}</h2>
               <span>
-                {searchLoading ? "Пошук..." : searchResults.length}
+                {searchLoading ? t("friends.searching") : searchResults.length}
               </span>
             </div>
+
             {searchLoading ? (
-              <div className="friends-empty">Шукаємо користувачів...</div>
+              <div className="friends-empty">
+                {t("friends.searchingUsers")}
+              </div>
             ) : searchResults.length === 0 ? (
-              <div className="friends-empty">Користувачів не знайдено</div>
+              <div className="friends-empty">
+                {t("friends.usersNotFound")}
+              </div>
             ) : (
               <div className="friends-grid">
                 {searchResults.map((user) => (
@@ -526,12 +550,12 @@ function Friends() {
                         <strong>{user.username}</strong>
                         <span>
                           {user.friendStatus === "Friends"
-                            ? "Вже у друзях"
+                            ? t("friends.alreadyFriends")
                             : user.friendStatus === "PendingSent"
-                              ? "Запит надіслано"
+                              ? t("friends.requestAlreadySent")
                               : user.friendStatus === "PendingReceived"
-                                ? "Є вхідний запит"
-                                : "Не у друзях"}
+                                ? t("friends.incomingRequest")
+                                : t("friends.notFriends")}
                         </span>
                       </span>
                     </button>
@@ -544,7 +568,9 @@ function Friends() {
                         disabled={actionLoadingId === user.userId}
                         onClick={() => void handleSendRequest(user)}
                       >
-                        {actionLoadingId === user.userId ? "..." : "Додати"}
+                        {actionLoadingId === user.userId
+                          ? "..."
+                          : t("friends.add")}
                       </button>
                     ) : null}
                   </article>
@@ -553,9 +579,9 @@ function Friends() {
             )}
           </section>
         )}
+
         <div className="friends-layout">
           <section className="friends-main-column">
-            {/* Пошук */}
             <div className="friends-search-row">
               <FriendSearch
                 value={searchQuery}
@@ -570,30 +596,35 @@ function Friends() {
                 {error}
               </div>
             )}
+
             {successMessage && (
               <div className="friends-success" role="status">
                 {successMessage}
                 <button
                   type="button"
                   onClick={() => setSuccessMessage("")}
-                  aria-label="Закрити повідомлення"
+                  aria-label={t("friends.closeMessage")}
                 >
                   ×
                 </button>
               </div>
             )}
+
             {loading ? (
-              <div className="friends-loading">Завантаження...</div>
+              <div className="friends-loading">
+                {t("friends.loading")}
+              </div>
             ) : activeTab === "requests" ? (
               <div className="friends-requests">
                 <section className="friends-request-section">
                   <div className="friends-content-heading">
-                    <h2>Вхідні заявки</h2>
+                    <h2>{t("friends.incomingRequests")}</h2>
                     <span>{incomingRequests.length}</span>
                   </div>
+
                   {incomingRequests.length === 0 ? (
                     <div className="friends-empty">
-                      Вхідних заявок немає
+                      {t("friends.noIncomingRequests")}
                     </div>
                   ) : (
                     <div className="friends-request-list">
@@ -610,15 +641,16 @@ function Friends() {
                     </div>
                   )}
                 </section>
+
                 <section className="friends-request-section">
                   <div className="friends-content-heading">
-                    <h2>Вихідні заявки</h2>
+                    <h2>{t("friends.outgoingRequests")}</h2>
                     <span>{outgoingRequests.length}</span>
                   </div>
 
                   {outgoingRequests.length === 0 ? (
                     <div className="friends-empty">
-                      Вихідних заявок немає
+                      {t("friends.noOutgoingRequests")}
                     </div>
                   ) : (
                     <div className="friends-request-list">
@@ -638,11 +670,13 @@ function Friends() {
             ) : activeTab === "blocked" ? (
               <section className="friends-content-section">
                 <div className="friends-content-heading">
-                  <h2>Заблоковані користувачі</h2>
+                  <h2>{t("friends.blockedUsers")}</h2>
                   <span>{blockedUsers.length}</span>
                 </div>
+
                 {blockedUsers.length === 0 ? (
                   <div className="friends-empty">
+                    {t("friends.noBlockedUsers")}
                   </div>
                 ) : (
                   <div className="friends-blocked-list">
@@ -667,7 +701,9 @@ function Friends() {
                           <span className="friends-search-user-info">
                             <strong>{user.username}</strong>
                             <span>
-                              Заблоковано {formatActivityDate(user.blockedAt)}
+                              {t("friends.blockedAt", {
+                                date: formatActivityDate(user.blockedAt, dateLocale),
+                              })}
                             </span>
                           </span>
                         </button>
@@ -678,7 +714,7 @@ function Friends() {
                           disabled={actionLoadingId === user.userId}
                           onClick={() => void handleUnblock(user)}
                         >
-                          Розблокувати
+                          {t("friends.unblock")}
                         </button>
                       </article>
                     ))}
@@ -689,7 +725,9 @@ function Friends() {
               <section className="friends-content-section">
                 <div className="friends-content-heading">
                   <h2>
-                    {activeTab === "online" ? "Друзі онлайн" : "Усі друзі"}
+                    {activeTab === "online"
+                      ? t("friends.onlineFriends")
+                      : t("friends.allFriends")}
                   </h2>
 
                   <span>
@@ -703,8 +741,8 @@ function Friends() {
                 0 ? (
                   <div className="friends-empty">
                     {activeTab === "online"
-                      ? "Зараз немає друзів онлайн"
-                      : "Друзів поки немає"}
+                      ? t("friends.noFriendsOnline")
+                      : t("friends.noFriends")}
                   </div>
                 ) : (
                   <div className="friends-grid">
@@ -718,21 +756,22 @@ function Friends() {
                           onRemove={handleRemove}
                           onBlock={handleBlock}
                         />
-                      )
+                      ),
                     )}
                   </div>
                 )}
               </section>
             )}
           </section>
+
           <aside className="friends-activity">
             <div className="friends-activity-heading">
-              <h2>Активність друзів</h2>
+              <h2>{t("friends.friendsActivity")}</h2>
             </div>
 
             {activities.length === 0 ? (
               <div className="friends-activity-empty">
-                Поки немає нової активності
+                {t("friends.noRecentActivity")}
               </div>
             ) : (
               <div className="friends-activity-list">
@@ -757,7 +796,7 @@ function Friends() {
                         <strong>{activity.username}</strong>
                         <span>
                           {getActivityIcon(activity)}{" "}
-                          {getActivityText(activity)}
+                          {getActivityText(activity, t)}
                         </span>
                       </div>
                     </div>
@@ -771,13 +810,15 @@ function Friends() {
                             window.open(
                               activity.mediaUrl!,
                               "_blank",
-                              "noopener,noreferrer"
+                              "noopener,noreferrer",
                             )
                           }
                         >
                           <img
                             src={activity.mediaUrl}
-                            alt={`Скриншот гри ${activity.gameTitle ?? ""}`}
+                            alt={t("friends.gameScreenshot", {
+                              title: activity.gameTitle ?? "",
+                            })}
                           />
                         </button>
                       )}
@@ -785,13 +826,17 @@ function Friends() {
                     {activity.gameTitle && (
                       <div className="friends-activity-game">
                         <strong>{activity.gameTitle}</strong>
-                        <span>{formatActivityDate(activity.createdAt)}</span>
+                        <span>
+                          {formatActivityDate(activity.createdAt, dateLocale)}
+                        </span>
                       </div>
                     )}
 
                     {!activity.gameTitle && (
                       <div className="friends-activity-game">
-                        <span>{formatActivityDate(activity.createdAt)}</span>
+                        <span>
+                          {formatActivityDate(activity.createdAt, dateLocale)}
+                        </span>
                       </div>
                     )}
                   </article>

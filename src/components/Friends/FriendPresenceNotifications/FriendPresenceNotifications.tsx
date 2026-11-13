@@ -1,8 +1,11 @@
+
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useFriendPresence } from "../../../hooks/useFriendPresence";
 import "./FriendPresenceNotifications.css";
 
 function FriendPresenceNotifications() {
+  const { t } = useTranslation();
   const { events, clearEvent } = useFriendPresence();
 
   useEffect(() => {
@@ -44,7 +47,7 @@ function FriendPresenceNotifications() {
           <button
             type="button"
             onClick={() => clearEvent(event.timestamp)}
-            aria-label="Закрыть уведомление"
+            aria-label={t("friendPresenceNotifications.close")}
           >
             ×
           </button>

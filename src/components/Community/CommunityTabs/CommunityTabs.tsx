@@ -1,3 +1,5 @@
+
+import { useTranslation } from "react-i18next";
 import "./CommunityTabs.css";
 
 interface CommunityTabsProps {
@@ -11,13 +13,15 @@ function CommunityTabs({
   activeTab,
   onTabChange,
 }: CommunityTabsProps) {
+  const { t } = useTranslation();
+
   return (
     <nav className="community-tabs">
       <button
         className={activeTab === "about" ? "active" : ""}
         onClick={() => onTabChange("about")}
       >
-        Про гру
+        {t("communityTabs.about")}
       </button>
 
       <button
@@ -26,14 +30,14 @@ function CommunityTabs({
         }
         onClick={() => onTabChange("characteristics")}
       >
-        Характеристики
+        {t("communityTabs.characteristics")}
       </button>
 
       <button
         className={activeTab === "community" ? "active" : ""}
         onClick={() => onTabChange("community")}
       >
-        Спільнота
+        {t("communityTabs.community")}
       </button>
     </nav>
   );

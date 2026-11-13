@@ -1,10 +1,20 @@
-import { useRef, useState, type FormEvent, type ClipboardEvent, type KeyboardEvent } from "react";
+
+import {
+  useRef,
+  useState,
+  type FormEvent,
+  type ClipboardEvent,
+  type KeyboardEvent,
+} from "react";
+import { useTranslation } from "react-i18next";
 
 import { verifyEmail } from "../../api/auth";
 
 import "./VerifyEmailForm.css";
 
 function VerifyEmailForm() {
+  const { t } = useTranslation();
+
   const params = new URLSearchParams(window.location.search);
   const email = params.get("email") || "";
 
@@ -84,12 +94,12 @@ function VerifyEmailForm() {
     setSuccess("");
 
     if (!email.trim()) {
-      setError("Не знайдено e-mail. Спробуйте пройти реєстрацію ще раз.");
+      setError(t("verifyEmail.emailNotFound"));
       return;
     }
 
     if (code.length !== 5) {
-      setError("Введіть усі 5 цифр коду");
+      setError(t("verifyEmail.enterAllDigits"));
       return;
     }
 
@@ -101,7 +111,9 @@ function VerifyEmailForm() {
         code,
       });
 
-      setSuccess(response.message || "E-mail успішно підтверджено.");
+      setSuccess(
+        response.message || t("verifyEmail.success")
+      );
 
       window.setTimeout(() => {
         window.location.href = "/login";
@@ -110,7 +122,7 @@ function VerifyEmailForm() {
       if (error instanceof Error) {
         setError(error.message);
       } else {
-        setError("Не вдалося підтвердити e-mail");
+        setError(t("verifyEmail.error"));
       }
     } finally {
       setLoading(false);
@@ -119,10 +131,10 @@ function VerifyEmailForm() {
 
   return (
     <section className="verify-email-card">
-      <h1>Введіть код</h1>
+      <h1>{t("verifyEmail.title")}</h1>
 
       <p className="verify-email-description">
-        На ваше e-mail був надісланий 5-значний код
+        {t("verifyEmail.description")}
       </p>
 
       <form onSubmit={handleSubmit}>
@@ -141,8 +153,12 @@ function VerifyEmailForm() {
               value={digit}
               disabled={loading}
               autoComplete={index === 0 ? "one-time-code" : "off"}
-              aria-label={`Цифра ${index + 1} коду`}
-              onChange={(event) => updateDigit(index, event.target.value)}
+              aria-label={t("verifyEmail.digitLabel", {
+                number: index + 1,
+              })}
+              onChange={(event) =>
+                updateDigit(index, event.target.value)
+              }
               onKeyDown={(event) => handleKeyDown(event, index)}
               onPaste={handlePaste}
             />
@@ -166,7 +182,9 @@ function VerifyEmailForm() {
           type="submit"
           disabled={loading}
         >
-          {loading ? "Перевірка..." : "Продовжити"}
+          {loading
+            ? t("verifyEmail.verifying")
+            : t("verifyEmail.continue")}
         </button>
       </form>
 
@@ -174,9 +192,9 @@ function VerifyEmailForm() {
         className="verify-email-resend"
         type="button"
         disabled
-        title="Для повторного надсилання потрібен відповідний метод API"
+        title={t("verifyEmail.resendUnavailable")}
       >
-        Надіслати код ще раз
+        {t("verifyEmail.resend")}
       </button>
     </section>
   );

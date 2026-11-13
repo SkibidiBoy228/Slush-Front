@@ -1,3 +1,4 @@
+import type { SteamNewsItem } from "./news";
 export interface LibraryGame {
   gameId: string;
   title: string;
@@ -51,7 +52,7 @@ export interface LibraryHome {
   recentGames: LibraryGame[];
   favoriteGames: LibraryGame[];
   collections: LibraryCollection[];
-  latestNews: CommunityPost[];
+  latestNews: SteamNewsItem[];
   communityHighlights: CommunityPost[];
 }
 

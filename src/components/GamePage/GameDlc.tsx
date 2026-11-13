@@ -1,3 +1,5 @@
+
+import { useTranslation } from "react-i18next";
 import type { GameExtra } from "../../types/game";
 import { formatPrice } from "../../utils/price";
 
@@ -10,6 +12,8 @@ function GameDlc({
   dlcs,
   gameId,
 }: GameDlcProps) {
+  const { t } = useTranslation();
+
   if (!dlcs.length) {
     return null;
   }
@@ -17,7 +21,7 @@ function GameDlc({
   return (
     <section className="game-extra-section">
       <div className="section-title-row">
-        <h2>Інший контент</h2>
+        <h2>{t("gameDlc.title")}</h2>
 
         <button
           className="more-link"
@@ -25,7 +29,7 @@ function GameDlc({
             window.location.href = `/game/${gameId}/dlc`;
           }}
         >
-          Усі DLC →
+          {t("gameDlc.allDlc")} →
         </button>
       </div>
 
@@ -53,7 +57,7 @@ function GameDlc({
             <span className="dlc-price">
               {dlc.price > 0
                 ? formatPrice(dlc.price)
-                : "Безкоштовно"}
+                : t("common.free")}
             </span>
           </button>
         ))}

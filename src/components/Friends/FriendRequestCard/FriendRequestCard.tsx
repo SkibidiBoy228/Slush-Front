@@ -1,4 +1,5 @@
 
+import { useTranslation } from "react-i18next";
 import type { FriendRequest } from "../../../types/friends";
 import "./FriendRequestCard.css";
 
@@ -19,6 +20,8 @@ function FriendRequestCard({
   onReject,
   onCancel,
 }: FriendRequestCardProps) {
+  const { t } = useTranslation();
+
   const username = request.user.username;
   const avatarUrl = request.user.avatarUrl;
   const level = request.user.level;
@@ -52,15 +55,15 @@ function FriendRequestCard({
 
             {typeof level === "number" && (
               <span className="friend-request-level">
-                Рівень {level}
+                {t("friendRequestCard.level", { level })}
               </span>
             )}
           </span>
 
           <span>
             {type === "incoming"
-              ? "Хоче додати вас у друзі"
-              : "Запит надіслано"}
+              ? t("friendRequestCard.incomingDescription")
+              : t("friendRequestCard.outgoingDescription")}
           </span>
         </span>
       </button>
@@ -73,7 +76,7 @@ function FriendRequestCard({
             disabled={loading}
             onClick={() => onAccept?.(request)}
           >
-            Прийняти
+            {t("friendRequestCard.accept")}
           </button>
 
           <button
@@ -82,7 +85,7 @@ function FriendRequestCard({
             disabled={loading}
             onClick={() => onReject?.(request)}
           >
-            Відхилити
+            {t("friendRequestCard.reject")}
           </button>
         </div>
       ) : (
@@ -92,7 +95,7 @@ function FriendRequestCard({
           disabled={loading}
           onClick={() => onCancel?.(request)}
         >
-          Скасувати
+          {t("friendRequestCard.cancel")}
         </button>
       )}
     </article>

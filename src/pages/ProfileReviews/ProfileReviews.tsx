@@ -1,5 +1,6 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   getUserProfile,
@@ -24,6 +25,8 @@ interface ProfileReviewsProps {
 type ReviewSort = "Newest" | "Oldest" | "ByRating";
 
 const ProfileReviews = ({ username }: ProfileReviewsProps) => {
+  const { t, i18n } = useTranslation();
+
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [reviews, setReviews] = useState<ProfileReview[]>([]);
 
@@ -58,14 +61,14 @@ const ProfileReviews = ({ username }: ProfileReviewsProps) => {
       setError(
         err instanceof Error
           ? err.message
-          : "Не вдалося завантажити рецензії"
+          : t("profileReviews.loadError")
       );
     } finally {
       if (!signal.cancelled) {
         setIsLoading(false);
       }
     }
-  }, [username]);
+  }, [username, t]);
 
   useEffect(() => {
     const signal = { cancelled: false };
@@ -111,11 +114,21 @@ const ProfileReviews = ({ username }: ProfileReviewsProps) => {
       return "";
     }
 
-    return parsedDate.toLocaleDateString("uk-UA", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
+    const localeMap: Record<string, string> = {
+      uk: "uk-UA",
+      en: "en-US",
+      sk: "sk-SK",
+      ru: "ru-RU",
+    };
+
+    return parsedDate.toLocaleDateString(
+      localeMap[i18n.language] || "uk-UA",
+      {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }
+    );
   };
 
   const renderRating = (rating: number) => {
@@ -124,7 +137,9 @@ const ProfileReviews = ({ username }: ProfileReviewsProps) => {
     return (
       <div
         className="profile-review-rating"
-        aria-label={`Оцінка: ${normalizedRating} з 5`}
+        aria-label={t("profileReviews.ratingAria", {
+          rating: normalizedRating,
+        })}
       >
         {Array.from({ length: 5 }, (_, index) => (
           <span
@@ -147,7 +162,7 @@ const ProfileReviews = ({ username }: ProfileReviewsProps) => {
       <div className="profile-reviews-page">
         <main className="profile-reviews-container">
           <div className="profile-reviews-message">
-            Завантаження рецензій...
+            {t("profileReviews.loading")}
           </div>
         </main>
       </div>
@@ -159,10 +174,10 @@ const ProfileReviews = ({ username }: ProfileReviewsProps) => {
       <div className="profile-reviews-page">
         <main className="profile-reviews-container">
           <div className="profile-reviews-message">
-            {error || "Профіль не знайдено"}
+            {error || t("profileReviews.profileNotFound")}
 
             <button onClick={openProfile}>
-              Повернутися до профілю
+              {t("profileReviews.backToProfile")}
             </button>
           </div>
         </main>
@@ -202,7 +217,9 @@ const ProfileReviews = ({ username }: ProfileReviewsProps) => {
                 }
               >
                 <span />
-                {profile.isOnline ? "онлайн" : "не в мережі"}
+                {profile.isOnline
+                  ? t("profileReviews.online")
+                  : t("profileReviews.offline")}
               </span>
 
               <p>{profile.bio}</p>
@@ -212,7 +229,7 @@ const ProfileReviews = ({ username }: ProfileReviewsProps) => {
               className="profile-reviews-view-profile"
               onClick={openProfile}
             >
-              Переглянути профіль
+              {t("profileReviews.viewProfile")}
             </button>
           </div>
         </section>
@@ -228,7 +245,7 @@ const ProfileReviews = ({ username }: ProfileReviewsProps) => {
 
                   <input
                     type="search"
-                    placeholder="Пошук за назвою гри..."
+                    placeholder={t("profileReviews.searchPlaceholder")}
                     value={search}
                     onChange={(event) => setSearch(event.target.value)}
                   />
@@ -236,7 +253,7 @@ const ProfileReviews = ({ username }: ProfileReviewsProps) => {
 
                 <div className="profile-reviews-filters">
                   <label>
-                    <span>Сортування:</span>
+                    <span>{t("profileReviews.sorting")}:</span>
 
                     <select
                       value={sort}
@@ -244,14 +261,20 @@ const ProfileReviews = ({ username }: ProfileReviewsProps) => {
                         setSort(event.target.value as ReviewSort)
                       }
                     >
-                      <option value="Newest">Спочатку нові</option>
-                      <option value="ByRating">За оцінкою</option>
-                      <option value="Oldest">Спочатку старі</option>
+                      <option value="Newest">
+                        {t("profileReviews.newest")}
+                      </option>
+                      <option value="ByRating">
+                        {t("profileReviews.byRating")}
+                      </option>
+                      <option value="Oldest">
+                        {t("profileReviews.oldest")}
+                      </option>
                     </select>
                   </label>
 
                   <span className="profile-reviews-filter-label">
-                    Усі ігри
+                    {t("profileReviews.allGames")}
                   </span>
                 </div>
               </div>
@@ -284,8 +307,8 @@ const ProfileReviews = ({ username }: ProfileReviewsProps) => {
                         <button
                           className="profile-review-more"
                           type="button"
-                          title="Додаткові дії"
-                          aria-label="Додаткові дії"
+                          title={t("profileReviews.moreActions")}
+                          aria-label={t("profileReviews.moreActions")}
                           disabled
                         >
                           •••
@@ -302,7 +325,7 @@ const ProfileReviews = ({ username }: ProfileReviewsProps) => {
                         <div className="profile-review-stats">
                           <span
                             className="profile-review-stat"
-                            title="Кількість вподобань"
+                            title={t("profileReviews.likesCount")}
                           >
                             <span className="profile-review-heart">♡</span>
                             {review.likesCount}
@@ -310,7 +333,7 @@ const ProfileReviews = ({ username }: ProfileReviewsProps) => {
 
                           <span
                             className="profile-review-stat"
-                            title="Кількість коментарів"
+                            title={t("profileReviews.commentsCount")}
                           >
                             <svg viewBox="0 0 20 20" aria-hidden="true">
                               <path d="M3 4.5A1.5 1.5 0 0 1 4.5 3h11A1.5 1.5 0 0 1 17 4.5v8a1.5 1.5 0 0 1-1.5 1.5H9l-4 3v-3.1a1.5 1.5 0 0 1-2-1.4v-8Z" />
@@ -332,16 +355,16 @@ const ProfileReviews = ({ username }: ProfileReviewsProps) => {
 
                   <h3>
                     {search
-                      ? "Рецензій не знайдено"
-                      : "Рецензій поки немає"}
+                      ? t("profileReviews.notFound")
+                      : t("profileReviews.emptyTitle")}
                   </h3>
 
                   <p>
                     {search
-                      ? "Спробуй змінити пошуковий запит."
+                      ? t("profileReviews.changeSearch")
                       : isOwnProfile
-                        ? "Твої рецензії з'являться тут."
-                        : "Цей користувач ще не публікував рецензії."}
+                        ? t("profileReviews.emptyOwnDescription")
+                        : t("profileReviews.emptyOtherDescription")}
                   </p>
                 </div>
               )}

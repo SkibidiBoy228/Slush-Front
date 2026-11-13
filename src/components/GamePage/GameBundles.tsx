@@ -1,3 +1,5 @@
+
+import { useTranslation } from "react-i18next";
 import type { GameExtra } from "../../types/game";
 import { formatPrice } from "../../utils/price";
 
@@ -10,6 +12,8 @@ function GameBundles({
   bundles,
   fallbackImage,
 }: GameBundleProps) {
+  const { t } = useTranslation();
+
   if (!bundles.length) {
     return null;
   }
@@ -17,7 +21,7 @@ function GameBundles({
   return (
     <section className="game-extra-section">
       <div className="title-row">
-        <h2>Комплекти</h2>
+        <h2>{t("gameBundles.title")}</h2>
       </div>
 
       <div className="bundles-list">
@@ -40,7 +44,7 @@ function GameBundles({
             </div>
 
             <button className="cart-button">
-              У кошик
+              {t("gameBundles.addToCart")}
             </button>
           </article>
         ))}

@@ -1,5 +1,6 @@
 
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { getUserProfile } from "../../api/profile";
 import { getCurrentUsername } from "../../api/client";
@@ -24,6 +25,8 @@ type SortType = "newest" | "name" | "price" | "discount";
 type FilterType = "all" | "discount" | "free" | "paid";
 
 const ProfileWishlist = ({ username }: ProfileWishlistProps) => {
+  const { t, i18n } = useTranslation();
+
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [games, setGames] = useState<StoreItem[]>([]);
 
@@ -65,7 +68,7 @@ const ProfileWishlist = ({ username }: ProfileWishlistProps) => {
           setError(
             err instanceof Error
               ? err.message
-              : "Не вдалося завантажити бажане"
+              : t("profileWishlist.loadError")
           );
         }
       } finally {
@@ -80,7 +83,7 @@ const ProfileWishlist = ({ username }: ProfileWishlistProps) => {
     return () => {
       cancelled = true;
     };
-  }, [username]);
+  }, [username, t]);
 
   const filteredGames = useMemo(() => {
     let result = [...games];
@@ -107,7 +110,9 @@ const ProfileWishlist = ({ username }: ProfileWishlistProps) => {
 
     switch (sortType) {
       case "name":
-        result.sort((a, b) => a.title.localeCompare(b.title));
+        result.sort((a, b) =>
+          a.title.localeCompare(b.title, i18n.language)
+        );
         break;
 
       case "price":
@@ -131,7 +136,7 @@ const ProfileWishlist = ({ username }: ProfileWishlistProps) => {
     }
 
     return result;
-  }, [games, search, sortType, filterType]);
+  }, [games, search, sortType, filterType, i18n.language]);
 
   const openProfile = () => {
     window.location.href =
@@ -144,7 +149,7 @@ const ProfileWishlist = ({ username }: ProfileWishlistProps) => {
   };
 
   const formatPrice = (price: number) => {
-    if (price <= 0) return "Безкоштовно";
+    if (price <= 0) return t("common.free");
     return `${price.toFixed(2)} ₴`;
   };
 
@@ -173,12 +178,12 @@ const ProfileWishlist = ({ username }: ProfileWishlistProps) => {
           : current
       );
 
-      setNotice("Гру видалено з бажаного");
+      setNotice(t("profileWishlist.removeSuccess"));
     } catch (err) {
       setNotice(
         err instanceof Error
           ? err.message
-          : "Не вдалося видалити гру"
+          : t("profileWishlist.removeError")
       );
     } finally {
       setRemovingGame(null);
@@ -201,12 +206,16 @@ const ProfileWishlist = ({ username }: ProfileWishlistProps) => {
         discountPercent: game.discountPercent,
       });
 
-      setNotice(`${game.title} додано до кошика`);
+      setNotice(
+        t("profileWishlist.addToCartSuccess", {
+          title: game.title,
+        })
+      );
     } catch (err) {
       setNotice(
         err instanceof Error
           ? err.message
-          : "Не вдалося додати гру до кошика"
+          : t("profileWishlist.addToCartError")
       );
     } finally {
       setAddingGame(null);
@@ -218,7 +227,7 @@ const ProfileWishlist = ({ username }: ProfileWishlistProps) => {
       <div className="profile-wishlist-page">
         <main className="profile-wishlist-container">
           <div className="profile-wishlist-message">
-            Завантаження бажаного...
+            {t("profileWishlist.loading")}
           </div>
         </main>
       </div>
@@ -230,10 +239,10 @@ const ProfileWishlist = ({ username }: ProfileWishlistProps) => {
       <div className="profile-wishlist-page">
         <main className="profile-wishlist-container">
           <div className="profile-wishlist-message">
-            {error || "Профіль не знайдено"}
+            {error || t("profileWishlist.profileNotFound")}
 
             <button onClick={openProfile}>
-              Повернутися до профілю
+              {t("profileWishlist.backToProfile")}
             </button>
           </div>
         </main>
@@ -273,7 +282,9 @@ const ProfileWishlist = ({ username }: ProfileWishlistProps) => {
                 }
               >
                 <span />
-                {profile.isOnline ? "В мережі" : "Не в мережі"}
+                {profile.isOnline
+                  ? t("profileWishlist.online")
+                  : t("profileWishlist.offline")}
               </span>
 
               <p>{profile.bio}</p>
@@ -283,7 +294,7 @@ const ProfileWishlist = ({ username }: ProfileWishlistProps) => {
               className="profile-wishlist-view-profile"
               onClick={openProfile}
             >
-              Переглянути профіль
+              {t("profileWishlist.viewProfile")}
             </button>
           </div>
         </section>
@@ -296,13 +307,17 @@ const ProfileWishlist = ({ username }: ProfileWishlistProps) => {
               <div className="profile-wishlist-heading">
                 <div>
                   <h2>
-                    {isOwnProfile ? "Моє бажане" : "Бажане"}
+                    {isOwnProfile
+                      ? t("profileWishlist.myWishlist")
+                      : t("profileWishlist.wishlist")}
                   </h2>
 
                   <p>
-                    Ігри, які {isOwnProfile
-                      ? "ти хочеш придбати"
-                      : `хоче придбати ${profile.username}`}
+                    {isOwnProfile
+                      ? t("profileWishlist.ownDescription")
+                      : t("profileWishlist.otherDescription", {
+                          username: profile.username,
+                        })}
                   </p>
                 </div>
 
@@ -315,7 +330,7 @@ const ProfileWishlist = ({ username }: ProfileWishlistProps) => {
 
                   <input
                     type="search"
-                    placeholder="Пошук за назвою гри..."
+                    placeholder={t("profileWishlist.searchPlaceholder")}
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                   />
@@ -327,10 +342,18 @@ const ProfileWishlist = ({ username }: ProfileWishlistProps) => {
                     setFilterType(e.target.value as FilterType)
                   }
                 >
-                  <option value="all">Усі ігри</option>
-                  <option value="discount">Зі знижкою</option>
-                  <option value="paid">Платні</option>
-                  <option value="free">Безкоштовні</option>
+                  <option value="all">
+                    {t("profileWishlist.filterAll")}
+                  </option>
+                  <option value="discount">
+                    {t("profileWishlist.filterDiscount")}
+                  </option>
+                  <option value="paid">
+                    {t("profileWishlist.filterPaid")}
+                  </option>
+                  <option value="free">
+                    {t("profileWishlist.filterFree")}
+                  </option>
                 </select>
 
                 <select
@@ -339,19 +362,29 @@ const ProfileWishlist = ({ username }: ProfileWishlistProps) => {
                     setSortType(e.target.value as SortType)
                   }
                 >
-                  <option value="newest">Спочатку додані</option>
-                  <option value="name">За назвою</option>
-                  <option value="price">За ціною</option>
-                  <option value="discount">За знижкою</option>
+                  <option value="newest">
+                    {t("profileWishlist.sortNewest")}
+                  </option>
+                  <option value="name">
+                    {t("profileWishlist.sortName")}
+                  </option>
+                  <option value="price">
+                    {t("profileWishlist.sortPrice")}
+                  </option>
+                  <option value="discount">
+                    {t("profileWishlist.sortDiscount")}
+                  </option>
                 </select>
               </div>
 
               <div className="profile-wishlist-list-heading">
                 <span>⌄</span>
-                Бажане
+                {t("profileWishlist.wishlist")}
 
                 <span className="profile-wishlist-list-count">
-                  {filteredGames.length} ігор
+                  {t("profileWishlist.gamesCount", {
+                    count: filteredGames.length,
+                  })}
                 </span>
               </div>
 
@@ -390,7 +423,9 @@ const ProfileWishlist = ({ username }: ProfileWishlistProps) => {
                         </button>
 
                         <div className="profile-wishlist-game-tags">
-                          <span>У бажаному</span>
+                          <span>
+                            {t("profileWishlist.inWishlist")}
+                          </span>
 
                           {game.discountPercent > 0 && (
                             <span className="discount-tag">
@@ -419,8 +454,8 @@ const ProfileWishlist = ({ username }: ProfileWishlistProps) => {
                           disabled={addingGame === game.gameId}
                         >
                           {addingGame === game.gameId
-                            ? "Додавання..."
-                            : "У кошик"}
+                            ? t("profileWishlist.adding")
+                            : t("profileWishlist.addToCart")}
                         </button>
 
                         {isOwnProfile && (
@@ -429,7 +464,7 @@ const ProfileWishlist = ({ username }: ProfileWishlistProps) => {
                             className="profile-wishlist-remove"
                             onClick={() => handleRemove(game.gameId)}
                             disabled={removingGame === game.gameId}
-                            title="Видалити з бажаного"
+                            title={t("profileWishlist.removeFromWishlist")}
                           >
                             {removingGame === game.gameId ? "..." : "♥"}
                           </button>
@@ -444,16 +479,16 @@ const ProfileWishlist = ({ username }: ProfileWishlistProps) => {
 
                   <h3>
                     {search || filterType !== "all"
-                      ? "Ігор не знайдено"
-                      : "Список бажаного порожній"}
+                      ? t("profileWishlist.noGamesFound")
+                      : t("profileWishlist.emptyTitle")}
                   </h3>
 
                   <p>
                     {search || filterType !== "all"
-                      ? "Спробуй змінити пошук або фільтри."
+                      ? t("profileWishlist.changeSearch")
                       : isOwnProfile
-                        ? "Додавай ігри до бажаного, щоб не загубити їх."
-                        : "Цей користувач поки не додав ігор до бажаного."}
+                        ? t("profileWishlist.emptyOwnDescription")
+                        : t("profileWishlist.emptyOtherDescription")}
                   </p>
                 </div>
               )}

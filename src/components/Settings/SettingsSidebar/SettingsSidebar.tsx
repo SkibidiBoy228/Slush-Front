@@ -1,5 +1,7 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+
 import "./SettingsSidebar.css";
 
 export type SettingsSection =
@@ -9,6 +11,8 @@ export type SettingsSection =
   | "wallet"
   | "delete-account";
 
+type Theme = "dark" | "light";
+
 interface SettingsSidebarProps {
   activeSection: SettingsSection;
   onSectionChange: (section: SettingsSection) => void;
@@ -16,65 +20,118 @@ interface SettingsSidebarProps {
 
 interface SettingsMenuItem {
   id: SettingsSection;
-  label: string;
+  labelKey: string;
   icon: string;
 }
 
 const menuItems: SettingsMenuItem[] = [
   {
     id: "general",
-    label: "Загальні налаштування",
+    labelKey: "settingsSidebar.general",
     icon: "♙",
   },
   {
     id: "notifications",
-    label: "Сповіщення",
+    labelKey: "settingsSidebar.notifications",
     icon: "♧",
   },
   {
     id: "password",
-    label: "Пароль",
+    labelKey: "settingsSidebar.password",
     icon: "♙",
   },
   {
     id: "wallet",
-    label: "Гаманець",
+    labelKey: "settingsSidebar.wallet",
     icon: "▣",
   },
   {
     id: "delete-account",
-    label: "Видалення акаунта",
+    labelKey: "settingsSidebar.deleteAccount",
     icon: "♧",
   },
 ];
+
+const THEME_STORAGE_KEY = "slush_theme";
+
+function getInitialTheme(): Theme {
+  try {
+    const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+
+    return savedTheme === "light" ? "light" : "dark";
+  } catch {
+    return "dark";
+  }
+}
 
 function SettingsSidebar({
   activeSection,
   onSectionChange,
 }: SettingsSidebarProps) {
+  const { t } = useTranslation();
+
   const [search, setSearch] = useState("");
+  const [theme, setTheme] = useState<Theme>(getInitialTheme);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, theme);
+    } catch {
+      // Тема продолжит работать до перезагрузки страницы.
+    }
+  }, [theme]);
 
   const filteredItems = menuItems.filter((item) =>
-    item.label.toLowerCase().includes(search.toLowerCase())
+    t(item.labelKey)
+      .toLowerCase()
+      .includes(search.trim().toLowerCase())
   );
+
+  const toggleTheme = () => {
+    setTheme((current) =>
+      current === "dark" ? "light" : "dark"
+    );
+  };
 
   return (
     <aside className="settings-sidebar">
       <input
         className="settings-sidebar-search"
         type="text"
-        placeholder="Пошук налаштувань..."
+        placeholder={t("settingsSidebar.search")}
         value={search}
         onChange={(event) => setSearch(event.target.value)}
+        aria-label={t("settingsSidebar.search")}
       />
 
       <div className="settings-sidebar-theme">
         <span className="settings-sidebar-theme-label">
-          <span className="settings-sidebar-theme-icon">☾</span>
-          Темна тема
+          <span className="settings-sidebar-theme-icon">
+            {theme === "dark" ? "☾" : "☀"}
+          </span>
+
+          {theme === "dark"
+            ? t("settingsSidebar.darkTheme")
+            : t("settingsSidebar.lightTheme")}
         </span>
 
-        <span className="settings-sidebar-theme-switch" />
+        <button
+          type="button"
+          className={`settings-sidebar-theme-switch ${
+            theme === "light"
+              ? "settings-sidebar-theme-switch-active"
+              : ""
+          }`}
+          onClick={toggleTheme}
+          role="switch"
+          aria-checked={theme === "light"}
+          aria-label={t("settingsSidebar.toggleTheme")}
+          title={t("settingsSidebar.toggleTheme")}
+        >
+          <span className="settings-sidebar-theme-thumb" />
+        </button>
       </div>
 
       <nav className="settings-sidebar-menu">
@@ -94,10 +151,16 @@ function SettingsSidebar({
             </span>
 
             <span className="settings-sidebar-label">
-              {item.label}
+              {t(item.labelKey)}
             </span>
           </button>
         ))}
+
+        {filteredItems.length === 0 && (
+          <p className="settings-sidebar-empty">
+            {t("settingsSidebar.noResults")}
+          </p>
+        )}
       </nav>
     </aside>
   );

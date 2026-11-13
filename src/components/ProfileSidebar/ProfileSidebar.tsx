@@ -1,4 +1,6 @@
 
+import { useTranslation } from "react-i18next";
+
 import type { UserProfile } from "../../types/profile";
 import "./ProfileSidebar.css";
 
@@ -26,59 +28,61 @@ const ProfileSidebar = ({
   activeSection,
   className,
 }: ProfileSidebarProps) => {
+  const { t } = useTranslation();
+
   const basePath = `/profile/${encodeURIComponent(username)}`;
 
   const navigationItems = [
     {
-      label: "Головна",
+      label: t("profileSidebar.home"),
       path: "",
       section: "home",
       count: null,
     },
     {
-      label: "Значки",
+      label: t("profileSidebar.badges"),
       path: "badges",
       section: "badges",
       count: profile.counters.badges,
     },
     {
-      label: "Ігри",
+      label: t("profileSidebar.games"),
       path: "games",
       section: "games",
       count: profile.counters.games,
     },
     {
-      label: "Бажане",
+      label: t("profileSidebar.wishlist"),
       path: "wishlist",
       section: "wishlist",
       count: profile.counters.wishlist,
     },
     {
-      label: "Обговорення",
+      label: t("profileSidebar.discussions"),
       path: "discussions",
       section: "discussions",
       count: profile.counters.discussions,
     },
     {
-      label: "Скриншоти",
+      label: t("profileSidebar.screenshots"),
       path: "screenshots",
       section: "screenshots",
       count: profile.counters.screenshots,
     },
     {
-      label: "Відео",
+      label: t("profileSidebar.videos"),
       path: "videos",
       section: "videos",
       count: profile.counters.videos,
     },
     {
-      label: "Гайди",
+      label: t("profileSidebar.guides"),
       path: "guides",
       section: "guides",
       count: profile.counters.guides,
     },
     {
-      label: "Рецензії",
+      label: t("profileSidebar.reviews"),
       path: "reviews",
       section: "reviews",
       count: profile.counters.reviews,
@@ -87,12 +91,9 @@ const ProfileSidebar = ({
 
   return (
     <aside className={`profile-sidebar ${className ?? ""}`}>
-
-
       <section className="profile-sidebar-card profile-sidebar-navigation">
-
         <div className="profile-sidebar-level">
-          <h2>Рівень</h2>
+          <h2>{t("profileSidebar.level")}</h2>
 
           <div className="profile-sidebar-level-badge">
             <span>{profile.level}</span>
@@ -127,22 +128,18 @@ const ProfileSidebar = ({
             );
           })}
         </nav>
-
       </section>
 
-      {/* Friends */}
-
       <section className="profile-sidebar-card profile-sidebar-friends">
-
         <div className="profile-sidebar-friends-heading">
           <div className="profile-sidebar-friends-title">
-            <h2>Друзі</h2>
+            <h2>{t("profileSidebar.friends")}</h2>
 
             <span>{profile.counters.friends}</span>
           </div>
 
           <a href="/friends" className="profile-sidebar-see-all">
-            Усі →
+            {t("profileSidebar.seeAll")} →
           </a>
         </div>
 
@@ -180,12 +177,10 @@ const ProfileSidebar = ({
           </div>
         ) : (
           <p className="profile-sidebar-empty">
-            Друзів поки немає
+            {t("profileSidebar.noFriends")}
           </p>
         )}
-
       </section>
-
     </aside>
   );
 };

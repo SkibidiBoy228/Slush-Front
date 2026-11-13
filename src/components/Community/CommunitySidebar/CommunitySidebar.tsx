@@ -1,4 +1,5 @@
 
+import { useTranslation } from "react-i18next";
 import "./CommunitySidebar.css";
 
 export type CommunityFilter =
@@ -37,20 +38,32 @@ function CommunitySidebar({
   searchValue,
   onSearchChange,
 }: CommunitySidebarProps) {
+  const { t, i18n } = useTranslation();
+
+  const localeMap: Record<string, string> = {
+    uk: "uk-UA",
+    en: "en-US",
+    sk: "sk-SK",
+    ru: "ru-RU",
+  };
+
+  const locale =
+    localeMap[i18n.language.split("-")[0]] || "uk-UA";
+
   const filters = [
-    { id: "all" as const, label: "Усі розділи", count: counts.all },
-    { id: "discussions" as const, label: "Форум", count: counts.discussions },
-    { id: "screenshots" as const, label: "Скріншоти", count: counts.screenshots },
-    { id: "videos" as const, label: "Відео", count: counts.videos },
-    { id: "guides" as const, label: "Гайди", count: counts.guides },
-    { id: "news" as const, label: "Новини", count: counts.news },
+    { id: "all" as const, label: t("communitySidebar.all"), count: counts.all },
+    { id: "discussions" as const, label: t("communitySidebar.discussions"), count: counts.discussions },
+    { id: "screenshots" as const, label: t("communitySidebar.screenshots"), count: counts.screenshots },
+    { id: "videos" as const, label: t("communitySidebar.videos"), count: counts.videos },
+    { id: "guides" as const, label: t("communitySidebar.guides"), count: counts.guides },
+    { id: "news" as const, label: t("communitySidebar.news"), count: counts.news },
   ];
 
   return (
     <aside className="community-sidebar">
       <div className="community-sidebar-top">
         <label className="community-sidebar-sort-label">
-          <span>Сортування:</span>
+          <span>{t("communitySidebar.sorting")}</span>
 
           <select
             value={sort}
@@ -58,8 +71,12 @@ function CommunitySidebar({
               onSortChange(event.target.value as CommunitySort)
             }
           >
-            <option value="popular">Популярні</option>
-            <option value="newest">Нові</option>
+            <option value="popular">
+              {t("communitySidebar.popular")}
+            </option>
+            <option value="newest">
+              {t("communitySidebar.newest")}
+            </option>
           </select>
         </label>
 
@@ -73,13 +90,13 @@ function CommunitySidebar({
             type="search"
             value={searchValue}
             onChange={(event) => onSearchChange(event.target.value)}
-            placeholder="Пошук: Усі розділи"
+            placeholder={t("communitySidebar.searchPlaceholder")}
           />
         </div>
       </div>
 
       <div className="community-sidebar-section">
-        <h3>Усі розділи</h3>
+        <h3>{t("communitySidebar.all")}</h3>
 
         <div className="community-filter-list">
           {filters.map((filter) => (
@@ -94,7 +111,7 @@ function CommunitySidebar({
               <span>{filter.label}</span>
 
               <span className="community-filter-count">
-                {filter.count.toLocaleString("uk-UA")}
+                {filter.count.toLocaleString(locale)}
               </span>
             </button>
           ))}

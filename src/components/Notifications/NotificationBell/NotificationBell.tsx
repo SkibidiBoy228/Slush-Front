@@ -1,5 +1,6 @@
 
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   getNotifications,
@@ -13,10 +14,22 @@ import type { Notification } from "../../../types/notifications";
 import "./NotificationBell.css";
 
 function NotificationBell() {
+  const { t, i18n } = useTranslation();
+
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const dateLocales: Record<string, string> = {
+    uk: "uk-UA",
+    en: "en-US",
+    sk: "sk-SK",
+    ru: "ru-RU",
+  };
+
+  const currentLocale =
+    dateLocales[i18n.language.split("-")[0]] || "uk-UA";
 
   const loadUnreadCount = async () => {
     try {
@@ -45,7 +58,6 @@ function NotificationBell() {
     }
   };
 
-
   useEffect(() => {
     void loadUnreadCount();
   }, []);
@@ -62,16 +74,18 @@ function NotificationBell() {
     };
   }, []);
 
-
-  useEffect(()=>{
-    const handleNewChatMessage = () =>{
+  useEffect(() => {
+    const handleNewChatMessage = () => {
       void loadUnreadCount();
-      if(isOpen){
+
+      if (isOpen) {
         void loadNotifications();
       }
     };
+
     window.addEventListener("slush:chat-message", handleNewChatMessage);
-    return ()=>{
+
+    return () => {
       window.removeEventListener(
         "slush:chat-message",
         handleNewChatMessage
@@ -173,8 +187,8 @@ function NotificationBell() {
         type="button"
         className="notification-bell-button"
         onClick={handleToggle}
-        aria-label="Уведомления"
-        title="Уведомления"
+        aria-label={t("notificationBell.notifications")}
+        title={t("notificationBell.notifications")}
         aria-expanded={isOpen}
       >
         <svg
@@ -209,7 +223,7 @@ function NotificationBell() {
       {isOpen && (
         <div className="notification-dropdown">
           <div className="notification-dropdown-header">
-            <h3>Повідомлення</h3>
+            <h3>{t("notificationBell.title")}</h3>
 
             <button
               type="button"
@@ -217,18 +231,18 @@ function NotificationBell() {
               onClick={handleMarkAllAsRead}
               disabled={unreadCount === 0}
             >
-              Прочитати все
+              {t("notificationBell.markAllAsRead")}
             </button>
           </div>
 
           <div className="notification-dropdown-list">
             {loading ? (
               <div className="notification-dropdown-state">
-                Завантаження...
+                {t("notificationBell.loading")}
               </div>
             ) : notifications.length === 0 ? (
               <div className="notification-dropdown-state">
-                Повідомлень поки немає
+                {t("notificationBell.empty")}
               </div>
             ) : (
               notifications.map((notification) => (
@@ -253,7 +267,7 @@ function NotificationBell() {
 
                     <span className="notification-dropdown-date">
                       {new Date(notification.createdAt).toLocaleString(
-                        "uk-UA",
+                        currentLocale,
                         {
                           day: "numeric",
                           month: "short",
@@ -277,11 +291,12 @@ function NotificationBell() {
             className="notification-dropdown-footer"
             onClick={handleOpenAll}
           >
-            Усі повідомлення →
+            {t("notificationBell.allNotifications")} →
           </button>
         </div>
       )}
     </div>
   );
 }
+
 export default NotificationBell;

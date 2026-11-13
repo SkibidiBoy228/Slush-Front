@@ -1,5 +1,6 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   getUserProfile,
@@ -21,7 +22,11 @@ interface ProfileGuidesProps {
   username: string;
 }
 
+type GuideSort = "Newest" | "Oldest" | "ByRating";
+
 const ProfileGuides = ({ username }: ProfileGuidesProps) => {
+  const { t, i18n } = useTranslation();
+
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [guides, setGuides] = useState<ProfileGuide[]>([]);
 
@@ -29,7 +34,7 @@ const ProfileGuides = ({ username }: ProfileGuidesProps) => {
   const [error, setError] = useState("");
 
   const [search, setSearch] = useState("");
-  const [sort, setSort] = useState<"Newest" | "Oldest" | "ByRating">("Newest");
+  const [sort, setSort] = useState<GuideSort>("Newest");
 
   const currentUsername = getCurrentUsername();
 
@@ -56,14 +61,14 @@ const ProfileGuides = ({ username }: ProfileGuidesProps) => {
       setError(
         err instanceof Error
           ? err.message
-          : "Не вдалося завантажити гайди"
+          : t("profileGuides.loadError")
       );
     } finally {
       if (!signal.cancelled) {
         setIsLoading(false);
       }
     }
-  }, [username]);
+  }, [username, t]);
 
   useEffect(() => {
     const signal = { cancelled: false };
@@ -113,11 +118,21 @@ const ProfileGuides = ({ username }: ProfileGuidesProps) => {
       return "";
     }
 
-    return parsedDate.toLocaleDateString("uk-UA", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
+    const localeMap: Record<string, string> = {
+      uk: "uk-UA",
+      en: "en-US",
+      sk: "sk-SK",
+      ru: "ru-RU",
+    };
+
+    return parsedDate.toLocaleDateString(
+      localeMap[i18n.language] || "uk-UA",
+      {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }
+    );
   };
 
   if (isLoading) {
@@ -125,7 +140,7 @@ const ProfileGuides = ({ username }: ProfileGuidesProps) => {
       <div className="profile-guides-page">
         <main className="profile-guides-container">
           <div className="profile-guides-message">
-            Завантаження гайдів...
+            {t("profileGuides.loading")}
           </div>
         </main>
       </div>
@@ -137,10 +152,10 @@ const ProfileGuides = ({ username }: ProfileGuidesProps) => {
       <div className="profile-guides-page">
         <main className="profile-guides-container">
           <div className="profile-guides-message">
-            {error || "Профіль не знайдено"}
+            {error || t("profileGuides.profileNotFound")}
 
             <button onClick={openProfile}>
-              Повернутися до профілю
+              {t("profileGuides.backToProfile")}
             </button>
           </div>
         </main>
@@ -179,7 +194,9 @@ const ProfileGuides = ({ username }: ProfileGuidesProps) => {
                 }
               >
                 <span />
-                {profile.isOnline ? "онлайн" : "не в мережі"}
+                {profile.isOnline
+                  ? t("profileGuides.online")
+                  : t("profileGuides.offline")}
               </span>
 
               <p>{profile.bio}</p>
@@ -189,10 +206,11 @@ const ProfileGuides = ({ username }: ProfileGuidesProps) => {
               className="profile-guides-view-profile"
               onClick={openProfile}
             >
-              Переглянути профіль
+              {t("profileGuides.viewProfile")}
             </button>
           </div>
         </section>
+
         <div className="profile-guides-layout">
           <section className="profile-guides-main">
             <div className="profile-guides-list">
@@ -203,7 +221,7 @@ const ProfileGuides = ({ username }: ProfileGuidesProps) => {
 
                   <input
                     type="search"
-                    placeholder="Пошук гайдів..."
+                    placeholder={t("profileGuides.searchPlaceholder")}
                     value={search}
                     onChange={(event) => setSearch(event.target.value)}
                   />
@@ -211,26 +229,28 @@ const ProfileGuides = ({ username }: ProfileGuidesProps) => {
 
                 <div className="profile-guides-filters">
                   <label>
-                    <span>Сортування:</span>
+                    <span>{t("profileGuides.sorting")}:</span>
 
                     <select
                       value={sort}
                       onChange={(event) =>
-                        setSort(
-                          event.target.value as
-                            | "Newest"
-                            | "Oldest"
-                            | "ByRating"
-                        )
+                        setSort(event.target.value as GuideSort)
                       }
                     >
-                      <option value="Newest">Спочатку нові</option>
-                      <option value="Oldest">Спочатку старі</option>
-                      <option value="ByRating">Популярні</option>
+                      <option value="Newest">
+                        {t("profileGuides.newest")}
+                      </option>
+                      <option value="Oldest">
+                        {t("profileGuides.oldest")}
+                      </option>
+                      <option value="ByRating">
+                        {t("profileGuides.popular")}
+                      </option>
                     </select>
                   </label>
                 </div>
               </div>
+
               <div className="profile-guides-items">
                 {filteredGuides.map((guide, index) => (
                   <article
@@ -253,8 +273,8 @@ const ProfileGuides = ({ username }: ProfileGuidesProps) => {
                       <button
                         className="profile-guide-more"
                         type="button"
-                        title="Додаткові дії"
-                        aria-label="Додаткові дії"
+                        title={t("profileGuides.moreActions")}
+                        aria-label={t("profileGuides.moreActions")}
                         disabled
                       >
                         •••
@@ -278,7 +298,7 @@ const ProfileGuides = ({ username }: ProfileGuidesProps) => {
                     <div className="profile-guide-actions">
                       <span
                         className="profile-guide-stat"
-                        title="Кількість вподобань"
+                        title={t("profileGuides.likesCount")}
                       >
                         <span className="profile-guide-heart">♡</span>
                         {guide.likesCount}
@@ -286,7 +306,7 @@ const ProfileGuides = ({ username }: ProfileGuidesProps) => {
 
                       <span
                         className="profile-guide-stat"
-                        title="Кількість коментарів"
+                        title={t("profileGuides.commentsCount")}
                       >
                         <svg viewBox="0 0 20 20" aria-hidden="true">
                           <path d="M3 4.5A1.5 1.5 0 0 1 4.5 3h11A1.5 1.5 0 0 1 17 4.5v8a1.5 1.5 0 0 1-1.5 1.5H9l-4 3v-3.1a1.5 1.5 0 0 1-2-1.4v-8Z" />
@@ -304,16 +324,16 @@ const ProfileGuides = ({ username }: ProfileGuidesProps) => {
 
                   <h3>
                     {search
-                      ? "Гайди не знайдено"
-                      : "Гайдів поки немає"}
+                      ? t("profileGuides.notFound")
+                      : t("profileGuides.emptyTitle")}
                   </h3>
 
                   <p>
                     {search
-                      ? "Спробуй змінити пошуковий запит."
+                      ? t("profileGuides.changeSearch")
                       : isOwnProfile
-                        ? "Твої гайди з'являться тут."
-                        : "Цей користувач ще не публікував гайди."}
+                        ? t("profileGuides.emptyOwnDescription")
+                        : t("profileGuides.emptyOtherDescription")}
                   </p>
                 </div>
               )}

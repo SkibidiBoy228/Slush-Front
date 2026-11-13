@@ -1,4 +1,7 @@
+
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+
 import GameSearch from "../../components/GameSearch/GameSearch";
 
 import {
@@ -13,11 +16,26 @@ import { checkoutCart } from "../../api/purchases";
 import "./CartPage.css";
 
 export default function CartPage() {
+    const { t, i18n } = useTranslation();
+
     const [cart, setCart] = useState<StoreItem[]>([]);
     const [loading, setLoading] = useState(true);
 
     const [checkoutLoading, setCheckoutLoading] = useState(false);
     const [checkoutMessage, setCheckoutMessage] = useState("");
+
+    const localeMap: Record<string, string> = {
+        uk: "uk-UA",
+        en: "en-US",
+        sk: "sk-SK",
+        ru: "ru-RU",
+    };
+
+    const locale =
+        localeMap[i18n.language] || "uk-UA";
+
+    const formatPrice = (price: number) =>
+        `${price.toLocaleString(locale)} ₴`;
 
     useEffect(() => {
         loadCart();
@@ -57,9 +75,7 @@ export default function CartPage() {
         }
     }
 
-    async function handleMoveToWishlist(
-        game: StoreItem
-    ) {
+    async function handleMoveToWishlist(game: StoreItem) {
         try {
             await addToWishlist({
                 gameId: game.gameId,
@@ -74,8 +90,7 @@ export default function CartPage() {
 
             setCart((prev) =>
                 prev.filter(
-                    (item) =>
-                        item.gameId !== game.gameId
+                    (item) => item.gameId !== game.gameId
                 )
             );
         } catch (error) {
@@ -98,20 +113,32 @@ export default function CartPage() {
             );
         }
     }
+
     async function handleCheckout() {
-        if(cart.length === 0 || checkoutLoading) return;
-        try{
+        if (cart.length === 0 || checkoutLoading) return;
+
+        try {
             setCheckoutLoading(true);
             setCheckoutMessage("");
+
             const result = await checkoutCart();
-            await loadCart;
-            setCheckoutMessage(result.message || "Покупка успішно завершена!")
+
+            await loadCart();
+
+            setCheckoutMessage(
+                result.message || t("cart.checkoutSuccess")
+            );
+
             window.dispatchEvent(new Event("wallet-updated"));
             window.dispatchEvent(new Event("library-updated"));
             window.dispatchEvent(new Event("wishlist-updated"));
-        }catch(error){
-            setCheckoutMessage(error instanceof Error ? error.message : "Не вдалося зробити покупку.");
-        }finally{
+        } catch (error) {
+            setCheckoutMessage(
+                error instanceof Error
+                    ? error.message
+                    : t("cart.checkoutError")
+            );
+        } finally {
             setCheckoutLoading(false);
         }
     }
@@ -151,21 +178,20 @@ export default function CartPage() {
 
     return (
         <div className="cart-page">
-
             <GameSearch />
 
             <main className="cart-content">
-                <h1>Мій кошик</h1>
+                <h1>{t("cart.title")}</h1>
 
                 <div className="cart-layout">
                     <section className="cart-items">
                         {loading ? (
                             <div className="cart-empty">
-                                Завантаження...
+                                {t("cart.loading")}
                             </div>
                         ) : cart.length === 0 ? (
                             <div className="cart-empty">
-                                Ваш кошик порожній...
+                                {t("cart.empty")}
                             </div>
                         ) : (
                             cart.map((game) => (
@@ -174,43 +200,27 @@ export default function CartPage() {
                                     key={game.gameId}
                                 >
                                     <img
-                                        src={
-                                            game.imageUrl
-                                        }
+                                        src={game.imageUrl}
                                         alt={game.title}
                                     />
 
                                     <div className="cart-item-info">
-                                        <h3>
-                                            {game.title}
-                                        </h3>
+                                        <h3>{game.title}</h3>
 
                                         <div className="cart-price">
-                                            {game.oldPrice >
-                                                game.price && (
+                                            {game.oldPrice > game.price && (
                                                 <span className="cart-old-price">
-                                                    {game.oldPrice.toLocaleString(
-                                                        "uk-UA"
-                                                    )}{" "}
-                                                    ₴
+                                                    {formatPrice(game.oldPrice)}
                                                 </span>
                                             )}
 
                                             <strong>
-                                                {game.price.toLocaleString(
-                                                    "uk-UA"
-                                                )}{" "}
-                                                ₴
+                                                {formatPrice(game.price)}
                                             </strong>
 
-                                            {game.discountPercent >
-                                                0 && (
+                                            {game.discountPercent > 0 && (
                                                 <span className="cart-discount">
-                                                    -
-                                                    {
-                                                        game.discountPercent
-                                                    }
-                                                    %
+                                                    -{game.discountPercent}%
                                                 </span>
                                             )}
                                         </div>
@@ -220,11 +230,10 @@ export default function CartPage() {
                                         <button
                                             type="button"
                                             onClick={() =>
-                                                handleMoveToWishlist(
-                                                    game
-                                                )
+                                                handleMoveToWishlist(game)
                                             }
-                                            aria-label="Додати до обраного"
+                                            aria-label={t("cart.addToWishlist")}
+                                            title={t("cart.addToWishlist")}
                                         >
                                             ♡
                                         </button>
@@ -232,12 +241,10 @@ export default function CartPage() {
                                         <button
                                             type="button"
                                             onClick={() =>
-                                                handleRemove(
-                                                    game.gameId
-                                                )
+                                                handleRemove(game.gameId)
                                             }
                                         >
-                                            Видалити
+                                            {t("cart.remove")}
                                         </button>
                                     </div>
                                 </article>
@@ -247,89 +254,73 @@ export default function CartPage() {
 
                     <aside className="cart-summary">
                         <div className="summary-row">
-                            <span>
-                                Ціна без знижки
-                            </span>
+                            <span>{t("cart.originalPrice")}</span>
 
                             <strong>
                                 {cart.length === 0
-                                    ? "0 ₴"
-                                    : `${oldTotal.toLocaleString(
-                                          "uk-UA"
-                                      )} ₴`}
+                                    ? formatPrice(0)
+                                    : formatPrice(oldTotal)}
                             </strong>
                         </div>
 
                         <div className="summary-row">
-                            <span>
-                                Ви заощадите
-                            </span>
+                            <span>{t("cart.savings")}</span>
 
                             <strong className="summary-savings">
-                                {savings.toLocaleString(
-                                    "uk-UA"
-                                )}{" "}
-                                ₴
+                                {formatPrice(savings)}
                             </strong>
                         </div>
 
                         <div className="summary-row summary-total">
-                            <span>Усього</span>
+                            <span>{t("cart.total")}</span>
 
                             <strong>
                                 {cart.length === 0
-                                    ? "Безкоштовно"
-                                    : `${total.toLocaleString(
-                                          "uk-UA"
-                                      )} ₴`}
+                                    ? t("cart.free")
+                                    : formatPrice(total)}
                             </strong>
                         </div>
 
                         <p className="summary-note">
-                            Якщо застосовано, податок і
-                            продажу буде розраховано в
-                            процесі оплати.
+                            {t("cart.taxNote")}
                         </p>
 
                         <button
-                        className="checkout-button"
-                        type="button"
-                        disabled={cart.length === 0 || checkoutLoading}
-                        onClick={handleCheckout}
+                            className="checkout-button"
+                            type="button"
+                            disabled={
+                                cart.length === 0 || checkoutLoading
+                            }
+                            onClick={handleCheckout}
                         >
-                        {checkoutLoading
-                            ? "Обработка покупки..."
-                            : "Перейти до оплати"}
+                            {checkoutLoading
+                                ? t("cart.processing")
+                                : t("cart.checkout")}
                         </button>
 
                         {checkoutMessage && (
-                        <p role="status" aria-live="polite">
-                            {checkoutMessage}
-                        </p>
+                            <p role="status" aria-live="polite">
+                                {checkoutMessage}
+                            </p>
                         )}
 
                         <button
                             className="continue-button"
                             type="button"
                             onClick={() => {
-                                window.location.href =
-                                    "/";
+                                window.location.href = "/";
                             }}
                         >
-                            Продовжити покупки
+                            {t("cart.continueShopping")}
                         </button>
 
                         <button
                             className="clear-cart-button"
                             type="button"
-                            disabled={
-                                cart.length === 0
-                            }
-                            onClick={
-                                handleClearCart
-                            }
+                            disabled={cart.length === 0}
+                            onClick={handleClearCart}
                         >
-                            Очистити кошик
+                            {t("cart.clear")}
                         </button>
                     </aside>
                 </div>

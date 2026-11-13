@@ -1,4 +1,6 @@
+
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { getGames } from "../../api/games";
 import type { CatalogGame } from "../../types/catalog";
@@ -27,6 +29,8 @@ function normalizeSearchQuery(query: string): string {
 }
 
 function GameSearch() {
+  const { t } = useTranslation();
+
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<CatalogGame[]>([]);
   const [loading, setLoading] = useState(false);
@@ -72,7 +76,7 @@ function GameSearch() {
           setLoading(false);
         }
       }
-    }, 400);
+    }, 200);
 
     return () => clearTimeout(timeout);
   }, [query]);
@@ -120,7 +124,7 @@ function GameSearch() {
             <input
               type="text"
               value={query}
-              placeholder="Пошук у Крамниці..."
+              placeholder={t("gameSearch.placeholder")}
               onChange={(event) => setQuery(event.target.value)}
               onFocus={() => {
                 if (results.length > 0) {
@@ -141,7 +145,7 @@ function GameSearch() {
             <button
               type="button"
               className="search-button"
-              aria-label="Пошук"
+              aria-label={t("gameSearch.search")}
               onClick={handleSearchSubmit}
             >
               <svg
@@ -172,13 +176,13 @@ function GameSearch() {
             <div className="search-results">
               {loading && (
                 <div className="search-message">
-                  Пошук...
+                  {t("gameSearch.loading")}
                 </div>
               )}
 
               {!loading && results.length === 0 && (
                 <div className="search-message">
-                  Ігор не знайдено
+                  {t("gameSearch.noResults")}
                 </div>
               )}
 
@@ -201,7 +205,7 @@ function GameSearch() {
                       <span>
                         {game.price > 0
                           ? formatPrice(game.price)
-                          : "Безкоштовно"}
+                          : t("common.free")}
                       </span>
                     </span>
                   </button>
@@ -217,7 +221,7 @@ function GameSearch() {
             window.location.href = "/catalog";
           }}
         >
-          Каталог
+          {t("gameSearch.catalog")}
         </button>
 
         <button
@@ -227,14 +231,14 @@ function GameSearch() {
             window.location.href = "/news";
           }}
         >
-          Новини
+          {t("gameSearch.news")}
         </button>
 
         <div className="store-actions">
           <button
             type="button"
             className="store-circle"
-            aria-label="Обране"
+            aria-label={t("gameSearch.wishlist")}
             onClick={() => {
               window.location.href = "/wishlist";
             }}
@@ -247,7 +251,7 @@ function GameSearch() {
           <button
             type="button"
             className="store-circle"
-            aria-label="Кошик"
+            aria-label={t("gameSearch.cart")}
             onClick={() => {
               window.location.href = "/cart";
             }}

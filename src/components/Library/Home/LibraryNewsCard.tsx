@@ -1,32 +1,46 @@
 
-import type { CommunityPost } from "../../../types/library";
+import { useTranslation } from "react-i18next";
+
+import type { SteamNewsItem } from "../../../types/news";
 
 interface LibraryNewsCardProps {
-  post: CommunityPost;
+  post: SteamNewsItem;
+}
+
+function cleanContents(contents: string): string {
+  return contents
+    .replace(/<br\s*\/?>/gi, " ")
+    .replace(/<\/?p>/gi, " ")
+    .replace(/<[^>]*>/g, "")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
+    .replace(/\[[^\]]*\]\([^)]*\)/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function LibraryNewsCard({ post }: LibraryNewsCardProps) {
-  const title = post.title?.trim() || "Без назви";
-  const description =
-    post.shortDescription?.trim() ||
-    post.content?.trim() ||
-    "";
+  const { t } = useTranslation();
+
+  const title = post.title?.trim() || t("libraryNewsCard.untitled");
+  const description = cleanContents(post.contents || "");
+  const date = post.dateFormatted || post.date || "";
 
   return (
     <article className="library-news-card">
-      {post.mediaUrl && (
+      {post.gameImage && (
         <a
           className="library-news-card__media"
-          href={
-            post.gameId
-              ? `/game/${encodeURIComponent(post.gameId)}/community`
-              : undefined
-          }
+          href={post.url}
+          target="_blank"
+          rel="noopener noreferrer"
           aria-label={title}
         >
           <img
-            src={post.mediaUrl}
-            alt=""
+            src={post.gameImage}
+            alt={post.gameTitle || ""}
             loading="lazy"
           />
         </a>
@@ -34,26 +48,21 @@ function LibraryNewsCard({ post }: LibraryNewsCardProps) {
 
       <div className="library-news-card__body">
         <div className="library-news-card__author">
-          {post.authorAvatarUrl ? (
-            <img
-              src={post.authorAvatarUrl}
-              alt=""
-              className="library-news-card__avatar"
-              loading="lazy"
-            />
-          ) : (
-            <span className="library-news-card__avatar library-news-card__avatar--fallback">
-              {post.authorUsername.charAt(0).toUpperCase()}
+          <span className="library-news-card__username">
+            {post.gameTitle || "Steam"}
+          </span>
+
+          {post.feedLabel && (
+            <span className="library-news-card__date">
+              {post.feedLabel}
             </span>
           )}
 
-          <span className="library-news-card__username">
-            {post.authorUsername}
-          </span>
-
-          <span className="library-news-card__date">
-            {post.createdAt}
-          </span>
+          {date && (
+            <span className="library-news-card__date">
+              {date}
+            </span>
+          )}
         </div>
 
         <h3 className="library-news-card__title">
@@ -67,17 +76,15 @@ function LibraryNewsCard({ post }: LibraryNewsCardProps) {
         )}
 
         <div className="library-news-card__footer">
-          <span title="Вподобання">
-            <span className="library-news-card__heart">♡</span>
-            {post.likesCount}
-          </span>
+          <span>{post.author || "Steam"}</span>
 
-          <span title="Коментарі">
-            <span className="library-news-card__comment-icon">
-              ▢
-            </span>
-            {post.commentsCount}
-          </span>
+          <a
+            href={post.url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t("libraryNewsCard.readNews")} →
+          </a>
         </div>
       </div>
     </article>

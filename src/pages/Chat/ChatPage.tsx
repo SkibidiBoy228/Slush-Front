@@ -1,5 +1,7 @@
 
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+
 import ChatSidebar from "../../components/Chat/ChatSidebar";
 import ChatWindow from "../../components/Chat/ChatWindow";
 
@@ -8,6 +10,7 @@ import {
   clearChatHistory,
   setChatBlock,
   reportChatUser,
+  markChatAsRead,
 } from "../../api/chat";
 
 import { useChatMessages } from "../../hooks/useChatMessages";
@@ -21,8 +24,6 @@ import type {
   SendChatMessageRequest,
 } from "../../types/chat";
 
-import { markChatAsRead } from "../../api/chat";
-
 import "./ChatPage.css";
 
 type ConversationWithBlockStatus = ChatConversation & {
@@ -30,20 +31,25 @@ type ConversationWithBlockStatus = ChatConversation & {
   hasBlockedMe?: boolean;
 };
 
-function getMessagePreview(message: ChatMessage): string {
+function getMessagePreview(
+  message: ChatMessage,
+  t: (key: string) => string
+): string {
   switch (message.messageType) {
     case "Image":
-      return "📷 Зображення";
+      return t("chat.messageImage");
     case "File":
-      return `📎 ${message.fileName || "Файл"}`;
+      return `📎 ${message.fileName || t("chat.messageFile")}`;
     case "Voice":
-      return "🎤 Голосове повідомлення";
+      return t("chat.messageVoice");
     default:
       return message.content || "";
   }
 }
 
 export default function ChatPage() {
+  const { t } = useTranslation();
+
   const [selectedConversation, setSelectedConversation] =
     useState<ChatConversation | null>(null);
 
@@ -78,17 +84,17 @@ export default function ChatPage() {
 
   const photoCount = photoGroups.reduce(
     (total, group) => total + group.items.length,
-    0,
+    0
   );
 
   const fileCount = fileGroups.reduce(
     (total, group) => total + group.items.length,
-    0,
+    0
   );
 
   const voiceCount = voiceGroups.reduce(
     (total, group) => total + group.items.length,
-    0,
+    0
   );
 
   const attachmentsLoading =
@@ -121,7 +127,7 @@ export default function ChatPage() {
           })
           .catch((error) => {
             console.error(
-              "Не вдалося позначити повідомлення прочитаними:",
+              "Failed to mark messages as read:",
               error
             );
           });
@@ -132,12 +138,12 @@ export default function ChatPage() {
           detail: {
             message,
             shouldNotify: payload.shouldNotify,
-            preview: getMessagePreview(message),
+            preview: getMessagePreview(message, t),
           },
         })
       );
     },
-    [selectedConversation?.friendId, addIncomingMessage]
+    [selectedConversation?.friendId, addIncomingMessage, t]
   );
 
   const { isConnected, connectionError } = useChatConnection({
@@ -149,17 +155,17 @@ export default function ChatPage() {
       const sentMessage = await sendMessage(request);
 
       if (!sentMessage) {
-        throw new Error("Не вдалося надіслати повідомлення.");
+        throw new Error(t("chat.sendError"));
       }
     },
-    [sendMessage],
+    [sendMessage, t]
   );
 
   const handleSelectConversation = useCallback(
     (conversation: ChatConversation) => {
       setSelectedConversation(conversation);
     },
-    [],
+    []
   );
 
   const handleRemoveFriend = useCallback(async () => {
@@ -168,7 +174,9 @@ export default function ChatPage() {
     }
 
     const confirmed = window.confirm(
-      `Видалити ${selectedConversation.username} з друзів?`,
+      t("chat.confirmRemoveFriend", {
+        username: selectedConversation.username,
+      })
     );
 
     if (!confirmed) {
@@ -183,12 +191,12 @@ export default function ChatPage() {
 
       window.dispatchEvent(new CustomEvent("slush:friends-updated"));
     } catch (error) {
-      console.error("Не вдалося видалити друга:", error);
-      window.alert("Не вдалося видалити друга. Спробуйте ще раз.");
+      console.error("Failed to remove friend:", error);
+      window.alert(t("chat.removeFriendError"));
     } finally {
       setIsActionLoading(false);
     }
-  }, [selectedConversation, isActionLoading]);
+  }, [selectedConversation, isActionLoading, t]);
 
   const handleClearHistory = useCallback(async () => {
     if (!selectedConversation || isActionLoading) {
@@ -196,7 +204,9 @@ export default function ChatPage() {
     }
 
     const confirmed = window.confirm(
-      `Очистити історію чату з ${selectedConversation.username}? Ця дія приховає історію для вас.`,
+      t("chat.confirmClearHistory", {
+        username: selectedConversation.username,
+      })
     );
 
     if (!confirmed) {
@@ -209,14 +219,14 @@ export default function ChatPage() {
       await clearChatHistory(selectedConversation.friendId);
       setMessages([]);
 
-      window.alert("Історію чату очищено.");
+      window.alert(t("chat.historyCleared"));
     } catch (error) {
-      console.error("Не вдалося очистити історію чату:", error);
-      window.alert("Не вдалося очистити історію чату. Спробуйте ще раз.");
+      console.error("Failed to clear chat history:", error);
+      window.alert(t("chat.clearHistoryError"));
     } finally {
       setIsActionLoading(false);
     }
-  }, [selectedConversation, isActionLoading, setMessages]);
+  }, [selectedConversation, isActionLoading, setMessages, t]);
 
   const handleToggleBlock = useCallback(async () => {
     if (!selectedConversation || isActionLoading) {
@@ -227,8 +237,12 @@ export default function ChatPage() {
 
     const confirmed = window.confirm(
       nextBlockedState
-        ? `Заблокувати ${selectedConversation.username}?`
-        : `Розблокувати ${selectedConversation.username}?`,
+        ? t("chat.confirmBlock", {
+            username: selectedConversation.username,
+          })
+        : t("chat.confirmUnblock", {
+            username: selectedConversation.username,
+          })
     );
 
     if (!confirmed) {
@@ -240,7 +254,7 @@ export default function ChatPage() {
     try {
       const result = await setChatBlock(
         selectedConversation.friendId,
-        nextBlockedState,
+        nextBlockedState
       );
 
       setIsBlocked(result.isBlocked);
@@ -251,23 +265,23 @@ export default function ChatPage() {
               ...current,
               isBlockedByMe: result.isBlocked,
             } as ConversationWithBlockStatus)
-          : current,
+          : current
       );
 
       window.alert(
         result.isBlocked
-          ? "Користувача заблоковано."
-          : "Користувача розблоковано.",
+          ? t("chat.userBlocked")
+          : t("chat.userUnblocked")
       );
 
       window.dispatchEvent(new CustomEvent("slush:chat-block-updated"));
     } catch (error) {
-      console.error("Не вдалося змінити блокування:", error);
-      window.alert("Не вдалося змінити блокування. Спробуйте ще раз.");
+      console.error("Failed to update block status:", error);
+      window.alert(t("chat.blockError"));
     } finally {
       setIsActionLoading(false);
     }
-  }, [selectedConversation, isBlocked, isActionLoading]);
+  }, [selectedConversation, isBlocked, isActionLoading, t]);
 
   const handleReportUser = useCallback(async () => {
     if (!selectedConversation || isActionLoading) {
@@ -275,13 +289,14 @@ export default function ChatPage() {
     }
 
     const reason = window.prompt(
-      "Вкажіть причину скарги:\n\n1 — Спам\n2 — Образи або переслідування\n3 — Неприйнятний контент\n4 — Шахрайство\n5 — Інше",
+      t("chat.reportReasonPrompt")
     );
 
     if (reason === null) {
       return;
     }
 
+    // Эти значения сохраняются в исходном формате для backend.
     const reasonOptions: Record<string, string> = {
       "1": "Спам",
       "2": "Образи або переслідування",
@@ -293,12 +308,12 @@ export default function ChatPage() {
     const normalizedReason = reasonOptions[reason.trim()];
 
     if (!normalizedReason) {
-      window.alert("Оберіть причину від 1 до 5.");
+      window.alert(t("chat.invalidReportReason"));
       return;
     }
 
     const details = window.prompt(
-      "Додайте коментар до скарги (необов'язково):",
+      t("chat.reportDetailsPrompt")
     );
 
     if (details === null) {
@@ -311,21 +326,20 @@ export default function ChatPage() {
       await reportChatUser(
         selectedConversation.friendId,
         normalizedReason,
-        details.trim() || undefined,
+        details.trim() || undefined
       );
 
-      window.alert("Скаргу надіслано. Дякуємо за повідомлення.");
+      window.alert(t("chat.reportSuccess"));
     } catch (error) {
-      console.error("Не вдалося надіслати скаргу:", error);
-      window.alert("Не вдалося надіслати скаргу. Спробуйте ще раз.");
+      console.error("Failed to report user:", error);
+      window.alert(t("chat.reportError"));
     } finally {
       setIsActionLoading(false);
     }
-  }, [selectedConversation, isActionLoading]);
+  }, [selectedConversation, isActionLoading, t]);
 
   return (
     <div className="chat-page">
-
       <main className="chat-page__layout">
         <ChatSidebar
           selectedFriendId={selectedConversation?.friendId ?? null}
@@ -343,8 +357,8 @@ export default function ChatPage() {
             <span>
               {connectionError ||
                 (isConnected
-                  ? "Чат підключено"
-                  : "Підключення до чату...")}
+                  ? t("chat.connected")
+                  : t("chat.connecting"))}
             </span>
           </div>
 
@@ -404,20 +418,22 @@ function ChatProfilePanel({
   onToggleBlock,
   onReportUser,
 }: ChatProfilePanelProps) {
+  const { t } = useTranslation();
+
   if (!conversation) {
     return (
       <aside className="chat-profile chat-profile--empty">
-        <p>Оберіть співрозмовника</p>
+        <p>{t("chat.selectConversation")}</p>
       </aside>
     );
   }
 
   const profileUrl = `/profile/${encodeURIComponent(
-    conversation.username,
+    conversation.username
   )}`;
 
   const otherUserBlockedMe = Boolean(
-    (conversation as ConversationWithBlockStatus).hasBlockedMe,
+    (conversation as ConversationWithBlockStatus).hasBlockedMe
   );
 
   return (
@@ -426,7 +442,9 @@ function ChatProfilePanel({
         <a
           href={profileUrl}
           className="chat-profile__avatar"
-          aria-label={`Відкрити профіль ${conversation.username}`}
+          aria-label={t("chat.openProfile", {
+            username: conversation.username,
+          })}
         >
           {conversation.avatarUrl ? (
             <img src={conversation.avatarUrl} alt="" />
@@ -446,34 +464,38 @@ function ChatProfilePanel({
               : "chat-profile__online"
           }
         >
-          {conversation.isOnline ? "У мережі" : "Не в мережі"}
+          {conversation.isOnline
+            ? t("chat.online")
+            : t("chat.offline")}
         </span>
       </div>
 
       <div className="chat-profile__setting">
-        <span>Сповіщення</span>
+        <span>{t("chat.notifications")}</span>
         <span>
-          {conversation.notificationsEnabled ? "Увімкнено" : "Вимкнено"}
+          {conversation.notificationsEnabled
+            ? t("chat.enabled")
+            : t("chat.disabled")}
         </span>
       </div>
 
       <div className="chat-profile__section">
         <div className="chat-profile__item">
-          <span>▧ Фото</span>
+          <span>▧ {t("chat.photos")}</span>
           <span className="chat-profile__count">
             {attachmentsLoading ? "…" : photoCount}
           </span>
         </div>
 
         <div className="chat-profile__item">
-          <span>▤ Файли</span>
+          <span>▤ {t("chat.files")}</span>
           <span className="chat-profile__count">
             {attachmentsLoading ? "…" : fileCount}
           </span>
         </div>
 
         <div className="chat-profile__item">
-          <span>♬ Голосові повідомлення</span>
+          <span>♬ {t("chat.voiceMessages")}</span>
           <span className="chat-profile__count">
             {attachmentsLoading ? "…" : voiceCount}
           </span>
@@ -486,7 +508,7 @@ function ChatProfilePanel({
           onClick={() => void onRemoveFriend()}
           disabled={isActionLoading}
         >
-          Видалити з друзів
+          {t("chat.removeFriend")}
         </button>
 
         <button
@@ -494,7 +516,7 @@ function ChatProfilePanel({
           onClick={() => void onClearHistory()}
           disabled={isActionLoading}
         >
-          Очистити історію
+          {t("chat.clearHistory")}
         </button>
 
         <button
@@ -503,11 +525,13 @@ function ChatProfilePanel({
           disabled={isActionLoading || otherUserBlockedMe}
           title={
             otherUserBlockedMe
-              ? "Цей користувач заблокував вас"
+              ? t("chat.userBlockedYou")
               : undefined
           }
         >
-          {isBlocked ? "Розблокувати" : "Заблокувати"}
+          {isBlocked
+            ? t("chat.unblock")
+            : t("chat.block")}
         </button>
 
         <button
@@ -515,7 +539,7 @@ function ChatProfilePanel({
           onClick={() => void onReportUser()}
           disabled={isActionLoading}
         >
-          Поскаржитися
+          {t("chat.report")}
         </button>
       </div>
     </aside>

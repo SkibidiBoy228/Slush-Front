@@ -1,11 +1,18 @@
+
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+
 import { getAggregatedNews } from "../../api/news";
 import type { SteamNewsItem } from "../../types/news";
+
 import "./NewsPage.css";
 
 const PAGE_SIZE = 12;
 
-function getNewsDate(news: SteamNewsItem): string {
+function getNewsDate(
+  news: SteamNewsItem,
+  locale: string
+): string {
   if (news.dateFormatted) {
     return news.dateFormatted;
   }
@@ -16,7 +23,7 @@ function getNewsDate(news: SteamNewsItem): string {
     return "";
   }
 
-  return date.toLocaleDateString("ru-RU", {
+  return date.toLocaleDateString(locale, {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -26,7 +33,7 @@ function getNewsDate(news: SteamNewsItem): string {
 function cleanContents(contents: string): string {
   return contents
     .replace(/<br\s*\/?>/gi, " ")
-    .replace(/<\/p>/gi, " ")
+    .replace(/<\/?p>/gi, " ")
     .replace(/<[^>]*>/g, "")
     .replace(/&nbsp;/gi, " ")
     .replace(/&amp;/gi, "&")
@@ -34,12 +41,14 @@ function cleanContents(contents: string): string {
     .replace(/&#39;|&apos;/gi, "'")
     .replace(/&lt;/gi, "<")
     .replace(/&gt;/gi, ">")
-    .replace(/\[\/?[^\]]+\]/g, "")
+    .replace(/\[[^\]]*\]/g, "")
     .replace(/\s+/g, " ")
     .trim();
 }
 
 function NewsPage() {
+  const { t, i18n } = useTranslation();
+
   const [news, setNews] = useState<SteamNewsItem[]>([]);
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
@@ -47,6 +56,16 @@ function NewsPage() {
   const [error, setError] = useState("");
 
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+
+  const localeMap: Record<string, string> = {
+    uk: "uk-UA",
+    en: "en-US",
+    sk: "sk-SK",
+    ru: "ru-RU",
+  };
+
+  const locale =
+    localeMap[i18n.resolvedLanguage ?? "uk"] ?? "uk-UA";
 
   useEffect(() => {
     let isActive = true;
@@ -71,7 +90,7 @@ function NewsPage() {
         setError(
           err instanceof Error
             ? err.message
-            : "Не вдалося завантажити новини"
+            : t("news.loadError")
         );
       } finally {
         if (isActive) {
@@ -80,19 +99,24 @@ function NewsPage() {
       }
     }
 
-    loadNews();
+    void loadNews();
 
     return () => {
       isActive = false;
     };
-  }, [page]);
+  }, [page, t]);
 
   function changePage(nextPage: number) {
-    if (nextPage < 1 || nextPage > totalPages || nextPage === page) {
+    if (
+      nextPage < 1 ||
+      nextPage > totalPages ||
+      nextPage === page
+    ) {
       return;
     }
 
     setPage(nextPage);
+
     window.scrollTo({
       top: 0,
       behavior: "smooth",
@@ -110,26 +134,27 @@ function NewsPage() {
             </div>
 
             <h1>
-              GAMING <span>NEWS</span>
+              {t("news.headingFirst")}{" "}
+              <span>{t("news.headingSecond")}</span>
             </h1>
 
-            <p>
-              Последние новости игрового мира в одном месте.
-              Обновления, события и объявления от разработчиков.
-            </p>
+            <p>{t("news.description")}</p>
           </section>
 
           <div className="news-section-heading">
             <div>
-              <h2>Последние новости</h2>
+              <h2>{t("news.latest")}</h2>
+
               <span className="news-section-subtitle">
-                Новости из мира ваших любимых игр
+                {t("news.subtitle")}
               </span>
             </div>
 
             {!loading && !error && (
               <span className="news-count">
-                {totalCount} публикаций
+                {t("news.publications", {
+                  count: totalCount,
+                })}
               </span>
             )}
           </div>
@@ -137,21 +162,22 @@ function NewsPage() {
           {loading ? (
             <div className="news-message">
               <div className="news-loader" />
-              <span>Загружаем новости...</span>
+              <span>{t("news.loading")}</span>
             </div>
           ) : error ? (
             <div className="news-message error">
               <span>{error}</span>
+
               <button
                 type="button"
                 onClick={() => setPage((current) => current)}
               >
-                Повторить
+                {t("news.retry")}
               </button>
             </div>
           ) : news.length === 0 ? (
             <div className="news-message">
-              Пока новостей нет.
+              {t("news.empty")}
             </div>
           ) : (
             <>
@@ -178,7 +204,8 @@ function NewsPage() {
 
                     <div className="news-card-content">
                       <div className="news-card-meta">
-                        <span>{getNewsDate(item)}</span>
+                        <span>{getNewsDate(item, locale)}</span>
+
                         {item.feedLabel && (
                           <>
                             <span className="news-meta-dot">•</span>
@@ -191,7 +218,7 @@ function NewsPage() {
 
                       <p className="news-card-description">
                         {cleanContents(item.contents) ||
-                          "Откройте публикацию, чтобы узнать подробности."}
+                          t("news.readForDetails")}
                       </p>
 
                       <div className="news-card-footer">
@@ -206,7 +233,7 @@ function NewsPage() {
                             rel="noopener noreferrer"
                             className="news-read-more"
                           >
-                            Читать
+                            {t("news.read")}
                             <span>↗</span>
                           </a>
                         )}
@@ -219,13 +246,14 @@ function NewsPage() {
               {totalPages > 1 && (
                 <nav
                   className="news-pagination"
-                  aria-label="Пагинация новостей"
+                  aria-label={t("news.pagination")}
                 >
                   <button
                     type="button"
                     className="news-page-arrow"
                     disabled={page === 1}
                     onClick={() => changePage(page - 1)}
+                    aria-label={t("news.previousPage")}
                   >
                     ←
                   </button>
@@ -260,6 +288,11 @@ function NewsPage() {
                               ? "active"
                               : ""
                           }
+                          aria-current={
+                            pageNumber === page
+                              ? "page"
+                              : undefined
+                          }
                           onClick={() => changePage(pageNumber)}
                         >
                           {pageNumber}
@@ -272,6 +305,7 @@ function NewsPage() {
                     className="news-page-arrow"
                     disabled={page === totalPages}
                     onClick={() => changePage(page + 1)}
+                    aria-label={t("news.nextPage")}
                   >
                     →
                   </button>

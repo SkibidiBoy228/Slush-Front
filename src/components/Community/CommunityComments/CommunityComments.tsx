@@ -1,6 +1,7 @@
 
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
+import { useTranslation } from "react-i18next";
 import type { PostComment } from "../../../types/community";
 import "./CommunityComments.css";
 
@@ -34,6 +35,8 @@ function CommunityComments({
   currentUsername,
   variant = "default",
 }: CommunityCommentsProps) {
+  const { t } = useTranslation();
+
   const [content, setContent] = useState("");
   const [replyTo, setReplyTo] = useState<PostComment | null>(null);
 
@@ -46,9 +49,9 @@ function CommunityComments({
     useState<string | null>(null);
   const [updatingCommentId, setUpdatingCommentId] =
     useState<string | null>(null);
-  
+
   const [activeMenuCommentId, setActiveMenuCommentId] =
-  useState<string | null>(null);
+    useState<string | null>(null);
 
   useEffect(() => {
     onLoad(postId);
@@ -59,11 +62,10 @@ function CommunityComments({
     comment.authorUsername.toLowerCase() ===
       currentUsername.toLowerCase();
 
-
   const handleCancelComposer = () => {
     setContent("");
     setReplyTo(null);
-  };    
+  };
 
   const handleSubmit = async (
     event: FormEvent<HTMLFormElement>
@@ -83,7 +85,7 @@ function CommunityComments({
       setReplyTo(null);
     } catch (error) {
       console.error("Не вдалося надіслати коментар:", error);
-      alert("Не вдалося надіслати коментар.");
+      alert(t("communityComments.submitError"));
     } finally {
       setSubmitting(false);
     }
@@ -91,7 +93,7 @@ function CommunityComments({
 
   const handleDelete = async (comment: PostComment) => {
     const confirmed = window.confirm(
-      "Ви дійсно хочете видалити цей коментар?"
+      t("communityComments.confirmDelete")
     );
 
     if (!confirmed || deletingCommentId) return;
@@ -111,12 +113,11 @@ function CommunityComments({
       await onDelete(comment.id);
     } catch (error) {
       console.error("Не вдалося видалити коментар:", error);
-      alert("Не вдалося видалити коментар.");
+      alert(t("communityComments.deleteError"));
     } finally {
       setDeletingCommentId(null);
     }
   };
-
 
   const startEditing = (comment: PostComment) => {
     setEditingComment(comment);
@@ -148,7 +149,7 @@ function CommunityComments({
       cancelEditing();
     } catch (error) {
       console.error("Не вдалося оновити коментар:", error);
-      alert("Не вдалося оновити коментар.");
+      alert(t("communityComments.updateError"));
     } finally {
       setUpdatingCommentId(null);
     }
@@ -178,7 +179,9 @@ function CommunityComments({
               comment.authorUsername
             )}`;
           }}
-          aria-label={`Профіль ${comment.authorUsername}`}
+          aria-label={t("communityComments.profile", {
+            username: comment.authorUsername,
+          })}
         >
           <div className="community-comment-avatar">
             {comment.authorAvatarUrl ? (
@@ -216,7 +219,7 @@ function CommunityComments({
               <button
                 type="button"
                 className="community-comment-menu-trigger"
-                aria-label="Дії з коментарем"
+                aria-label={t("communityComments.commentActions")}
                 aria-expanded={activeMenuCommentId === comment.id}
                 onClick={() =>
                   setActiveMenuCommentId((current) =>
@@ -238,7 +241,7 @@ function CommunityComments({
                       setActiveMenuCommentId(null);
                     }}
                   >
-                    Відповісти
+                    {t("communityComments.reply")}
                   </button>
 
                   {canManage && onUpdate && (
@@ -249,7 +252,7 @@ function CommunityComments({
                         setActiveMenuCommentId(null);
                       }}
                     >
-                      Редагувати
+                      {t("communityComments.edit")}
                     </button>
                   )}
 
@@ -262,7 +265,7 @@ function CommunityComments({
                         void handleDelete(comment);
                       }}
                     >
-                      Видалити
+                      {t("communityComments.delete")}
                     </button>
                   )}
                 </div>
@@ -293,7 +296,7 @@ function CommunityComments({
                   onClick={cancelEditing}
                   disabled={isUpdating}
                 >
-                  Скасувати
+                  {t("communityComments.cancel")}
                 </button>
 
                 <button
@@ -301,7 +304,9 @@ function CommunityComments({
                   className="community-comment-save"
                   disabled={!editContent.trim() || isUpdating}
                 >
-                  {isUpdating ? "Збереження..." : "Зберегти"}
+                  {isUpdating
+                    ? t("communityComments.saving")
+                    : t("communityComments.save")}
                 </button>
               </div>
             </form>
@@ -323,7 +328,7 @@ function CommunityComments({
                   setActiveMenuCommentId(null);
                 }}
               >
-                Відповісти
+                {t("communityComments.reply")}
               </button>
 
               {canManage && onUpdate && (
@@ -332,7 +337,7 @@ function CommunityComments({
                   className="community-comment-edit-button"
                   onClick={() => startEditing(comment)}
                 >
-                  Редагувати
+                  {t("communityComments.edit")}
                 </button>
               )}
 
@@ -343,7 +348,9 @@ function CommunityComments({
                   onClick={() => handleDelete(comment)}
                   disabled={isDeleting}
                 >
-                  {isDeleting ? "Видалення..." : "Видалити"}
+                  {isDeleting
+                    ? t("communityComments.deleting")
+                    : t("communityComments.delete")}
                 </button>
               )}
             </div>
@@ -367,17 +374,17 @@ function CommunityComments({
         variant === "details" ? "community-comments-details" : ""
       }`}
     >
-    {variant !== "details" && (
-      <div className="community-comments-title">
-        <h3>Коментарі</h3>
-        <span>{comments.length}</span>
-      </div>
-    )}
+      {variant !== "details" && (
+        <div className="community-comments-title">
+          <h3>{t("communityComments.title")}</h3>
+          <span>{comments.length}</span>
+        </div>
+      )}
 
       {replyTo && (
         <div className="community-reply-indicator">
           <div>
-            <span>Відповідь для </span>
+            <span>{t("communityComments.replyTo")} </span>
             <strong>{replyTo.authorUsername}</strong>
           </div>
 
@@ -385,7 +392,7 @@ function CommunityComments({
             type="button"
             onClick={() => setReplyTo(null)}
           >
-            Скасувати
+            {t("communityComments.cancel")}
           </button>
         </div>
       )}
@@ -399,41 +406,45 @@ function CommunityComments({
           onChange={(event) => setContent(event.target.value)}
           placeholder={
             replyTo
-              ? `Відповісти ${replyTo.authorUsername}...`
-              : "Напишіть коментар..."
+              ? t("communityComments.replyPlaceholder", {
+                  username: replyTo.authorUsername,
+                })
+              : t("communityComments.placeholder")
           }
           rows={3}
           maxLength={2000}
           disabled={submitting}
         />
 
-      <div className="community-comment-form-footer">
-        <span>{content.length}/2000</span>
+        <div className="community-comment-form-footer">
+          <span>{content.length}/2000</span>
 
-        <div className="community-comment-form-buttons">
-          <button
-            type="button"
-            className="community-comment-cancel"
-            onClick={handleCancelComposer}
-            disabled={submitting}
-          >
-            Відхилити
-          </button>
+          <div className="community-comment-form-buttons">
+            <button
+              type="button"
+              className="community-comment-cancel"
+              onClick={handleCancelComposer}
+              disabled={submitting}
+            >
+              {t("communityComments.discard")}
+            </button>
 
-          <button
-            type="submit"
-            disabled={!content.trim() || submitting}
-          >
-            {submitting ? "Надсилання..." : "Надіслати"}
-          </button>
+            <button
+              type="submit"
+              disabled={!content.trim() || submitting}
+            >
+              {submitting
+                ? t("communityComments.sending")
+                : t("communityComments.send")}
+            </button>
+          </div>
         </div>
-      </div>
       </form>
 
       <div className="community-comments-list">
         {loading ? (
           <div className="community-comments-state">
-            Завантаження коментарів...
+            {t("communityComments.loading")}
           </div>
         ) : comments.length === 0 ? (
           <div className="community-comments-state">
@@ -448,8 +459,8 @@ function CommunityComments({
                 />
               </svg>
             </span>
-            <p>Поки що немає коментарів.</p>
-            <span>Будьте першим, хто залишить коментар!</span>
+            <p>{t("communityComments.empty")}</p>
+            <span>{t("communityComments.firstComment")}</span>
           </div>
         ) : (
           comments.map((comment) => renderComment(comment))

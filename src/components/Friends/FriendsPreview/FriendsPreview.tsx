@@ -1,4 +1,6 @@
+
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { getFriends } from "../../../api/friends";
 import type { FriendUser } from "../../../types/friends";
 import { useFriendPresence } from "../../../hooks/useFriendPresence";
@@ -68,6 +70,8 @@ function applyPresence(
 }
 
 function FriendsPreview({ username }: FriendsPreviewProps) {
+  const { t } = useTranslation();
+
   const [friends, setFriends] = useState<FriendUser[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -126,7 +130,7 @@ function FriendsPreview({ username }: FriendsPreviewProps) {
   return (
     <section className="friends-preview">
       <div className="friends-preview-header">
-        <h2>Друзі</h2>
+        <h2>{t("friendsPreview.title")}</h2>
 
         <button
           type="button"
@@ -135,17 +139,17 @@ function FriendsPreview({ username }: FriendsPreviewProps) {
             window.location.href = "/friends";
           }}
         >
-          Усі
+          {t("friendsPreview.all")}
         </button>
       </div>
 
       {loading ? (
         <div className="friends-preview-loading">
-          Завантаження...
+          {t("friendsPreview.loading")}
         </div>
       ) : friends.length === 0 ? (
         <div className="friends-preview-empty">
-          У користувача поки немає друзів
+          {t("friendsPreview.empty")}
         </div>
       ) : (
         <div className="friends-preview-grid">

@@ -1,7 +1,10 @@
+
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import LibraryLayout from "../../components/Library/layout/LibraryLayout";
 import GamePlayer from "../../components/Library/GamePlayer/GamePlayer";
 import LibraryNewsCard from "../../components/Library/Home/LibraryNewsCard";
+import CommunityPostCard from "../../components/Library/Home/CommunityPostCard";
 
 import {
   addFavoriteGame,
@@ -31,14 +34,29 @@ interface LibraryGamePageProps {
   gameId: string;
 }
 
-function formatDate(value: string | null | undefined): string {
-  if (!value) return "Ще не запускалася";
+const getDateLocale = (language: string) => {
+  const locales: Record<string, string> = {
+    uk: "uk-UA",
+    en: "en-US",
+    sk: "sk-SK",
+    ru: "ru-RU",
+  };
+
+  return locales[language.split("-")[0]] ?? "uk-UA";
+};
+
+function formatDate(
+  value: string | null | undefined,
+  locale: string,
+  notStartedText: string,
+): string {
+  if (!value) return notStartedText;
 
   const date = new Date(value);
 
   if (Number.isNaN(date.getTime())) return value;
 
-  return date.toLocaleString("uk-UA");
+  return date.toLocaleString(locale);
 }
 
 function FriendList({
@@ -50,6 +68,8 @@ function FriendList({
   friends: LibraryFriend[];
   emptyText: string;
 }) {
+  const { t } = useTranslation();
+
   return (
     <section className="library-game__friends-card">
       <h3>
@@ -74,7 +94,7 @@ function FriendList({
                 {friend.isOnline && (
                   <small>
                     <span className="library-game__online-dot" />
-                    У мережі
+                    {t("libraryGame.online")}
                   </small>
                 )}
               </div>
@@ -87,6 +107,12 @@ function FriendList({
 }
 
 function LibraryGamePage({ gameId }: LibraryGamePageProps) {
+  const { t, i18n } = useTranslation();
+  const dateLocale = getDateLocale(i18n.language);
+
+  const formatGameDate = (value: string | null | undefined) =>
+    formatDate(value, dateLocale, t("libraryGame.notStarted"));
+
   const [game, setGame] = useState<LibraryGame | null>(null);
   const [context, setContext] = useState<GameLibraryContext | null>(null);
   const [home, setHome] = useState<LibraryHome | null>(null);
@@ -130,7 +156,7 @@ function LibraryGamePage({ gameId }: LibraryGamePageProps) {
         );
 
         if (!foundGame) {
-          setError("Гру не знайдено у вашій бібліотеці.");
+          setError(t("libraryGame.gameNotFound"));
           return;
         }
 
@@ -148,10 +174,10 @@ function LibraryGamePage({ gameId }: LibraryGamePageProps) {
           setReviewText("");
         }
       } catch (err) {
-        console.error("Не вдалося завантажити сторінку гри:", err);
+        console.error("Failed to load game page:", err);
 
         if (active) {
-          setError("Не вдалося завантажити інформацію про гру.");
+          setError(t("libraryGame.loadError"));
         }
       } finally {
         if (active) {
@@ -165,7 +191,7 @@ function LibraryGamePage({ gameId }: LibraryGamePageProps) {
     return () => {
       active = false;
     };
-  }, [gameId]);
+  }, [gameId, t]);
 
   async function handleStartGame() {
     if (isStarting || session) return;
@@ -177,7 +203,7 @@ function LibraryGamePage({ gameId }: LibraryGamePageProps) {
       const newSession = await startGameSession(gameId);
 
       if (!newSession.isPlaying || !newSession.playUrl) {
-        throw new Error("Backend не повернув активну ігрову сесію.");
+        throw new Error("Backend did not return an active game session.");
       }
 
       setSession(newSession);
@@ -195,8 +221,8 @@ function LibraryGamePage({ gameId }: LibraryGamePageProps) {
         };
       });
     } catch (err) {
-      console.error("Не вдалося запустити гру:", err);
-      setPlayError("Не вдалося запустити гру. Спробуйте ще раз.");
+      console.error("Failed to start game:", err);
+      setPlayError(t("libraryGame.startError"));
     } finally {
       setIsStarting(false);
     }
@@ -246,8 +272,8 @@ function LibraryGamePage({ gameId }: LibraryGamePageProps) {
           : current,
       );
     } catch (err) {
-      console.error("Не вдалося змінити обране:", err);
-      setError("Не вдалося змінити статус обраного.");
+      console.error("Failed to update favorites:", err);
+      setError(t("libraryGame.favoriteError"));
     } finally {
       setIsFavoriteLoading(false);
     }
@@ -257,7 +283,7 @@ function LibraryGamePage({ gameId }: LibraryGamePageProps) {
     if (!game || isReviewLoading) return;
 
     if (!reviewText.trim()) {
-      setReviewError("Напишіть текст відгуку.");
+      setReviewError(t("libraryGame.reviewRequired"));
       return;
     }
 
@@ -281,8 +307,8 @@ function LibraryGamePage({ gameId }: LibraryGamePageProps) {
         current ? { ...current, myReview: savedReview } : current,
       );
     } catch (err) {
-      console.error("Не вдалося зберегти відгук:", err);
-      setReviewError("Не вдалося зберегти відгук. Спробуйте ще раз.");
+      console.error("Failed to save review:", err);
+      setReviewError(t("libraryGame.reviewSaveError"));
     } finally {
       setIsReviewLoading(false);
     }
@@ -305,8 +331,8 @@ function LibraryGamePage({ gameId }: LibraryGamePageProps) {
         current ? { ...current, myReview: null } : current,
       );
     } catch (err) {
-      console.error("Не вдалося видалити відгук:", err);
-      setReviewError("Не вдалося видалити відгук.");
+      console.error("Failed to delete review:", err);
+      setReviewError(t("libraryGame.reviewDeleteError"));
     } finally {
       setIsReviewLoading(false);
     }
@@ -333,12 +359,12 @@ function LibraryGamePage({ gameId }: LibraryGamePageProps) {
       <div className="library-game">
         {isLoading ? (
           <div className="library-game__state">
-            Завантаження гри...
+            {t("libraryGame.loading")}
           </div>
         ) : error && !game ? (
           <div className="library-game__error">
             <p>{error}</p>
-            <a href="/library">Повернутися до бібліотеки</a>
+            <a href="/library">{t("libraryGame.backToLibrary")}</a>
           </div>
         ) : game ? (
           <>
@@ -356,7 +382,7 @@ function LibraryGamePage({ gameId }: LibraryGamePageProps) {
                   href="/library"
                   className="library-game__back"
                 >
-                  ← Моя бібліотека
+                  ← {t("libraryGame.myLibrary")}
                 </a>
 
                 <div className="library-game__hero-bottom">
@@ -376,12 +402,14 @@ function LibraryGamePage({ gameId }: LibraryGamePageProps) {
                         onClick={handleStartGame}
                         disabled={isStarting}
                       >
-                        {isStarting ? "Запуск..." : "Грати"}
+                        {isStarting
+                          ? t("libraryGame.starting")
+                          : t("libraryGame.play")}
                       </button>
 
                       <span className="library-game__playtime">
-                        {game.playtimeFormatted || "0 хв."}
-                        <small>Загальний час гри</small>
+                        {game.playtimeFormatted || t("libraryGame.zeroMinutes")}
+                        <small>{t("libraryGame.totalPlaytime")}</small>
                       </span>
                     </div>
 
@@ -404,10 +432,10 @@ function LibraryGamePage({ gameId }: LibraryGamePageProps) {
                       disabled={isFavoriteLoading || !context}
                       aria-label={
                         context?.isFavorite
-                          ? "Прибрати з обраного"
-                          : "Додати до обраного"
+                          ? t("libraryGame.removeFavorite")
+                          : t("libraryGame.addFavorite")
                       }
-                      title="Обране"
+                      title={t("libraryGame.favorites")}
                     >
                       {context?.isFavorite ? "♥" : "♡"}
                     </button>
@@ -416,8 +444,8 @@ function LibraryGamePage({ gameId }: LibraryGamePageProps) {
                       type="button"
                       className="library-game__icon-button"
                       onClick={() => scrollToSection("library-game-review")}
-                      aria-label="Відгук"
-                      title="Відгук"
+                      aria-label={t("libraryGame.review")}
+                      title={t("libraryGame.review")}
                     >
                       ★
                     </button>
@@ -426,8 +454,8 @@ function LibraryGamePage({ gameId }: LibraryGamePageProps) {
                       type="button"
                       className="library-game__icon-button"
                       onClick={() => scrollToSection("library-game-community")}
-                      aria-label="Спільнота"
-                      title="Спільнота"
+                      aria-label={t("libraryGame.community")}
+                      title={t("libraryGame.community")}
                     >
                       ···
                     </button>
@@ -441,21 +469,21 @@ function LibraryGamePage({ gameId }: LibraryGamePageProps) {
                 type="button"
                 onClick={() => scrollToSection("library-game-overview")}
               >
-                Сторінка бібліотеки
+                {t("libraryGame.libraryPage")}
               </button>
 
               <button
                 type="button"
                 onClick={() => scrollToSection("library-game-news")}
               >
-                Що нового
+                {t("libraryGame.whatsNew")}
               </button>
 
               <button
                 type="button"
                 onClick={() => scrollToSection("library-game-community")}
               >
-                Спільнота
+                {t("libraryGame.community")}
               </button>
             </nav>
 
@@ -471,34 +499,36 @@ function LibraryGamePage({ gameId }: LibraryGamePageProps) {
                   id="library-game-overview"
                   className="library-game__section"
                 >
-                  <h2>Мій прогрес</h2>
+                  <h2>{t("libraryGame.myProgress")}</h2>
 
                   <div className="library-game__stats">
                     <div className="library-game__stat">
-                      <span>Загальний час гри</span>
-                      <strong>{game.playtimeFormatted || "0 хв."}</strong>
+                      <span>{t("libraryGame.totalPlaytime")}</span>
+                      <strong>
+                        {game.playtimeFormatted || t("libraryGame.zeroMinutes")}
+                      </strong>
                     </div>
 
                     <div className="library-game__stat">
-                      <span>Останній запуск</span>
-                      <strong>{formatDate(game.lastPlayedAt)}</strong>
+                      <span>{t("libraryGame.lastPlayed")}</span>
+                      <strong>{formatGameDate(game.lastPlayedAt)}</strong>
                     </div>
 
                     <div className="library-game__stat">
-                      <span>Придбано</span>
-                      <strong>{formatDate(game.acquiredAt)}</strong>
+                      <span>{t("libraryGame.acquired")}</span>
+                      <strong>{formatGameDate(game.acquiredAt)}</strong>
                     </div>
 
                     <div className="library-game__stat">
-                      <span>Статус</span>
+                      <span>{t("libraryGame.status")}</span>
                       <strong>
                         {game.isCurrentlyPlaying
-                          ? "Зараз граєте"
+                          ? t("libraryGame.currentlyPlaying")
                           : game.isInstalled === true
-                            ? "Встановлена"
+                            ? t("libraryGame.installed")
                             : game.isInstalled === false
-                              ? "Не встановлена"
-                              : "Не визначено"}
+                              ? t("libraryGame.notInstalled")
+                              : t("libraryGame.unknown")}
                       </strong>
                     </div>
                   </div>
@@ -509,11 +539,11 @@ function LibraryGamePage({ gameId }: LibraryGamePageProps) {
                   className="library-game__section"
                 >
                   <div className="library-game__section-heading">
-                    <h2>Моя рецензія</h2>
+                    <h2>{t("libraryGame.myReview")}</h2>
 
                     {review && (
                       <span className="library-game__review-status">
-                        Ваш відгук
+                        {t("libraryGame.yourReview")}
                       </span>
                     )}
                   </div>
@@ -522,7 +552,7 @@ function LibraryGamePage({ gameId }: LibraryGamePageProps) {
                     <div className="library-game__existing-review">
                       <div className="library-game__review-author">
                         <strong>{review.username}</strong>
-                        <span>{formatDate(review.createdAt)}</span>
+                        <span>{formatGameDate(review.createdAt)}</span>
                       </div>
 
                       <div className="library-game__review-score">
@@ -535,7 +565,7 @@ function LibraryGamePage({ gameId }: LibraryGamePageProps) {
 
                   <div className="library-game__review-form">
                     <label htmlFor="library-review-score">
-                      Ваша оцінка
+                      {t("libraryGame.yourScore")}
                     </label>
 
                     <select
@@ -555,14 +585,14 @@ function LibraryGamePage({ gameId }: LibraryGamePageProps) {
                     </select>
 
                     <label htmlFor="library-review-text">
-                      Текст рецензії
+                      {t("libraryGame.reviewText")}
                     </label>
 
                     <textarea
                       id="library-review-text"
                       value={reviewText}
                       onChange={(event) => setReviewText(event.target.value)}
-                      placeholder="Поділіться своїми враженнями від гри..."
+                      placeholder={t("libraryGame.reviewPlaceholder")}
                       rows={4}
                     />
 
@@ -579,10 +609,10 @@ function LibraryGamePage({ gameId }: LibraryGamePageProps) {
                         disabled={isReviewLoading}
                       >
                         {isReviewLoading
-                          ? "Збереження..."
+                          ? t("libraryGame.saving")
                           : review
-                            ? "Оновити рецензію"
-                            : "Написати рецензію"}
+                            ? t("libraryGame.updateReview")
+                            : t("libraryGame.writeReview")}
                       </button>
 
                       {review && (
@@ -592,7 +622,7 @@ function LibraryGamePage({ gameId }: LibraryGamePageProps) {
                           onClick={handleDeleteReview}
                           disabled={isReviewLoading}
                         >
-                          Видалити
+                          {t("libraryGame.delete")}
                         </button>
                       )}
                     </div>
@@ -604,8 +634,10 @@ function LibraryGamePage({ gameId }: LibraryGamePageProps) {
                   className="library-game__section"
                 >
                   <div className="library-game__section-heading">
-                    <h2>Що нового</h2>
-                    <a href="/library/feed">Усі новини ›</a>
+                    <h2>{t("libraryGame.whatsNew")}</h2>
+                    <a href="/library/feed">
+                      {t("libraryGame.allNews")} ›
+                    </a>
                   </div>
 
                   {home?.latestNews.length ? (
@@ -616,7 +648,7 @@ function LibraryGamePage({ gameId }: LibraryGamePageProps) {
                     </div>
                   ) : (
                     <p className="library-game__empty">
-                      Новин поки немає.
+                      {t("libraryGame.noNews")}
                     </p>
                   )}
                 </section>
@@ -626,35 +658,35 @@ function LibraryGamePage({ gameId }: LibraryGamePageProps) {
                 {context && (
                   <>
                     <FriendList
-                      title="Друзі бажають цю гру"
+                      title={t("libraryGame.friendsWantGame")}
                       friends={context.friendsWhoWant}
-                      emptyText="Поки ніхто з друзів не додав гру до бажаного."
+                      emptyText={t("libraryGame.noFriendsWant")}
                     />
 
                     <FriendList
-                      title="Друзі мають цю гру"
+                      title={t("libraryGame.friendsOwnGame")}
                       friends={context.friendsWhoOwn}
-                      emptyText="Поки ніхто з друзів не має цієї гри."
+                      emptyText={t("libraryGame.noFriendsOwn")}
                     />
                   </>
                 )}
 
                 <div className="library-game__sidebar-info">
-                  <h3>Інформація</h3>
+                  <h3>{t("libraryGame.information")}</h3>
 
                   <div>
-                    <span>Розробник</span>
-                    <strong>{game.developer || "Невідомо"}</strong>
+                    <span>{t("libraryGame.developer")}</span>
+                    <strong>{game.developer || t("libraryGame.unknown")}</strong>
                   </div>
 
                   <div>
-                    <span>Дата придбання</span>
-                    <strong>{formatDate(game.acquiredAt)}</strong>
+                    <span>{t("libraryGame.acquiredDate")}</span>
+                    <strong>{formatGameDate(game.acquiredAt)}</strong>
                   </div>
 
                   <div>
-                    <span>Розмір</span>
-                    <strong>{game.diskSize || "Невідомо"}</strong>
+                    <span>{t("libraryGame.size")}</span>
+                    <strong>{game.diskSize || t("libraryGame.unknown")}</strong>
                   </div>
                 </div>
               </aside>
@@ -665,19 +697,21 @@ function LibraryGamePage({ gameId }: LibraryGamePageProps) {
               className="library-game__section library-game__community"
             >
               <div className="library-game__section-heading">
-                <h2>Цікаве від Спільноти</h2>
-                <a href="/library/feed">Моя стрічка ›</a>
+                <h2>{t("libraryGame.communityHighlights")}</h2>
+                <a href="/library/feed">
+                  {t("libraryGame.myFeed")} ›
+                </a>
               </div>
 
               {home?.communityHighlights.length ? (
                 <div className="library-game__community-grid">
                   {home.communityHighlights.slice(0, 6).map((post) => (
-                    <LibraryNewsCard key={post.id} post={post} />
+                    <CommunityPostCard key={post.id} post={post} />
                   ))}
                 </div>
               ) : (
                 <p className="library-game__empty">
-                  Публікацій поки немає.
+                  {t("libraryGame.noPosts")}
                 </p>
               )}
             </section>

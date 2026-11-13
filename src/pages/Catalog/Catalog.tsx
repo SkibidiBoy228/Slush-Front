@@ -1,5 +1,6 @@
 
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import GameSearch from "../../components/GameSearch/GameSearch";
 import GameCard, {
@@ -47,66 +48,27 @@ type PriceFilter =
   | "600"
   | "900";
 
-function convertGame(game: ActualGame): Game {
-  const { details } = game;
-
-  const hasPrice = details.price > 0;
-
-  const hasDiscount =
-    hasPrice &&
-    details.oldPrice > details.price &&
-    details.discountPercent > 0;
-
-  return {
-    id: game.id,
-    title: details.title || game.title,
-    image: details.thumbnail || game.thumbnail,
-
-    price: hasPrice
-      ? formatPrice(details.price)
-      : "Безкоштовно",
-
-    oldPrice: hasDiscount
-      ? formatPrice(details.oldPrice)
-      : undefined,
-
-    discount: details.discountPercent > 0
-      ? `-${details.discountPercent}%`
-      : undefined,
-  };
-}
-
 function Catalog() {
+  const { t } = useTranslation();
+
   const [games, setGames] = useState<ActualGame[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   const [query, setQuery] = useState("");
-  const [sort, setSort] =
-    useState<SortOption>("relevance");
-  const [priceFilter, setPriceFilter] =
-    useState<PriceFilter>("all");
-  const [onlyDiscounts, setOnlyDiscounts] =
-    useState(false);
-  const [viewMode, setViewMode] =
-    useState<"grid" | "list">("grid");
+  const [sort, setSort] = useState<SortOption>("relevance");
+  const [priceFilter, setPriceFilter] = useState<PriceFilter>("all");
+  const [onlyDiscounts, setOnlyDiscounts] = useState(false);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  const [collections, setCollections] =
-    useState<LibraryCollection[]>([]);
-  const [libraryGames, setLibraryGames] =
-    useState<LibraryGame[]>([]);
-  const [openedGameId, setOpenedGameId] =
-    useState<string | null>(null);
-  const [addingGameId, setAddingGameId] =
-    useState<string | null>(null);
-  const [collectionMessage, setCollectionMessage] =
-    useState("");
+  const [collections, setCollections] = useState<LibraryCollection[]>([]);
+  const [libraryGames, setLibraryGames] = useState<LibraryGame[]>([]);
+  const [openedGameId, setOpenedGameId] = useState<string | null>(null);
+  const [addingGameId, setAddingGameId] = useState<string | null>(null);
+  const [collectionMessage, setCollectionMessage] = useState("");
 
   useEffect(() => {
-    const params = new URLSearchParams(
-      window.location.search
-    );
-
+    const params = new URLSearchParams(window.location.search);
     setQuery(params.get("query") ?? "");
   }, []);
 
@@ -115,15 +77,14 @@ function Catalog() {
 
     async function loadUserCollections() {
       try {
-        const [collectionData, libraryData] =
-          await Promise.all([
-            getLibraryCollections(),
-            getLibrary({
-              sort: "recent",
-              page: "1",
-              pageSize: 100,
-            }),
-          ]);
+        const [collectionData, libraryData] = await Promise.all([
+          getLibraryCollections(),
+          getLibrary({
+            sort: "recent",
+            page: "1",
+            pageSize: 100,
+          }),
+        ]);
 
         if (!cancelled) {
           setCollections(collectionData);
@@ -186,7 +147,7 @@ function Catalog() {
           setError(
             err instanceof Error
               ? err.message
-              : "Не вдалося завантажити ігри"
+              : t("catalog.loadError")
           );
         }
       } finally {
@@ -201,7 +162,7 @@ function Catalog() {
     return () => {
       cancelled = true;
     };
-  }, [query]);
+  }, [query, t]);
 
   const libraryGameIds = useMemo(
     () => new Set(libraryGames.map((game) => game.gameId)),
@@ -218,8 +179,7 @@ function Catalog() {
     }
 
     if (priceFilter !== "all" && priceFilter !== "free") {
-      const maxPrice =
-        Number(priceFilter) / USD_TO_UAH;
+      const maxPrice = Number(priceFilter) / USD_TO_UAH;
 
       result = result.filter(
         (game) =>
@@ -257,9 +217,7 @@ function Catalog() {
 
       case "name":
         result.sort((a, b) =>
-          a.details.title.localeCompare(
-            b.details.title
-          )
+          a.details.title.localeCompare(b.details.title)
         );
         break;
 
@@ -269,6 +227,35 @@ function Catalog() {
 
     return result;
   }, [games, priceFilter, onlyDiscounts, sort]);
+
+  function convertGame(game: ActualGame): Game {
+    const { details } = game;
+
+    const hasPrice = details.price > 0;
+
+    const hasDiscount =
+      hasPrice &&
+      details.oldPrice > details.price &&
+      details.discountPercent > 0;
+
+    return {
+      id: game.id,
+      title: details.title || game.title,
+      image: details.thumbnail || game.thumbnail,
+
+      price: hasPrice
+        ? formatPrice(details.price)
+        : t("common.free"),
+
+      oldPrice: hasDiscount
+        ? formatPrice(details.oldPrice)
+        : undefined,
+
+      discount: details.discountPercent > 0
+        ? `-${details.discountPercent}%`
+        : undefined,
+    };
+  }
 
   function resetFilters() {
     setPriceFilter("all");
@@ -286,13 +273,14 @@ function Catalog() {
 
       await addGameToCollections(collectionId, gameId);
 
-      const collectionName =
-        collections.find(
-          (collection) => collection.id === collectionId
-        )?.name;
+      const collectionName = collections.find(
+        (collection) => collection.id === collectionId
+      )?.name;
 
       setCollectionMessage(
-        `Гру додано до колекції «${collectionName ?? ""}».`
+        t("catalog.collectionSuccess", {
+          name: collectionName ?? "",
+        })
       );
 
       setOpenedGameId(null);
@@ -303,12 +291,28 @@ function Catalog() {
       );
 
       setCollectionMessage(
-        "Не вдалося додати гру. Переконайтеся, що вона є у вашій бібліотеці."
+        t("catalog.collectionError")
       );
     } finally {
       setAddingGameId(null);
     }
   }
+
+  const priceOptions: { value: PriceFilter; label: string }[] = [
+    { value: "all", label: t("catalog.priceAll") },
+    { value: "free", label: t("catalog.priceFree") },
+    { value: "100", label: t("catalog.price100") },
+    { value: "300", label: t("catalog.price300") },
+    { value: "600", label: t("catalog.price600") },
+    { value: "900", label: t("catalog.price900") },
+  ];
+
+  const collapsedFilters = [
+    t("catalog.type"),
+    t("catalog.features"),
+    t("catalog.platforms"),
+    t("catalog.events"),
+  ];
 
   return (
     <div className="catalog-page">
@@ -320,34 +324,32 @@ function Catalog() {
         <div className="catalog-container">
           <div className="catalog-topbar">
             <div className="catalog-sort">
-              <span>Сортування:</span>
+              <span>{t("catalog.sorting")}</span>
 
               <select
                 value={sort}
                 onChange={(event) =>
-                  setSort(
-                    event.target.value as SortOption
-                  )
+                  setSort(event.target.value as SortOption)
                 }
               >
                 <option value="relevance">
-                  За релевантністю
+                  {t("catalog.sortRelevance")}
                 </option>
 
                 <option value="price-asc">
-                  Спочатку дешевші
+                  {t("catalog.sortPriceAsc")}
                 </option>
 
                 <option value="price-desc">
-                  Спочатку дорожчі
+                  {t("catalog.sortPriceDesc")}
                 </option>
 
                 <option value="discount">
-                  За розміром знижки
+                  {t("catalog.sortDiscount")}
                 </option>
 
                 <option value="name">
-                  За назвою
+                  {t("catalog.sortName")}
                 </option>
               </select>
             </div>
@@ -358,7 +360,7 @@ function Catalog() {
                 className={`view-button ${
                   viewMode === "grid" ? "active" : ""
                 }`}
-                aria-label="Сітка"
+                aria-label={t("catalog.gridView")}
                 aria-pressed={viewMode === "grid"}
                 onClick={() => setViewMode("grid")}
               >
@@ -370,7 +372,7 @@ function Catalog() {
                 className={`view-button ${
                   viewMode === "list" ? "active" : ""
                 }`}
-                aria-label="Список"
+                aria-label={t("catalog.listView")}
                 aria-pressed={viewMode === "list"}
                 onClick={() => setViewMode("list")}
               >
@@ -382,42 +384,35 @@ function Catalog() {
           <div className="catalog-layout">
             <aside className="catalog-filters">
               <div className="filters-heading">
-                <h2>Фільтри</h2>
+                <h2>{t("catalog.filters")}</h2>
 
                 <button
                   type="button"
                   onClick={resetFilters}
                 >
-                  Скинути
+                  {t("catalog.reset")}
                 </button>
               </div>
 
               <input
                 className="tag-search"
                 type="text"
-                placeholder="Пошук тегів..."
+                placeholder={t("catalog.tagSearch")}
                 disabled
               />
 
               <div className="filter-section">
-                <h3>Жанр</h3>
+                <h3>{t("catalog.genre")}</h3>
 
                 <span className="filter-unavailable">
-                  Дані про жанри поки недоступні
+                  {t("catalog.genresUnavailable")}
                 </span>
               </div>
 
               <div className="filter-section">
-                <h3>Ціна</h3>
+                <h3>{t("catalog.price")}</h3>
 
-                {[
-                  ["all", "Без обмежень"],
-                  ["free", "Безкоштовно"],
-                  ["100", "До 100 гривень"],
-                  ["300", "До 300 гривень"],
-                  ["600", "До 600 гривень"],
-                  ["900", "До 900 гривень"],
-                ].map(([value, label]) => (
+                {priceOptions.map(({ value, label }) => (
                   <label
                     className="radio-option"
                     key={value}
@@ -427,11 +422,7 @@ function Catalog() {
                       name="price"
                       value={value}
                       checked={priceFilter === value}
-                      onChange={() =>
-                        setPriceFilter(
-                          value as PriceFilter
-                        )
-                      }
+                      onChange={() => setPriceFilter(value)}
                     />
 
                     <span>{label}</span>
@@ -440,29 +431,22 @@ function Catalog() {
               </div>
 
               <div className="filter-section">
-                <h3>Знижки</h3>
+                <h3>{t("catalog.discounts")}</h3>
 
                 <label className="checkbox-option">
                   <input
                     type="checkbox"
                     checked={onlyDiscounts}
                     onChange={(event) =>
-                      setOnlyDiscounts(
-                        event.target.checked
-                      )
+                      setOnlyDiscounts(event.target.checked)
                     }
                   />
 
-                  <span>Тільки зі знижкою</span>
+                  <span>{t("catalog.onlyDiscounted")}</span>
                 </label>
               </div>
 
-              {[
-                "Тип",
-                "Особливості",
-                "Платформи",
-                "Івенти",
-              ].map((title) => (
+              {collapsedFilters.map((title) => (
                 <div
                   className="filter-section collapsed"
                   key={title}
@@ -482,7 +466,7 @@ function Catalog() {
 
               {loading && (
                 <div className="catalog-message">
-                  Завантаження ігор...
+                  {t("catalog.loading")}
                 </div>
               )}
 
@@ -496,7 +480,7 @@ function Catalog() {
                 !error &&
                 filteredGames.length === 0 && (
                   <div className="catalog-message">
-                    Ігор не знайдено
+                    {t("catalog.noGames")}
                   </div>
                 )}
 
@@ -509,8 +493,7 @@ function Catalog() {
                   }`}
                 >
                   {filteredGames.map((game) => {
-                    const isInLibrary =
-                      libraryGameIds.has(game.id);
+                    const isInLibrary = libraryGameIds.has(game.id);
 
                     return (
                       <div
@@ -544,36 +527,31 @@ function Catalog() {
                               }
                             >
                               {addingGameId === game.id
-                                ? "Додаємо..."
-                                : "＋ В колекцію"}
+                                ? t("catalog.adding")
+                                : `＋ ${t("catalog.addToCollection")}`}
                             </button>
 
                             {openedGameId === game.id && (
                               <div className="catalog-collection-menu">
                                 {collections.length > 0 ? (
-                                  collections.map(
-                                    (collection) => (
-                                      <button
-                                        type="button"
-                                        key={collection.id}
-                                        disabled={
-                                          addingGameId === game.id
-                                        }
-                                        onClick={() =>
-                                          void handleAddToCollection(
-                                            game.id,
-                                            collection.id
-                                          )
-                                        }
-                                      >
-                                        {collection.name}
-                                      </button>
-                                    )
-                                  )
+                                  collections.map((collection) => (
+                                    <button
+                                      type="button"
+                                      key={collection.id}
+                                      disabled={addingGameId === game.id}
+                                      onClick={() =>
+                                        void handleAddToCollection(
+                                          game.id,
+                                          collection.id
+                                        )
+                                      }
+                                    >
+                                      {collection.name}
+                                    </button>
+                                  ))
                                 ) : (
                                   <span>
-                                    Спочатку створіть колекцію
-                                    в бібліотеці
+                                    {t("catalog.createCollectionFirst")}
                                   </span>
                                 )}
                               </div>

@@ -1,5 +1,7 @@
 
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+
 import { getUserProfile } from "../../api/profile";
 import { getCurrentUsername } from "../../api/client";
 
@@ -31,6 +33,8 @@ const getEarnedDate = (value: string): number => {
 };
 
 const Badges = ({ username }: BadgesProps) => {
+  const { t, i18n } = useTranslation();
+
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -40,6 +44,15 @@ const Badges = ({ username }: BadgesProps) => {
 
   const isOwnProfile =
     currentUsername?.toLowerCase() === username.toLowerCase();
+
+  const localeMap: Record<string, string> = {
+    uk: "uk",
+    en: "en",
+    sk: "sk",
+    ru: "ru",
+  };
+
+  const locale = localeMap[i18n.language] || "uk";
 
   useEffect(() => {
     let cancelled = false;
@@ -59,7 +72,7 @@ const Badges = ({ username }: BadgesProps) => {
           setError(
             err instanceof Error
               ? err.message
-              : "Не вдалося завантажити значки"
+              : t("badges.loadError")
           );
         }
       } finally {
@@ -74,7 +87,7 @@ const Badges = ({ username }: BadgesProps) => {
     return () => {
       cancelled = true;
     };
-  }, [username]);
+  }, [username, t]);
 
   const sortedBadges = useMemo(() => {
     if (!profile) return [];
@@ -87,7 +100,7 @@ const Badges = ({ username }: BadgesProps) => {
 
       case "name":
         return badges.sort((a, b) =>
-          a.title.localeCompare(b.title, "uk")
+          a.title.localeCompare(b.title, locale)
         );
 
       case "date":
@@ -98,8 +111,7 @@ const Badges = ({ username }: BadgesProps) => {
             getEarnedDate(a.earnedAt)
         );
     }
-  }, [profile, sortType]);
-
+  }, [profile, sortType, locale]);
 
   const openProfile = () => {
     window.location.href = `/profile/${encodeURIComponent(username)}`;
@@ -110,7 +122,7 @@ const Badges = ({ username }: BadgesProps) => {
       <div className="badges-page">
         <main className="badges-container">
           <div className="badges-message">
-            Завантаження значків...
+            {t("badges.loading")}
           </div>
         </main>
       </div>
@@ -120,12 +132,11 @@ const Badges = ({ username }: BadgesProps) => {
   if (error || !profile) {
     return (
       <div className="badges-page">
-
         <main className="badges-container">
           <div className="badges-message badges-error">
-            {error || "Профіль не знайдено"}
+            {error || t("badges.profileNotFound")}
             <button onClick={openProfile}>
-              Повернутися до профілю
+              {t("badges.backToProfile")}
             </button>
           </div>
         </main>
@@ -164,7 +175,9 @@ const Badges = ({ username }: BadgesProps) => {
                 }
               >
                 <span />
-                {profile.isOnline ? "В мережі" : "Не в мережі"}
+                {profile.isOnline
+                  ? t("badges.online")
+                  : t("badges.offline")}
               </span>
 
               <p>{profile.bio}</p>
@@ -174,7 +187,7 @@ const Badges = ({ username }: BadgesProps) => {
               className="badges-profile-button"
               onClick={openProfile}
             >
-              Переглянути профіль
+              {t("badges.viewProfile")}
             </button>
           </div>
         </section>
@@ -184,25 +197,27 @@ const Badges = ({ username }: BadgesProps) => {
             <div className="badges-section">
               <div className="badges-heading">
                 <div>
-                  <h2>Колекція значків</h2>
+                  <h2>{t("badges.collectionTitle")}</h2>
                   <p>
-                    Досягнення користувача {profile.username}
+                    {t("badges.userAchievements", {
+                      username: profile.username,
+                    })}
                   </p>
                 </div>
 
                 <span className="badges-total">
-                {profile.badges.length}
+                  {profile.badges.length}
                 </span>
               </div>
 
               <div className="badges-toolbar">
                 <div className="badges-earned-count">
                   <strong>{profile.badges.length}</strong>
-                  <span>Отримано значків</span>
+                  <span>{t("badges.earnedCount")}</span>
                 </div>
 
                 <label className="badges-sort">
-                  <span>Сортування:</span>
+                  <span>{t("badges.sorting")}</span>
 
                   <select
                     value={sortType}
@@ -210,9 +225,15 @@ const Badges = ({ username }: BadgesProps) => {
                       setSortType(e.target.value as SortType)
                     }
                   >
-                    <option value="date">За датою отримання</option>
-                    <option value="points">За кількістю очок</option>
-                    <option value="name">За назвою</option>
+                    <option value="date">
+                      {t("badges.sortByDate")}
+                    </option>
+                    <option value="points">
+                      {t("badges.sortByPoints")}
+                    </option>
+                    <option value="name">
+                      {t("badges.sortByName")}
+                    </option>
                   </select>
                 </label>
               </div>
@@ -242,7 +263,7 @@ const Badges = ({ username }: BadgesProps) => {
 
                         <div className="badges-card-footer">
                           <span className="badges-points">
-                            ✦ {badge.points} очок
+                            ✦ {badge.points} {t("badges.points")}
                           </span>
 
                           <span className="badges-date">
@@ -257,24 +278,24 @@ const Badges = ({ username }: BadgesProps) => {
                 <div className="badges-empty">
                   <div>🏆</div>
 
-                  <h3>Досягнень поки немає</h3>
+                  <h3>{t("badges.noAchievements")}</h3>
 
                   <p>
                     {isOwnProfile
-                      ? "Виконуй завдання, грай та отримуй нові значки!"
-                      : "Цей користувач ще не отримав жодного значка."}
+                      ? t("badges.noAchievementsOwn")
+                      : t("badges.noAchievementsOther")}
                   </p>
                 </div>
               )}
             </div>
           </section>
 
-            <ProfileSidebar
+          <ProfileSidebar
             profile={profile}
             username={username}
             activeSection="badges"
             className="badges-sidebar"
-            />
+          />
         </div>
       </main>
     </div>

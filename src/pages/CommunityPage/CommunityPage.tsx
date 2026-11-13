@@ -1,4 +1,6 @@
+
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import GameSearch from "../../components/GameSearch/GameSearch";
 import CommunityTabs from "../../components/Community/CommunityTabs/CommunityTabs";
@@ -36,6 +38,18 @@ interface CommunityPageProps {
 }
 
 function CommunityPage({ gameId }: CommunityPageProps) {
+  const { t, i18n } = useTranslation();
+
+  const localeMap: Record<string, string> = {
+    uk: "uk-UA",
+    en: "en-US",
+    sk: "sk-SK",
+    ru: "ru-RU",
+  };
+
+  const currentLocale =
+    localeMap[i18n.language] ?? "uk-UA";
+
   const [gameTitle, setGameTitle] = useState("");
   const [gameLoading, setGameLoading] = useState(true);
 
@@ -134,12 +148,12 @@ function CommunityPage({ gameId }: CommunityPageProps) {
       setError(
         error instanceof Error
           ? error.message
-          : "Не вдалося завантажити публікації"
+          : t("communityPage.loadError")
       );
     } finally {
       setLoading(false);
     }
-  }, [gameId, activeFilter, sort]);
+  }, [gameId, activeFilter, sort, t]);
 
   useEffect(() => {
     loadGame();
@@ -337,6 +351,7 @@ function CommunityPage({ gameId }: CommunityPageProps) {
       throw error;
     }
   };
+
   const filteredPosts = useMemo(() => {
     const search = searchValue.trim().toLowerCase();
 
@@ -362,7 +377,7 @@ function CommunityPage({ gameId }: CommunityPageProps) {
     return (
       <div className="community-page-state">
         <div className="community-state-content">
-          Завантаження спільноти...
+          {t("communityPage.loadingCommunity")}
         </div>
       </div>
     );
@@ -381,7 +396,8 @@ function CommunityPage({ gameId }: CommunityPageProps) {
 
             <div className="community-page-stats">
               <span>
-                {counts.subscribersCount.toLocaleString("uk-UA")} підписників
+                {counts.subscribersCount.toLocaleString(currentLocale)}{" "}
+                {t("communityPage.subscribers")}
               </span>
 
               <span
@@ -390,7 +406,8 @@ function CommunityPage({ gameId }: CommunityPageProps) {
               />
 
               <span>
-                {counts.all.toLocaleString("uk-UA")} публікацій
+                {counts.all.toLocaleString(currentLocale)}{" "}
+                {t("communityPage.publications")}
               </span>
             </div>
           </div>
@@ -405,15 +422,18 @@ function CommunityPage({ gameId }: CommunityPageProps) {
               }}
             >
               <span className="community-create-icon">+</span>
-              <span>Створити пост</span>
+              <span>{t("communityPage.createPost")}</span>
             </button>
 
-            <div className="community-page-heading-tools" aria-label="Дії спільноти">
+            <div
+              className="community-page-heading-tools"
+              aria-label={t("communityPage.communityActions")}
+            >
               <span
                 className="community-page-heading-icon"
                 role="img"
-                aria-label="Сповіщення"
-                title="Сповіщення"
+                aria-label={t("communityPage.notifications")}
+                title={t("communityPage.notifications")}
               >
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" />
@@ -424,8 +444,8 @@ function CommunityPage({ gameId }: CommunityPageProps) {
               <span
                 className="community-page-heading-icon community-page-heading-more"
                 role="img"
-                aria-label="Додаткові дії"
-                title="Додаткові дії"
+                aria-label={t("communityPage.moreActions")}
+                title={t("communityPage.moreActions")}
               >
                 <span aria-hidden="true">•••</span>
               </span>
@@ -451,21 +471,21 @@ function CommunityPage({ gameId }: CommunityPageProps) {
             <div className="community-feed">
               {loading ? (
                 <div className="community-feed-state">
-                  Завантаження публікацій...
+                  {t("communityPage.loadingPosts")}
                 </div>
               ) : error ? (
                 <div className="community-feed-state community-feed-error">
                   {error}
 
                   <button type="button" onClick={loadPosts}>
-                    Спробувати ще раз
+                    {t("communityPage.tryAgain")}
                   </button>
                 </div>
               ) : filteredPosts.length === 0 ? (
                 <div className="community-feed-state">
                   {searchValue.trim()
-                    ? "За вашим запитом нічого не знайдено."
-                    : "Публікацій поки немає."}
+                    ? t("communityPage.noSearchResults")
+                    : t("communityPage.noPosts")}
                 </div>
               ) : (
                 filteredPosts.map((post) => (

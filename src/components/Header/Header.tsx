@@ -1,5 +1,6 @@
 
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   getAccessToken,
@@ -22,6 +23,8 @@ const AUTH_PAGES = [
 ];
 
 const Header = () => {
+  const { t } = useTranslation();
+
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -82,28 +85,28 @@ const Header = () => {
             href="/mainPage"
             className={path === "/mainPage" ? "active" : ""}
           >
-            Крамниця
+            {t("header.store")}
           </a>
 
           <a
             href="/library"
             className={path === "/library" ? "active" : ""}
           >
-            Бібліотека
+            {t("header.library")}
           </a>
 
           <a
             href="/chat"
             className={path === "/chat" ? "active" : ""}
           >
-            Чат
+            {t("header.chat")}
           </a>
         </nav>
 
         {!isAuthorized ? (
           <div className="header-actions">
             <a href="/login" className="header-login-button">
-              Увійти
+              {t("header.login")}
             </a>
           </div>
         ) : (
@@ -111,8 +114,8 @@ const Header = () => {
             <a
               href="/settings"
               className="header-icon-button"
-              aria-label="Налаштування"
-              title="Налаштування"
+              aria-label={t("header.settings")}
+              title={t("header.settings")}
             >
               <svg
                 className="header-icon"
@@ -145,13 +148,13 @@ const Header = () => {
             <a
               href={profileUrl}
               className="header-avatar-link"
-              aria-label="Відкрити профіль"
-              title="Профіль"
+              aria-label={t("header.openProfile")}
+              title={t("header.profile")}
             >
               {avatarUrl ? (
                 <img
                   src={avatarUrl}
-                  alt="Аватар пользователя"
+                  alt={t("header.avatarAlt")}
                   className="header-avatar-image"
                 />
               ) : (
@@ -166,7 +169,7 @@ const Header = () => {
               className="header-logout-button"
               onClick={handleLogout}
             >
-              Вийти
+              {t("header.logout")}
             </button>
           </div>
         )}

@@ -1,3 +1,5 @@
+
+import { useTranslation } from "react-i18next";
 import "./CommuntiyHeader.css";
 
 interface CommuntiyHeaderProps {
@@ -13,12 +15,26 @@ function CommuntiyHeader({
   isSubscribed,
   onSubscribe,
 }: CommuntiyHeaderProps) {
+  const { t, i18n } = useTranslation();
+
+  const numberLocale: Record<string, string> = {
+    uk: "uk-UA",
+    en: "en-US",
+    sk: "sk-SK",
+    ru: "ru-RU",
+  };
+
+  const locale = numberLocale[i18n.language] || "uk-UA";
+
   return (
     <section className="community-header">
       <div className="community-header-info">
-        <h1>{gameTitle} - Спільнота</h1>
+        <h1>{t("communityHeader.title", { gameTitle })}</h1>
         <span>
-          {subscribersCount.toLocaleString("uk-UA")} підписників
+          {t("communityHeader.subscribers", {
+            count: subscribersCount,
+            formattedCount: subscribersCount.toLocaleString(locale),
+          })}
         </span>
       </div>
 
@@ -28,7 +44,9 @@ function CommuntiyHeader({
         }`}
         onClick={onSubscribe}
       >
-        {isSubscribed ? "Ви підписані" : "Підписатися"}
+        {isSubscribed
+          ? t("communityHeader.subscribed")
+          : t("communityHeader.subscribe")}
       </button>
     </section>
   );

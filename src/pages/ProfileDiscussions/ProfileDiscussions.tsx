@@ -1,5 +1,5 @@
-
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   getUserProfile,
@@ -30,6 +30,8 @@ interface ProfileDiscussionsProps {
 }
 
 const ProfileDiscussions = ({ username }: ProfileDiscussionsProps) => {
+  const { t } = useTranslation();
+
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [posts, setPosts] = useState<CommunityPostData[]>([]);
 
@@ -47,7 +49,6 @@ const ProfileDiscussions = ({ username }: ProfileDiscussionsProps) => {
 
   const isOwnProfile =
     currentUsername?.toLowerCase() === username.toLowerCase();
-
 
   const loadData = useCallback(async (signal: { cancelled: boolean }) => {
     try {
@@ -73,14 +74,14 @@ const ProfileDiscussions = ({ username }: ProfileDiscussionsProps) => {
       setError(
         err instanceof Error
           ? err.message
-          : "Не вдалося завантажити обговорення"
+          : t("profileDiscussions.loadError")
       );
     } finally {
       if (!signal.cancelled) {
         setIsLoading(false);
       }
     }
-  }, [username, sort]);
+  }, [username, sort, t]);
 
   useEffect(() => {
     const signal = { cancelled: false };
@@ -156,7 +157,7 @@ const ProfileDiscussions = ({ username }: ProfileDiscussionsProps) => {
       <div className="profile-discussions-page">
         <main className="profile-discussions-container">
           <div className="profile-discussions-message">
-            Завантаження обговорень...
+            {t("profileDiscussions.loading")}
           </div>
         </main>
       </div>
@@ -168,10 +169,10 @@ const ProfileDiscussions = ({ username }: ProfileDiscussionsProps) => {
       <div className="profile-discussions-page">
         <main className="profile-discussions-container">
           <div className="profile-discussions-message">
-            {error || "Профіль не знайдено"}
+            {error || t("profileDiscussions.profileNotFound")}
 
             <button onClick={openProfile}>
-              Повернутися до профілю
+              {t("profileDiscussions.backToProfile")}
             </button>
           </div>
         </main>
@@ -210,7 +211,9 @@ const ProfileDiscussions = ({ username }: ProfileDiscussionsProps) => {
                 }
               >
                 <span />
-                {profile.isOnline ? "В мережі" : "Не в мережі"}
+                {profile.isOnline
+                  ? t("profileDiscussions.online")
+                  : t("profileDiscussions.offline")}
               </span>
 
               <p>{profile.bio}</p>
@@ -220,7 +223,7 @@ const ProfileDiscussions = ({ username }: ProfileDiscussionsProps) => {
               className="profile-discussions-view-profile"
               onClick={openProfile}
             >
-              Переглянути профіль
+              {t("profileDiscussions.viewProfile")}
             </button>
           </div>
         </section>
@@ -230,11 +233,13 @@ const ProfileDiscussions = ({ username }: ProfileDiscussionsProps) => {
             <div className="profile-discussions-section">
               <div className="profile-discussions-heading">
                 <div>
-                  <h2>Обговорення</h2>
+                  <h2>{t("profileDiscussions.title")}</h2>
                   <p>
                     {isOwnProfile
-                      ? "Твої обговорення"
-                      : `Обговорення користувача ${profile.username}`}
+                      ? t("profileDiscussions.ownDescription")
+                      : t("profileDiscussions.otherDescription", {
+                          username: profile.username,
+                        })}
                   </p>
                 </div>
 
@@ -247,7 +252,7 @@ const ProfileDiscussions = ({ username }: ProfileDiscussionsProps) => {
 
                   <input
                     type="search"
-                    placeholder="Пошук обговорень..."
+                    placeholder={t("profileDiscussions.searchPlaceholder")}
                     value={search}
                     onChange={(event) => setSearch(event.target.value)}
                   />
@@ -259,14 +264,18 @@ const ProfileDiscussions = ({ username }: ProfileDiscussionsProps) => {
                     setSort(event.target.value as CommunitySortOption)
                   }
                 >
-                  <option value="Newest">Спочатку нові</option>
-                  <option value="ByRating">За рейтингом</option>
+                  <option value="Newest">
+                    {t("profileDiscussions.newest")}
+                  </option>
+                  <option value="ByRating">
+                    {t("profileDiscussions.byRating")}
+                  </option>
                 </select>
               </div>
 
               <div className="profile-discussions-list-heading">
                 <span>⌄</span>
-                Усі обговорення
+                {t("profileDiscussions.allDiscussions")}
                 <span className="profile-discussions-count">
                   {filteredPosts.length}
                 </span>
@@ -284,10 +293,10 @@ const ProfileDiscussions = ({ username }: ProfileDiscussionsProps) => {
 
                       {commentsPostId === post.id && (
                         <div className="profile-discussions-comments">
-                          <h3>Коментарі</h3>
+                          <h3>{t("profileDiscussions.comments")}</h3>
 
                           {commentsLoading ? (
-                            <p>Завантаження коментарів...</p>
+                            <p>{t("profileDiscussions.loadingComments")}</p>
                           ) : comments.length > 0 ? (
                             comments.map((comment) => (
                               <div
@@ -306,7 +315,7 @@ const ProfileDiscussions = ({ username }: ProfileDiscussionsProps) => {
                               </div>
                             ))
                           ) : (
-                            <p>Коментарів поки немає</p>
+                            <p>{t("profileDiscussions.noComments")}</p>
                           )}
                         </div>
                       )}
@@ -319,16 +328,16 @@ const ProfileDiscussions = ({ username }: ProfileDiscussionsProps) => {
 
                   <h3>
                     {search
-                      ? "Обговорень не знайдено"
-                      : "Обговорень поки немає"}
+                      ? t("profileDiscussions.notFound")
+                      : t("profileDiscussions.emptyTitle")}
                   </h3>
 
                   <p>
                     {search
-                      ? "Спробуй змінити пошуковий запит."
+                      ? t("profileDiscussions.changeSearch")
                       : isOwnProfile
-                        ? "Створи перше обговорення, щоб почати спілкування зі спільнотою."
-                        : "Цей користувач ще не створював обговорень."}
+                        ? t("profileDiscussions.emptyOwnDescription")
+                        : t("profileDiscussions.emptyOtherDescription")}
                   </p>
                 </div>
               )}

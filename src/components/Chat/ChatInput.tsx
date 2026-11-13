@@ -1,3 +1,4 @@
+
 import {
   useRef,
   useState,
@@ -5,6 +6,7 @@ import {
   type KeyboardEvent,
   type PointerEvent,
 } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   uploadChatFile,
@@ -25,6 +27,8 @@ export default function ChatInput({
   onSend,
   disabled = false,
 }: ChatInputProps) {
+  const { t } = useTranslation();
+
   const [text, setText] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -86,7 +90,7 @@ export default function ChatInput({
       await onSend({ messageType: "Text", content });
       setText("");
     } catch {
-      setError("Не вдалося надіслати повідомлення.");
+      setError(t("chatInput.sendError"));
     } finally {
       setIsSending(false);
     }
@@ -115,7 +119,7 @@ export default function ChatInput({
         fileSize: uploaded.fileSize,
       });
     } catch {
-      setError("Не вдалося завантажити або надіслати файл.");
+      setError(t("chatInput.uploadError"));
     } finally {
       setIsSending(false);
     }
@@ -130,7 +134,7 @@ export default function ChatInput({
       setError(null);
 
       if (!navigator.mediaDevices?.getDisplayMedia) {
-        throw new Error("Захоплення екрана не підтримується.");
+        throw new Error("Screen capture is not supported.");
       }
 
       stream = await navigator.mediaDevices.getDisplayMedia({
@@ -154,14 +158,16 @@ export default function ChatInput({
       canvas.height = video.videoHeight;
 
       const context = canvas.getContext("2d");
-      if (!context) throw new Error("Не вдалося зробити скриншот.");
+      if (!context) {
+        throw new Error("Failed to capture screenshot.");
+      }
 
       context.drawImage(video, 0, 0);
 
       const blob = await new Promise<Blob>((resolve, reject) => {
         canvas.toBlob((result) => {
           if (result) resolve(result);
-          else reject(new Error("Не вдалося створити зображення."));
+          else reject(new Error("Failed to create image."));
         }, "image/png");
       });
 
@@ -183,7 +189,7 @@ export default function ChatInput({
       });
     } catch (err) {
       console.error("Screenshot failed:", err);
-      setError("Не вдалося зробити або надіслати скриншот.");
+      setError(t("chatInput.screenshotError"));
     } finally {
       stream?.getTracks().forEach((track) => track.stop());
       setIsSending(false);
@@ -247,7 +253,7 @@ export default function ChatInput({
           });
         } catch (err) {
           console.error("Voice message failed:", err);
-          setError("Не вдалося надіслати голосове повідомлення.");
+          setError(t("chatInput.voiceError"));
         } finally {
           streamRef.current?.getTracks().forEach((track) => track.stop());
           streamRef.current = null;
@@ -265,7 +271,7 @@ export default function ChatInput({
       streamRef.current = null;
       setIsRecording(false);
 
-      setError("Не вдалося отримати доступ до мікрофона.");
+      setError(t("chatInput.microphoneError"));
     }
   }
 
@@ -285,8 +291,8 @@ export default function ChatInput({
         tabIndex={busy || isRecording ? -1 : 0}
         aria-label={
           isVoiceMode
-            ? "Повернутися до текстового режиму"
-            : "Увімкнути голосовий режим"
+            ? t("chatInput.switchToText")
+            : t("chatInput.switchToVoice")
         }
         onPointerDown={handleModeSwipeStart}
         onPointerUp={handleModeSwipeEnd}
@@ -296,8 +302,8 @@ export default function ChatInput({
         <span className="chat-input__mode-swipe-line" />
         <span>
           {isVoiceMode
-            ? "Голосовий режим · проведіть вгору для тексту"
-            : "Проведіть вгору для голосового режиму"}
+            ? t("chatInput.voiceModeHint")
+            : t("chatInput.textModeHint")}
         </span>
       </div>
 
@@ -331,8 +337,8 @@ export default function ChatInput({
         <div className="chat-input__attachments">
           <button
             type="button"
-            title="Надіслати зображення"
-            aria-label="Надіслати зображення"
+            title={t("chatInput.sendImage")}
+            aria-label={t("chatInput.sendImage")}
             disabled={busy}
             onClick={() => imageInputRef.current?.click()}
           >
@@ -345,8 +351,8 @@ export default function ChatInput({
 
           <button
             type="button"
-            title="Зробити скриншот"
-            aria-label="Зробити скриншот"
+            title={t("chatInput.takeScreenshot")}
+            aria-label={t("chatInput.takeScreenshot")}
             disabled={busy}
             onClick={() => void handleScreenshot()}
           >
@@ -361,8 +367,8 @@ export default function ChatInput({
 
           <button
             type="button"
-            title="Прикріпити файл"
-            aria-label="Прикріпити файл"
+            title={t("chatInput.attachFile")}
+            aria-label={t("chatInput.attachFile")}
             disabled={busy}
             onClick={() => fileInputRef.current?.click()}
           >
@@ -375,13 +381,13 @@ export default function ChatInput({
             type="button"
             title={
               isRecording
-                ? "Зупинити запис"
-                : "Записати голосове повідомлення"
+                ? t("chatInput.stopRecording")
+                : t("chatInput.recordVoice")
             }
             aria-label={
               isRecording
-                ? "Зупинити запис"
-                : "Записати голосове повідомлення"
+                ? t("chatInput.stopRecording")
+                : t("chatInput.recordVoice")
             }
             className={isRecording ? "is-recording" : ""}
             disabled={busy && !isRecording}
@@ -403,14 +409,14 @@ export default function ChatInput({
 
           {isRecording && (
             <span className="chat-input__recording">
-              Запис триває…
+              {t("chatInput.recording")}
             </span>
           )}
         </div>
 
         <textarea
           className="chat-input__field"
-          placeholder="Напишіть повідомлення..."
+          placeholder={t("chatInput.placeholder")}
           value={text}
           onChange={(event) => setText(event.target.value)}
           onKeyDown={handleKeyDown}
@@ -422,8 +428,8 @@ export default function ChatInput({
           className="chat-input__send"
           type="submit"
           disabled={busy || !text.trim()}
-          aria-label="Надіслати повідомлення"
-          title="Надіслати"
+          aria-label={t("chatInput.sendMessage")}
+          title={t("chatInput.send")}
         >
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M22 2 11 13" />

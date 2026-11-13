@@ -1,3 +1,5 @@
+
+import { useTranslation } from "react-i18next";
 import "./FriendSearch.css";
 
 interface FriendSearchProps {
@@ -39,6 +41,8 @@ function FriendSearch({
   gameId = "",
   onGameIdChange,
 }: FriendSearchProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="friend-search-group">
       <label className="friend-search">
@@ -47,8 +51,8 @@ function FriendSearch({
           type="search"
           value={value}
           onChange={(event) => onChange(event.target.value)}
-          placeholder="Пошук за нікнеймом..."
-          aria-label="Пошук за нікнеймом"
+          placeholder={t("friendSearch.usernamePlaceholder")}
+          aria-label={t("friendSearch.usernameLabel")}
         />
       </label>
 
@@ -59,8 +63,8 @@ function FriendSearch({
             type="search"
             value={gameId}
             onChange={(event) => onGameIdChange(event.target.value)}
-            placeholder="Пошук за грою..."
-            aria-label="Пошук за грою"
+            placeholder={t("friendSearch.gamePlaceholder")}
+            aria-label={t("friendSearch.gameLabel")}
           />
         </label>
       )}
