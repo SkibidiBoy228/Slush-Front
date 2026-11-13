@@ -434,12 +434,25 @@
   background: #002b35;
 }
 
-.library-news-card__media img {
+.library-news-card__media img,
+.library-news-card__media video {
   display: block;
   width: 100%;
   aspect-ratio: 16 / 9;
   object-fit: cover;
-  transition: transform 0.3s ease;
+  background: #002b35;
+}
+
+.library-news-card__media-fallback {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: linear-gradient(135deg, #064653, #002b35);
+  color: #1de0c4;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 3px;
 }
 
 .library-news-card:hover .library-news-card__media img {

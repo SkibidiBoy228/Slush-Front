@@ -1,4 +1,7 @@
 
+import { useEffect, useState } from "react";
+import type { SyntheticEvent } from "react";
+
 import type { CommunityPost } from "../../../types/library";
 
 interface CommunityPostCardProps {
@@ -6,15 +9,45 @@ interface CommunityPostCardProps {
 }
 
 function CommunityPostCard({ post }: CommunityPostCardProps) {
+  const [mediaError, setMediaError] = useState(false);
+
   const title = post.title?.trim() || "Без назви";
+
   const description =
     post.shortDescription?.trim() ||
     post.content?.trim() ||
     "";
 
+  const mediaUrl = post.mediaUrl?.trim() || "";
+
+  // Определяем видео по расширению или пути Cloudinary.
+  const isVideo =
+    /\.(mp4|webm|mov|m4v)(\?.*)?($|#)/i.test(mediaUrl) ||
+    /\/video\/upload\//i.test(mediaUrl);
+
+  useEffect(() => {
+    setMediaError(false);
+  }, [mediaUrl]);
+
+  const handleVideoLoaded = (
+    event: SyntheticEvent<HTMLVideoElement>
+  ) => {
+    const video = event.currentTarget;
+
+    if (Number.isFinite(video.duration) && video.duration > 0) {
+      video.currentTime = Math.min(1, video.duration);
+    }
+  };
+
+  const handleVideoSeeked = (
+    event: SyntheticEvent<HTMLVideoElement>
+  ) => {
+    event.currentTarget.pause();
+  };
+
   return (
     <article className="library-news-card">
-      {post.mediaUrl && (
+      {mediaUrl && (
         <a
           className="library-news-card__media"
           href={
@@ -24,11 +57,30 @@ function CommunityPostCard({ post }: CommunityPostCardProps) {
           }
           aria-label={title}
         >
-          <img
-            src={post.mediaUrl}
-            alt=""
-            loading="lazy"
-          />
+          {!mediaError ? (
+            isVideo ? (
+              <video
+                src={mediaUrl}
+                muted
+                playsInline
+                preload="metadata"
+                onLoadedMetadata={handleVideoLoaded}
+                onSeeked={handleVideoSeeked}
+                onError={() => setMediaError(true)}
+              />
+            ) : (
+              <img
+                src={mediaUrl}
+                alt={title}
+                loading="lazy"
+                onError={() => setMediaError(true)}
+              />
+            )
+          ) : (
+            <div className="library-news-card__media-fallback">
+              <span>SLUSH</span>
+            </div>
+          )}
         </a>
       )}
 
