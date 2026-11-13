@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 
 import {
   getProfileComments,
+  addProfileComment,
+  deleteProfileComment,
   getProfileGames,
   getProfileGuides,
   getProfilePosts,
@@ -47,7 +49,6 @@ const Profile = ({ username }: ProfileProps) => {
   const { t, i18n } = useTranslation();
 
   const [profile, setProfile] = useState<UserProfile | null>(null);
-
   const [games, setGames] = useState<ProfileGame[]>([]);
   const [posts, setPosts] = useState<ProfilePost[]>([]);
   const [screenshots, setScreenshots] = useState<ProfileScreenshot[]>([]);
@@ -56,9 +57,13 @@ const Profile = ({ username }: ProfileProps) => {
   const [guides, setGuides] = useState<ProfileGuide[]>([]);
   const [comments, setComments] = useState<ProfileComment[]>([]);
 
+  const [newComment, setNewComment] = useState("");
+  const [commentSubmitting, setCommentSubmitting] = useState(false);
+  const [commentDeletingId, setCommentDeletingId] = useState<string | null>(null);
+  const [commentError, setCommentError] = useState("");
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
-
   const [isActionsMenuOpen, setIsActionsMenuOpen] = useState(false);
 
   const [friendStatus, setFriendStatus] = useState<
@@ -339,6 +344,64 @@ const Profile = ({ username }: ProfileProps) => {
       console.error("Не вдалося видалити друга:", error);
     } finally {
       setFriendActionLoading(false);
+    }
+  };
+
+  // Добавление комментария
+  const handleAddComment = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const text = newComment.trim();
+
+    if (!text || commentSubmitting) return;
+
+    if (!currentUsername) {
+      setCommentError(t("profile.commentLoginRequired"));
+      return;
+    }
+
+    try {
+      setCommentSubmitting(true);
+      setCommentError("");
+
+      const createdComment = await addProfileComment(username, text);
+
+      setComments((current) => [createdComment, ...current]);
+      setNewComment("");
+    } catch (requestError) {
+      setCommentError(
+        requestError instanceof Error
+          ? requestError.message
+          : t("profile.commentSendError")
+      );
+    } finally {
+      setCommentSubmitting(false);
+    }
+  };
+
+  // Удаление комментария
+  const handleDeleteComment = async (commentId: string) => {
+    if (commentDeletingId) return;
+
+    if (!window.confirm(t("profile.confirmDeleteComment"))) return;
+
+    try {
+      setCommentDeletingId(commentId);
+      setCommentError("");
+
+      await deleteProfileComment(commentId);
+
+      setComments((current) =>
+        current.filter((comment) => comment.id !== commentId)
+      );
+    } catch (requestError) {
+      setCommentError(
+        requestError instanceof Error
+          ? requestError.message
+          : t("profile.commentDeleteError")
+      );
+    } finally {
+      setCommentDeletingId(null);
     }
   };
 
@@ -692,7 +755,6 @@ const Profile = ({ username }: ProfileProps) => {
                       preload="none"
                       playsInline
                     />
-
                     <span>{video.title}</span>
                   </article>
                 ))}
@@ -774,36 +836,84 @@ const Profile = ({ username }: ProfileProps) => {
               )}
             </section>
 
+            {/* Комментарии профиля */}
             <section className="profile-section">
               <div className="section-title-row">
                 <h2>{t("profile.comments")}</h2>
                 <span>{comments.length}</span>
               </div>
 
-              <div className="comment-form">
-                <input
-                  placeholder={t("profile.leaveComment")}
-                  disabled
-                />
+              {currentUsername ? (
+                <form className="comment-form" onSubmit={handleAddComment}>
+                  <input
+                    type="text"
+                    value={newComment}
+                    onChange={(event) => setNewComment(event.target.value)}
+                    placeholder={t("profile.leaveComment")}
+                    disabled={commentSubmitting}
+                    aria-label={t("profile.leaveComment")}
+                  />
+
+                  <button
+                    type="submit"
+                    disabled={!newComment.trim() || commentSubmitting}
+                  >
+                    {commentSubmitting
+                      ? t("profile.commentSending")
+                      : t("profile.commentSend")}
+                  </button>
+                </form>
+              ) : (
+                <p className="empty-section">
+                  {t("profile.commentLoginRequired")}
+                </p>
+              )}
+
+              {commentError && (
+                <p className="profile-comment-error" role="alert">
+                  {commentError}
+                </p>
+              )}
+
+              <div className="profile-comments-list">
+                {comments.map((comment) => {
+                  const canDelete =
+                    isOwnProfile ||
+                    currentUsername?.toLowerCase() ===
+                      comment.authorUsername.toLowerCase();
+
+                  return (
+                    <article className="comment-card" key={comment.id}>
+                      <div className="content-card-header">
+                        <img
+                          src={comment.authorAvatarUrl}
+                          alt={comment.authorUsername}
+                        />
+
+                        <div>
+                          <strong>{comment.authorUsername}</strong>
+                          <small>{comment.createdAt}</small>
+                        </div>
+
+                        {canDelete && (
+                          <button
+                            type="button"
+                            className="profile-comment-delete"
+                            onClick={() => handleDeleteComment(comment.id)}
+                            disabled={commentDeletingId === comment.id}
+                            aria-label={t("profile.deleteComment")}
+                            title={t("profile.deleteComment")}
+                          >
+                            {commentDeletingId === comment.id ? "…" : "×"}
+                          </button>
+                        )}
+                      </div>
+
+                      <p>{comment.text}</p>
+                    </article>
+                  );
+                })}
               </div>
-
-              {comments.map((comment) => (
-                <article className="comment-card" key={comment.id}>
-                  <div className="content-card-header">
-                    <img
-                      src={comment.authorAvatarUrl}
-                      alt={comment.authorUsername}
-                    />
-
-                    <div>
-                      <strong>{comment.authorUsername}</strong>
-                      <small>{comment.createdAt}</small>
-                    </div>
-                  </div>
-
-                  <p>{comment.text}</p>
-                </article>
-              ))}
 
               {!comments.length && (
                 <p className="empty-section">

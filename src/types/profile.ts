@@ -66,12 +66,13 @@ export interface ProfileGuide{
     createdAt: string;
 }
 
-export interface ProfileComment{
-    id:string;
-    authorUsername: string;
-    authorAvatarUrl: string;
-    text: string;
-    createdAt: string;   
+export interface ProfileComment {
+  id: string;
+  authorId: string;
+  authorUsername: string;
+  authorAvatarUrl: string;
+  text: string;
+  createdAt: string;
 }
 
 export interface ProfileGame {

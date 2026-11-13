@@ -1114,6 +1114,62 @@
 .friend-level-badge span {
   font-size: 12px;
 }
+.profile-comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.comment-form {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.comment-form input {
+  flex: 1;
+  min-width: 0;
+}
+
+.comment-form button {
+  flex-shrink: 0;
+  padding: 10px 20px;
+  border: 1px solid rgba(0, 205, 185, 0.35);
+  border-radius: 10px;
+  background: #00a99a;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, opacity 0.2s ease;
+}
+
+.comment-form button:hover:not(:disabled) {
+  background: #00cdb9;
+}
+
+.comment-form button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.profile-comment-delete {
+  margin-left: auto;
+  border: none;
+  background: transparent;
+  color: #aab8bd;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.profile-comment-delete:hover {
+  color: #ff6262;
+}
+
+.profile-comment-error {
+  margin: 10px 0;
+  color: #ff7373;
+  font-size: 13px;
+}
 
 @media (max-width: 900px) {
   .profile-sidebar {

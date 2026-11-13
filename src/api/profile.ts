@@ -243,3 +243,30 @@ export async function getProfileDiscussions(
     `${profilePath(username)}/posts?${params.toString()}`
   );
 }
+export interface CreateProfileCommentRequest {
+  text: string;
+}
+
+export async function addProfileComment(
+  username: string,
+  text: string
+): Promise<ProfileComment> {
+  return apiRequest<ProfileComment>(
+    `${profilePath(username)}/comments`,
+    {
+      method: "POST",
+      body: JSON.stringify({ text }),
+    }
+  );
+}
+
+export async function deleteProfileComment(
+  commentId: string
+): Promise<{ message: string }> {
+  return apiRequest<{ message: string }>(
+    `/api/UserProfile/comments/${encodeURIComponent(commentId)}`,
+    {
+      method: "DELETE",
+    }
+  );
+}
