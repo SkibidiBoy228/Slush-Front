@@ -18,7 +18,6 @@ import {
   togglePostLike,
   getPostComments,
   addPostComment,
-  createCommunityPost,
   deleteComment,
   updateComment,
 } from "../../api/community";
