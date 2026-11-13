@@ -105,15 +105,32 @@ function CommunityGamebar({
                       `/community/post/${encodeURIComponent(post.id)}`;
                   }}
                 >
-                  {post.mediaUrl && (
-                    <div className="community-gamebar-post-media">
-                      <img src={post.mediaUrl} alt="" loading="lazy" />
+                {post.mediaUrl && (
+                  <div className="community-gamebar-post-media">
+                    {post.postType === "Video" ? (
+                      <video
+                        src={post.mediaUrl}
+                        muted
+                        autoPlay
+                        loop
+                        playsInline
+                        preload="auto"
+                      />
+                    ) : (
+                      <img
+                        src={post.mediaUrl}
+                        alt={post.title || "Прев'ю публікації"}
+                        loading="lazy"
+                      />
+                    )}
 
-                      {post.postType === "Video" && (
-                        <span className="community-gamebar-play">▶</span>
-                      )}
-                    </div>
-                  )}
+                    {post.postType === "Video" && (
+                      <span className="community-gamebar-play">
+                        ▶
+                      </span>
+                    )}
+                  </div>
+                )}
 
                   <div className="community-gamebar-post-info">
                     {post.postType && (

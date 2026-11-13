@@ -160,11 +160,13 @@
   background: #001e28;
 }
 
-.community-gamebar-post-media img {
+.community-gamebar-post-media img,
+.community-gamebar-post-media video {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  background: #001e28;
 }
 
 .community-gamebar-play {
