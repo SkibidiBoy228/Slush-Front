@@ -303,7 +303,8 @@ function CommunityPostDetails({
         commentsCount: item.commentsCount,
     }))}
     onCreatePost={() => {
-        console.log("Create post will be connected later");
+      window.location.href =
+        `/game/${encodeURIComponent(gameId)}/community/create/discussion`;
     }}
     onTabChange={(tab) => {
         if (tab === "community") {

@@ -7,7 +7,6 @@ import CommunitySidebar, {
   type CommunitySort,
 } from "../../components/Community/CommunitySidebar/CommunitySidebar";
 import CommunityPost from "../../components/Community/CommunityPost/CommunityPost";
-import CommunityPostCreator from "../../components/Community/CommunityPostCreator/CommunityPostCreator";
 import CommunityComments from "../../components/Community/CommunityComments/CommunityComments";
 
 import { getGameDetails } from "../../api/games";
@@ -40,7 +39,6 @@ interface CommunityPageProps {
 function CommunityPage({ gameId }: CommunityPageProps) {
   const [gameTitle, setGameTitle] = useState("");
   const [gameLoading, setGameLoading] = useState(true);
-  const [isCreatingPost, setIsCreatingPost] = useState(false);
 
   const [posts, setPosts] = useState<CommunityPostData[]>([]);
 
@@ -340,39 +338,6 @@ function CommunityPage({ gameId }: CommunityPageProps) {
       throw error;
     }
   };
-
-  const handleCreatePost = async (data: {
-    postType: CommunityPostType;
-    title: string;
-    content: string;
-    shortDescription: string;
-    mediaUrl: string | null;
-  }) => {
-    try {
-      const createdPost = await createCommunityPost({
-        gameId,
-        postType: data.postType,
-        title: data.title || undefined,
-        content: data.content || undefined,
-        shortDescription: data.shortDescription || undefined,
-        mediaUrl: data.mediaUrl || undefined,
-      });
-
-      setPosts((currentPosts) => [
-        createdPost,
-        ...currentPosts,
-      ]);
-
-      setIsCreatingPost(false);
-
-      await loadCounts();
-    } catch (error) {
-      console.error("Failed to create post:", error);
-      alert("Не вдалося створити публікацію");
-      throw error;
-    }
-  };
-
   const filteredPosts = useMemo(() => {
     const search = searchValue.trim().toLowerCase();
 
@@ -432,10 +397,17 @@ function CommunityPage({ gameId }: CommunityPageProps) {
           </div>
 
           <div className="community-page-heading-actions">
-            <CommunityPostCreator
-              onSubmit={handleCreatePost}
-              onOpenChange={setIsCreatingPost}
-            />
+            <button
+              type="button"
+              className="community-create-button"
+              onClick={() => {
+                window.location.href =
+                  `/game/${encodeURIComponent(gameId)}/community/create/discussion`;
+              }}
+            >
+              <span className="community-create-icon">+</span>
+              <span>Створити пост</span>
+            </button>
 
             <div className="community-page-heading-tools" aria-label="Дії спільноти">
               <span
@@ -530,43 +502,22 @@ function CommunityPage({ gameId }: CommunityPageProps) {
           </section>
 
           <aside className="community-sidebar-column">
-            {isCreatingPost ? (
-              <div className="community-rules">
-                <h3>Правила спільноти</h3>
-
-                <ul>
-                  <li>
-                    Публікуйте тільки оригінальний контент.
-                  </li>
-
-                  <li>
-                    Не допускайте образ та принижень на адресу інших
-                    гравців, розробників чи груп.
-                  </li>
-
-                  <li>
-                    Не включайте погрози або образливий контент.
-                  </li>
-                </ul>
-              </div>
-            ) : (
-              <CommunitySidebar
-                activeFilter={activeFilter}
-                sort={sort}
-                counts={{
-                  all: counts.all,
-                  discussions: counts.discussions,
-                  screenshots: counts.screenshots,
-                  videos: counts.videos,
-                  guides: counts.guides,
-                  news: counts.news,
-                }}
-                onFilterChange={setActiveFilter}
-                onSortChange={setSort}
-                searchValue={searchValue}
-                onSearchChange={setSearchValue}
-              />
-            )}
+            <CommunitySidebar
+              activeFilter={activeFilter}
+              sort={sort}
+              counts={{
+                all: counts.all,
+                discussions: counts.discussions,
+                screenshots: counts.screenshots,
+                videos: counts.videos,
+                guides: counts.guides,
+                news: counts.news,
+              }}
+              onFilterChange={setActiveFilter}
+              onSortChange={setSort}
+              searchValue={searchValue}
+              onSearchChange={setSearchValue}
+            />
           </aside>
         </div>
       </main>
