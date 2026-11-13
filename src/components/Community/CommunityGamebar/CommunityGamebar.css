@@ -246,3 +246,56 @@
   font-size: 11px;
   line-height: 1.5;
 }
+/* Community details: sidebar typography */
+
+.community-gamebar {
+  gap: 22px;
+}
+
+.community-gamebar-heading h2 {
+  font-size: 18px;
+}
+
+.community-gamebar-subscribers {
+  font-size: 12px;
+}
+
+.community-gamebar-create {
+  min-height: 42px;
+  font-size: 13px;
+}
+
+.community-gamebar-icon-button {
+  width: 35px;
+  height: 34px;
+}
+
+.community-gamebar-icon-button svg {
+  width: 17px;
+  height: 17px;
+}
+
+.community-gamebar-recommendations h3 {
+  font-size: 15px;
+}
+
+.community-gamebar-post-info {
+  padding: 9px 10px 6px;
+  gap: 5px;
+}
+
+.community-gamebar-post-type {
+  font-size: 9px;
+}
+
+.community-gamebar-post-info h4 {
+  font-size: 12px;
+}
+
+.community-gamebar-post-info p {
+  font-size: 10px;
+}
+
+.community-gamebar-post-stats span {
+  font-size: 10px;
+}

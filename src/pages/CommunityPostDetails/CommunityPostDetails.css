@@ -97,3 +97,15 @@
   background: #003440;
   color: #e3f7f8;
 }
+
+.community-details-sort {
+  gap: 9px;
+  margin: 14px 0 16px;
+  font-size: 13px;
+}
+
+.community-details-sort select {
+  max-width: 190px;
+  padding: 7px 24px 7px 10px;
+  font-size: 12px;
+}
