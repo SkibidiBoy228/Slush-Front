@@ -191,6 +191,99 @@
   margin-left: 0;
 }
 
+.community-details-card {
+  border-radius: 14px;
+}
+
+.community-details-card-author {
+  gap: 11px;
+  padding: 13px 16px 0;
+}
+
+.community-details-card-avatar {
+  width: 32px;
+  height: 32px;
+  font-size: 13px;
+}
+
+.community-details-card-author-name {
+  font-size: 12px;
+}
+
+.community-details-card-date {
+  font-size: 10px;
+}
+
+.community-details-card-text {
+  padding: 13px 16px 0;
+}
+
+.community-details-card-title {
+  font-size: 19px;
+  line-height: 1.45;
+  margin-bottom: 9px;
+}
+
+.community-details-card-description {
+  font-size: 14px;
+  line-height: 1.65;
+  margin-bottom: 9px;
+}
+
+.community-details-card-content {
+  font-size: 13px;
+  line-height: 1.7;
+  margin-bottom: 13px;
+}
+
+.community-details-card-media {
+  margin-top: 12px;
+}
+
+.community-details-card-media img {
+  max-height: 620px;
+}
+
+.community-details-card-video video {
+  max-height: 650px;
+}
+
+.community-details-card-actions {
+  gap: 9px;
+  padding: 12px 16px 14px;
+}
+
+.community-details-card-action {
+  min-height: 30px;
+  gap: 6px;
+  padding: 5px 10px;
+  font-size: 11px;
+}
+
+.community-details-card-action svg {
+  width: 14px;
+  height: 14px;
+}
+
+@media (max-width: 600px) {
+  .community-details-card-title {
+    font-size: 16px;
+  }
+
+  .community-details-card-description {
+    font-size: 12px;
+  }
+
+  .community-details-card-content {
+    font-size: 12px;
+  }
+
+  .community-details-card-media img,
+  .community-details-card-video video {
+    max-height: 420px;
+  }
+}
+
 @media (max-width: 600px) {
   .community-details-card-title {
     font-size: 14px;
