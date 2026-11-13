@@ -383,7 +383,165 @@
   font-size: 12px;
 }
 
-/* Responsive */
+/* Steam news section */
+
+.library-news-card {
+  display: flex;
+  gap: 16px;
+  min-width: 0;
+  overflow: hidden;
+  padding: 14px;
+  border: 1px solid rgba(91, 190, 199, 0.16);
+  border-radius: 10px;
+  background: linear-gradient(135deg, #064653, #033541);
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.library-news-read-link,
+.library-news-read-link:visited {
+  color: #00cdb9;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.library-news-read-link:hover {
+  color: #65f5e5;
+  text-decoration: none;
+}
+
+.library-news-read-link:focus-visible {
+  outline: 2px solid #00cdb9;
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+.library-news-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(29, 224, 196, 0.4);
+  background: linear-gradient(135deg, #075362, #03404c);
+}
+
+.library-news-card__media {
+  display: block;
+  flex: 0 0 190px;
+  overflow: hidden;
+  align-self: flex-start;
+  border-radius: 7px;
+  background: #002b35;
+}
+
+.library-news-card__media img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.library-news-card:hover .library-news-card__media img {
+  transform: scale(1.04);
+}
+
+.library-news-card__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.library-news-card__author {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 9px;
+  color: #83b9c2;
+  font-size: 10px;
+}
+
+.library-news-card__username {
+  color: #1de0c4;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.library-news-card__date {
+  color: #83aeb7;
+  font-size: 10px;
+}
+
+.library-news-card__title {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0 0 8px;
+  color: #e5f3f5;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.library-news-card__description {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
+  color: #a9cbd0;
+  font-size: 12px;
+  line-height: 1.55;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.library-news-card__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 12px;
+  color: #83aeb7;
+  font-size: 10px;
+}
+
+.library-news-card__footer a {
+  color: #1de0c4;
+  font-size: 11px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.library-news-card__footer a:hover {
+  color: #a0fff0;
+}
+
+@media (max-width: 650px) {
+  .library-news-card {
+    flex-direction: column;
+    gap: 11px;
+    padding: 11px;
+  }
+
+  .library-news-card__media {
+    flex-basis: auto;
+    width: 100%;
+  }
+
+  .library-news-card__title {
+    font-size: 13px;
+  }
+
+  .library-news-card__description {
+    font-size: 11px;
+  }
+}
+
 
 @media (max-width: 1200px) {
   .library-home__games {

@@ -1269,7 +1269,14 @@
   "noGuides": "Zatiaľ žiadne návody",
   "comments": "Komentáre",
   "leaveComment": "Napísať komentár...",
-  "noComments": "Zatiaľ žiadne komentáre"
+  "noComments": "Zatiaľ žiadne komentáre",
+  "commentLoginRequired": "Prihlás sa a zanechaj komentár.",
+"commentSend": "Odoslať",
+"commentSending": "Odosielanie...",
+"commentSendError": "Nepodarilo sa odoslať komentár.",
+"deleteComment": "Odstrániť komentár",
+"confirmDeleteComment": "Naozaj chceš odstrániť tento komentár?",
+"commentDeleteError": "Nepodarilo sa odstrániť komentár."
 },
 "gamePage": {
   "loadError": "Nepodarilo sa načítať hru",

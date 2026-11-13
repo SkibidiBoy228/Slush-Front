@@ -1270,7 +1270,14 @@
   "noGuides": "Гайдів поки немає",
   "comments": "Коментарі",
   "leaveComment": "Залишити коментар...",
-  "noComments": "Коментарів поки немає"
+  "noComments": "Коментарів поки немає",
+  "commentLoginRequired": "Увійди в акаунт, щоб залишити коментар.",
+    "commentSend": "Надіслати",
+    "commentSending": "Надсилання...",
+    "commentSendError": "Не вдалося надіслати коментар.",
+    "deleteComment": "Видалити коментар",
+    "confirmDeleteComment": "Ти впевнений, що хочеш видалити цей коментар?",
+    "commentDeleteError": "Не вдалося видалити коментар."
 },
 "gamePage": {
   "loadError": "Не вдалося завантажити гру",

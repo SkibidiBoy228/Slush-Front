@@ -79,6 +79,7 @@ function LibraryNewsCard({ post }: LibraryNewsCardProps) {
           <span>{post.author || "Steam"}</span>
 
           <a
+            className="library-news-read-link"
             href={post.url}
             target="_blank"
             rel="noopener noreferrer"

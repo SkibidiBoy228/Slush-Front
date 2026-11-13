@@ -1270,7 +1270,14 @@
   "noGuides": "Гайдов пока нет",
   "comments": "Комментарии",
   "leaveComment": "Оставить комментарий...",
-  "noComments": "Комментариев пока нет"
+  "noComments": "Комментариев пока нет",
+  "commentLoginRequired": "Войди в аккаунт, чтобы оставить комментарий.",
+"commentSend": "Отправить",
+"commentSending": "Отправка...",
+"commentSendError": "Не удалось отправить комментарий.",
+"deleteComment": "Удалить комментарий",
+"confirmDeleteComment": "Ты уверен, что хочешь удалить этот комментарий?",
+"commentDeleteError": "Не удалось удалить комментарий."
 },
 "gamePage": {
   "loadError": "Не удалось загрузить игру",
