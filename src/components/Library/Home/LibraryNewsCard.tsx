@@ -2,6 +2,7 @@
 import { useTranslation } from "react-i18next";
 
 import type { SteamNewsItem } from "../../../types/news";
+import "./LibraryNewsCard.css";
 
 interface LibraryNewsCardProps {
   post: SteamNewsItem;
