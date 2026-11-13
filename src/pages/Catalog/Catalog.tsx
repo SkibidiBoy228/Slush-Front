@@ -1,3 +1,4 @@
+
 import { useEffect, useMemo, useState } from "react";
 
 import GameSearch from "../../components/GameSearch/GameSearch";
@@ -10,8 +11,18 @@ import {
   getGameDetails,
 } from "../../api/games";
 
+import {
+  getLibrary,
+  getLibraryCollections,
+  addGameToCollections,
+} from "../../api/library";
+
 import type { CatalogGame } from "../../types/catalog";
 import type { GameDetails } from "../../types/game";
+import type {
+  LibraryGame,
+  LibraryCollection,
+} from "../../types/library";
 
 import { formatPrice, USD_TO_UAH } from "../../utils/price";
 
@@ -80,12 +91,57 @@ function Catalog() {
   const [viewMode, setViewMode] =
     useState<"grid" | "list">("grid");
 
+  const [collections, setCollections] =
+    useState<LibraryCollection[]>([]);
+  const [libraryGames, setLibraryGames] =
+    useState<LibraryGame[]>([]);
+  const [openedGameId, setOpenedGameId] =
+    useState<string | null>(null);
+  const [addingGameId, setAddingGameId] =
+    useState<string | null>(null);
+  const [collectionMessage, setCollectionMessage] =
+    useState("");
+
   useEffect(() => {
     const params = new URLSearchParams(
       window.location.search
     );
 
     setQuery(params.get("query") ?? "");
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadUserCollections() {
+      try {
+        const [collectionData, libraryData] =
+          await Promise.all([
+            getLibraryCollections(),
+            getLibrary({
+              sort: "recent",
+              page: "1",
+              pageSize: 100,
+            }),
+          ]);
+
+        if (!cancelled) {
+          setCollections(collectionData);
+          setLibraryGames(libraryData.items);
+        }
+      } catch (err) {
+        console.error(
+          "Не вдалося завантажити колекції користувача:",
+          err
+        );
+      }
+    }
+
+    void loadUserCollections();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -140,12 +196,17 @@ function Catalog() {
       }
     }
 
-    loadGames();
+    void loadGames();
 
     return () => {
       cancelled = true;
     };
   }, [query]);
+
+  const libraryGameIds = useMemo(
+    () => new Set(libraryGames.map((game) => game.gameId)),
+    [libraryGames]
+  );
 
   const filteredGames = useMemo(() => {
     let result = [...games];
@@ -215,9 +276,42 @@ function Catalog() {
     setSort("relevance");
   }
 
+  async function handleAddToCollection(
+    gameId: string,
+    collectionId: string
+  ) {
+    try {
+      setAddingGameId(gameId);
+      setCollectionMessage("");
+
+      await addGameToCollections(collectionId, gameId);
+
+      const collectionName =
+        collections.find(
+          (collection) => collection.id === collectionId
+        )?.name;
+
+      setCollectionMessage(
+        `Гру додано до колекції «${collectionName ?? ""}».`
+      );
+
+      setOpenedGameId(null);
+    } catch (err) {
+      console.error(
+        "Не вдалося додати гру до колекції:",
+        err
+      );
+
+      setCollectionMessage(
+        "Не вдалося додати гру. Переконайтеся, що вона є у вашій бібліотеці."
+      );
+    } finally {
+      setAddingGameId(null);
+    }
+  }
+
   return (
     <div className="catalog-page">
-
       <div className="search-section">
         <GameSearch />
       </div>
@@ -380,6 +474,12 @@ function Catalog() {
             </aside>
 
             <section className="catalog-results">
+              {collectionMessage && (
+                <div className="catalog-collection-message">
+                  {collectionMessage}
+                </div>
+              )}
+
               {loading && (
                 <div className="catalog-message">
                   Завантаження ігор...
@@ -403,16 +503,86 @@ function Catalog() {
               {!loading && !error && (
                 <div
                   className={`catalog-grid ${
-                    viewMode === "list" ? "catalog-grid--list" : ""
+                    viewMode === "list"
+                      ? "catalog-grid--list"
+                      : ""
                   }`}
                 >
-                  {filteredGames.map((game) => (
-                    <GameCard
-                      key={`${game.source}-${game.id}`}
-                      game={convertGame(game)}
-                      variant={viewMode === "list" ? "small" : "vertical"}
-                    />
-                  ))}
+                  {filteredGames.map((game) => {
+                    const isInLibrary =
+                      libraryGameIds.has(game.id);
+
+                    return (
+                      <div
+                        className="catalog-game-wrapper"
+                        key={`${game.source}-${game.id}`}
+                      >
+                        <GameCard
+                          game={convertGame(game)}
+                          variant={
+                            viewMode === "list"
+                              ? "small"
+                              : "vertical"
+                          }
+                        />
+
+                        {isInLibrary && (
+                          <div className="catalog-add-collection">
+                            <button
+                              type="button"
+                              className="catalog-add-collection-button"
+                              disabled={
+                                addingGameId === game.id ||
+                                collections.length === 0
+                              }
+                              onClick={() =>
+                                setOpenedGameId(
+                                  openedGameId === game.id
+                                    ? null
+                                    : game.id
+                                )
+                              }
+                            >
+                              {addingGameId === game.id
+                                ? "Додаємо..."
+                                : "＋ В колекцію"}
+                            </button>
+
+                            {openedGameId === game.id && (
+                              <div className="catalog-collection-menu">
+                                {collections.length > 0 ? (
+                                  collections.map(
+                                    (collection) => (
+                                      <button
+                                        type="button"
+                                        key={collection.id}
+                                        disabled={
+                                          addingGameId === game.id
+                                        }
+                                        onClick={() =>
+                                          void handleAddToCollection(
+                                            game.id,
+                                            collection.id
+                                          )
+                                        }
+                                      >
+                                        {collection.name}
+                                      </button>
+                                    )
+                                  )
+                                ) : (
+                                  <span>
+                                    Спочатку створіть колекцію
+                                    в бібліотеці
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </section>

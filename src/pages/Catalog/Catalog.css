@@ -456,6 +456,96 @@
   max-width: 1250px;
 }
 
+
+
+.catalog-game-wrapper {
+  position: relative;
+  min-width: 0;
+}
+
+.catalog-add-collection {
+  position: relative;
+  z-index: 5;
+  padding: 0 12px 12px;
+}
+
+.catalog-add-collection-button {
+  width: 100%;
+  min-height: 38px;
+  border: 1px solid rgba(0, 205, 180, 0.35);
+  border-radius: 8px;
+  background: rgba(0, 105, 96, 0.22);
+  color: #8fffea;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.catalog-add-collection-button:hover:not(:disabled) {
+  background: rgba(0, 150, 130, 0.3);
+  border-color: rgba(0, 230, 200, 0.7);
+}
+
+.catalog-add-collection-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.catalog-collection-menu {
+  position: absolute;
+  top: calc(100% - 8px);
+  left: 12px;
+  right: 12px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  border: 1px solid rgba(0, 205, 180, 0.25);
+  border-radius: 9px;
+  background: #062b30;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.catalog-collection-menu button {
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #e8f4f7;
+  text-align: left;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.catalog-collection-menu button:hover:not(:disabled) {
+  background: rgba(0, 205, 180, 0.15);
+  color: #8fffea;
+}
+
+.catalog-collection-menu button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+.catalog-collection-menu span {
+  padding: 10px;
+  color: #a9c2c5;
+  font-size: 12px;
+}
+
+.catalog-collection-message {
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border: 1px solid rgba(0, 205, 180, 0.25);
+  border-radius: 8px;
+  background: rgba(0, 105, 96, 0.18);
+  color: #a8fff0;
+  font-size: 14px;
+}
+
 /* Адаптивность */
 
 @media (max-width: 1000px) {
