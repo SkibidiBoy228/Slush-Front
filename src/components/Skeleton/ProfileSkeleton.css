@@ -1,0 +1,250 @@
+.profile-skeleton-section {
+  min-width: 0;
+}
+
+.profile-skeleton-cover {
+  display: block;
+}
+
+.profile-skeleton-main-info {
+  min-height: 112px;
+  padding: 0 22px 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-radius: 0 0 11px 11px;
+  background: #064653;
+}
+
+.profile-skeleton-main-info > :first-child {
+  flex-shrink: 0;
+  margin-top: -46px;
+  border: 3px solid #064653;
+}
+
+.profile-skeleton-user-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 0;
+}
+
+.profile-skeleton-badges {
+  display: grid;
+  grid-template-columns: 86px repeat(5, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.profile-skeleton-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  margin-bottom: 12px;
+}
+
+.profile-skeleton-games {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.profile-skeleton-games > div {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 7px;
+  border: 1px solid rgba(69, 202, 207, 0.1);
+  border-radius: 8px;
+  background: #044653;
+}
+
+.profile-skeleton-content-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.profile-skeleton-content-card {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  padding: 11px;
+  border: 1px solid rgba(69, 202, 207, 0.1);
+  border-radius: 8px;
+  background: #044653;
+}
+
+.profile-skeleton-content-author {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.profile-skeleton-content-author > div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.profile-skeleton-card-footer {
+  display: flex;
+  gap: 14px;
+}
+
+.profile-skeleton-media {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.profile-skeleton-reviews {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.profile-skeleton-reviews > div {
+  display: flex;
+  gap: 12px;
+  padding: 11px;
+  border: 1px solid rgba(69, 202, 207, 0.1);
+  border-radius: 8px;
+  background: #044653;
+}
+
+.profile-skeleton-reviews > div > div:last-child {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profile-skeleton-comments {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.profile-skeleton-comments > div {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px;
+  border-radius: 8px;
+  background: #044653;
+}
+
+.profile-skeleton-comments > div > div:last-child {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.profile-skeleton-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.profile-skeleton-sidebar .sidebar-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 14px 12px;
+  border-radius: 15px;
+  background: #004653;
+}
+
+.profile-skeleton-level {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.profile-skeleton-level > div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profile-skeleton-navigation {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.profile-skeleton-friends {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.profile-skeleton-friend {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 43px;
+  padding: 0 10px;
+}
+
+.profile-skeleton-friend > div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+@media (max-width: 900px) {
+  .profile-skeleton-games {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .profile-skeleton-badges {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .profile-skeleton-main-info {
+    flex-wrap: wrap;
+    padding: 0 14px 16px;
+    gap: 12px;
+  }
+
+  .profile-skeleton-main-info > :last-child {
+    margin-left: auto;
+  }
+
+  .profile-skeleton-user-info {
+    flex-basis: calc(100% - 115px);
+  }
+
+  .profile-skeleton-sidebar {
+    display: none;
+  }
+
+  .profile-skeleton-games {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .profile-skeleton-media {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 420px) {
+  .profile-skeleton-main-info > :last-child {
+    display: none;
+  }
+
+  .profile-skeleton-badges {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .profile-skeleton-reviews > div > :first-child {
+    width: 95px;
+  }
+}

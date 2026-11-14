@@ -7,6 +7,7 @@ import HeroSlider from "../../components/HeroSlider/HeroSlider";
 import GameCard, {
   type Game,
 } from "../../components/GameCard/GameCard";
+import { mapWithConcurrency } from "../../utils/async";
 
 import {
   getGames,
@@ -61,63 +62,71 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    let isCancelled = false;
+    useEffect(() => {
+      let isCancelled = false;
 
-    async function loadGames() {
-      try {
-        setLoading(true);
-        setError("");
+      async function loadGames() {
+        try {
+          setLoading(true);
+          setError("");
 
-        const response = await getGames({
-          page: 1,
-          pageSize: 18,
-        });
+          const response = await getGames({
+            page: 1,
+            pageSize: 18,
+          });
 
-        const detailedGames: ActualGame[] = [];
-
-        for (const game of response.items) {
           if (isCancelled) return;
 
-          try {
-            const details = await getGameDetails(game.id);
+          const detailedGames = await mapWithConcurrency(
+            response.items,
+            5,
+            async (game) => {
+              try {
+                const details = await getGameDetails(game.id);
 
-            detailedGames.push({
-              ...game,
-              details,
-            });
-          } catch (detailsError) {
-            console.warn(
-              `Не вдалося завантажити деталі гри ${game.id}`,
-              detailsError
+                return {
+                  ...game,
+                  details,
+                };
+              } catch (detailsError) {
+                console.warn(
+                  `Не вдалося завантажити деталі гри ${game.id}`,
+                  detailsError
+                );
+
+                return null;
+              }
+            }
+          );
+
+          if (!isCancelled) {
+            setCatalogGames(
+              detailedGames.filter(
+                (game): game is ActualGame => game !== null
+              )
             );
           }
-        }
-
-        if (!isCancelled) {
-          setCatalogGames(detailedGames);
-        }
-      } catch (err) {
-        if (!isCancelled) {
-          setError(
-            err instanceof Error
-              ? err.message
-              : t("home.loadError")
-          );
-        }
-      } finally {
-        if (!isCancelled) {
-          setLoading(false);
+        } catch (err) {
+          if (!isCancelled) {
+            setError(
+              err instanceof Error
+                ? err.message
+                : t("home.loadError")
+            );
+          }
+        } finally {
+          if (!isCancelled) {
+            setLoading(false);
+          }
         }
       }
-    }
 
-    loadGames();
+      loadGames();
 
-    return () => {
-      isCancelled = true;
-    };
-  }, [t]);
+      return () => {
+        isCancelled = true;
+      };
+    }, [t]);
 
   const paidGames = catalogGames.filter(
     (game) => game.details.price > 0

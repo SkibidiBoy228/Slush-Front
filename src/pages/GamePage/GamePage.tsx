@@ -9,6 +9,7 @@ import GameSidebar from "../../components/GamePage/GameSidebar";
 import GameReviews from "../../components/GamePage/GameReviews";
 import GameBundles from "../../components/GamePage/GameBundles";
 import GameDlc from "../../components/GamePage/GameDlc";
+import GamePageSkeleton from "../../components/Skeleton/GamePageSkeleton";
 
 import { getGameDetails } from "../../api/games";
 import type { GameDetails } from "../../types/game";
@@ -52,13 +53,7 @@ function GamePage({ appId }: GamePageProps) {
   }, [appId, t]);
 
   if (loading) {
-    return (
-      <div className="game-page-state">
-        <div className="state-content">
-          {t("gamePage.loading")}
-        </div>
-      </div>
-    );
+    return <GamePageSkeleton />;
   }
 
   if (error || !game) {

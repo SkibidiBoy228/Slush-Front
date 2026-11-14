@@ -47,6 +47,7 @@ import { getCurrentUsername } from "../../api/client";
 import ProfileSidebar from "../../components/ProfileSidebar/ProfileSidebar";
 
 import "./Profile.css";
+import ProfileSkeleton from "../../components/Skeleton/ProfileSkeleton";
 
 interface ProfileProps {
   username: string;
@@ -437,15 +438,7 @@ const Profile = ({ username }: ProfileProps) => {
   };
 
   if (isLoading) {
-    return (
-      <div className="profile-page">
-        <main className="profile-container">
-          <div className="profile-message">
-            {t("profile.loading")}
-          </div>
-        </main>
-      </div>
-    );
+    return <ProfileSkeleton />;
   }
 
   if (error || !profile) {

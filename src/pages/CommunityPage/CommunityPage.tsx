@@ -10,6 +10,10 @@ import CommunitySidebar, {
 } from "../../components/Community/CommunitySidebar/CommunitySidebar";
 import CommunityPost from "../../components/Community/CommunityPost/CommunityPost";
 import CommunityComments from "../../components/Community/CommunityComments/CommunityComments";
+import {
+  default as CommunityPageSkeleton,
+  CommunityPostSkeleton,
+} from "../../components/Skeleton/CommunityPageSkeleton";
 
 import { getGameDetails } from "../../api/games";
 import { getCurrentUsername } from "../../api/client";
@@ -374,13 +378,7 @@ function CommunityPage({ gameId }: CommunityPageProps) {
   }, [posts, searchValue]);
 
   if (gameLoading) {
-    return (
-      <div className="community-page-state">
-        <div className="community-state-content">
-          {t("communityPage.loadingCommunity")}
-        </div>
-      </div>
-    );
+    return <CommunityPageSkeleton />;
   }
 
   return (
@@ -469,11 +467,13 @@ function CommunityPage({ gameId }: CommunityPageProps) {
         <div className="community-layout">
           <section className="community-main">
             <div className="community-feed">
-              {loading ? (
-                <div className="community-feed-state">
-                  {t("communityPage.loadingPosts")}
-                </div>
-              ) : error ? (
+                {loading ? (
+                  <>
+                    <CommunityPostSkeleton />
+                    <CommunityPostSkeleton />
+                    <CommunityPostSkeleton />
+                  </>
+                ) : error ? (
                 <div className="community-feed-state community-feed-error">
                   {error}
 

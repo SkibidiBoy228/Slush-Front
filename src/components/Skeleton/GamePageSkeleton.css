@@ -1,0 +1,126 @@
+.game-page-skeleton {
+  min-height: 100vh;
+}
+
+.game-tabs-skeleton {
+  align-items: center;
+  min-height: 35px;
+  padding-bottom: 15px;
+}
+
+.game-gallery-skeleton {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.game-gallery-main-skeleton {
+  width: 100%;
+}
+
+.game-gallery-thumbnails-skeleton {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.game-tags-skeleton {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.game-description-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+  margin-top: 30px;
+}
+
+.game-description-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.game-extra-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 35px;
+}
+
+.game-extra-grid-skeleton {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.game-review-skeleton {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid rgba(117, 177, 187, 0.1);
+  border-radius: 8px;
+  background: rgba(3, 47, 58, 0.65);
+}
+
+.game-review-lines-skeleton {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.game-sidebar-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+  min-width: 0;
+  padding: 15px;
+  border: 1px solid rgba(117, 177, 187, 0.1);
+  border-radius: 9px;
+  background: rgba(3, 47, 58, 0.75);
+}
+
+.game-sidebar-lines-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+@media (max-width: 900px) {
+  .game-sidebar-skeleton {
+    order: -1;
+  }
+
+  .game-gallery-main-skeleton {
+    height: 320px !important;
+  }
+}
+
+@media (max-width: 650px) {
+  .game-tabs-skeleton {
+    gap: 18px;
+    overflow: hidden;
+  }
+
+  .game-gallery-main-skeleton {
+    height: 240px !important;
+  }
+
+  .game-gallery-thumbnails-skeleton {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .game-gallery-thumbnails-skeleton > :last-child {
+    display: none;
+  }
+
+  .game-extra-grid-skeleton {
+    grid-template-columns: 1fr;
+  }
+}
