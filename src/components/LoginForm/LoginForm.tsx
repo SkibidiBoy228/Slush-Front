@@ -14,9 +14,13 @@ function getRoleFromToken(token: string): string | null {
       return null;
     }
 
+    const normalizedBase64 = payloadBase64
+      .replace(/-/g, "+")
+      .replace(/_/g, "/");
+
     const payload = JSON.parse(
       decodeURIComponent(
-        atob(payloadBase64.replace(/-/g, "+").replace(/_/g, "/"))
+        atob(normalizedBase64)
           .split("")
           .map(
             (char) =>
@@ -26,14 +30,20 @@ function getRoleFromToken(token: string): string | null {
       )
     );
 
-    return (
+    const roleClaim =
       payload[
         "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
       ] ||
       payload.role ||
-      null
-    );
-  } catch {
+      payload.roles;
+
+    if (Array.isArray(roleClaim)) {
+      return roleClaim[0] ?? null;
+    }
+
+    return typeof roleClaim === "string" ? roleClaim : null;
+  } catch (error) {
+    console.error("Не удалось извлечь роль из JWT:", error);
     return null;
   }
 }
@@ -86,14 +96,11 @@ function LoginForm() {
       window.dispatchEvent(new Event("auth-changed"));
 
       const role = getRoleFromToken(response.accessToken);
-      const normalizedRole = role?.toLowerCase();
+      const normalizedRole = role?.trim().toLowerCase();
 
-      // Админка живёт на другом домене: localStorage туда не shared,
-      // поэтому ключ передаётся во фрагменте (# — не уходит на сервер и в Referer).
-      // Админка сама заберёт его в свой ключ и удалит из адреса.
       const adminBase = (
         (import.meta.env.VITE_ADMIN_URL as string | undefined) ?? ""
-      ).replace(/\/$/, "");
+      ).replace(/\/+$/, "");
 
       const adminDoors: Record<string, string> = {
         superadmin: "/superadmin",
