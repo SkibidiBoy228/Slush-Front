@@ -4,12 +4,12 @@ import type { CatalogResponse } from "../types/catalog";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-
 export async function getGames(params?: {
   query?: string;
   source?: number;
   minDiscount?: number;
   isFree?: boolean;
+  maxPrice?: number;
   page?: number;
   pageSize?: number;
 }): Promise<CatalogResponse> {
@@ -31,6 +31,10 @@ export async function getGames(params?: {
     searchParams.set("isFree", String(params.isFree));
   }
 
+  if (params?.maxPrice !== undefined) {
+    searchParams.set("maxPrice", String(params.maxPrice));
+  }
+
   searchParams.set("page", String(params?.page ?? 1));
   searchParams.set("pageSize", String(params?.pageSize ?? 12));
 
@@ -48,13 +52,12 @@ export async function getGames(params?: {
 
   if (!response.ok) {
     throw new Error(
-      data?.message || "Не вдалося завантажити список ігор"
+      data?.message ?? "Не вдалося завантажити список ігор"
     );
   }
 
   return data as CatalogResponse;
 }
-
 
 export async function getGameDetails(
   appId: string

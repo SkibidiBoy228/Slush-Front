@@ -63,6 +63,7 @@ function Home() {
   const [error, setError] = useState("");
 
 
+
   useEffect(() => {
     let isCancelled = false;
 
@@ -70,25 +71,36 @@ function Home() {
       try {
         setLoading(true);
         setError("");
-        const [regularResponse, freeResponse] = await Promise.all([
-          getGames({
-            page: 1,
-            pageSize: 18,
-          }),
 
-          getGames({
-            isFree: true,
-            page: 1,
-            pageSize: 12,
-          }),
-        ]);
+        const [regularResponse, freeResponse, budgetResponse] =
+          await Promise.all([
+            getGames({
+              page: 1,
+              pageSize: 18,
+            }),
+
+            getGames({
+              isFree: true,
+              page: 1,
+              pageSize: 12,
+            }),
+
+            getGames({
+              maxPrice: 100,
+              page: 1,
+              pageSize: 12,
+            }),
+          ]);
 
         if (isCancelled) return;
+
         const uniqueGames = Array.from(
           new Map(
-            [...regularResponse.items, ...freeResponse.items].map(
-              (game) => [game.id, game]
-            )
+            [
+              ...regularResponse.items,
+              ...freeResponse.items,
+              ...budgetResponse.items,
+            ].map((game) => [game.id, game])
           ).values()
         );
 
@@ -142,6 +154,7 @@ function Home() {
       isCancelled = true;
     };
   }, [t]);
+
 
 
   const paidGames = catalogGames.filter(
