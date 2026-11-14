@@ -1,0 +1,279 @@
+.profile-review-skeleton-header {
+  overflow: hidden;
+}
+
+.profile-review-skeleton-cover {
+  width: 100%;
+  height: 190px;
+  border-radius: 0;
+}
+
+.profile-review-skeleton-avatar {
+  flex-shrink: 0;
+  width: 105px;
+  height: 105px;
+  margin-top: -55px;
+  border: 4px solid #003b49;
+  border-radius: 12px;
+}
+
+.profile-review-skeleton-user-details {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.profile-review-skeleton-username {
+  width: 180px;
+  height: 20px;
+  border-radius: 5px;
+}
+
+.profile-review-skeleton-status {
+  width: 75px;
+  height: 10px;
+  border-radius: 5px;
+}
+
+.profile-review-skeleton-bio {
+  width: min(420px, 90%);
+  height: 12px;
+  border-radius: 5px;
+}
+
+.profile-review-skeleton-button {
+  flex-shrink: 0;
+  width: 120px;
+  height: 38px;
+  border-radius: 7px;
+}
+
+.profile-review-skeleton-search {
+  width: min(320px, 45%);
+  height: 30px;
+  border-radius: 20px;
+}
+
+.profile-review-skeleton-filters {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.profile-review-skeleton-sort {
+  width: 115px;
+  height: 12px;
+  border-radius: 5px;
+}
+
+.profile-review-skeleton-filter {
+  width: 65px;
+  height: 12px;
+  border-radius: 5px;
+}
+
+.profile-review-skeleton-card {
+  overflow: hidden;
+  min-width: 0;
+  border: 1px solid rgba(89, 181, 194, 0.2);
+  border-radius: 12px;
+  background: #003542;
+}
+
+.profile-review-skeleton-banner {
+  width: 100%;
+  height: 125px;
+  border-radius: 0;
+}
+
+.profile-review-skeleton-body {
+  padding: 9px 11px 10px;
+}
+
+.profile-review-skeleton-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.profile-review-skeleton-title {
+  width: 180px;
+  max-width: 70%;
+  height: 14px;
+  border-radius: 4px;
+}
+
+.profile-review-skeleton-more {
+  width: 22px;
+  height: 12px;
+  border-radius: 4px;
+}
+
+.profile-review-skeleton-rating {
+  display: flex;
+  gap: 4px;
+  margin: 8px 0;
+}
+
+.profile-review-skeleton-star {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+}
+
+.profile-review-skeleton-text {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 8px;
+}
+
+.profile-review-skeleton-text .skeleton-block {
+  width: 100%;
+  height: 9px;
+  border-radius: 4px;
+}
+
+.profile-review-skeleton-text .short {
+  width: 65%;
+}
+
+.profile-review-skeleton-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.profile-review-skeleton-stats {
+  display: flex;
+  gap: 6px;
+}
+
+.profile-review-skeleton-stat {
+  width: 48px;
+  height: 22px;
+  border-radius: 5px;
+}
+
+.profile-review-skeleton-date {
+  width: 75px;
+  height: 10px;
+  border-radius: 4px;
+}
+
+.profile-review-skeleton-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid rgba(89, 181, 194, 0.2);
+  border-radius: 12px;
+  background: #003b49;
+}
+
+.profile-review-skeleton-sidebar-title {
+  width: 130px;
+  height: 16px;
+  border-radius: 4px;
+}
+
+.profile-review-skeleton-sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.profile-review-skeleton-sidebar-avatar {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+}
+
+.profile-review-skeleton-sidebar-user-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profile-review-skeleton-sidebar-user-info .skeleton-block {
+  width: 100%;
+  height: 11px;
+  border-radius: 4px;
+}
+
+.profile-review-skeleton-sidebar-user-info .short {
+  width: 55%;
+}
+
+.profile-review-skeleton-sidebar-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+}
+
+.profile-review-skeleton-sidebar-stat {
+  height: 55px;
+  border-radius: 7px;
+}
+
+.profile-review-skeleton-sidebar-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.profile-review-skeleton-sidebar-link {
+  width: 100%;
+  height: 13px;
+  border-radius: 4px;
+}
+
+@media (max-width: 900px) {
+  .profile-review-skeleton-sidebar {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .profile-review-skeleton-cover {
+    height: 140px;
+  }
+
+  .profile-review-skeleton-avatar {
+    position: absolute;
+    top: -55px;
+    left: 5px;
+    width: 92px;
+    height: 92px;
+    margin: 0;
+  }
+
+  .profile-review-skeleton-user-details {
+    flex-basis: 100%;
+    padding-top: 0;
+  }
+
+  .profile-review-skeleton-button {
+    margin-bottom: 10px;
+  }
+
+  .profile-review-skeleton-search {
+    width: 100%;
+  }
+
+  .profile-review-skeleton-filters {
+    justify-content: space-between;
+  }
+
+  .profile-review-skeleton-banner {
+    height: clamp(100px, 30vw, 180px);
+  }
+}

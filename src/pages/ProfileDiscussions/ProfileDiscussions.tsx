@@ -15,6 +15,7 @@ import { getCurrentUsername } from "../../api/client";
 
 import ProfileSidebar from "../../components/ProfileSidebar/ProfileSidebar";
 import CommunityPost from "../../components/Community/CommunityPost/CommunityPost";
+import ProfileDiscussionsSkeleton from "../../components/Skeleton/ProfileDiscussionsSkeleton";
 
 import type { UserProfile } from "../../types/profile";
 import type {
@@ -153,15 +154,7 @@ const ProfileDiscussions = ({ username }: ProfileDiscussionsProps) => {
   };
 
   if (isLoading) {
-    return (
-      <div className="profile-discussions-page">
-        <main className="profile-discussions-container">
-          <div className="profile-discussions-message">
-            {t("profileDiscussions.loading")}
-          </div>
-        </main>
-      </div>
-    );
+    return <ProfileDiscussionsSkeleton />;
   }
 
   if (error || !profile) {

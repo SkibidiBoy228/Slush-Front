@@ -12,6 +12,7 @@ import {
 } from "../../api/store";
 
 import ProfileSidebar from "../../components/ProfileSidebar/ProfileSidebar";
+import ProfileWishlistSkeleton from "../../components/Skeleton/ProfileWishlistSkeleton";
 
 import type { UserProfile } from "../../types/profile";
 
@@ -223,15 +224,7 @@ const ProfileWishlist = ({ username }: ProfileWishlistProps) => {
   };
 
   if (isLoading) {
-    return (
-      <div className="profile-wishlist-page">
-        <main className="profile-wishlist-container">
-          <div className="profile-wishlist-message">
-            {t("profileWishlist.loading")}
-          </div>
-        </main>
-      </div>
-    );
+    return <ProfileWishlistSkeleton />;
   }
 
   if (error || !profile) {

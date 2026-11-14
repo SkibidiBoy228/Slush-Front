@@ -10,6 +10,7 @@ import {
 import { getCurrentUsername } from "../../api/client";
 
 import ProfileSidebar from "../../components/ProfileSidebar/ProfileSidebar";
+import ProfileVideosSkeleton from "../../components/Skeleton/ProfileVideosSkeleton";
 
 import type {
   UserProfile,
@@ -145,15 +146,7 @@ const ProfileVideos = ({ username }: ProfileVideosProps) => {
   }, [selectedVideo]);
 
   if (isLoading) {
-    return (
-      <div className="profile-videos-page">
-        <main className="profile-videos-container">
-          <div className="profile-videos-message">
-            {t("profileVideos.loading")}
-          </div>
-        </main>
-      </div>
-    );
+    return <ProfileVideosSkeleton />;
   }
 
   if (error || !profile) {

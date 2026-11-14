@@ -10,6 +10,7 @@ import {
 import { getCurrentUsername } from "../../api/client";
 
 import ProfileSidebar from "../../components/ProfileSidebar/ProfileSidebar";
+import ProfileReviewsSkeleton from "../../components/Skeleton/ProfileReviewsSkeleton";
 
 import type {
   UserProfile,
@@ -158,15 +159,7 @@ const ProfileReviews = ({ username }: ProfileReviewsProps) => {
   };
 
   if (isLoading) {
-    return (
-      <div className="profile-reviews-page">
-        <main className="profile-reviews-container">
-          <div className="profile-reviews-message">
-            {t("profileReviews.loading")}
-          </div>
-        </main>
-      </div>
-    );
+    return <ProfileReviewsSkeleton />;
   }
 
   if (error || !profile) {

@@ -1,0 +1,396 @@
+/* Profile header */
+
+.badge-skeleton-cover {
+  width: 100%;
+  height: 190px;
+  border-radius: 0;
+}
+
+.badge-skeleton-avatar {
+  flex-shrink: 0;
+  width: 100px;
+  height: 100px;
+  margin-top: -48px;
+  border: 3px solid #064653;
+  border-radius: 50%;
+}
+
+.badge-skeleton-user-details {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 0;
+}
+
+.badge-skeleton-username {
+  width: 180px;
+  height: 20px;
+  border-radius: 5px;
+}
+
+.badge-skeleton-status {
+  width: 75px;
+  height: 10px;
+  border-radius: 5px;
+}
+
+.badge-skeleton-bio {
+  width: min(420px, 90%);
+  height: 11px;
+  border-radius: 5px;
+}
+
+.badge-skeleton-profile-button {
+  flex-shrink: 0;
+  width: 120px;
+  height: 36px;
+  border-radius: 20px;
+}
+
+/* Heading */
+
+.badge-skeleton-heading-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.badge-skeleton-heading-title {
+  width: 180px;
+  height: 17px;
+  border-radius: 4px;
+}
+
+.badge-skeleton-heading-description {
+  width: 240px;
+  max-width: 100%;
+  height: 10px;
+  border-radius: 4px;
+}
+
+.badge-skeleton-total {
+  width: 30px;
+  height: 12px;
+  border-radius: 4px;
+}
+
+/* Toolbar */
+
+.badge-skeleton-earned {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.badge-skeleton-earned-number {
+  width: 38px;
+  height: 23px;
+  border-radius: 4px;
+}
+
+.badge-skeleton-earned-label {
+  width: 85px;
+  height: 10px;
+  border-radius: 4px;
+}
+
+.badge-skeleton-sort {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.badge-skeleton-sort-label {
+  width: 55px;
+  height: 11px;
+  border-radius: 4px;
+}
+
+.badge-skeleton-sort-select {
+  width: 145px;
+  height: 34px;
+  border-radius: 7px;
+}
+
+/* Badge grid */
+
+.badges-page.badge-skeleton-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  grid-auto-flow: row;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+}
+
+.badge-skeleton-card {
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-width: 0;
+  min-height: 120px;
+  padding: 12px;
+  border: 1px solid rgba(69, 202, 207, 0.1);
+  border-radius: 9px;
+  background: #034653;
+}
+
+.badge-skeleton-image {
+  width: 90px;
+  height: 90px;
+  border-radius: 9px;
+}
+
+.badge-skeleton-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  min-height: 90px;
+}
+
+.badge-skeleton-title {
+  width: 85%;
+  height: 14px;
+  border-radius: 4px;
+}
+
+.badge-skeleton-description {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 9px;
+}
+
+.badge-skeleton-description .skeleton-block {
+  width: 100%;
+  height: 9px;
+  border-radius: 4px;
+}
+
+.badge-skeleton-description .short {
+  width: 65%;
+}
+
+.badge-skeleton-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 7px;
+  margin-top: auto;
+  padding-top: 10px;
+}
+
+.badge-skeleton-points {
+  width: 65px;
+  height: 11px;
+  border-radius: 4px;
+}
+
+.badge-skeleton-date {
+  width: 55px;
+  height: 10px;
+  border-radius: 4px;
+}
+
+/* Sidebar */
+
+.badge-skeleton-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.badge-skeleton-sidebar .badges-sidebar-card {
+  position: static;
+}
+
+.badge-skeleton-sidebar-title {
+  width: 115px;
+  height: 14px;
+  border-radius: 4px;
+}
+
+.badge-skeleton-level {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+}
+
+.badge-skeleton-progress {
+  width: 100%;
+  height: 7px;
+  border-radius: 10px;
+}
+
+.badge-skeleton-xp-labels {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.badge-skeleton-xp-labels .skeleton-block {
+  width: 55px;
+  height: 9px;
+  border-radius: 4px;
+}
+
+.badge-skeleton-divider {
+  height: 1px;
+  margin: 17px 0;
+  background: rgba(100, 200, 205, 0.13);
+}
+
+.badge-skeleton-sidebar-subtitle {
+  width: 95px;
+  height: 12px;
+  margin-bottom: 12px;
+  border-radius: 4px;
+}
+
+.badge-skeleton-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.badge-skeleton-stat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.badge-skeleton-stat .skeleton-block {
+  width: 85px;
+  height: 10px;
+  border-radius: 4px;
+}
+
+.badge-skeleton-stat .value {
+  width: 28px;
+}
+
+.badge-skeleton-friends {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.badge-skeleton-friend {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.badge-skeleton-friend-avatar {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+.badge-skeleton-friend-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.badge-skeleton-friend-info .skeleton-block {
+  width: 85%;
+  height: 10px;
+  border-radius: 4px;
+}
+
+.badge-skeleton-friend-level {
+  flex-shrink: 0;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+  .badge-skeleton-sidebar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 14px;
+  }
+}
+
+@media (max-width: 650px) {
+  .badge-skeleton-cover {
+    height: 130px;
+  }
+
+  .badge-skeleton-avatar {
+    width: 78px;
+    height: 78px;
+    margin-top: -38px;
+  }
+
+  .badge-skeleton-user-details {
+    flex: 1 1 calc(100% - 100px);
+  }
+
+  .badge-skeleton-profile-button {
+    width: 100%;
+  }
+
+  .badge-skeleton-sort {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .badge-skeleton-sort-select {
+    width: 65%;
+  }
+
+  .badges-page.badge-skeleton-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .badge-skeleton-card {
+    grid-template-columns: 72px minmax(0, 1fr);
+    min-height: 100px;
+    gap: 12px;
+  }
+
+  .badge-skeleton-image {
+    width: 72px;
+    height: 72px;
+  }
+
+  .badge-skeleton-content {
+    min-height: 72px;
+  }
+
+  .badge-skeleton-sidebar {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 380px) {
+  .badge-skeleton-card {
+    grid-template-columns: 60px minmax(0, 1fr);
+    padding: 9px;
+    gap: 9px;
+  }
+
+  .badge-skeleton-image {
+    width: 60px;
+    height: 60px;
+  }
+
+  .badge-skeleton-content {
+    min-height: 60px;
+  }
+}

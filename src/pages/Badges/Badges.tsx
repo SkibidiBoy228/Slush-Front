@@ -7,6 +7,7 @@ import { getCurrentUsername } from "../../api/client";
 
 import type { UserProfile, Badge } from "../../types/profile";
 import ProfileSidebar from "../../components/ProfileSidebar/ProfileSidebar";
+import BadgesSkeleton from "../../components/Skeleton/BadgesSkeleton";
 
 import "./Badges.css";
 
@@ -118,15 +119,7 @@ const Badges = ({ username }: BadgesProps) => {
   };
 
   if (isLoading) {
-    return (
-      <div className="badges-page">
-        <main className="badges-container">
-          <div className="badges-message">
-            {t("badges.loading")}
-          </div>
-        </main>
-      </div>
-    );
+    return <BadgesSkeleton />;
   }
 
   if (error || !profile) {

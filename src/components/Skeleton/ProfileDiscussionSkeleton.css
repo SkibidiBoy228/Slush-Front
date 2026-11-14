@@ -1,0 +1,335 @@
+
+.profile-discussions-skeleton-block {
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  border-radius: 7px;
+  background: rgba(116, 190, 197, 0.12);
+}
+
+.profile-discussions-skeleton-block::after {
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(160, 235, 235, 0.13),
+    transparent
+  );
+  animation: profile-discussions-shimmer 1.5s infinite;
+  content: "";
+}
+
+@keyframes profile-discussions-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Profile header */
+
+.profile-discussions-skeleton-header {
+  overflow: hidden;
+  margin-bottom: 28px;
+  border: 1px solid rgba(75, 205, 207, 0.13);
+  border-radius: 12px;
+  background: linear-gradient(145deg, #064653, #033744 78%);
+}
+
+.profile-discussions-skeleton-header .profile-cover {
+  width: 100%;
+  height: 190px;
+  border-radius: 0;
+  background: rgba(116, 190, 197, 0.09);
+}
+
+.profile-discussions-skeleton-user-info {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  min-height: 115px;
+  padding: 0 28px 24px;
+}
+
+.profile-discussions-skeleton-user-info .profile-avatar {
+  width: 112px;
+  height: 112px;
+  margin-top: -42px;
+  border: 5px solid #064653;
+  border-radius: 50%;
+  background: #087084;
+}
+
+.profile-discussions-skeleton-user-details {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.profile-discussions-skeleton-user-details .profile-username {
+  width: 190px;
+  height: 25px;
+}
+
+.profile-discussions-skeleton-user-details .profile-status {
+  width: 85px;
+  height: 12px;
+}
+
+.profile-discussions-skeleton-user-details .profile-bio {
+  width: min(320px, 85%);
+  height: 13px;
+}
+
+.profile-discussions-skeleton-user-info .profile-button {
+  width: 125px;
+  height: 39px;
+  border-radius: 20px;
+}
+
+/* Main layout */
+
+.profile-discussions-skeleton-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 22px;
+}
+
+.profile-discussions-skeleton-heading > div {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.profile-discussions-skeleton-heading .heading-title {
+  width: 190px;
+  height: 25px;
+}
+
+.profile-discussions-skeleton-heading .heading-description {
+  width: 260px;
+  max-width: 65vw;
+  height: 13px;
+}
+
+.profile-discussions-skeleton-heading .heading-counter {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+}
+
+.profile-discussions-skeleton-toolbar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.profile-discussions-skeleton-toolbar .toolbar-search {
+  flex: 1;
+  height: 44px;
+}
+
+.profile-discussions-skeleton-toolbar .toolbar-select {
+  width: 155px;
+  height: 44px;
+}
+
+.profile-discussions-skeleton-list-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(103, 174, 185, 0.2);
+}
+
+.profile-discussions-skeleton-list-heading .list-heading-text {
+  width: 145px;
+  height: 15px;
+}
+
+.profile-discussions-skeleton-list-heading .list-heading-counter {
+  width: 28px;
+  height: 14px;
+}
+
+.profile-discussions-skeleton-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-top: 18px;
+}
+
+/* Post cards */
+
+.profile-discussions-skeleton-post {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid rgba(75, 205, 207, 0.13);
+  border-radius: 10px;
+  background: rgba(0, 35, 46, 0.35);
+}
+
+.profile-discussions-skeleton-post-author {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.profile-discussions-skeleton-post-author .post-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+}
+
+.profile-discussions-skeleton-post-author-info {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.profile-discussions-skeleton-post-author-info .post-name {
+  width: 115px;
+  height: 13px;
+}
+
+.profile-discussions-skeleton-post-author-info .post-date {
+  width: 75px;
+  height: 10px;
+}
+
+.profile-discussions-skeleton-post .post-title {
+  width: 72%;
+  height: 19px;
+}
+
+.profile-discussions-skeleton-post .post-description {
+  width: 100%;
+  height: 12px;
+}
+
+.profile-discussions-skeleton-post .post-description.short {
+  width: 58%;
+}
+
+.profile-discussions-skeleton-post .post-media {
+  width: 100%;
+  height: 180px;
+  border-radius: 8px;
+}
+
+.profile-discussions-skeleton-post-actions {
+  display: flex;
+  gap: 18px;
+  padding-top: 5px;
+}
+
+.profile-discussions-skeleton-post-actions .post-action {
+  width: 65px;
+  height: 15px;
+}
+
+/* Sidebar */
+
+.profile-discussions-skeleton-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid rgba(75, 205, 207, 0.13);
+  border-radius: 12px;
+  background: linear-gradient(145deg, #064653, #033744 78%);
+}
+
+.profile-discussions-skeleton-sidebar .sidebar-title {
+  width: 125px;
+  height: 18px;
+}
+
+.profile-discussions-skeleton-sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(103, 174, 185, 0.16);
+}
+
+.profile-discussions-skeleton-sidebar-user > div {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.profile-discussions-skeleton-sidebar .sidebar-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.profile-discussions-skeleton-sidebar .sidebar-name {
+  width: 90px;
+  height: 12px;
+}
+
+.profile-discussions-skeleton-sidebar .sidebar-description {
+  width: 65px;
+  height: 10px;
+}
+
+.profile-discussions-skeleton-sidebar .sidebar-item {
+  width: 100%;
+  height: 35px;
+}
+
+/* Responsive */
+
+@media (max-width: 950px) {
+  .profile-discussions-skeleton-sidebar {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .profile-discussions-skeleton-header .profile-cover {
+    height: 135px;
+  }
+
+  .profile-discussions-skeleton-user-info {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 0 16px 18px;
+  }
+
+  .profile-discussions-skeleton-user-info .profile-avatar {
+    width: 82px;
+    height: 82px;
+    margin-top: -30px;
+  }
+
+  .profile-discussions-skeleton-user-info .profile-button {
+    width: 100%;
+  }
+
+  .profile-discussions-skeleton-toolbar {
+    flex-direction: column;
+  }
+
+  .profile-discussions-skeleton-toolbar .toolbar-select {
+    width: 100%;
+  }
+
+  .profile-discussions-skeleton-post {
+    padding: 14px;
+  }
+
+  .profile-discussions-skeleton-post .post-media {
+    height: 145px;
+  }
+}

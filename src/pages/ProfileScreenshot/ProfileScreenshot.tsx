@@ -10,6 +10,7 @@ import {
 import { getCurrentUsername } from "../../api/client";
 
 import ProfileSidebar from "../../components/ProfileSidebar/ProfileSidebar";
+import ProfileScreenshotsSkeleton from "../../components/Skeleton/ProfileScreenshotsSkeleton";
 
 import type {
   UserProfile,
@@ -140,15 +141,7 @@ const ProfileScreenshots = ({ username }: ProfileScreenshotsProps) => {
   }, [selectedScreenshot]);
 
   if (isLoading) {
-    return (
-      <div className="profile-screenshots-page">
-        <main className="profile-screenshots-container">
-          <div className="profile-screenshots-message">
-            {t("profileScreenshots.loading")}
-          </div>
-        </main>
-      </div>
-    );
+    return <ProfileScreenshotsSkeleton />;
   }
 
   if (error || !profile) {

@@ -10,6 +10,7 @@ import {
 import { getCurrentUsername } from "../../api/client";
 
 import ProfileSidebar from "../../components/ProfileSidebar/ProfileSidebar";
+import ProfileGuidesSkeleton from "../../components/Skeleton/ProfileGuidesSkeleton";
 
 import type {
   UserProfile,
@@ -134,17 +135,8 @@ const ProfileGuides = ({ username }: ProfileGuidesProps) => {
       }
     );
   };
-
   if (isLoading) {
-    return (
-      <div className="profile-guides-page">
-        <main className="profile-guides-container">
-          <div className="profile-guides-message">
-            {t("profileGuides.loading")}
-          </div>
-        </main>
-      </div>
-    );
+    return <ProfileGuidesSkeleton />;
   }
 
   if (error || !profile) {
