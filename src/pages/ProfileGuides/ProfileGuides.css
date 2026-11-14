@@ -438,6 +438,14 @@
   background: #03404e;
 }
 
+.profile-guide-card-image {
+  display: block;
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
 /* Responsive */
 
 @media (max-width: 900px) {

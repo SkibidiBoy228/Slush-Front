@@ -1,5 +1,5 @@
-
 import { useCallback, useEffect, useMemo, useState } from "react";
+
 import { useTranslation } from "react-i18next";
 
 import {
@@ -112,6 +112,18 @@ const ProfileGuides = ({ username }: ProfileGuidesProps) => {
     window.location.href = `/profile/${encodeURIComponent(username)}`;
   };
 
+  const openCommunityPost = (gameId: string, postId: string) => {
+    if (!gameId || !postId) {
+      console.error(
+        "Cannot open community post: missing gameId or postId."
+      );
+      return;
+    }
+
+    window.location.href =
+      `/game/${encodeURIComponent(gameId)}/community/post/${encodeURIComponent(postId)}`;
+  };
+
   const formatDate = (date: string) => {
     const parsedDate = new Date(date);
 
@@ -135,6 +147,7 @@ const ProfileGuides = ({ username }: ProfileGuidesProps) => {
       }
     );
   };
+
   if (isLoading) {
     return <ProfileGuidesSkeleton />;
   }
@@ -206,6 +219,7 @@ const ProfileGuides = ({ username }: ProfileGuidesProps) => {
         <div className="profile-guides-layout">
           <section className="profile-guides-main">
             <div className="profile-guides-list">
+
               {/* Toolbar */}
               <div className="profile-guides-toolbar">
                 <div className="profile-guides-search">
@@ -232,9 +246,11 @@ const ProfileGuides = ({ username }: ProfileGuidesProps) => {
                       <option value="Newest">
                         {t("profileGuides.newest")}
                       </option>
+
                       <option value="Oldest">
                         {t("profileGuides.oldest")}
                       </option>
+
                       <option value="ByRating">
                         {t("profileGuides.popular")}
                       </option>
@@ -246,8 +262,23 @@ const ProfileGuides = ({ username }: ProfileGuidesProps) => {
               <div className="profile-guides-items">
                 {filteredGuides.map((guide, index) => (
                   <article
-                    className="profile-guide-card"
+                    className="profile-guide-card profile-clickable-card"
                     key={`${guide.gameTitle}-${guide.guideTitle}-${guide.createdAt}-${index}`}
+                    role="link"
+                    tabIndex={0}
+                    aria-label={guide.guideTitle}
+                    onClick={() =>
+                      openCommunityPost(guide.gameId, guide.id)
+                    }
+                    onKeyDown={(event) => {
+                      if (
+                        event.key === "Enter" ||
+                        event.key === " "
+                      ) {
+                        event.preventDefault();
+                        openCommunityPost(guide.gameId, guide.id);
+                      }
+                    }}
                   >
                     <div className="profile-guide-top">
                       <div className="profile-guide-game">
@@ -274,12 +305,13 @@ const ProfileGuides = ({ username }: ProfileGuidesProps) => {
                     </div>
 
                     <div className="profile-guide-content">
-                      <div className="profile-guide-placeholder">
-                        <svg viewBox="0 0 48 48" aria-hidden="true">
-                          <path d="M24 5 43 16v16L24 43 5 32V16L24 5Z" />
-                          <path d="m5 16 19 11 19-11M24 27v16M15 10l19 11" />
-                        </svg>
-                      </div>
+                      {guide.mediaUrl && (
+                        <img
+                          className="profile-guide-card-image"
+                          src={guide.mediaUrl}
+                          alt={guide.guideTitle}
+                        />
+                      )}
 
                       <div className="profile-guide-info">
                         <h3>{guide.guideTitle}</h3>
