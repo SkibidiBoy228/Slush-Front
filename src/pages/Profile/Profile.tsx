@@ -791,7 +791,7 @@ const Profile = ({ username }: ProfileProps) => {
                 <span>{videos.length}</span>
               </div>
 
-              <div className="media-grid">
+            <div className="media-grid">
                 {videos.map((video) => (
                   <article
                     className="media-card video-card profile-clickable-card"
@@ -808,34 +808,32 @@ const Profile = ({ username }: ProfileProps) => {
                       playsInline
                     />
 
-                    <span>{video.title}</span>
-
-                  <div className="profile-video-card__actions">
-                    <button
-                      type="button"
-                      className="profile-publication-link"
-                      onClick={() =>
-                        openCommunityPost(video.gameId, video.id)
-                      }
-                    >
-                      <span>{t("profile.openPublication")}</span>
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                        className="profile-publication-link__icon"
+                    <div className="profile-video-card__actions">
+                      <button
+                        type="button"
+                        className="profile-publication-link"
+                        onClick={() =>
+                          openCommunityPost(video.gameId, video.id)
+                        }
                       >
-                        <path
-                          d="M7 17 17 7M7 7h10v10"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </button>
-                  </div>
+                        <span>{t("profile.openPublication")}</span>
+
+                        <svg
+                          viewBox="0 0 24 24"
+                          aria-hidden="true"
+                          className="profile-publication-link__icon"
+                        >
+                          <path
+                            d="M7 17 17 7M7 7h10v10"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </button>
+                    </div>
                   </article>
                 ))}
               </div>
