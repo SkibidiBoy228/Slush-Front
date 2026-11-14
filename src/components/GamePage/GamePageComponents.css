@@ -899,6 +899,15 @@
   background: #20d9b9;
 }
 
+.gallery-arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.gallery-arrow:disabled:hover {
+  background: #084653;
+}
+
 @media (max-width: 600px) {
   .game-video-controls {
     gap: 7px;

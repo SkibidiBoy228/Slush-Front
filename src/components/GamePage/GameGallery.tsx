@@ -1,5 +1,6 @@
 
 import { useEffect, useRef, useState } from "react";
+import type { CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { GameDetails } from "../../types/game";
@@ -46,13 +47,6 @@ function GameGallery({ game }: GameGalleryProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    setActiveIndex(0);
-    setIsPlaying(false);
-    setCurrentTime(0);
-    setDuration(0);
-  }, [game.id]);
-
   const videos: GalleryItem[] = (game.videos ?? [])
     .filter(
       (video) => video.videoUrlMp4 || video.videoUrlWebm
@@ -89,20 +83,33 @@ function GameGallery({ game }: GameGalleryProps) {
     });
   }
 
-  if (items.length === 0) {
-    return null;
-  }
+  const currentIndex =
+    items.length > 0 ? activeIndex % items.length : 0;
 
-  const currentIndex = activeIndex % items.length;
   const currentItem = items[currentIndex];
 
-  // Автозапуск выбранного трейлера
+  // Сбрасываем галерею при смене игры.
+  useEffect(() => {
+    setActiveIndex(0);
+    setIsPlaying(false);
+    setCurrentTime(0);
+    setDuration(0);
+  }, [game.id]);
+
+  // Синхронизируем звук с текущим видео.
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.muted = isMuted;
+    }
+  }, [isMuted, currentItem?.key]);
+
+  // Автоматически запускаем выбранный трейлер.
   useEffect(() => {
     setIsPlaying(false);
     setCurrentTime(0);
     setDuration(0);
 
-    if (currentItem.type !== "video") {
+    if (!currentItem || currentItem.type !== "video") {
       return;
     }
 
@@ -119,13 +126,23 @@ function GameGallery({ game }: GameGalleryProps) {
         setIsPlaying(false);
       });
     }
-  }, [currentItem.key]);
+  }, [currentItem?.key]);
+
+  const selectSlide = (index: number) => {
+    setActiveIndex(index);
+    setCurrentTime(0);
+    setDuration(0);
+  };
 
   const nextImage = () => {
+    if (items.length <= 1) return;
+
     setActiveIndex((current) => (current + 1) % items.length);
   };
 
   const previousImage = () => {
+    if (items.length <= 1) return;
+
     setActiveIndex(
       (current) => (current - 1 + items.length) % items.length
     );
@@ -139,8 +156,8 @@ function GameGallery({ game }: GameGalleryProps) {
     if (video.paused) {
       try {
         await video.play();
-      } catch {
-        setIsPlaying(false);
+      } catch (error) {
+        console.error("Video playback error:", error);
       }
     } else {
       video.pause();
@@ -148,14 +165,7 @@ function GameGallery({ game }: GameGalleryProps) {
   };
 
   const toggleMute = () => {
-    const video = videoRef.current;
-
-    if (!video) return;
-
-    const nextMuted = !isMuted;
-
-    video.muted = nextMuted;
-    setIsMuted(nextMuted);
+    setIsMuted((current) => !current);
   };
 
   const handleSeek = (value: number) => {
@@ -183,6 +193,10 @@ function GameGallery({ game }: GameGalleryProps) {
     }
   };
 
+  if (items.length === 0 || !currentItem) {
+    return null;
+  }
+
   return (
     <section className="game-gallery">
       <div className="game-main-image-wrapper">
@@ -190,9 +204,9 @@ function GameGallery({ game }: GameGalleryProps) {
           <div
             className="game-video-player"
             ref={playerRef}
+            key={currentItem.key}
           >
             <video
-              key={currentItem.key}
               ref={videoRef}
               className="game-main-video"
               autoPlay
@@ -235,9 +249,7 @@ function GameGallery({ game }: GameGalleryProps) {
                 type="button"
                 className="game-video-play"
                 onClick={togglePlay}
-                aria-label={
-                  isPlaying ? "Pause video" : "Play video"
-                }
+                aria-label={isPlaying ? "Pause video" : "Play video"}
               >
                 {isPlaying ? "Ⅱ" : "▶"}
               </button>
@@ -258,13 +270,15 @@ function GameGallery({ game }: GameGalleryProps) {
                     handleSeek(Number(event.target.value))
                   }
                   aria-label="Video progress"
-                  style={{
-                    "--video-progress": `${
-                      duration > 0
-                        ? (currentTime / duration) * 100
-                        : 0
-                    }%`,
-                  } as React.CSSProperties}
+                  style={
+                    {
+                      "--video-progress": `${
+                        duration > 0
+                          ? (currentTime / duration) * 100
+                          : 0
+                      }%`,
+                    } as CSSProperties
+                  }
                 />
 
                 <span className="game-video-time">
@@ -307,6 +321,7 @@ function GameGallery({ game }: GameGalleryProps) {
           onClick={previousImage}
           aria-label={t("gameGallery.previousSlide")}
           type="button"
+          disabled={items.length <= 1}
         >
           ‹
         </button>
@@ -319,7 +334,7 @@ function GameGallery({ game }: GameGalleryProps) {
               className={`gallery-thumbnail ${
                 index === currentIndex ? "active" : ""
               }`}
-              onClick={() => setActiveIndex(index)}
+              onClick={() => selectSlide(index)}
               aria-label={
                 item.type === "video"
                   ? t("gameGallery.trailer", { number: index + 1 })
@@ -358,6 +373,7 @@ function GameGallery({ game }: GameGalleryProps) {
           onClick={nextImage}
           aria-label={t("gameGallery.nextSlide")}
           type="button"
+          disabled={items.length <= 1}
         >
           ›
         </button>
