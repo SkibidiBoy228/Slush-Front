@@ -80,6 +80,120 @@ function DlcPage({ appId, dlcId }: DlcPageProps) {
   }
 
   const parentGame = baseGame;
+
+  function openBaseGame() {
+    window.location.href = `/game/${parentGame.id}`;
+  }
+
+  function openDlc(dlc: GameExtra) {
+    window.location.href =
+      `/game/${parentGame.id}/dlc/${dlc.id}`;
+  }
+
+  // ALL DLC PAGE
+  if (!dlcId) {
+    return (
+      <div className="game-page">
+        <main className="game-page-content">
+          <div className="game-page-search">
+            <GameSearch />
+          </div>
+
+          <nav className="game-tabs">
+            <button onClick={openBaseGame}>
+              {t("dlcPage.aboutGame")}
+            </button>
+
+            <button
+              onClick={() => {
+                window.location.href =
+                  `/game/${parentGame.id}/characteristics`;
+              }}
+            >
+              {t("dlcPage.characteristics")}
+            </button>
+
+            <button
+              onClick={() => {
+                alert(t("dlcPage.communityDeveloping"));
+              }}
+            >
+              {t("dlcPage.community")}
+            </button>
+          </nav>
+
+          <div className="dlc-catalog-heading">
+            <div>
+              <span className="dlc-badge">DLC</span>
+              <h1>{t("dlcPage.allDlcs")}</h1>
+              <p>{parentGame.title}</p>
+            </div>
+
+            <button
+              className="dlc-back-button"
+              onClick={openBaseGame}
+            >
+              ← {t("dlcPage.aboutGame")}
+            </button>
+          </div>
+
+          <section className="dlc-catalog">
+            <div className="dlc-catalog-header">
+              <h2>{t("dlcPage.allDlcs")}</h2>
+              <span>
+                {parentGame.dLcs.length} DLC
+              </span>
+            </div>
+
+            {parentGame.dLcs.length === 0 ? (
+              <div className="dlc-catalog-empty">
+                {t("dlcPage.noOtherDlcs")}
+              </div>
+            ) : (
+              <div className="dlc-catalog-grid">
+                {parentGame.dLcs.map((dlc, index) => (
+                  <article
+                    className="dlc-catalog-card"
+                    key={dlc.id}
+                  >
+                    <div className="dlc-catalog-card-top">
+                      <span className="dlc-catalog-number">
+                        DLC #{index + 1}
+                      </span>
+
+                      <span className="dlc-catalog-label">
+                        DLC
+                      </span>
+                    </div>
+
+                    <div className="dlc-catalog-card-content">
+                      <h3>{dlc.title}</h3>
+
+                      <div className="dlc-catalog-card-footer">
+                        <strong>
+                          {dlc.price > 0
+                            ? formatPrice(dlc.price)
+                            : t("common.free")}
+                        </strong>
+
+                        <button
+                          onClick={() => openDlc(dlc)}
+                        >
+                          {t("dlcPage.goToGame")} →
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
+          </section>
+        </main>
+      </div>
+    );
+  }
+
+  // SINGLE DLC PAGE
   const currentGame = dlcGame ?? parentGame;
 
   const safeDescription = DOMPurify.sanitize(
@@ -103,14 +217,6 @@ function DlcPage({ appId, dlcId }: DlcPageProps) {
   const otherDlcs = parentGame.dLcs.filter(
     (dlc) => dlc.id !== dlcId
   );
-
-  function openBaseGame() {
-    window.location.href = `/game/${parentGame.id}`;
-  }
-
-  function openDlc(dlc: GameExtra) {
-    window.location.href = `/game/${parentGame.id}/dlc/${dlc.id}`;
-  }
 
   return (
     <div className="game-page">
