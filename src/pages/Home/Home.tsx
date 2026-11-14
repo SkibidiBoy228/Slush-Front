@@ -62,71 +62,87 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-    useEffect(() => {
-      let isCancelled = false;
 
-      async function loadGames() {
-        try {
-          setLoading(true);
-          setError("");
+  useEffect(() => {
+    let isCancelled = false;
 
-          const response = await getGames({
+    async function loadGames() {
+      try {
+        setLoading(true);
+        setError("");
+        const [regularResponse, freeResponse] = await Promise.all([
+          getGames({
             page: 1,
             pageSize: 18,
-          });
+          }),
 
-          if (isCancelled) return;
+          getGames({
+            isFree: true,
+            page: 1,
+            pageSize: 12,
+          }),
+        ]);
 
-          const detailedGames = await mapWithConcurrency(
-            response.items,
-            5,
-            async (game) => {
-              try {
-                const details = await getGameDetails(game.id);
+        if (isCancelled) return;
+        const uniqueGames = Array.from(
+          new Map(
+            [...regularResponse.items, ...freeResponse.items].map(
+              (game) => [game.id, game]
+            )
+          ).values()
+        );
 
-                return {
-                  ...game,
-                  details,
-                };
-              } catch (detailsError) {
-                console.warn(
-                  `Не вдалося завантажити деталі гри ${game.id}`,
-                  detailsError
-                );
+        const detailedGames = await mapWithConcurrency(
+          uniqueGames,
+          5,
+          async (game) => {
+            try {
+              const details = await getGameDetails(game.id);
 
-                return null;
-              }
+              return {
+                ...game,
+                details,
+              };
+            } catch (detailsError) {
+              console.warn(
+                `Не вдалося завантажити деталі гри ${game.id}`,
+                detailsError
+              );
+
+              return null;
             }
-          );
+          }
+        );
 
-          if (!isCancelled) {
-            setCatalogGames(
-              detailedGames.filter(
-                (game): game is ActualGame => game !== null
-              )
-            );
-          }
-        } catch (err) {
-          if (!isCancelled) {
-            setError(
-              err instanceof Error
-                ? err.message
-                : t("home.loadError")
-            );
-          }
-        } finally {
-          if (!isCancelled) {
-            setLoading(false);
-          }
+        if (!isCancelled) {
+          setCatalogGames(
+            detailedGames.filter(
+              (game): game is ActualGame => game !== null
+            )
+          );
+        }
+      } catch (err) {
+        if (!isCancelled) {
+          setError(
+            err instanceof Error
+              ? err.message
+              : t("home.loadError")
+          );
+        }
+      } finally {
+        if (!isCancelled) {
+          setLoading(false);
         }
       }
+    }
 
-      loadGames();
+    loadGames();
 
-      return () => {
-        isCancelled = true;
-      };
-    }, [t]);
+    return () => {
+      isCancelled = true;
+    };
+  }, [t]);
+
 
   const paidGames = catalogGames.filter(
     (game) => game.details.price > 0

@@ -4,10 +4,12 @@ import type { CatalogResponse } from "../types/catalog";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+
 export async function getGames(params?: {
   query?: string;
   source?: number;
   minDiscount?: number;
+  isFree?: boolean;
   page?: number;
   pageSize?: number;
 }): Promise<CatalogResponse> {
@@ -23,6 +25,10 @@ export async function getGames(params?: {
 
   if (params?.minDiscount !== undefined) {
     searchParams.set("minDiscount", String(params.minDiscount));
+  }
+
+  if (params?.isFree !== undefined) {
+    searchParams.set("isFree", String(params.isFree));
   }
 
   searchParams.set("page", String(params?.page ?? 1));
@@ -48,6 +54,7 @@ export async function getGames(params?: {
 
   return data as CatalogResponse;
 }
+
 
 export async function getGameDetails(
   appId: string
