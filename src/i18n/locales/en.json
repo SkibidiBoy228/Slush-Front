@@ -1265,7 +1265,8 @@
 "commentSendError": "Failed to send the comment.",
 "deleteComment": "Delete comment",
 "confirmDeleteComment": "Are you sure you want to delete this comment?",
-"commentDeleteError": "Failed to delete the comment."
+"commentDeleteError": "Failed to delete the comment.",
+  "openPublication": "Open publication"
 },
 "gamePage": {
   "loadError": "Nepodarilo sa načítať hru",

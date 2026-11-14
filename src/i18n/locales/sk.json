@@ -1276,7 +1276,8 @@
 "commentSendError": "Nepodarilo sa odoslať komentár.",
 "deleteComment": "Odstrániť komentár",
 "confirmDeleteComment": "Naozaj chceš odstrániť tento komentár?",
-"commentDeleteError": "Nepodarilo sa odstrániť komentár."
+"commentDeleteError": "Nepodarilo sa odstrániť komentár.",
+"openPublication": "Otvoriť príspevok"
 },
 "gamePage": {
   "loadError": "Nepodarilo sa načítať hru",

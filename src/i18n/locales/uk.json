@@ -1277,7 +1277,8 @@
     "commentSendError": "Не вдалося надіслати коментар.",
     "deleteComment": "Видалити коментар",
     "confirmDeleteComment": "Ти впевнений, що хочеш видалити цей коментар?",
-    "commentDeleteError": "Не вдалося видалити коментар."
+    "commentDeleteError": "Не вдалося видалити коментар.",
+  "openPublication": "Відкрити публікацію"
 },
 "gamePage": {
   "loadError": "Не вдалося завантажити гру",

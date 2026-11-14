@@ -1273,6 +1273,53 @@
   transform: translate(2px, -2px);
 }
 
+.profile-video-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 48px;
+  padding: 6px 10px;
+}
+
+.profile-video-card__type {
+  color: #b5dce0;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.profile-publication-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 32px;
+  padding: 6px 10px;
+
+  color: #a6fff2;
+  font-size: 11px;
+  font-weight: 600;
+
+  background: rgba(0, 210, 190, 0.08);
+  border: 1px solid rgba(29, 224, 196, 0.3);
+  border-radius: 7px;
+
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.profile-publication-link:hover {
+  color: #fff;
+  background: rgba(0, 210, 190, 0.18);
+  border-color: #1de0c4;
+}
+
+.profile-publication-link__icon {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
 @media (max-width: 900px) {
   .profile-sidebar {
     grid-template-columns: repeat(2, minmax(0, 1fr));

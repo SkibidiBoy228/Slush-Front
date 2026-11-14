@@ -1277,7 +1277,8 @@
 "commentSendError": "Не удалось отправить комментарий.",
 "deleteComment": "Удалить комментарий",
 "confirmDeleteComment": "Ты уверен, что хочешь удалить этот комментарий?",
-"commentDeleteError": "Не удалось удалить комментарий."
+"commentDeleteError": "Не удалось удалить комментарий.",
+"openPublication": "Открыть публикацию"
 },
 "gamePage": {
   "loadError": "Не удалось загрузить игру",

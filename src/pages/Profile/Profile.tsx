@@ -810,6 +810,9 @@ const Profile = ({ username }: ProfileProps) => {
 
                     <span>{video.title}</span>
 
+                  <div className="profile-video-card__footer">
+                    <span className="profile-video-card__type">Video</span>
+
                     <button
                       type="button"
                       className="profile-publication-link"
@@ -833,6 +836,7 @@ const Profile = ({ username }: ProfileProps) => {
                         />
                       </svg>
                     </button>
+                  </div>
                   </article>
                 ))}
               </div>
