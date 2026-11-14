@@ -4,13 +4,11 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100dvh;
+  height: calc(100dvh - 68px);
   min-height: 0;
   overflow: hidden;
   background: #001b26;
 }
-
-
 
 .chat-page__layout {
   display: flex;
