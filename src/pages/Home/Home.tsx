@@ -49,9 +49,10 @@ function convertGame(game: ActualGame): Game {
       ? formatPrice(details.oldPrice)
       : undefined,
 
-    discount: details.discountPercent > 0
-      ? `-${details.discountPercent}%`
-      : undefined,
+    discount:
+      details.discountPercent > 0
+        ? `-${details.discountPercent}%`
+        : undefined,
   };
 }
 
@@ -59,10 +60,10 @@ function Home() {
   const { t } = useTranslation();
 
   const [catalogGames, setCatalogGames] = useState<ActualGame[]>([]);
+  const [budgetCatalogGames, setBudgetCatalogGames] = useState<ActualGame[]>([]);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
-
 
   useEffect(() => {
     let isCancelled = false;
@@ -72,25 +73,28 @@ function Home() {
         setLoading(true);
         setError("");
 
-        const [regularResponse, freeResponse, budgetResponse] =
-          await Promise.all([
-            getGames({
-              page: 1,
-              pageSize: 18,
-            }),
+        const [
+          regularResponse,
+          freeResponse,
+          budgetResponse,
+        ] = await Promise.all([
+          getGames({
+            page: 1,
+            pageSize: 18,
+          }),
 
-            getGames({
-              isFree: true,
-              page: 1,
-              pageSize: 12,
-            }),
+          getGames({
+            isFree: true,
+            page: 1,
+            pageSize: 12,
+          }),
 
-            getGames({
-              maxPrice: 100,
-              page: 1,
-              pageSize: 12,
-            }),
-          ]);
+          getGames({
+            maxPrice: 100,
+            page: 1,
+            pageSize: 12,
+          }),
+        ]);
 
         if (isCancelled) return;
 
@@ -127,9 +131,19 @@ function Home() {
         );
 
         if (!isCancelled) {
-          setCatalogGames(
-            detailedGames.filter(
-              (game): game is ActualGame => game !== null
+          const actualGames = detailedGames.filter(
+            (game): game is ActualGame => game !== null
+          );
+
+          const budgetIds = new Set(
+            budgetResponse.items.map((game) => game.id)
+          );
+
+          setCatalogGames(actualGames);
+
+          setBudgetCatalogGames(
+            actualGames.filter((game) =>
+              budgetIds.has(game.id)
             )
           );
         }
@@ -155,8 +169,6 @@ function Home() {
     };
   }, [t]);
 
-
-
   const paidGames = catalogGames.filter(
     (game) => game.details.price > 0
   );
@@ -170,7 +182,7 @@ function Home() {
     .slice(0, 4)
     .map(convertGame);
 
-  const budgetGames = paidGames
+  const budgetGames = budgetCatalogGames
     .filter(
       (game) =>
         game.details.price > 0 &&
@@ -198,7 +210,7 @@ function Home() {
         <HeroSlider />
 
         <div className="content-container">
-            {loading && <HomeSkeleton />}
+          {loading && <HomeSkeleton />}
 
           {error && (
             <div className="catalog-message error">
