@@ -1,5 +1,4 @@
-
-import "./ProfileDiscussionsSkeleton.css";
+import "./ProfileDiscussionSkeleton.css"
 
 const SkeletonBlock = ({
   className = "",

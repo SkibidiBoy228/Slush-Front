@@ -1,5 +1,4 @@
 
-import "./ProfileDiscussionsSkeleton.css";
 import "./ProfileScreenshotsSkeleton.css";
 
 const SkeletonBlock = ({ className = "" }: { className?: string }) => (
