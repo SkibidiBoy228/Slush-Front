@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { GameDetails } from "../../types/game";
@@ -25,19 +25,37 @@ type GalleryItem =
       image: string;
     };
 
+function formatTime(seconds: number): string {
+  if (!Number.isFinite(seconds)) return "0:00";
+
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = Math.floor(seconds % 60);
+
+  return `${minutes}:${String(remainingSeconds).padStart(2, "0")}`;
+}
+
 function GameGallery({ game }: GameGalleryProps) {
   const { t } = useTranslation();
 
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const playerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setActiveIndex(0);
+    setIsPlaying(false);
+    setCurrentTime(0);
+    setDuration(0);
   }, [game.id]);
 
   const videos: GalleryItem[] = (game.videos ?? [])
     .filter(
-      (video) =>
-        video.videoUrlMp4 || video.videoUrlWebm
+      (video) => video.videoUrlMp4 || video.videoUrlWebm
     )
     .map((video) => ({
       type: "video",
@@ -60,10 +78,7 @@ function GameGallery({ game }: GameGalleryProps) {
       image: screenshot.image,
     }));
 
-  const items: GalleryItem[] = [
-    ...videos,
-    ...screenshots,
-  ];
+  const items: GalleryItem[] = [...videos, ...screenshots];
 
   if (items.length === 0 && game.thumbnail) {
     items.push({
@@ -81,6 +96,31 @@ function GameGallery({ game }: GameGalleryProps) {
   const currentIndex = activeIndex % items.length;
   const currentItem = items[currentIndex];
 
+  // Автозапуск выбранного трейлера
+  useEffect(() => {
+    setIsPlaying(false);
+    setCurrentTime(0);
+    setDuration(0);
+
+    if (currentItem.type !== "video") {
+      return;
+    }
+
+    const video = videoRef.current;
+
+    if (!video) return;
+
+    video.muted = isMuted;
+
+    const playPromise = video.play();
+
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        setIsPlaying(false);
+      });
+    }
+  }, [currentItem.key]);
+
   const nextImage = () => {
     setActiveIndex((current) => (current + 1) % items.length);
   };
@@ -91,34 +131,166 @@ function GameGallery({ game }: GameGalleryProps) {
     );
   };
 
+  const togglePlay = async () => {
+    const video = videoRef.current;
+
+    if (!video) return;
+
+    if (video.paused) {
+      try {
+        await video.play();
+      } catch {
+        setIsPlaying(false);
+      }
+    } else {
+      video.pause();
+    }
+  };
+
+  const toggleMute = () => {
+    const video = videoRef.current;
+
+    if (!video) return;
+
+    const nextMuted = !isMuted;
+
+    video.muted = nextMuted;
+    setIsMuted(nextMuted);
+  };
+
+  const handleSeek = (value: number) => {
+    const video = videoRef.current;
+
+    if (!video || !Number.isFinite(video.duration)) return;
+
+    video.currentTime = value;
+    setCurrentTime(value);
+  };
+
+  const toggleFullscreen = async () => {
+    const player = playerRef.current;
+
+    if (!player) return;
+
+    try {
+      if (!document.fullscreenElement) {
+        await player.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch (error) {
+      console.error("Fullscreen error:", error);
+    }
+  };
+
   return (
     <section className="game-gallery">
       <div className="game-main-image-wrapper">
         {currentItem.type === "video" ? (
-          <video
-            key={currentItem.key}
-            className="game-main-video"
-            controls
-            playsInline
-            preload="metadata"
-            poster={currentItem.thumbnail || undefined}
+          <div
+            className="game-video-player"
+            ref={playerRef}
           >
-            {currentItem.mp4 && (
-              <source
-                src={currentItem.mp4}
-                type="video/mp4"
-              />
-            )}
+            <video
+              key={currentItem.key}
+              ref={videoRef}
+              className="game-main-video"
+              autoPlay
+              muted={isMuted}
+              playsInline
+              preload="auto"
+              poster={currentItem.thumbnail || undefined}
+              onPlay={() => setIsPlaying(true)}
+              onPause={() => setIsPlaying(false)}
+              onTimeUpdate={(event) =>
+                setCurrentTime(event.currentTarget.currentTime)
+              }
+              onLoadedMetadata={(event) =>
+                setDuration(event.currentTarget.duration || 0)
+              }
+              onDurationChange={(event) =>
+                setDuration(event.currentTarget.duration || 0)
+              }
+              onEnded={() => setIsPlaying(false)}
+            >
+              {currentItem.mp4 && (
+                <source
+                  src={currentItem.mp4}
+                  type="video/mp4"
+                />
+              )}
 
-            {currentItem.webm && (
-              <source
-                src={currentItem.webm}
-                type="video/webm"
-              />
-            )}
+              {currentItem.webm && (
+                <source
+                  src={currentItem.webm}
+                  type="video/webm"
+                />
+              )}
 
-            {t("gameGallery.videoUnsupported")}
-          </video>
+              {t("gameGallery.videoUnsupported")}
+            </video>
+
+            <div className="game-video-controls">
+              <button
+                type="button"
+                className="game-video-play"
+                onClick={togglePlay}
+                aria-label={
+                  isPlaying ? "Pause video" : "Play video"
+                }
+              >
+                {isPlaying ? "Ⅱ" : "▶"}
+              </button>
+
+              <div className="game-video-timeline">
+                <span className="game-video-time">
+                  {formatTime(currentTime)}
+                </span>
+
+                <input
+                  className="game-video-progress"
+                  type="range"
+                  min={0}
+                  max={duration || 0}
+                  step={0.1}
+                  value={Math.min(currentTime, duration || 0)}
+                  onChange={(event) =>
+                    handleSeek(Number(event.target.value))
+                  }
+                  aria-label="Video progress"
+                  style={{
+                    "--video-progress": `${
+                      duration > 0
+                        ? (currentTime / duration) * 100
+                        : 0
+                    }%`,
+                  } as React.CSSProperties}
+                />
+
+                <span className="game-video-time">
+                  {formatTime(duration)}
+                </span>
+              </div>
+
+              <button
+                type="button"
+                className="game-video-icon"
+                onClick={toggleMute}
+                aria-label={isMuted ? "Unmute" : "Mute"}
+              >
+                {isMuted ? "🔇" : "🔊"}
+              </button>
+
+              <button
+                type="button"
+                className="game-video-icon"
+                onClick={toggleFullscreen}
+                aria-label="Fullscreen"
+              >
+                ⛶
+              </button>
+            </div>
+          </div>
         ) : (
           <img
             key={currentItem.key}
@@ -175,9 +347,7 @@ function GameGallery({ game }: GameGalleryProps) {
               />
 
               {item.type === "video" && (
-                <span className="gallery-video-badge">
-                  ▶
-                </span>
+                <span className="gallery-video-badge">▶</span>
               )}
             </button>
           ))}
