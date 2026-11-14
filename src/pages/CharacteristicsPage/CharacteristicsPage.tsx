@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import GameSearch from "../../components/GameSearch/GameSearch";
 import GameSidebar from "../../components/GamePage/GameSidebar";
 import GameCharacteristics from "../../components/GamePage/GameCharacteristics";
+import CharacteristicsSkeleton from "../../components/Skeleton/CharacteristicsSkeleton";
 
 import { getGameDetails } from "../../api/games";
 import type { GameDetails } from "../../types/game";
@@ -49,13 +50,7 @@ function CharacteristicsPage({
   }, [appId, t]);
 
   if (loading) {
-    return (
-      <div className="game-page-state">
-        <div className="state-content">
-          {t("characteristicsPage.loading")}
-        </div>
-      </div>
-    );
+    return <CharacteristicsSkeleton />;
   }
 
   if (error || !game) {
