@@ -2,26 +2,33 @@
 .profile-discussions-page {
   width: 100%;
   min-height: 100vh;
-  color: #f1f1f1;
+  color: #e8f7f8;
+  background:
+    radial-gradient(ellipse at 16% 28%, rgba(0, 145, 153, 0.16), transparent 38%),
+    radial-gradient(ellipse at 88% 72%, rgba(0, 104, 126, 0.16), transparent 42%),
+    #00151d;
 }
 
 .profile-discussions-container {
-  width: min(1280px, calc(100% - 40px));
+  width: min(1160px, calc(100% - 40px));
   margin: 0 auto;
   padding: 30px 0 60px;
 }
 
+/* Profile header */
+
 .profile-discussions-header {
   overflow: hidden;
-  border: 1px solid #292b32;
-  border-radius: 12px;
-  background: #17191f;
   margin-bottom: 28px;
+  border: 1px solid rgba(75, 205, 207, 0.13);
+  border-radius: 12px;
+  background: linear-gradient(145deg, #064653, #033744 78%);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.16);
 }
 
 .profile-discussions-cover {
   height: 190px;
-  background: linear-gradient(120deg, #252a3b, #17191f);
+  background-color: #07515e;
   background-position: center;
   background-size: cover;
 }
@@ -30,8 +37,8 @@
   display: flex;
   align-items: center;
   gap: 22px;
-  padding: 0 28px 24px;
   min-height: 115px;
+  padding: 0 28px 24px;
 }
 
 .profile-discussions-avatar {
@@ -39,10 +46,11 @@
   height: 112px;
   margin-top: -42px;
   flex-shrink: 0;
-  object-fit: cover;
-  border: 5px solid #17191f;
+  border: 5px solid #064653;
   border-radius: 50%;
-  background: #292b32;
+  background: #087084;
+  object-fit: cover;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.3);
 }
 
 .profile-discussions-user-details {
@@ -52,13 +60,14 @@
 
 .profile-discussions-user-details h1 {
   margin: 0 0 7px;
+  color: #f2ffff;
   font-size: 25px;
-  font-weight: 700;
+  font-weight: 750;
 }
 
 .profile-discussions-user-details p {
   margin: 9px 0 0;
-  color: #a4a6af;
+  color: #b1d0d4;
   font-size: 14px;
 }
 
@@ -67,7 +76,7 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  color: #a4a6af;
+  color: #a6d1d4;
   font-size: 13px;
 }
 
@@ -76,33 +85,39 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #777b86;
+  background: #718b91;
 }
 
 .profile-discussions-online > span {
-  background: #42c77a;
+  background: #39d98a;
+  box-shadow: 0 0 6px rgba(57, 217, 138, 0.4);
 }
 
 .profile-discussions-view-profile {
   padding: 11px 17px;
-  border: 1px solid #41434d;
-  border-radius: 7px;
-  background: #252832;
-  color: #fff;
+  border: 1px solid rgba(45, 226, 205, 0.2);
+  border-radius: 20px;
+  background: #087c89;
+  color: #eaffff;
   font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
   cursor: pointer;
-  transition: 0.2s;
+  transition: background 0.18s ease, transform 0.18s ease;
 }
 
 .profile-discussions-view-profile:hover {
-  background: #343846;
+  background: #0b9b9e;
+  transform: translateY(-1px);
 }
+
+/* Main layout */
 
 .profile-discussions-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 290px;
+  grid-template-columns: minmax(0, 1fr) 220px;
   align-items: start;
-  gap: 26px;
+  gap: 14px;
 }
 
 .profile-discussions-main {
@@ -111,10 +126,13 @@
 
 .profile-discussions-section {
   padding: 24px;
-  border: 1px solid #292b32;
+  border: 1px solid rgba(75, 205, 207, 0.13);
   border-radius: 12px;
-  background: #17191f;
+  background: linear-gradient(145deg, #064653, #033744 78%);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.16);
 }
+
+/* Section heading */
 
 .profile-discussions-heading {
   display: flex;
@@ -126,12 +144,13 @@
 
 .profile-discussions-heading h2 {
   margin: 0;
+  color: #edffff;
   font-size: 23px;
 }
 
 .profile-discussions-heading p {
   margin: 6px 0 0;
-  color: #9295a0;
+  color: #a4d0d5;
   font-size: 13px;
 }
 
@@ -141,11 +160,14 @@
   height: 36px;
   padding: 0 9px;
   place-items: center;
+  border: 1px solid rgba(69, 202, 207, 0.12);
   border-radius: 8px;
-  background: #292d39;
-  color: #c7c9d2;
+  background: #075365;
+  color: #c7e9ec;
   font-weight: 600;
 }
+
+/* Search and sorting */
 
 .profile-discussions-toolbar {
   display: flex;
@@ -159,13 +181,18 @@
   flex: 1;
   gap: 10px;
   padding: 0 13px;
-  border: 1px solid #343741;
-  border-radius: 7px;
-  background: #202229;
+  border: 1px solid rgba(75, 205, 207, 0.2);
+  border-radius: 8px;
+  background: #003442;
+  transition: border-color 0.18s ease;
+}
+
+.profile-discussions-search:focus-within {
+  border-color: #1de0c4;
 }
 
 .profile-discussions-search > span {
-  color: #9699a5;
+  color: #80cbd0;
   font-size: 22px;
 }
 
@@ -175,44 +202,55 @@
   border: none;
   outline: none;
   background: transparent;
-  color: #fff;
+  color: #e8ffff;
   font-size: 13px;
 }
 
 .profile-discussions-search input::placeholder {
-  color: #777b86;
+  color: #679da8;
 }
 
 .profile-discussions-toolbar select {
   min-width: 155px;
   padding: 0 12px;
-  border: 1px solid #343741;
-  border-radius: 7px;
+  border: 1px solid rgba(75, 205, 207, 0.2);
+  border-radius: 8px;
   outline: none;
-  background: #202229;
-  color: #ddd;
+  background: #003442;
+  color: #d9f0f2;
   font-size: 13px;
   cursor: pointer;
 }
+
+.profile-discussions-toolbar select:focus {
+  border-color: #1de0c4;
+}
+
+.profile-discussions-toolbar select option {
+  background: #003442;
+  color: #e8ffff;
+}
+
+/* Discussion list */
 
 .profile-discussions-list-heading {
   display: flex;
   align-items: center;
   gap: 9px;
   padding-bottom: 14px;
-  border-bottom: 1px solid #30323a;
-  color: #d9dae0;
+  border-bottom: 1px solid rgba(103, 174, 185, 0.2);
+  color: #edffff;
   font-size: 14px;
   font-weight: 600;
 }
 
 .profile-discussions-list-heading > span:first-child {
-  color: #9699a5;
+  color: #80cbd0;
 }
 
 .profile-discussions-count {
   margin-left: auto;
-  color: #9295a0;
+  color: #80cbd0;
   font-weight: 400;
 }
 
@@ -223,21 +261,24 @@
   padding-top: 18px;
 }
 
+/* Comments */
+
 .profile-discussions-comments {
   margin-top: -1px;
   padding: 18px;
-  border: 1px solid #30323a;
+  border: 1px solid rgba(75, 205, 207, 0.13);
   border-radius: 0 0 9px 9px;
-  background: #1c1e25;
+  background: #044653;
 }
 
 .profile-discussions-comments h3 {
   margin: 0 0 15px;
+  color: #edffff;
   font-size: 15px;
 }
 
 .profile-discussions-comments > p {
-  color: #9295a0;
+  color: #a4d0d5;
   font-size: 13px;
 }
 
@@ -246,7 +287,7 @@
   align-items: flex-start;
   gap: 11px;
   padding: 12px 0;
-  border-top: 1px solid #30323a;
+  border-top: 1px solid rgba(75, 205, 207, 0.13);
 }
 
 .profile-discussions-comment img {
@@ -258,15 +299,18 @@
 }
 
 .profile-discussions-comment strong {
+  color: #e8ffff;
   font-size: 13px;
 }
 
 .profile-discussions-comment p {
   margin: 5px 0 0;
-  color: #b6b8c1;
+  color: #b5d2d6;
   font-size: 13px;
   line-height: 1.5;
 }
+
+/* Empty and loading states */
 
 .profile-discussions-empty,
 .profile-discussions-message {
@@ -280,36 +324,45 @@
 
 .profile-discussions-empty > span {
   margin-bottom: 15px;
+  color: #1de0c4;
   font-size: 38px;
 }
 
 .profile-discussions-empty h3 {
   margin: 0;
+  color: #edffff;
   font-size: 18px;
 }
 
 .profile-discussions-empty p {
   max-width: 380px;
   margin: 9px 0 0;
-  color: #9295a0;
+  color: #a4d0d5;
   font-size: 13px;
   line-height: 1.6;
 }
 
 .profile-discussions-message {
   min-height: 250px;
-  color: #b5b7c0;
+  color: #b5d2d6;
 }
 
 .profile-discussions-message button {
   margin-top: 18px;
   padding: 10px 16px;
-  border: none;
-  border-radius: 7px;
-  background: #343846;
+  border: 1px solid rgba(45, 226, 205, 0.2);
+  border-radius: 8px;
+  background: #087c89;
   color: #fff;
   cursor: pointer;
+  transition: background 0.18s ease;
 }
+
+.profile-discussions-message button:hover {
+  background: #0b9b9e;
+}
+
+/* Responsive */
 
 @media (max-width: 950px) {
   .profile-discussions-layout {
