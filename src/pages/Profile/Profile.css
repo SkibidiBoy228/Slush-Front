@@ -1320,6 +1320,41 @@
   flex-shrink: 0;
 }
 
+.profile-video-card__actions {
+  display: flex;
+  justify-content: flex-start;
+  padding: 10px;
+}
+
+.profile-publication-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 7px 13px;
+  color: #a6fff2;
+  background: rgba(0, 210, 190, 0.08);
+  border: 1px solid rgba(29, 224, 196, 0.35);
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.profile-publication-link:hover {
+  color: #fff;
+  background: rgba(0, 210, 190, 0.18);
+  border-color: #1de0c4;
+}
+
+.profile-publication-link__icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
 @media (max-width: 900px) {
   .profile-sidebar {
     grid-template-columns: repeat(2, minmax(0, 1fr));

@@ -810,9 +810,7 @@ const Profile = ({ username }: ProfileProps) => {
 
                     <span>{video.title}</span>
 
-                  <div className="profile-video-card__footer">
-                    <span className="profile-video-card__type">Video</span>
-
+                  <div className="profile-video-card__actions">
                     <button
                       type="button"
                       className="profile-publication-link"
@@ -821,6 +819,7 @@ const Profile = ({ username }: ProfileProps) => {
                       }
                     >
                       <span>{t("profile.openPublication")}</span>
+
                       <svg
                         viewBox="0 0 24 24"
                         aria-hidden="true"
