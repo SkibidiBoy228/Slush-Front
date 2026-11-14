@@ -46,6 +46,7 @@ function GameGallery({ game }: GameGalleryProps) {
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<HTMLDivElement>(null);
+  const thumbnailsRef = useRef<HTMLDivElement>(null);
 
   const videos: GalleryItem[] = (game.videos ?? [])
     .filter(
@@ -88,7 +89,7 @@ function GameGallery({ game }: GameGalleryProps) {
 
   const currentItem = items[currentIndex];
 
-  // Сбрасываем галерею при смене игры.
+  // Сброс галереи при смене игры
   useEffect(() => {
     setActiveIndex(0);
     setIsPlaying(false);
@@ -96,14 +97,43 @@ function GameGallery({ game }: GameGalleryProps) {
     setDuration(0);
   }, [game.id]);
 
-  // Синхронизируем звук с текущим видео.
+  // Автоматическая прокрутка миниатюр к активному элементу
+  useEffect(() => {
+    const container = thumbnailsRef.current;
+
+    if (!container) return;
+
+    const activeThumbnail =
+      container.querySelector<HTMLElement>(
+        ".gallery-thumbnail.active"
+      );
+
+    if (!activeThumbnail) return;
+
+    const containerWidth = container.clientWidth;
+    const thumbnailLeft = activeThumbnail.offsetLeft;
+    const thumbnailWidth = activeThumbnail.offsetWidth;
+
+    const targetScroll =
+      thumbnailLeft -
+      container.offsetLeft -
+      containerWidth / 2 +
+      thumbnailWidth / 2;
+
+    container.scrollTo({
+      left: targetScroll,
+      behavior: "smooth",
+    });
+  }, [currentIndex]);
+
+  // Синхронизация звука
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.muted = isMuted;
     }
   }, [isMuted, currentItem?.key]);
 
-  // Автоматически запускаем выбранный трейлер.
+  // Автовоспроизведение выбранного трейлера
   useEffect(() => {
     setIsPlaying(false);
     setCurrentTime(0);
@@ -137,14 +167,17 @@ function GameGallery({ game }: GameGalleryProps) {
   const nextImage = () => {
     if (items.length <= 1) return;
 
-    setActiveIndex((current) => (current + 1) % items.length);
+    setActiveIndex(
+      (current) => (current + 1) % items.length
+    );
   };
 
   const previousImage = () => {
     if (items.length <= 1) return;
 
     setActiveIndex(
-      (current) => (current - 1 + items.length) % items.length
+      (current) =>
+        (current - 1 + items.length) % items.length
     );
   };
 
@@ -171,7 +204,9 @@ function GameGallery({ game }: GameGalleryProps) {
   const handleSeek = (value: number) => {
     const video = videoRef.current;
 
-    if (!video || !Number.isFinite(video.duration)) return;
+    if (!video || !Number.isFinite(video.duration)) {
+      return;
+    }
 
     video.currentTime = value;
     setCurrentTime(value);
@@ -217,13 +252,19 @@ function GameGallery({ game }: GameGalleryProps) {
               onPlay={() => setIsPlaying(true)}
               onPause={() => setIsPlaying(false)}
               onTimeUpdate={(event) =>
-                setCurrentTime(event.currentTarget.currentTime)
+                setCurrentTime(
+                  event.currentTarget.currentTime
+                )
               }
               onLoadedMetadata={(event) =>
-                setDuration(event.currentTarget.duration || 0)
+                setDuration(
+                  event.currentTarget.duration || 0
+                )
               }
               onDurationChange={(event) =>
-                setDuration(event.currentTarget.duration || 0)
+                setDuration(
+                  event.currentTarget.duration || 0
+                )
               }
               onEnded={() => setIsPlaying(false)}
             >
@@ -249,7 +290,9 @@ function GameGallery({ game }: GameGalleryProps) {
                 type="button"
                 className="game-video-play"
                 onClick={togglePlay}
-                aria-label={isPlaying ? "Pause video" : "Play video"}
+                aria-label={
+                  isPlaying ? "Pause video" : "Play video"
+                }
               >
                 {isPlaying ? "Ⅱ" : "▶"}
               </button>
@@ -265,7 +308,10 @@ function GameGallery({ game }: GameGalleryProps) {
                   min={0}
                   max={duration || 0}
                   step={0.1}
-                  value={Math.min(currentTime, duration || 0)}
+                  value={Math.min(
+                    currentTime,
+                    duration || 0
+                  )}
                   onChange={(event) =>
                     handleSeek(Number(event.target.value))
                   }
@@ -326,7 +372,10 @@ function GameGallery({ game }: GameGalleryProps) {
           ‹
         </button>
 
-        <div className="gallery-thumbnails">
+        <div
+          className="gallery-thumbnails"
+          ref={thumbnailsRef}
+        >
           {items.map((item, index) => (
             <button
               key={item.key}
@@ -337,8 +386,12 @@ function GameGallery({ game }: GameGalleryProps) {
               onClick={() => selectSlide(index)}
               aria-label={
                 item.type === "video"
-                  ? t("gameGallery.trailer", { number: index + 1 })
-                  : t("gameGallery.screenshot", { number: index + 1 })
+                  ? t("gameGallery.trailer", {
+                      number: index + 1,
+                    })
+                  : t("gameGallery.screenshot", {
+                      number: index + 1,
+                    })
               }
               aria-current={
                 index === currentIndex ? "true" : undefined
@@ -352,7 +405,8 @@ function GameGallery({ game }: GameGalleryProps) {
                 }
                 alt={
                   item.type === "video"
-                    ? item.name || t("gameGallery.trailerFallback")
+                    ? item.name ||
+                      t("gameGallery.trailerFallback")
                     : t("gameGallery.gameScreenshot", {
                         title: game.title,
                         number: index + 1,
@@ -362,7 +416,9 @@ function GameGallery({ game }: GameGalleryProps) {
               />
 
               {item.type === "video" && (
-                <span className="gallery-video-badge">▶</span>
+                <span className="gallery-video-badge">
+                  ▶
+                </span>
               )}
             </button>
           ))}
@@ -382,7 +438,9 @@ function GameGallery({ game }: GameGalleryProps) {
       <div className="gallery-progress">
         <span
           style={{
-            width: `${((currentIndex + 1) / items.length) * 100}%`,
+            width: `${
+              ((currentIndex + 1) / items.length) * 100
+            }%`,
           }}
         />
       </div>
