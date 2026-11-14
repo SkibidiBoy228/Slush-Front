@@ -1,6 +1,11 @@
-
 import { useTranslation } from "react-i18next";
-import type { CommunityPost as CommunityPostData } from "../../../types/community";
+
+import type {
+  CommunityPost as CommunityPostData,
+} from "../../../types/community";
+
+import { formatDate } from "../../../utils/formatDate";
+
 import "./CommunityPostDetailsCard.css";
 
 interface CommunityPostDetailsCardProps {
@@ -37,9 +42,7 @@ function CommunityPostDetailsCard({
   const authorInitial =
     post.authorUsername?.charAt(0).toUpperCase() || "?";
 
-  const formattedDate = post.createdAt
-    ? new Date(post.createdAt).toLocaleDateString(locale)
-    : "";
+  const formattedDate = formatDate(post.createdAt, locale);
 
   const renderMedia = () => {
     if (!post.mediaUrl) return null;

@@ -1,5 +1,6 @@
-
 import { useTranslation } from "react-i18next";
+import { formatDate } from "../../../utils/formatDate";
+
 import "./CommunityPostDetailsMeta.css";
 
 interface CommunityPostDetailsMetaProps {
@@ -25,9 +26,7 @@ function CommunityPostDetailsMeta({
   const locale =
     localeMap[i18n.language.split("-")[0]] || "uk-UA";
 
-  const formattedDate = createdAt
-    ? new Date(createdAt).toLocaleDateString(locale)
-    : "";
+  const formattedDate = formatDate(createdAt, locale);
 
   return (
     <div className="community-details-meta">
