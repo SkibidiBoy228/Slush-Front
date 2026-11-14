@@ -12,6 +12,8 @@ import {
   getGameDetails,
 } from "../../api/games";
 
+import CatalogSkeleton from "../../components/Skeleton/CatalogSkeleton";
+
 import {
   getLibrary,
   getLibraryCollections,
@@ -465,9 +467,7 @@ function Catalog() {
               )}
 
               {loading && (
-                <div className="catalog-message">
-                  {t("catalog.loading")}
-                </div>
+                <CatalogSkeleton viewMode={viewMode} />
               )}
 
               {error && (

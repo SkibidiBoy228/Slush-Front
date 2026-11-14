@@ -17,6 +17,7 @@ import type { CatalogGame } from "../../types/catalog";
 import type { GameDetails } from "../../types/game";
 
 import { formatPrice, USD_TO_UAH } from "../../utils/price";
+import HomeSkeleton from "../../components/Skeleton/HomeSkeleton";
 
 import "./Home.css";
 

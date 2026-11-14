@@ -1,0 +1,74 @@
+.slush-skeleton {
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: rgba(91, 151, 158, 0.13);
+}
+
+.slush-skeleton::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(116, 226, 216, 0.12) 45%,
+    rgba(116, 226, 216, 0.2) 50%,
+    rgba(116, 226, 216, 0.12) 55%,
+    transparent 100%
+  );
+  animation: slush-skeleton-shimmer 1.5s infinite;
+}
+
+@keyframes slush-skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.skeleton-game-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(124, 192, 201, 0.07);
+  border-radius: 8px;
+  background: #07505d;
+}
+
+.skeleton-game-image {
+  display: block;
+}
+
+.skeleton-game-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 11px 12px;
+}
+
+.skeleton-game-card--small {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+}
+
+.skeleton-game-card--small .skeleton-game-image {
+  width: 76px;
+  height: 60px !important;
+}
+
+.skeleton-game-card--small .skeleton-game-info {
+  flex: 1;
+  padding: 4px 0;
+}
+
+.skeleton-game-card--wide .skeleton-game-image {
+  height: 150px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slush-skeleton::after {
+    animation: none;
+  }
+}
