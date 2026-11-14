@@ -817,7 +817,21 @@ const Profile = ({ username }: ProfileProps) => {
                         openCommunityPost(video.gameId, video.id)
                       }
                     >
-                      {t("profile.openPublication", "Открыть публикацию")}
+                      <span>{t("profile.openPublication")}</span>
+                      <svg
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                        className="profile-publication-link__icon"
+                      >
+                        <path
+                          d="M7 17 17 7M7 7h10v10"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
                     </button>
                   </article>
                 ))}
