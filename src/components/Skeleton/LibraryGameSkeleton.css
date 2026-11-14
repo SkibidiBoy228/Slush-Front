@@ -1,0 +1,525 @@
+
+.library-game-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  width: 100%;
+  min-width: 0;
+  color: #e5f3f5;
+}
+
+.library-game-skeleton__line,
+.library-game-skeleton__hero,
+.library-game-skeleton__play-button,
+.library-game-skeleton__tools > div,
+.library-game-skeleton__stat,
+.library-game-skeleton__review-actions > div,
+.library-game-skeleton__news-image,
+.library-game-skeleton__avatar,
+.library-game-skeleton__sidebar-card,
+.library-game-skeleton__community-card {
+  position: relative;
+  overflow: hidden;
+  background: #07505e;
+}
+
+.library-game-skeleton__line::after,
+.library-game-skeleton__hero::after,
+.library-game-skeleton__play-button::after,
+.library-game-skeleton__tools > div::after,
+.library-game-skeleton__stat::after,
+.library-game-skeleton__review-actions > div::after,
+.library-game-skeleton__news-image::after,
+.library-game-skeleton__avatar::after,
+.library-game-skeleton__sidebar-card::after,
+.library-game-skeleton__community-card::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(119, 220, 225, 0.13),
+    transparent
+  );
+  animation: library-game-skeleton-shimmer 1.5s infinite;
+}
+
+@keyframes library-game-skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.library-game-skeleton__line {
+  height: 9px;
+  border-radius: 5px;
+}
+
+.library-game-skeleton__line.short {
+  width: 60%;
+}
+
+/* Hero */
+
+.library-game-skeleton__hero {
+  display: flex;
+  min-height: 310px;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 18px 24px 22px;
+  border-radius: 12px;
+  background: #003541;
+}
+
+.library-game-skeleton__hero-top {
+  display: flex;
+}
+
+.library-game-skeleton__back {
+  width: 120px;
+  height: 12px;
+}
+
+.library-game-skeleton__hero-bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.library-game-skeleton__main-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.library-game-skeleton__title {
+  width: min(390px, 65vw);
+  height: 31px;
+  margin-bottom: 15px;
+}
+
+.library-game-skeleton__quick-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  margin-bottom: 20px;
+}
+
+.library-game-skeleton__quick-info .library-game-skeleton__line {
+  width: 85px;
+}
+
+.library-game-skeleton__quick-info .library-game-skeleton__line:nth-child(2) {
+  width: 65px;
+}
+
+.library-game-skeleton__quick-info .library-game-skeleton__line:nth-child(3) {
+  width: 95px;
+}
+
+.library-game-skeleton__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+.library-game-skeleton__play-button {
+  width: 125px;
+  height: 42px;
+  border-radius: 8px;
+  background: #087b80;
+}
+
+.library-game-skeleton__playtime {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  width: 100px;
+}
+
+.library-game-skeleton__playtime .library-game-skeleton__line:first-child {
+  width: 75px;
+}
+
+.library-game-skeleton__playtime .library-game-skeleton__line:last-child {
+  width: 90px;
+  height: 7px;
+}
+
+.library-game-skeleton__tools {
+  display: flex;
+  gap: 7px;
+}
+
+.library-game-skeleton__tools > div {
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  background: #075267;
+}
+
+/* Tabs */
+
+.library-game-skeleton__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin: 0;
+  padding: 0 5px 12px;
+  border-bottom: 1px solid rgba(102, 165, 176, 0.18);
+}
+
+.library-game-skeleton__tabs .library-game-skeleton__line {
+  width: 95px;
+}
+
+.library-game-skeleton__tabs .library-game-skeleton__line:nth-child(2) {
+  width: 75px;
+}
+
+.library-game-skeleton__tabs .library-game-skeleton__line:nth-child(3) {
+  width: 85px;
+}
+
+/* Main columns */
+
+.library-game-skeleton__columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 225px;
+  align-items: start;
+  gap: 18px;
+}
+
+.library-game-skeleton__main-column {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.library-game-skeleton__section {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.library-game-skeleton__section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.library-game-skeleton__line.section-title {
+  width: 155px;
+  height: 16px;
+}
+
+.library-game-skeleton__line.section-link {
+  width: 75px;
+}
+
+/* Progress */
+
+.library-game-skeleton__stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.library-game-skeleton__stat {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 12px;
+  padding: 15px;
+  border-radius: 10px;
+  background: #003541;
+}
+
+.library-game-skeleton__stat .library-game-skeleton__line {
+  width: 95px;
+  background: #075565;
+}
+
+.library-game-skeleton__stat .library-game-skeleton__line.value {
+  width: 125px;
+  height: 13px;
+}
+
+/* Review */
+
+.library-game-skeleton__line.review-status {
+  width: 75px;
+  height: 9px;
+}
+
+.library-game-skeleton__review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  border-radius: 10px;
+  background: #003541;
+}
+
+.library-game-skeleton__line.label {
+  width: 85px;
+  height: 9px;
+}
+
+.library-game-skeleton__line.select {
+  width: 120px;
+  height: 34px;
+  border-radius: 7px;
+}
+
+.library-game-skeleton__line.textarea {
+  width: 100%;
+  height: 95px;
+  border-radius: 7px;
+}
+
+.library-game-skeleton__review-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 4px;
+}
+
+.library-game-skeleton__review-actions > div {
+  width: 115px;
+  height: 33px;
+  border-radius: 6px;
+}
+
+.library-game-skeleton__review-actions > div:last-child {
+  width: 75px;
+}
+
+/* News */
+
+.library-game-skeleton__news-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.library-game-skeleton__news-card {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-height: 90px;
+  padding: 10px;
+  border-radius: 10px;
+  background: #003541;
+}
+
+.library-game-skeleton__news-image {
+  width: 125px;
+  min-width: 125px;
+  height: 70px;
+  border-radius: 7px;
+}
+
+.library-game-skeleton__news-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 0;
+}
+
+.library-game-skeleton__line.news-title {
+  width: 70%;
+  height: 12px;
+}
+
+/* Sidebar */
+
+.library-game-skeleton__sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.library-game-skeleton__sidebar-card {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  min-width: 0;
+  padding: 14px;
+  border-radius: 11px;
+  background: #004452;
+}
+
+.library-game-skeleton__line.sidebar-title {
+  width: 145px;
+  height: 13px;
+  margin-bottom: 3px;
+}
+
+.library-game-skeleton__friend {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.library-game-skeleton__avatar {
+  width: 27px;
+  height: 27px;
+  flex: 0 0 27px;
+  border-radius: 50%;
+  background: #075267;
+}
+
+.library-game-skeleton__friend .library-game-skeleton__line {
+  width: 90px;
+}
+
+.library-game-skeleton__info-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.library-game-skeleton__info-row .library-game-skeleton__line:first-child {
+  width: 75px;
+  height: 8px;
+}
+
+.library-game-skeleton__info-row .library-game-skeleton__line.value {
+  width: 125px;
+  height: 10px;
+}
+
+/* Community */
+
+.library-game-skeleton__community {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.library-game-skeleton__community-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.library-game-skeleton__community-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 145px;
+  padding: 14px;
+  border-radius: 10px;
+  background: #003541;
+}
+
+.library-game-skeleton__community-user {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.library-game-skeleton__community-user .library-game-skeleton__line {
+  width: 100px;
+}
+
+.library-game-skeleton__line.community-title {
+  width: 75%;
+  height: 12px;
+}
+
+/* Responsive */
+
+@media (max-width: 950px) {
+  .library-game-skeleton__columns {
+    grid-template-columns: minmax(0, 1fr) 190px;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 750px) {
+  .library-game-skeleton__columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .library-game-skeleton__sidebar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .library-game-skeleton__sidebar-card:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 550px) {
+  .library-game-skeleton__hero {
+    min-height: 280px;
+    padding: 14px;
+  }
+
+  .library-game-skeleton__hero-bottom {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .library-game-skeleton__title {
+    width: min(260px, 80vw);
+    height: 24px;
+  }
+
+  .library-game-skeleton__tools {
+    align-self: flex-end;
+  }
+
+  .library-game-skeleton__tabs {
+    gap: 15px;
+    overflow: hidden;
+  }
+
+  .library-game-skeleton__tabs .library-game-skeleton__line {
+    width: 75px;
+  }
+
+  .library-game-skeleton__stats {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .library-game-skeleton__sidebar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .library-game-skeleton__sidebar-card:last-child {
+    grid-column: auto;
+  }
+
+  .library-game-skeleton__community-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .library-game-skeleton__news-image {
+    width: 95px;
+    min-width: 95px;
+    height: 65px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .library-game-skeleton *::after {
+    animation: none !important;
+  }
+}

@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import LibraryLayout from "../../components/Library/layout/LibraryLayout";
 import LibraryNewsSection from "../../components/Library/Home/LibraryNewsSection";
 import CommunityHighlights from "../../components/Library/Home/CommunityHighlights";
+import LibraryHomeSkeleton from "../../components/Skeleton/LibraryHomeSkeleton";
 import {
   getLibrary,
   getLibraryHome,
@@ -18,6 +19,8 @@ import type {
   LibraryCollection,
 } from "../../types/library";
 import "./LibraryHomePage.css";
+
+
 
 type LibraryTab = "all" | "favorites" | "collections";
 type LibraryView = "grid" | "list";
@@ -324,12 +327,9 @@ function LibraryHomePage() {
             </button>
           </div>
         </div>
-
-        {isLoading ? (
-          <p className="library-home__message">
-            {t("libraryHome.loadingLibrary")}
-          </p>
-        ) : error ? (
+          {isLoading ? (
+            <LibraryHomeSkeleton />
+          ) : error ? (
           <div className="library-home__error" role="alert">
             <p>{error}</p>
             <button type="button" onClick={() => void loadLibrary()}>

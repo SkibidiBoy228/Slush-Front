@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { getUserProfile, getProfileGames } from "../../api/profile";
 import { getCurrentUsername } from "../../api/client";
 import ProfileSidebar from "../../components/ProfileSidebar/ProfileSidebar";
+import ProfileGamesSkeleton from "../../components/Skeleton/ProfileGamesSkeleton";
 
 import type {
   UserProfile,
@@ -118,17 +119,9 @@ const ProfileGames = ({ username }: ProfileGamesProps) => {
     return `${price.toFixed(2)} ₴`;
   };
 
-  if (isLoading) {
-    return (
-      <div className="profile-games-page">
-        <main className="profile-games-container">
-          <div className="profile-games-message">
-            {t("profileGames.loading")}
-          </div>
-        </main>
-      </div>
-    );
-  }
+if (isLoading) {
+  return <ProfileGamesSkeleton />;
+}
 
   if (error || !profile) {
     return (

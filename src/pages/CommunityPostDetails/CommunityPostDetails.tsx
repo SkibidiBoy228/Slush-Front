@@ -32,6 +32,7 @@ import CommunityPostDetailsCard from "../../components/Community/CommunityPostDe
 import CommunityComments from "../../components/Community/CommunityComments/CommunityComments";
 import CommunityPostDetailsLayout from "../CommunityPostDetailsLayout/CommunityPostDetailsLayout";
 import CommunityPostDetailsMeta from "../../components/Community/CommunityPostDetailsMeta/CommunityPostDetailsMeta";
+import CommunityPostDetailsSkeleton from "../../components/Skeleton/CommunityPostDetailsSkeleton";
 
 import "./CommunityPostDetails.css";
 
@@ -275,9 +276,28 @@ function CommunityPostDetails({
 
   if (loading) {
     return (
-      <div className="community-details-status">
-        {t("communityPostDetails.loading")}
-      </div>
+      <CommunityPostDetailsLayout
+        gameId={gameId}
+        gameTitle={gameTitle}
+        subscribersCount={counts.subscribersCount}
+        activeTab="community"
+        recommendationsTitle={t("communityPostDetails.otherDiscussions")}
+        recommendations={[]}
+        onCreatePost={() => {
+          window.location.href =
+            `/game/${encodeURIComponent(gameId)}/community/create/discussion`;
+        }}
+        onTabChange={(tab) => {
+          if (tab === "community") {
+            window.location.href =
+              `/game/${encodeURIComponent(gameId)}/community`;
+          }
+        }}
+      >
+        <div className="community-details-post-area">
+          <CommunityPostDetailsSkeleton />
+        </div>
+      </CommunityPostDetailsLayout>
     );
   }
 

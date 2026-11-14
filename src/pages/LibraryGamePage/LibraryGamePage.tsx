@@ -5,6 +5,7 @@ import LibraryLayout from "../../components/Library/layout/LibraryLayout";
 import GamePlayer from "../../components/Library/GamePlayer/GamePlayer";
 import LibraryNewsCard from "../../components/Library/Home/LibraryNewsCard";
 import CommunityPostCard from "../../components/Library/Home/CommunityPostCard";
+import LibraryGameSkeleton from "../../components/Skeleton/LibraryGameSkeleton";
 
 import {
   addFavoriteGame,
@@ -357,11 +358,9 @@ function LibraryGamePage({ gameId }: LibraryGamePageProps) {
   return (
     <LibraryLayout>
       <div className="library-game">
-        {isLoading ? (
-          <div className="library-game__state">
-            {t("libraryGame.loading")}
-          </div>
-        ) : error && !game ? (
+          {isLoading ? (
+            <LibraryGameSkeleton />
+          ) : error && !game ? (
           <div className="library-game__error">
             <p>{error}</p>
             <a href="/library">{t("libraryGame.backToLibrary")}</a>
