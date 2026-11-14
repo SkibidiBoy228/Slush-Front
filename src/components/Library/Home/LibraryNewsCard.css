@@ -1,0 +1,33 @@
+/* Общие превью новостей и публикаций */
+.library-news-card__media {
+  display: block;
+  flex: 0 0 230px;
+  width: 230px;
+  max-width: 50%;
+  overflow: hidden;
+  align-self: flex-start;
+  border-radius: 7px;
+  background: #002b35;
+}
+
+.library-news-card__media img,
+.library-news-card__media video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.library-news-card:hover .library-news-card__media img,
+.library-news-card:hover .library-news-card__media video {
+  transform: scale(1.04);
+}
+
+@media (max-width: 650px) {
+  .library-news-card__media {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 100%;
+  }
+}

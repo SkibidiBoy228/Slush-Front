@@ -69,9 +69,9 @@
 
 /* Larger media preview */
 .community-highlights__grid .library-news-card__media {
-  flex: 0 0 210px;
-  width: 210px;
-  max-width: 50%;
+  flex: 0 0 230px;
+  width: 230px;
+  max-width: 52%;
 }
 
 .community-highlights__grid .library-news-card__media img,

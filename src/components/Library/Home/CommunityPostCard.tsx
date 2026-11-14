@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import type { SyntheticEvent } from "react";
 
 import type { CommunityPost } from "../../../types/library";
+import "./LibraryNewsCard.css";
 
 interface CommunityPostCardProps {
   post: CommunityPost;
