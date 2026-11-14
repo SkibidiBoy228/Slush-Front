@@ -160,11 +160,7 @@ function Home() {
         <HeroSlider />
 
         <div className="content-container">
-          {loading && (
-            <div className="catalog-message">
-              {t("home.loading")}
-            </div>
-          )}
+            {loading && <HomeSkeleton />}
 
           {error && (
             <div className="catalog-message error">
