@@ -7,7 +7,7 @@ import GameSearch from "../../components/GameSearch/GameSearch";
 import GameGallery from "../../components/GamePage/GameGallery";
 import GameSidebar from "../../components/GamePage/GameSidebar";
 import GameReviews from "../../components/GamePage/GameReviews";
-
+import DlcPageSkeleton from "../../components/Skeleton/DlcPageSkeleton";
 import { getGameDetails } from "../../api/games";
 import type { GameDetails, GameExtra } from "../../types/game";
 import { formatPrice } from "../../utils/price";
@@ -59,15 +59,9 @@ function DlcPage({ appId, dlcId }: DlcPageProps) {
     loadData();
   }, [appId, dlcId, t]);
 
-  if (loading) {
-    return (
-      <div className="game-page-state">
-        <div className="state-content">
-          {t("dlcPage.loading")}
-        </div>
-      </div>
-    );
-  }
+if (loading) {
+  return <DlcPageSkeleton isCatalog={!dlcId} />;
+}
 
   if (error || !baseGame) {
     return (
