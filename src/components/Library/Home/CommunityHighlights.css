@@ -71,9 +71,10 @@
 /* Larger media preview */
 
 .community-highlights__grid .library-news-card__media {
-  flex: 0 0 230px;
-  width: 230px;
-  max-width: 52%;
+  flex: 0 0 50%;
+  width: 50%;
+  max-width: 50%;
+  align-self: stretch;
 }
 
 .community-highlights__grid .library-news-card__media img,
