@@ -908,6 +908,251 @@
   background: #084653;
 }
 
+
+/* Reviews */
+
+.game-reviews-section,
+.game-extra-section {
+  width: 100%;
+  min-width: 0;
+  margin-top: 42px;
+}
+
+.game-reviews-section {
+  overflow: visible;
+}
+
+.section-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 18px;
+  min-width: 0;
+}
+
+.section-title-row h2 {
+  margin: 0;
+  color: #fff;
+  font-size: 23px;
+}
+
+.outline-button {
+  flex-shrink: 0;
+  padding: 10px 14px;
+  border: 1px solid #1de0c4;
+  border-radius: 6px;
+  background: transparent;
+  color: #1de0c4;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.reviews-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  width: 100%;
+  min-width: 0;
+  margin-bottom: 16px;
+  color: #8baab0;
+  font-size: 12px;
+}
+
+.reviews-toolbar > span {
+  min-width: 0;
+}
+
+.review-sort {
+  flex: 0 1 auto;
+  max-width: 100%;
+  padding: 4px 0;
+  border: none;
+  background: transparent;
+  color: #8baab0;
+  font-family: inherit;
+  font-size: 12px;
+  text-align: right;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+  width: 100%;
+  min-width: 0;
+}
+
+.review-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  padding: 17px;
+  border: 1px solid rgba(29, 224, 196, 0.12);
+  border-radius: 9px;
+  background: #073b47;
+  box-sizing: border-box;
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+}
+
+.review-avatar {
+  display: flex;
+  flex: 0 0 34px;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #0d7085;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.review-author {
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  gap: 4px;
+}
+
+.review-author strong {
+  max-width: 100%;
+  overflow: hidden;
+  color: #fff;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.review-stars {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 2px;
+}
+
+.review-stars span {
+  color: #3c5d64;
+  font-size: 12px;
+}
+
+.review-stars span.filled {
+  color: #ff5c9a;
+}
+
+.review-more {
+  display: flex;
+  flex: 0 0 32px;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-left: auto;
+  padding: 0;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: #7899a0;
+  cursor: pointer;
+}
+
+.review-more:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #1de0c4;
+}
+
+.review-text {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  margin: 15px 0;
+  color: #b4cdd2;
+  font-size: 12px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.review-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  margin-top: auto;
+  color: #6f9199;
+  font-size: 10px;
+}
+
+.review-reactions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.review-reactions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #91b0b7;
+  font-family: inherit;
+  font-size: 11px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.review-footer > span {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.empty-reviews {
+  width: 100%;
+  padding: 30px;
+  border-radius: 8px;
+  background: #073b47;
+  color: #91b0b7;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.show-more-button {
+  display: block;
+  margin: 20px auto 0;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  color: #1de0c4;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.show-more-button:hover {
+  color: #75f5e1;
+}
+
+
 @media (max-width: 600px) {
   .game-video-controls {
     gap: 7px;
