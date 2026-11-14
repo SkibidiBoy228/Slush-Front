@@ -1,3 +1,4 @@
+
 .friend-presence-notifications {
   position: fixed;
   top: 24px;
@@ -10,71 +11,134 @@
   pointer-events: none;
 }
 
+/* Notification card */
+
 .friend-presence-notification {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 14px;
-  background: #202127;
-  border: 1px solid #383a43;
+  overflow: hidden;
+
+  background: linear-gradient(
+    135deg,
+    rgba(6, 70, 83, 0.98),
+    rgba(0, 45, 57, 0.98)
+  );
+
+  border: 1px solid rgba(29, 224, 196, 0.22);
   border-radius: 12px;
-  color: #fff;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+
+  color: #e5f3f5;
+
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, 0.35),
+    0 0 15px rgba(29, 224, 196, 0.06);
+
   pointer-events: auto;
   animation: friend-presence-appear 0.25s ease-out;
+  backdrop-filter: blur(12px);
 }
 
+/* Accent line */
+
+.friend-presence-notification::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  background: #1de0c4;
+  content: "";
+}
+
+/* Avatar */
+
 .friend-presence-notification-avatar {
-  width: 42px;
-  height: 42px;
-  flex-shrink: 0;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
   overflow: hidden;
+
+  border: 1px solid rgba(29, 224, 196, 0.3);
   border-radius: 50%;
-  background: #383a43;
-  color: #fff;
+
+  background: #075267;
+  color: #e5f3f5;
+  font-size: 15px;
   font-weight: 600;
 }
 
 .friend-presence-notification-avatar img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
+/* Notification content */
+
 .friend-presence-notification-content {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
   min-width: 0;
   flex: 1;
 }
 
 .friend-presence-notification-content strong {
-  font-size: 14px;
-  font-weight: 600;
+  color: #1de0c4;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.35;
 }
 
 .friend-presence-notification-content span {
-  color: #b7b8c2;
-  font-size: 13px;
+  color: #b9d7dc;
+  font-size: 12px;
+  line-height: 1.45;
   overflow-wrap: anywhere;
 }
 
+/* Close button */
+
 .friend-presence-notification button {
-  border: none;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+
+  width: 27px;
+  height: 27px;
+  padding: 0;
+
+  border: 1px solid transparent;
+  border-radius: 7px;
+
   background: transparent;
-  color: #999ba7;
-  font-size: 22px;
+  color: #83aeb7;
+
+  font-size: 20px;
+  line-height: 1;
   cursor: pointer;
-  padding: 0 4px;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .friend-presence-notification button:hover {
-  color: #fff;
+  border-color: rgba(29, 224, 196, 0.2);
+  background: rgba(29, 224, 196, 0.1);
+  color: #1de0c4;
 }
+
+/* Animation */
 
 @keyframes friend-presence-appear {
   from {
@@ -88,10 +152,17 @@
   }
 }
 
+/* Mobile */
+
 @media (max-width: 480px) {
   .friend-presence-notifications {
     top: 12px;
     right: 12px;
     width: calc(100vw - 24px);
+  }
+
+  .friend-presence-notification {
+    padding: 12px;
+    gap: 10px;
   }
 }

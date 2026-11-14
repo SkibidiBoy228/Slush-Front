@@ -96,9 +96,23 @@
   color: #78e0ad;
 }
 
+
 .profile-status-dot {
   display: inline-block;
-  margin-right: 5px;
+  width: 8px;
+  height: 8px;
+  margin-right: 6px;
+  border-radius: 50%;
+  vertical-align: middle;
+  background: #718b91;
+  box-shadow: 0 0 5px rgba(113, 139, 145, 0.35);
+  font-size: 0;
+  line-height: 0;
+}
+
+.profile-status.online .profile-status-dot {
+  background: #39d98a;
+  box-shadow: 0 0 7px rgba(57, 217, 138, 0.55);
 }
 
 .profile-user-info p {
