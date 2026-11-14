@@ -1,4 +1,10 @@
-import { useEffect, useState, type FormEvent } from "react";
+import {
+  useEffect,
+  useState,
+  type FormEvent,
+  type KeyboardEvent,
+} from "react";
+
 import { useTranslation } from "react-i18next";
 
 import {
@@ -35,6 +41,7 @@ import type {
 } from "../../types/profile";
 
 import { useFriendPresence } from "../../hooks/useFriendPresence";
+
 import { getCurrentUsername } from "../../api/client";
 
 import ProfileSidebar from "../../components/ProfileSidebar/ProfileSidebar";
@@ -49,6 +56,7 @@ const Profile = ({ username }: ProfileProps) => {
   const { t, i18n } = useTranslation();
 
   const [profile, setProfile] = useState<UserProfile | null>(null);
+
   const [games, setGames] = useState<ProfileGame[]>([]);
   const [posts, setPosts] = useState<ProfilePost[]>([]);
   const [screenshots, setScreenshots] = useState<ProfileScreenshot[]>([]);
@@ -82,7 +90,7 @@ const Profile = ({ username }: ProfileProps) => {
     ru: "ru-RU",
   };
 
-  const locale = localeMap[i18n.language] || "uk-UA";
+  const locale = localeMap[i18n.language.split("-")[0]] || "uk-UA";
 
   const formatPrice = (price: number): string => {
     if (price <= 0) {
@@ -103,14 +111,33 @@ const Profile = ({ username }: ProfileProps) => {
     });
   };
 
+  const openCommunityPost = (gameId: string, postId: string) => {
+    if (!gameId || !postId) {
+      console.error("Cannot open community post: missing gameId or postId.");
+      return;
+    }
+
+    window.location.href =
+      `/game/${encodeURIComponent(gameId)}/community/post/${encodeURIComponent(postId)}`;
+  };
+
+  const handlePostCardKeyDown = (
+    event: KeyboardEvent<HTMLElement>,
+    gameId: string,
+    postId: string
+  ) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openCommunityPost(gameId, postId);
+    }
+  };
+
   useEffect(() => {
     if (events.length === 0) return;
 
-    const latestEvents = new Map();
-
-    for (const event of events) {
-      latestEvents.set(event.userId, event);
-    }
+    const latestEvents = new Map(
+      events.map((event) => [event.userId, event])
+    );
 
     setProfile((currentProfile) => {
       if (!currentProfile) return currentProfile;
@@ -347,7 +374,6 @@ const Profile = ({ username }: ProfileProps) => {
     }
   };
 
-  // Добавление комментария
   const handleAddComment = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -379,7 +405,6 @@ const Profile = ({ username }: ProfileProps) => {
     }
   };
 
-  // Удаление комментария
   const handleDeleteComment = async (commentId: string) => {
     if (commentDeletingId) return;
 
@@ -491,7 +516,8 @@ const Profile = ({ username }: ProfileProps) => {
                   type="button"
                   className="profile-message-button"
                   onClick={() => {
-                    window.location.href = `/chat?friendId=${encodeURIComponent(profile.id)}`;
+                    window.location.href =
+                      `/chat?friendId=${encodeURIComponent(profile.id)}`;
                   }}
                 >
                   {t("profile.sendMessage")}
@@ -673,7 +699,18 @@ const Profile = ({ username }: ProfileProps) => {
               </div>
 
               {posts.map((post) => (
-                <article className="content-card" key={post.id}>
+                <article
+                  className="content-card profile-clickable-card"
+                  key={post.id}
+                  role="link"
+                  tabIndex={0}
+                  aria-label={post.title || t("profile.discussionGallery")}
+                  onClick={() => openCommunityPost(post.gameId, post.id)}
+                  onKeyDown={(event) =>
+                    handlePostCardKeyDown(event, post.gameId, post.id)
+                  }
+                  style={{ cursor: "pointer" }}
+                >
                   <div className="content-card-header">
                     <img
                       src={post.authorAvatarUrl}
@@ -687,12 +724,13 @@ const Profile = ({ username }: ProfileProps) => {
                   </div>
 
                   <h3>{post.title}</h3>
+
                   <p>{post.text}</p>
 
-                  {post.imageUrl && (
+                  {(post.imageUrl || post.mediaUrl) && (
                     <img
                       className="content-image"
-                      src={post.imageUrl}
+                      src={post.imageUrl || post.mediaUrl || ""}
                       alt={post.title}
                     />
                   )}
@@ -719,11 +757,29 @@ const Profile = ({ username }: ProfileProps) => {
 
               <div className="media-grid">
                 {screenshots.map((screenshot) => (
-                  <article className="media-card" key={screenshot.id}>
+                  <article
+                    className="media-card profile-clickable-card"
+                    key={screenshot.id}
+                    role="link"
+                    tabIndex={0}
+                    aria-label={screenshot.gameTitle}
+                    onClick={() =>
+                      openCommunityPost(screenshot.gameId, screenshot.id)
+                    }
+                    onKeyDown={(event) =>
+                      handlePostCardKeyDown(
+                        event,
+                        screenshot.gameId,
+                        screenshot.id
+                      )
+                    }
+                    style={{ cursor: "pointer" }}
+                  >
                     <img
                       src={screenshot.imageUrl}
                       alt={screenshot.gameTitle}
                     />
+
                     <span>{screenshot.gameTitle}</span>
                   </article>
                 ))}
@@ -744,7 +800,10 @@ const Profile = ({ username }: ProfileProps) => {
 
               <div className="media-grid">
                 {videos.map((video) => (
-                  <article className="media-card video-card" key={video.id}>
+                  <article
+                    className="media-card video-card profile-clickable-card"
+                    key={video.id}
+                  >
                     <video
                       src={video.videoUrl}
                       poster={
@@ -755,7 +814,18 @@ const Profile = ({ username }: ProfileProps) => {
                       preload="none"
                       playsInline
                     />
+
                     <span>{video.title}</span>
+
+                    <button
+                      type="button"
+                      className="profile-publication-link"
+                      onClick={() =>
+                        openCommunityPost(video.gameId, video.id)
+                      }
+                    >
+                      {t("profile.openPublication", "Открыть публикацию")}
+                    </button>
                   </article>
                 ))}
               </div>
@@ -817,15 +887,38 @@ const Profile = ({ username }: ProfileProps) => {
                 <span>{guides.length}</span>
               </div>
 
-              {guides.map((guide, index) => (
+              {guides.map((guide) => (
                 <article
-                  className="guide-card"
-                  key={`${guide.guideTitle}-${index}`}
+                  className="guide-card profile-clickable-card"
+                  key={guide.id}
+                  role="link"
+                  tabIndex={0}
+                  aria-label={guide.guideTitle}
+                  onClick={() => openCommunityPost(guide.gameId, guide.id)}
+                  onKeyDown={(event) =>
+                    handlePostCardKeyDown(event, guide.gameId, guide.id)
+                  }
+                  style={{ cursor: "pointer" }}
                 >
+                  {guide.mediaUrl && (
+                    <img
+                      className="guide-card-image"
+                      src={guide.mediaUrl}
+                      alt={guide.guideTitle}
+                    />
+                  )}
+
                   <h3>{guide.guideTitle}</h3>
+
                   <span>{guide.gameTitle}</span>
+
                   <p>{guide.textSnippet}</p>
-                  <small>{guide.createdAt}</small>
+
+                  <div className="content-card-footer">
+                    <span>♡ {guide.likesCount}</span>
+                    <span>◌ {guide.commentsCount}</span>
+                    <small>{guide.createdAt}</small>
+                  </div>
                 </article>
               ))}
 
@@ -836,7 +929,6 @@ const Profile = ({ username }: ProfileProps) => {
               )}
             </section>
 
-            {/* Комментарии профиля */}
             <section className="profile-section">
               <div className="section-title-row">
                 <h2>{t("profile.comments")}</h2>
@@ -844,7 +936,10 @@ const Profile = ({ username }: ProfileProps) => {
               </div>
 
               {currentUsername ? (
-                <form className="comment-form" onSubmit={handleAddComment}>
+                <form
+                  className="comment-form"
+                  onSubmit={handleAddComment}
+                >
                   <input
                     type="text"
                     value={newComment}
